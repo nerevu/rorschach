@@ -6,6 +6,8 @@
     Provides additional api endpoints
 """
 from json.decoder import JSONDecodeError
+from itertools import chain, islice
+from datetime import date, timedelta
 
 from flask import Blueprint, request, redirect, session, url_for, g, current_app as app
 from flask import after_this_request
@@ -13,7 +15,8 @@ from flask.views import MethodView
 from faker import Faker
 
 from config import Config, __APP_TITLE__ as APP_TITLE
-from app import cache, __version__
+
+from app import cache, __version__, mappings
 from app.utils import (
     responsify,
     jsonify,
@@ -22,6 +25,9 @@ from app.utils import (
     make_cache_key,
     uncache_header,
 )
+
+from app.mappings import projects, timely_to_xero, timely_events
+
 
 from requests_oauthlib import OAuth2Session
 from oauthlib.oauth2 import TokenExpiredError
@@ -214,7 +220,7 @@ def gen_links(**kwargs):
         yield link
 
 
-def extract_fields(record, fields):
+def extract_fields(record, fields, **kwargs):
     item = DotDict(record)
 
     for field in fields:
@@ -232,11 +238,14 @@ def extract_fields(record, fields):
 
         yield (field, value)
 
+    if kwargs:
+        yield from kwargs.items()
 
-def process_events(events, fields):
-    for event in events:
-        if not (event["billed"] or event["deleted"]):
-            yield dict(extract_fields(event, fields))
+
+def process_result(result, fields=None, **kwargs):
+    for item in result:
+        if not (item.get("billed") or item.get("deleted")):
+            yield dict(extract_fields(item, fields, **kwargs))
 
 
 def get_realtime_response(url, client, params=None, **kwargs):
@@ -245,8 +254,11 @@ def get_realtime_response(url, client, params=None, **kwargs):
         response = {"status_code": 500, "message": client.error}
     else:
         params = params or {}
+        data = kwargs.get("data", {})
+        method = kwargs.get("method", "get")
         headers = kwargs.get("headers", HEADERS)
-        result = client.oauth_session.get(url, params=params, headers=headers)
+        verb = getattr(client.oauth_session, method)
+        result = verb(url, params=params, data=data, headers=headers)
 
         try:
             json = result.json()
@@ -396,39 +408,14 @@ def labels():
     timely = get_auth_client("TIMELY", **app.config)
     api_url = f"{timely.api_base_url}/{timely.account_id}/labels"
     response = get_realtime_response(api_url, timely, **app.config)
-    return jsonify(**response)
-
-
-@blueprint.route(f"{PREFIX}/users")
-def users():
-    timely = get_auth_client("TIMELY", **app.config)
-    api_url = f"{timely.api_base_url}/{timely.account_id}/users"
-    response = get_realtime_response(api_url, timely, **app.config)
-    return jsonify(**response)
-
-
-@blueprint.route(f"{PREFIX}/events")
-def events():
-    # https://dev.timelyapp.com/#list-all-events
-    timely = get_auth_client("TIMELY", **app.config)
-    since = request.args.get("since", "2019-09-01")
-    upto = request.args.get("upto", "2019-10-01")
-    params = {"since": since, "upto": upto}
-    api_url = f"{timely.api_base_url}/{timely.account_id}/events"
-    response = get_realtime_response(api_url, timely, params=params, **app.config)
-
-    if response.get("status_code", 200) == 200:
-        fields = [
-            "id",
-            "day",
-            "duration.total_minutes",
-            "label_ids[0]",
-            "project.id",
-            "user.id",
-        ]
-        processed_events = list(process_events(response["result"], fields))
-        response["result"] = processed_events
-
+    fields = ["id", "name"]
+    _billable = next(r["children"] for r in response["result"] if r["id"] == 1344430)
+    _non_billable = next(
+        r["children"] for r in response["result"] if r["id"] == 1339635
+    )
+    billable = process_result(_billable, fields, billable=True)
+    non_billable = process_result(_non_billable, fields, billable=False)
+    response["result"] = list(chain(billable, non_billable))
     return jsonify(**response)
 
 
@@ -475,32 +462,223 @@ class Auth(MethodView):
         return redirect(url_for(f".{self.prefix}_status".lower()))
 
 
-class Projects(MethodView):
+class ProjectBase(MethodView):
     def __init__(self, prefix):
         self.prefix = prefix
+        self.lowered = self.prefix.lower()
         self.client = get_auth_client(self.prefix, **app.config)
+        self.fields = []
+        self.subkey = ""
+        self.params = {}
+        self.headers = {}
+        self.post_process = False
+
+        project_ids = (p[self.lowered]["id"] for p in projects if p.get(self.lowered))
+        project_pos = int(request.args.get("pos", 0))
+        def_project_id = next(islice(project_ids, project_pos, None))
+        self.project_id = request.args.get("id", def_project_id)
 
         if self.prefix == "TIMELY":
-            self.headers = None
-            self.api_url = f"{self.client.api_base_url}/{self.client.account_id}/projects"
+            self.api_base_url = f"{self.client.api_base_url}/{self.client.account_id}"
         elif self.prefix == "XERO":
             self.headers = {**HEADERS, "Xero-tenant-id": self.client.tenant_id}
-            self.api_url = f"{self.client.api_base_url}/projects.xro/2.0/projects"
+            self.api_base_url = f"{self.client.api_base_url}/projects.xro/2.0"
+            self.subkey = "items"
 
     def get(self):
-        response = get_realtime_response(self.api_url, self.client, headers=self.headers, **app.config)
+        response = get_realtime_response(
+            self.api_url,
+            self.client,
+            headers=self.headers,
+            params=self.params,
+            **app.config,
+        )
+
+        result = response["result"]
+
+        if self.subkey:
+            response["result"] = result = result[self.subkey]
+
+        if self.fields and request.args.get("process", "").lower() == "true":
+            response["result"] = result = list(process_result(result, self.fields))
+
+        if self.post_process:
+            # populate result with mapping info
+            mapping = getattr(mappings, self.__class__.__name__.lower())
+            result = [
+                m[self.lowered]
+                for m in mapping
+                if m.get(self.lowered) and m[self.lowered]["id"] in set(result)
+            ]
+
+            # populate result with projectId
+            fields = ["billable", "id", "name"]
+            response["result"] = list(
+                process_result(result, fields, projectId=self.project_id)
+            )
+
+        return jsonify(**response)
+
+
+class Projects(ProjectBase):
+    def __init__(self, prefix):
+        super().__init__(prefix)
+
+        if self.prefix == "TIMELY":
+            self.api_url = f"{self.api_base_url}/projects"
+            self.fields = ["active", "billable", "id", "name"]
+        elif self.prefix == "XERO":
+            self.api_url = f"{self.api_base_url}/projects"
+            self.fields = ["name", "projectId", "status"]
+
+
+class Users(ProjectBase):
+    def __init__(self, prefix):
+        super().__init__(prefix)
+
+        if self.prefix == "TIMELY":
+            self.api_url = f"{self.api_base_url}/users"
+            self.fields = ["name", "id"]
+        elif self.prefix == "XERO":
+            self.api_url = f"{self.api_base_url}/projectsusers"
+            self.fields = ["name", "userId"]
+
+
+class Tasks(ProjectBase):
+    def __init__(self, prefix):
+        super().__init__(prefix)
+
+        if self.prefix == "TIMELY":
+            self.api_url = f"{self.api_base_url}/projects/{self.project_id}"
+            self.subkey = "label_ids"
+            self.post_process = True
+        elif self.prefix == "XERO":
+            self.api_url = f"{self.api_base_url}/projects/{self.project_id}/tasks"
+            self.fields = ["name", "taskId", "status", "rate.value", "projectId"]
+
+
+class Time(ProjectBase):
+    def __init__(self, prefix):
+        super().__init__(prefix)
+
+        def_end = date.today()
+        def_start = def_end - timedelta(days=app.config["REPORT_DAYS"])
+        end = request.args.get("end", def_end.strftime("%Y-%m-%d"))
+        start = request.args.get("start", def_start.strftime("%Y-%m-%d"))
+
+        if self.prefix == "TIMELY":
+            self.params = {"since": start, "upto": end}
+            self.api_url = f"{self.api_base_url}/projects/{self.project_id}/events"
+            self.fields = [
+                "id",
+                "day",
+                "duration.total_minutes",
+                "label_ids[0]",
+                "project.id",
+                "user.id",
+                "note",
+                "billed",
+            ]
+        elif self.prefix == "XERO":
+            self.params = {"dateAfterUtc": start, "dateBeforeUtc": end}
+            self.api_url = f"{self.api_base_url}/projects/{self.project_id}/time"
+            self.fields = []
+
+    def post(self):
+        # xero_project_id = "803591c3-72af-4475-888f-7c4c50044589"
+        # data = {"timelyEventId":165829339}
+        # r = requests.post(url, data=data, params={"id": xero_project_id})
+        if self.prefix == "XERO":
+            timely_event_id = request.form.get("timelyEventId")
+            error_msg = ""
+
+            if timely_event_id:
+                event = timely_events.get(timely_event_id)
+            else:
+                error_msg = "No 'timelyEventId' given!"
+                event = {}
+
+            if event:
+                project_match = (
+                    timely_to_xero["projects"].get(event["project.id"])
+                    == self.project_id
+                )
+            else:
+                project_match = False
+                error_msg = error_msg or f"Timely event {timely_event_id} not found!"
+
+            if project_match:
+                unbilled = not event["billed"]
+            else:
+                unbilled = False
+                error_msg = (
+                    error_msg or f"Timely project {event['project.id']} not found!"
+                )
+
+            if unbilled:
+                user_id = timely_to_xero["users"].get(event["user.id"])
+            else:
+                user_id = ""
+                error_msg = error_msg or "Timely task already billed!"
+
+            if user_id:
+                task_id = timely_to_xero["tasks"].get(event["label_ids[0]"])
+            else:
+                task_id = ""
+                error_msg = error_msg or f"Timely user {event['user.id']} not found!"
+
+            if task_id:
+                data = {"userId": user_id, "taskId": task_id}
+            else:
+                data = {}
+                error_msg = (
+                    error_msg or f"Timely task {event['label_ids[0]']} not found!"
+                )
+
+            if data:
+                data.update(
+                    {
+                        "dateUtc": event["day"],
+                        "duration": event["duration.total_minutes"],
+                        "description": event["note"],
+                    }
+                )
+
+                kwargs = {
+                    **app.config,
+                    "headers": self.headers,
+                    "method": "post",
+                    "data": data,
+                }
+                response = {"result": data}
+                # response = get_realtime_response(self.api_url, self.client, **kwargs)
+            else:
+                response = {
+                    "result": data,
+                    "status_code": 404,
+                    "links": list(gen_links()),
+                    "message": error_msg,
+                }
+        else:
+            base_url = get_request_base()
+
+            response = {
+                "status_code": 404,
+                "links": list(gen_links()),
+                "message": f"The {request.method}:{base_url} route is not yet enabled.",
+            }
+
         return jsonify(**response)
 
 
 class Memoization(MethodView):
     def get(self):
         base_url = get_request_base()
-        message = f"The {request.method}:{base_url} route is not yet complete."
 
         response = {
             "description": "Deletes a cache url",
             "links": list(gen_links()),
-            "message": message,
+            "message": f"The {request.method}:{base_url} route is not yet complete.",
         }
 
         return jsonify(**response)
@@ -524,11 +702,20 @@ memo_path_url = f"{memo_url}/<string:path>"
 
 add_rule = blueprint.add_url_rule
 
-add_rule(f"{PREFIX}/timely-auth", view_func=Auth.as_view("timely-auth", "TIMELY"))
-add_rule(f"{PREFIX}/xero-auth", view_func=Auth.as_view("xero-auth", "XERO"))
-add_rule(
-    f"{PREFIX}/timely-projects", view_func=Projects.as_view("timely-projects", "TIMELY")
-)
-add_rule(f"{PREFIX}/xero-projects", view_func=Projects.as_view("xero-projects", "XERO"))
+method_views = {
+    "auth": Auth,
+    "projects": Projects,
+    "users": Users,
+    "tasks": Tasks,
+    "time": Time,
+}
+
+for name, _cls in method_views.items():
+    for prefix in ["TIMELY", "XERO"]:
+        route_name = f"{prefix}-{name}".lower()
+        add_rule(
+            f"{PREFIX}/{route_name}", view_func=_cls.as_view(f"{route_name}", prefix)
+        )
+
 add_rule(memo_url, view_func=memo_view)
 add_rule(memo_path_url, view_func=memo_view, methods=["DELETE"])

@@ -71,7 +71,7 @@ class Config(object):
     ROUTE_DEBOUNCE = get_seconds(5)
     ROUTE_TIMEOUT = get_seconds(hours=3)
     SET_TIMEOUT = get_seconds(days=30)
-    REPORT_MONTHS = 12
+    REPORT_MONTHS = 1
     LRU_CACHE_SIZE = 128
     REPORT_DAYS = REPORT_MONTHS * DAYS_PER_MONTH
     SEND_FILE_MAX_AGE_DEFAULT = ROUTE_TIMEOUT
