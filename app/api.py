@@ -44,8 +44,8 @@ class MyAuthClient(object):
         self.redirect_uri = kwargs["redirect_uri"]
         self.api_base_url = kwargs["api_base_url"]
         self.account_id = kwargs["account_id"]
-        self.extra = {'client_id': self.client_id, 'client_secret': self.client_secret}
-        self.error = ''
+        self.extra = {"client_id": self.client_id, "client_secret": self.client_secret}
+        self.error = ""
 
         if kwargs.get("state"):
             self.state = kwargs["state"]
@@ -73,9 +73,13 @@ class MyAuthClient(object):
             else:
                 print("Successfully authenticated!")
         elif self.state:
-            self.oauth_session = OAuth2Session(self.client_id, redirect_uri=self.redirect_uri, state=self.state)
+            self.oauth_session = OAuth2Session(
+                self.client_id, redirect_uri=self.redirect_uri, state=self.state
+            )
         else:
-            self.oauth_session = OAuth2Session(self.client_id, redirect_uri=self.redirect_uri)
+            self.oauth_session = OAuth2Session(
+                self.client_id, redirect_uri=self.redirect_uri
+            )
 
     def save(self):
         self.state = session.get("state") or self.state
@@ -112,7 +116,9 @@ class MyAuthClient(object):
         return self.oauth_session.authorization_url(self.authorization_base_url)
 
     def fetch_token(self, **kwargs):
-        return self.oauth_session.fetch_token(self.token_url, client_secret=self.client_secret, **kwargs)
+        return self.oauth_session.fetch_token(
+            self.token_url, client_secret=self.client_secret, **kwargs
+        )
 
     def update_token(self, token):
         self.token = token
@@ -127,8 +133,9 @@ class MyAuthClient(object):
             self.token = token
             self.save()
 
+
 def get_auth_client(state=None, **kwargs):
-    if 'auth_client' not in g:
+    if "auth_client" not in g:
         auth_kwargs = {
             "authorization_base_url": kwargs["TIMELY_AUTHORIZATION_BASE_URL"],
             "token_url": kwargs["TIMELY_TOKEN_URL"],
@@ -178,10 +185,10 @@ def extract_fields(record, fields):
     item = DotDict(record)
 
     for field in fields:
-        if '[' in field:
-            split_field = field.split('[')
+        if "[" in field:
+            split_field = field.split("[")
             real_field = split_field[0]
-            pos = int(split_field[1].split(']')[0])
+            pos = int(split_field[1].split("]")[0])
 
             try:
                 value = item[real_field][pos]
@@ -195,7 +202,7 @@ def extract_fields(record, fields):
 
 def process_events(events, fields):
     for event in events:
-        if not (event['billed'] or event['deleted']):
+        if not (event["billed"] or event["deleted"]):
             yield dict(extract_fields(event, fields))
 
 
@@ -211,6 +218,7 @@ def get_realtime_response(url, client, params=None, **kwargs):
             response["status_code"] = result.status_code
 
     if response.get("status_code", 200) != 200:
+
         @after_this_request
         def clear_cache(response):
             response = uncache_header(response)
@@ -256,9 +264,9 @@ def callback():
 
         timely.token = token
         timely.save()
-        return redirect(url_for('.accounts'))
+        return redirect(url_for(".accounts"))
     else:
-        return redirect(url_for('.auth'))
+        return redirect(url_for(".auth"))
 
 
 @blueprint.route(f"{PREFIX}/accounts")
@@ -304,7 +312,14 @@ def events():
     response = get_realtime_response(api_url, timely, params=params, **app.config)
 
     if response.get("status_code", 200) == 200:
-        fields = ['id', 'day', 'duration.total_minutes', 'label_ids[0]', 'project.id', 'user.id']
+        fields = [
+            "id",
+            "day",
+            "duration.total_minutes",
+            "label_ids[0]",
+            "project.id",
+            "user.id",
+        ]
         processed_events = list(process_events(response["result"], fields))
         response["result"] = processed_events
 
@@ -338,7 +353,7 @@ class Auth(MethodView):
 
         # https://gist.github.com/ib-lundgren/6507798#gistcomment-1006218
         # State is used to prevent CSRF, keep this for later.
-        timely.state = session['state'] = state
+        timely.state = session["state"] = state
         timely.save()
 
         # Step 2: User authorization, this happens on the provider.

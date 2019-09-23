@@ -134,8 +134,12 @@ class Production(Config):
 class Heroku(Production):
     HEROKU = True
     DOMAIN = "herokuapp.com"
-    TIMELY_REDIRECT_URI = f"https://{__SUB_DOMAIN__}.{DOMAIN}{Config.API_URL_PREFIX}/timely_callback"
-    XERO_REDIRECT_URI = f"https://{__SUB_DOMAIN__}.{DOMAIN}{Config.API_URL_PREFIX}/xero_callback"
+    TIMELY_REDIRECT_URI = (
+        f"https://{__SUB_DOMAIN__}.{DOMAIN}{Config.API_URL_PREFIX}/timely_callback"
+    )
+    XERO_REDIRECT_URI = (
+        f"https://{__SUB_DOMAIN__}.{DOMAIN}{Config.API_URL_PREFIX}/xero_callback"
+    )
 
     if __PROD_SERVER__:
         SERVER_NAME = f"{__SUB_DOMAIN__}.{DOMAIN}"
@@ -144,8 +148,12 @@ class Heroku(Production):
 
 class Custom(Production):
     DOMAIN = "nerevu.com"
-    TIMELY_REDIRECT_URI = f"https://{__SUB_DOMAIN__}.{DOMAIN}{Config.API_URL_PREFIX}/timely_callback"
-    XERO_REDIRECT_URI = f"https://{__SUB_DOMAIN__}.{DOMAIN}{Config.API_URL_PREFIX}/xero_callback"
+    TIMELY_REDIRECT_URI = (
+        f"https://{__SUB_DOMAIN__}.{DOMAIN}{Config.API_URL_PREFIX}/timely_callback"
+    )
+    XERO_REDIRECT_URI = (
+        f"https://{__SUB_DOMAIN__}.{DOMAIN}{Config.API_URL_PREFIX}/xero_callback"
+    )
 
     if __PROD_SERVER__:
         TALISMAN_SUBDOMAINS = True
