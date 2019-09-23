@@ -78,15 +78,17 @@ class Config(object):
     EMPTY_TIMEOUT = ROUTE_TIMEOUT * 10
     API_URL_PREFIX = "/v1"
     SECRET_KEY = getenv("ALEGNA_SECRET_KEY", urandom(24))
+    AUTHORIZATION_BASE = "authorize"
+    TOKEN_BASE = "token"
+
     # https://app.timelyapp.com/777870/oauth_applications
     TIMELY_ACCOUNT_ID = "777870"
     TIMELY_CLIENT_ID = getenv("TIMELY_CLIENT_ID")
     TIMELY_SECRET = getenv("TIMELY_SECRET")
     TIMELY_API_BASE_URL = "https://api.timelyapp.com/1.1"
-    TIMELY_AUTHORIZATION_BASE = "oauth/authorize"
-    TIMELY_TOKEN_BASE = "oauth/token"
-    TIMELY_AUTHORIZATION_BASE_URL = f"{TIMELY_API_BASE_URL}/{TIMELY_AUTHORIZATION_BASE}"
-    TIMELY_TOKEN_URL = f"{TIMELY_API_BASE_URL}/{TIMELY_TOKEN_BASE}"
+    TIMELY_OAUTH_BASE_URL = f"{TIMELY_API_BASE_URL}/oauth"
+    TIMELY_AUTHORIZATION_BASE_URL = f"{TIMELY_OAUTH_BASE_URL}/{AUTHORIZATION_BASE}"
+    TIMELY_TOKEN_URL = f"{TIMELY_OAUTH_BASE_URL}/{TOKEN_BASE}"
     TIMELY_REFRESH_URL = TIMELY_TOKEN_URL
 
     # https://developer.xero.com/myapps/
@@ -94,13 +96,16 @@ class Config(object):
     XERO_SECRET = getenv("XERO_SECRET")
     XERO_CONSUMER_KEY = getenv("XERO_CONSUMER_KEY")
     XERO_CONSUMER_SECRET = getenv("XERO_CONSUMER_SECRET")
-    XERO_API_BASE_URL = "https://api.timelyapp.com/1.1"
-    XERO_AUTHORIZATION_BASE = "oauth/authorize"
-    XERO_TOKEN_BASE = "oauth/token"
+    XERO_API_BASE_URL = "https://api.xero.com"
+    XERO_OAUTH_BASE_URL = "https://login.xero.com/identity/connect"
+    XERO_SCOPES = ["projects", "offline_access"]
+    XERO_AUTHORIZATION_BASE_URL = f"{XERO_OAUTH_BASE_URL}/{AUTHORIZATION_BASE}"
+    XERO_TOKEN_URL = f"{XERO_OAUTH_BASE_URL}/{TOKEN_BASE}"
+    XERO_REFRESH_URL = XERO_TOKEN_URL
 
     # Change based on mode
     TIMELY_REDIRECT_URI = "urn:ietf:wg:oauth:2.0:oob"
-    XERO_REDIRECT_URI = f"http://localhost:5000{API_URL_PREFIX}/xero_callback"
+    XERO_REDIRECT_URI = f"http://localhost:5000{API_URL_PREFIX}/xero-callback"
     CACHE_DEFAULT_TIMEOUT = get_seconds(hours=24)
     CHUNK_SIZE = 256
     ROW_LIMIT = 32
@@ -135,10 +140,10 @@ class Heroku(Production):
     HEROKU = True
     DOMAIN = "herokuapp.com"
     TIMELY_REDIRECT_URI = (
-        f"https://{__SUB_DOMAIN__}.{DOMAIN}{Config.API_URL_PREFIX}/timely_callback"
+        f"https://{__SUB_DOMAIN__}.{DOMAIN}{Config.API_URL_PREFIX}/timely-callback"
     )
     XERO_REDIRECT_URI = (
-        f"https://{__SUB_DOMAIN__}.{DOMAIN}{Config.API_URL_PREFIX}/xero_callback"
+        f"https://{__SUB_DOMAIN__}.{DOMAIN}{Config.API_URL_PREFIX}/xero-callback"
     )
 
     if __PROD_SERVER__:
@@ -149,10 +154,10 @@ class Heroku(Production):
 class Custom(Production):
     DOMAIN = "nerevu.com"
     TIMELY_REDIRECT_URI = (
-        f"https://{__SUB_DOMAIN__}.{DOMAIN}{Config.API_URL_PREFIX}/timely_callback"
+        f"https://{__SUB_DOMAIN__}.{DOMAIN}{Config.API_URL_PREFIX}/timely-callback"
     )
     XERO_REDIRECT_URI = (
-        f"https://{__SUB_DOMAIN__}.{DOMAIN}{Config.API_URL_PREFIX}/xero_callback"
+        f"https://{__SUB_DOMAIN__}.{DOMAIN}{Config.API_URL_PREFIX}/xero-callback"
     )
 
     if __PROD_SERVER__:
@@ -172,8 +177,6 @@ class Development(Config):
     ROW_LIMIT = 16
     SQLALCHEMY_TRACK_MODIFICATIONS = True
     OAUTHLIB_INSECURE_TRANSPORT = True
-    XERO_REDIRECT_URI = f"http://localhost:5000{Config.API_URL_PREFIX}/xero_callback"
-    TIMELY_REDIRECT_URI = "urn:ietf:wg:oauth:2.0:oob"
 
 
 class Test(Config):
@@ -185,5 +188,3 @@ class Test(Config):
     CHUNK_SIZE = 64
     ROW_LIMIT = 8
     OAUTHLIB_INSECURE_TRANSPORT = True
-    XERO_REDIRECT_URI = f"http://localhost:5000{Config.API_URL_PREFIX}/xero_callback"
-    TIMELY_REDIRECT_URI = "urn:ietf:wg:oauth:2.0:oob"
