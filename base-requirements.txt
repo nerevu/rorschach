@@ -1,0 +1,15 @@
+Faker==1.0.7
+Flask==1.0.3
+Flask-Caching==1.6.0
+Flask-Compress==1.0.2
+Flask-Cors==3.0.2
+Flask-Script==2.0.5
+flask-talisman==0.7.0
+manage.py==0.2.10
+pylibmc==1.5.2
+meza>=0.41.1,<0.42.0
+Mezmorize>=0.25.0
+riko>=0.60.4,<0.61.0
+pygogo<0.13.0,>=0.12.0
+pkutils>=0.13.6,<0.20.0
+requests-oauthlib==1.2.0
