@@ -7,6 +7,7 @@ from os import path as p
 from subprocess import call, check_call, CalledProcessError
 from urllib.parse import urlsplit, urlencode, parse_qs
 from datetime import datetime as dt, timedelta
+from itertools import count
 
 import pygogo as gogo
 
@@ -14,7 +15,7 @@ from flask import current_app as app, url_for
 from flask_script import Server, Manager
 from requests.exceptions import ConnectionError
 
-from app import create_app, cache
+from app import create_app, cache, services
 
 BASEDIR = p.dirname(__file__)
 DEF_PORT = 5000
@@ -80,6 +81,45 @@ def serve(**kwargs):
     # Alias for `runserver`
     """Runs the flask development server"""
     runserver(**kwargs)
+
+
+@manager.option("-p", "--project-id", help="The Timely Project ID", default=2389295)
+@manager.option(
+    "-s",
+    "--start-position",
+    help="The start Timely event position",
+    type=int,
+    default=0,
+)
+@manager.option("-e", "--end-position", help="The end Timely event position", type=int)
+@manager.option("-d", "--dry-run", help="Perform a dry run", action="store_true")
+def sync(**kwargs):
+    """Sync Timely events with Xero time entries"""
+    added_events = []
+    skipped_events = []
+
+    if kwargs["end_position"]:
+        _range = range(kwargs["start_position"], kwargs["end_position"])
+    else:
+        _range = count(kwargs["start_position"])
+
+    for pos in _range:
+        result = services.add_xero_time(**kwargs, position=pos)
+
+        if result["ok"]:
+            added_events.append(result["event_id"])
+        elif result["eof"]:
+            break
+        else:
+            skipped_events.append(result["event_id"])
+
+        if result["message"]:
+            logger.info(result["message"])
+
+    num_added_events = len(added_events)
+    num_skipped_events = len(skipped_events)
+    num_total_events = num_added_events + num_skipped_events
+    logger.info(f"Added {num_added_events} of {num_total_events} events")
 
 
 @manager.command
