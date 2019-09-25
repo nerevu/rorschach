@@ -1,0 +1,18 @@
+#!/usr/bin/env bash -uo pipefail
+
+curl 'http://localhost:5000/v1/timely-time?process=true&id=2389295' | jq '.result' > app/data/timely_2389295_events.json
+curl 'http://localhost:5000/v1/timely-time?process=true&id=2906218' | jq '.result' > app/data/timely_2906218_events.json
+curl 'http://localhost:5000/v1/timely-time?process=true&id=2906240' | jq '.result' > app/data/timely_2906240_events.json
+curl 'http://localhost:5000/v1/timely-time?process=true&id=2906239' | jq '.result' > app/data/timely_2906239_events.json
+curl 'http://localhost:5000/v1/timely-time?process=true&id=2906311' | jq '.result' > app/data/timely_2906311_events.json
+curl 'http://localhost:5000/v1/timely-time?process=true&id=2906312' | jq '.result' > app/data/timely_2906312_events.json
+curl 'http://localhost:5000/v1/timely-time?process=true&id=2906308' | jq '.result' > app/data/timely_2906308_events.json
+curl 'http://localhost:5000/v1/timely-time?process=true&id=2954247' | jq '.result' > app/data/timely_2954247_events.json
+curl 'http://localhost:5000/v1/timely-time?process=true&id=2954285' | jq '.result' > app/data/timely_2954285_events.json
+curl 'http://localhost:5000/v1/timely-time?process=true&id=2960359' | jq '.result' > app/data/timely_2960359_events.json
+curl 'http://localhost:5000/v1/timely-time?process=true&id=2973418' | jq '.result' > app/data/timely_2973418_events.json
+curl 'http://localhost:5000/v1/timely-time?process=true&id=2973485' | jq '.result' > app/data/timely_2973485_events.json
+curl 'http://localhost:5000/v1/timely-time?process=true&id=2973420' | jq '.result' > app/data/timely_2973420_events.json
+curl 'http://localhost:5000/v1/timely-time?process=true&id=2973417' | jq '.result' > app/data/timely_2973417_events.json
+curl 'http://localhost:5000/v1/timely-time?process=true&id=2973544' | jq '.result' > app/data/timely_2973544_events.json
+curl 'http://localhost:5000/v1/timely-time?process=true&id=2980115' | jq '.result' > app/data/timely_2980115_events.json

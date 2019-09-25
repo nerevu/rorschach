@@ -1,0 +1,32 @@
+[
+  {
+    "billed": false,
+    "day": "2019-09-04",
+    "duration.total_minutes": 202,
+    "id": 165757846,
+    "label_ids[0]": 1344431,
+    "note": "openpeoria/data-portal Wiki • openpeoria/data-portal: CKAN data portal • heroku run command env vars at DuckDuckGo • Data Portal • openpeoria • Open Peoria Discussion • Terminal • Stack Overflow • Heroku Dev Center • Sublime Text • Heroku • Open Peoria",
+    "project.id": 2906311,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2019-08-27",
+    "duration.total_minutes": 7,
+    "id": 165799129,
+    "label_ids[0]": 1344447,
+    "note": "Fastmail",
+    "project.id": 2906311,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2019-09-16",
+    "duration.total_minutes": 120,
+    "id": 165997697,
+    "label_ids[0]": null,
+    "note": "OmniFocus • openpeoria/data-portal Wiki • Terminal • Heroku • Stack Overflow • Sublime Text • Heroku Dev Center • Heroku Data • GitX",
+    "project.id": 2906311,
+    "user.id": 933370
+  }
+]

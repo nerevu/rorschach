@@ -1,0 +1,222 @@
+[
+  {
+    "billed": false,
+    "day": "2019-08-27",
+    "duration.total_minutes": 220,
+    "id": 165594996,
+    "label_ids[0]": 1344464,
+    "note": "Understanding Mithril and working on alegna-dashboard",
+    "project.id": 2954285,
+    "user.id": 1281455
+  },
+  {
+    "billed": false,
+    "day": "2019-08-30",
+    "duration.total_minutes": 5,
+    "id": 165746930,
+    "label_ids[0]": 1340560,
+    "note": "nerevu/commissioner-api",
+    "project.id": 2954285,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2019-08-29",
+    "duration.total_minutes": 9,
+    "id": 165747223,
+    "label_ids[0]": 1340560,
+    "note": "nerevu/commissioner-api",
+    "project.id": 2954285,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2019-08-27",
+    "duration.total_minutes": 53,
+    "id": 165757427,
+    "label_ids[0]": 1340560,
+    "note": "Sublime Text • GitX",
+    "project.id": 2954285,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2019-08-28",
+    "duration.total_minutes": 180,
+    "id": 165757514,
+    "label_ids[0]": 1340560,
+    "note": "nerevu/alegna-dashboard • Sublime Text • nerevu/commissioner-api • Alegna Commission Dashboard • Heroku • iTerm2 • GitX • Cloze",
+    "project.id": 2954285,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2019-09-07",
+    "duration.total_minutes": 45,
+    "id": 165780795,
+    "label_ids[0]": 1344464,
+    "note": "Learn more about the Cloze API with the explorer",
+    "project.id": 2954285,
+    "user.id": 1281455
+  },
+  {
+    "billed": false,
+    "day": "2019-09-06",
+    "duration.total_minutes": 105,
+    "id": 165828652,
+    "label_ids[0]": 1340560,
+    "note": "nerevu/commissioner-api • Sublime Text",
+    "project.id": 2954285,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2019-09-13",
+    "duration.total_minutes": 30,
+    "id": 165906476,
+    "label_ids[0]": 1344431,
+    "note": "Adding Weighted Avg Sales to frontend",
+    "project.id": 2954285,
+    "user.id": 1281455
+  },
+  {
+    "billed": false,
+    "day": "2019-09-13",
+    "duration.total_minutes": 35,
+    "id": 165908368,
+    "label_ids[0]": 1344449,
+    "note": "Understanding how to do requests and have the code rerender",
+    "project.id": 2954285,
+    "user.id": 1281455
+  },
+  {
+    "billed": false,
+    "day": "2019-09-13",
+    "duration.total_minutes": 347,
+    "id": 165910985,
+    "label_ids[0]": 1344431,
+    "note": "Coding Weighted sales frontend",
+    "project.id": 2954285,
+    "user.id": 1281455
+  },
+  {
+    "billed": false,
+    "day": "2019-09-13",
+    "duration.total_minutes": 35,
+    "id": 165915848,
+    "label_ids[0]": 1344431,
+    "note": "Calculate Commission Score on Backend",
+    "project.id": 2954285,
+    "user.id": 1281455
+  },
+  {
+    "billed": false,
+    "day": "2019-09-12",
+    "duration.total_minutes": 60,
+    "id": 165940367,
+    "label_ids[0]": 1339639,
+    "note": "Databox • Project Details • Commission Dashboard",
+    "project.id": 2954285,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2019-09-17",
+    "duration.total_minutes": 330,
+    "id": 166001489,
+    "label_ids[0]": 1344431,
+    "note": "Getting Weighted Avg Sales Showing Correctly",
+    "project.id": 2954285,
+    "user.id": 1281455
+  },
+  {
+    "billed": false,
+    "day": "2019-09-17",
+    "duration.total_minutes": 105,
+    "id": 166010827,
+    "label_ids[0]": 1344431,
+    "note": "Change the way weighted avg sale data is returned by the API (send it all together with the other data)",
+    "project.id": 2954285,
+    "user.id": 1281455
+  },
+  {
+    "billed": false,
+    "day": "2019-09-17",
+    "duration.total_minutes": 75,
+    "id": 166031899,
+    "label_ids[0]": 1339639,
+    "note": "1-on-1",
+    "project.id": 2954285,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2019-09-19",
+    "duration.total_minutes": 60,
+    "id": 166091591,
+    "label_ids[0]": 1344431,
+    "note": "Get the frontend working with weighted avg sales and upsells",
+    "project.id": 2954285,
+    "user.id": 1281455
+  },
+  {
+    "billed": false,
+    "day": "2019-09-20",
+    "duration.total_minutes": 240,
+    "id": 166093558,
+    "label_ids[0]": 1344431,
+    "note": "Return more data from backend",
+    "project.id": 2954285,
+    "user.id": 1281455
+  },
+  {
+    "billed": false,
+    "day": "2019-09-20",
+    "duration.total_minutes": 190,
+    "id": 166099883,
+    "label_ids[0]": 1344431,
+    "note": "Get frontend to display everything properly",
+    "project.id": 2954285,
+    "user.id": 1281455
+  },
+  {
+    "billed": false,
+    "day": "2019-09-20",
+    "duration.total_minutes": 71,
+    "id": 166101054,
+    "label_ids[0]": 1340560,
+    "note": "",
+    "project.id": 2954285,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2019-09-24",
+    "duration.total_minutes": 60,
+    "id": 166170167,
+    "label_ids[0]": 1344431,
+    "note": "Integrating Front and Backend for Weighted Avg Sales",
+    "project.id": 2954285,
+    "user.id": 1281455
+  },
+  {
+    "billed": false,
+    "day": "2019-09-24",
+    "duration.total_minutes": 20,
+    "id": 166176019,
+    "label_ids[0]": 1344449,
+    "note": "Understanding Cloze API",
+    "project.id": 2954285,
+    "user.id": 1281455
+  },
+  {
+    "billed": false,
+    "day": "2019-09-24",
+    "duration.total_minutes": 140,
+    "id": 166176028,
+    "label_ids[0]": 1344431,
+    "note": "Commissioner Score in Backend",
+    "project.id": 2954285,
+    "user.id": 1281455
+  }
+]

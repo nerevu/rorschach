@@ -1,0 +1,37 @@
+[
+  {
+    "name": "DinerDiver",
+    "projectId": "803591c3-72af-4475-888f-7c4c50044589",
+    "status": "INPROGRESS"
+  },
+  {
+    "name": "IPA/AEA Site",
+    "projectId": "132489d0-9094-4da6-a739-ced4d0a1f0c9",
+    "status": "CLOSED"
+  },
+  {
+    "name": "Commission Dashboard",
+    "projectId": "b1d797e3-e54b-4686-b83f-d8ea5a35f1c2",
+    "status": "INPROGRESS"
+  },
+  {
+    "name": "Data Hub",
+    "projectId": "15ff819d-6d69-406c-98c5-ed9ab9163779",
+    "status": "INPROGRESS"
+  },
+  {
+    "name": "Open Peoria",
+    "projectId": "615c8090-938d-4ee7-8f4e-6ae945920507",
+    "status": "INPROGRESS"
+  },
+  {
+    "name": "NomCom",
+    "projectId": "3fe4d0ef-b45f-4812-8ca8-9c64f6bd679c",
+    "status": "INPROGRESS"
+  },
+  {
+    "name": "BOD",
+    "projectId": "23be1505-900b-4504-b1fe-cf1b1c7e1d12",
+    "status": "INPROGRESS"
+  }
+]

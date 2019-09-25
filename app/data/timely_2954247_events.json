@@ -1,0 +1,62 @@
+[
+  {
+    "billed": false,
+    "day": "2019-08-26",
+    "duration.total_minutes": 30,
+    "id": 165586255,
+    "label_ids[0]": 1344464,
+    "note": "Cloze",
+    "project.id": 2954247,
+    "user.id": 1281455
+  },
+  {
+    "billed": false,
+    "day": "2019-08-26",
+    "duration.total_minutes": 150,
+    "id": 165586461,
+    "label_ids[0]": 1344464,
+    "note": "Converting my system to Linux for easier development",
+    "project.id": 2954247,
+    "user.id": 1281455
+  },
+  {
+    "billed": false,
+    "day": "2019-08-27",
+    "duration.total_minutes": 65,
+    "id": 165587402,
+    "label_ids[0]": 1344464,
+    "note": "Setup Necessary Programs on Linux",
+    "project.id": 2954247,
+    "user.id": 1281455
+  },
+  {
+    "billed": false,
+    "day": "2019-09-04",
+    "duration.total_minutes": 10,
+    "id": 165757876,
+    "label_ids[0]": 1344464,
+    "note": "Timely • Google Hangouts",
+    "project.id": 2954247,
+    "user.id": 1281876
+  },
+  {
+    "billed": false,
+    "day": "2019-09-05",
+    "duration.total_minutes": 181,
+    "id": 165757893,
+    "label_ids[0]": 1344464,
+    "note": "Worked on disk image encryption and editing of Wiki.",
+    "project.id": 2954247,
+    "user.id": 1281876
+  },
+  {
+    "billed": false,
+    "day": "2019-09-05",
+    "duration.total_minutes": 50,
+    "id": 165757900,
+    "label_ids[0]": 1339639,
+    "note": "Read the Internship Agreement and signed it.",
+    "project.id": 2954247,
+    "user.id": 1281876
+  }
+]
