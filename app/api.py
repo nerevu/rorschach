@@ -90,8 +90,11 @@ class MyAuthClient(object):
                 self.error = str(e)
                 logger.error(f"Error authenticating: {str(e)}")
             else:
-                # this path is reached even for expired xero tokens
-                logger.info("Successfully authenticated!")
+                if self.oauth_session.authorized:
+                    logger.info("Successfully authenticated!")
+                else:
+                    logger.info("Not authorized. Attempting to renew...")
+                    self.renew_token()
         elif self.state:
             self.oauth_session = OAuth2Session(
                 self.client_id,
@@ -151,16 +154,24 @@ class MyAuthClient(object):
         self.token = token
 
     def renew_token(self):
-        try:
-            logger.info("Renewing token...")
-            token = self.oauth_session.refresh_token(self.refresh_url, **self.extra)
-        except Exception as e:
-            logger.error(f"Client authentication error: {str(e)}")
-            self.error = str(e)
+        if self.refresh_token:
+            try:
+                logger.info(f"Renewing token using {self.refresh_url}...")
+                token = self.oauth_session.refresh_token(self.refresh_url, self.refresh_token)
+            except Exception as e:
+                logger.error(f"Failed to renew token: {str(e)}")
+                self.error = str(e)
+            else:
+                if self.oauth_session.authorized:
+                    logger.info("Successfully renewed token!")
+                    self.token = token
+                    self.save()
+                else:
+                    logger.error("Failed to renew token!")
         else:
-            logger.info("Successfully renewed token!")
-            self.token = token
-            self.save()
+            error = "No refresh token present. Please re-authenticate!"
+            logger.error(error)
+            self.error = error
 
 
 def get_auth_client(prefix, state=None, **kwargs):
@@ -267,8 +278,9 @@ def add_day(item):
 
 def get_realtime_response(url, client, params=None, **kwargs):
     if client.error:
-        logger.error(client.error)
         response = {"status_code": 500, "message": client.error}
+    elif not client.oauth_session.authorized:
+        response = {"message": "Client not authorized.", "status_code": 401}
     else:
         params = params or {}
         data = kwargs.get("data", {})
@@ -280,7 +292,7 @@ def get_realtime_response(url, client, params=None, **kwargs):
         try:
             json = result.json()
         except JSONDecodeError:
-            response = {"message": result.text, "status_code": result.status_code}
+            response = {"message": "Got HTML response.", "status_code": 500, "text": result.text}
         else:
             response = {"result": json}
 
@@ -390,7 +402,6 @@ def xero_status():
 
         logger.info(message)
     else:
-        logger.info(response["status_code"])
         message = "Failed to set Xero tenantId!"
         logger.error(message)
 

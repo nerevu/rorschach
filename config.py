@@ -78,17 +78,14 @@ class Config(object):
     EMPTY_TIMEOUT = ROUTE_TIMEOUT * 10
     API_URL_PREFIX = "/v1"
     SECRET_KEY = getenv("ALEGNA_SECRET_KEY", urandom(24))
-    AUTHORIZATION_BASE = "authorize"
-    TOKEN_BASE = "token"
 
     # https://app.timelyapp.com/777870/oauth_applications
     TIMELY_ACCOUNT_ID = "777870"
     TIMELY_CLIENT_ID = getenv("TIMELY_CLIENT_ID")
     TIMELY_SECRET = getenv("TIMELY_SECRET")
     TIMELY_API_BASE_URL = "https://api.timelyapp.com/1.1"
-    TIMELY_OAUTH_BASE_URL = f"{TIMELY_API_BASE_URL}/oauth"
-    TIMELY_AUTHORIZATION_BASE_URL = f"{TIMELY_OAUTH_BASE_URL}/{AUTHORIZATION_BASE}"
-    TIMELY_TOKEN_URL = f"{TIMELY_OAUTH_BASE_URL}/{TOKEN_BASE}"
+    TIMELY_AUTHORIZATION_BASE_URL = f"{TIMELY_API_BASE_URL}/oauth/authorize"
+    TIMELY_TOKEN_URL = f"{TIMELY_API_BASE_URL}/oauth/token"
     TIMELY_REFRESH_URL = TIMELY_TOKEN_URL
 
     # https://developer.xero.com/myapps/
@@ -96,11 +93,10 @@ class Config(object):
     XERO_SECRET = getenv("XERO_SECRET")
     XERO_CONSUMER_KEY = getenv("XERO_CONSUMER_KEY")
     XERO_CONSUMER_SECRET = getenv("XERO_CONSUMER_SECRET")
-    XERO_API_BASE_URL = "https://api.xero.com"
-    XERO_OAUTH_BASE_URL = "https://login.xero.com/identity/connect"
     XERO_SCOPES = ["projects", "offline_access"]
-    XERO_AUTHORIZATION_BASE_URL = f"{XERO_OAUTH_BASE_URL}/{AUTHORIZATION_BASE}"
-    XERO_TOKEN_URL = f"{XERO_OAUTH_BASE_URL}/{TOKEN_BASE}"
+    XERO_API_BASE_URL = "https://api.xero.com"
+    XERO_AUTHORIZATION_BASE_URL = "https://login.xero.com/identity/connect/authorize"
+    XERO_TOKEN_URL = "https://identity.xero.com/connect/token"
     XERO_REFRESH_URL = XERO_TOKEN_URL
 
     # Change based on mode
