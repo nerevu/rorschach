@@ -778,7 +778,7 @@ class Time(ProjectBase):
                 data = {}
 
                 if not error_msg:
-                    error_msg = f"Timely project ID {timely_project_id} and label ID {label_id} not found in Xero mapping!"
+                    error_msg = f"Timely -> Xero 'project:label' mapping missing! \n\t{timely_project_id}:{label_id} -> {project_id}:"
                     logger.error(error_msg)
 
             if data:

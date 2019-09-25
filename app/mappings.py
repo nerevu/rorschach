@@ -80,6 +80,13 @@ tasks = [
             "project": "803591c3-72af-4475-888f-7c4c50044589",
         },
     },
+    {
+        "timely": {"task": 1344449, "project": 2389295},
+        "xero": {
+            "task": "803591c3-72af-4475-888f-7c4c50044589",
+            "project": "803591c3-72af-4475-888f-7c4c50044589",
+        },
+    },
 ]
 
 
@@ -103,16 +110,16 @@ def gen_proj_tasks(project_mapping, *args):
             yield (key, proj_tasks)
 
 
-settings = [("projects", projects, reg_mapper), ("users", users, reg_mapper)]
+settings = [("projects", projects), ("users", users)]
 
 timely_to_xero = {
-    map_name: dict(mapper(mapping, "timely", "xero"))
-    for map_name, mapping, mapper in settings
+    map_name: dict(reg_mapper(mapping, "timely", "xero"))
+    for map_name, mapping in settings
 }
 
 xero_to_timely = {
-    map_name: dict(mapper(mapping, "xero", "timely"))
-    for map_name, mapping, mapper in settings
+    map_name: dict(reg_mapper(mapping, "xero", "timely"))
+    for map_name, mapping in settings
 }
 
 timely_to_xero["tasks"] = dict(
