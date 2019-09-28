@@ -194,7 +194,6 @@ class MyAuth1Client(object):
         self.oauth1 = True
 
         self.verified = False
-        self._oauth = False
         self.oauth_token = None
         self.oauth_token_secret = None
         self.oauth_expires_at = None
@@ -208,33 +207,22 @@ class MyAuth1Client(object):
         [setattr(self, attr, TOKEN_CACHE[attr]) for attr in attrs if TOKEN_CACHE.get(attr)]
 
     def _init_credentials(self):
-        if self.oauth_token and self.oauth_token_secret:
-            if self.verified:
-                self._init_oauth()
-        else:
-            oauth = OAuth1(
-                self.client_id,
-                client_secret=self.client_secret,
-                callback_uri=self.redirect_uri,
-            )
+        if not(self.oauth_token and self.oauth_token_secret):
+            oauth_kwargs = {"client_secret": self.client_secret, "callback_uri": self.redirect_uri}
+            oauth = OAuth1(self.client_id, **oauth_kwargs)
+            r = requests.post(url=self.request_url, auth=oauth)
+            self._process_oauth_response(r)
 
-            response = requests.post(url=self.request_url, auth=oauth)
-            self._process_oauth_response(response)
-
-    def _init_oauth(self):
-        self._oauth = OAuth1(
-            self.client_id,
-            client_secret=self.client_secret,
-            resource_owner_key=self.oauth_token,
-            resource_owner_secret=self.oauth_token_secret,
-        )
+    @property
+    def oauth(self):
+        oauth_kwargs = {**self.resource_kwargs, "client_secret": self.client_secret}
+        return OAuth1(self.client_id, **oauth_kwargs)
 
     def _process_oauth_response(self, response):
-        if response.status_code == 200:
+        if response.ok:
             credentials = {k: v[0] for k, v in parse_qs(response.text).items()}
             self.oauth_token = credentials['oauth_token']
             self.oauth_token_secret = credentials['oauth_token_secret']
-            self._init_oauth()
 
             oauth_expires_in = credentials.get('oauth_expires_in', OAUTH_EXPIRY_SECONDS)
             oauth_authorisation_expires_in = credentials.get('oauth_authorization_expires_in', OAUTH_EXPIRY_SECONDS)
