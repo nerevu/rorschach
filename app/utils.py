@@ -47,7 +47,7 @@ get_hash = lambda text: md5(str(text).encode(ENCODING)).hexdigest()
 
 class CustomEncoder(ft.CustomEncoder):
     def default(self, obj):
-        if 'days' in set(dir(obj)):
+        if "days" in set(dir(obj)):
             encoded = str(obj)
         else:
             encoded = super().default(obj)
