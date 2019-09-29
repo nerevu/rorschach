@@ -52,28 +52,38 @@ BILLABLE_LABEL_ID = 1344430
 NONBILLABLE_LABEL_ID = 1339635
 OAUTH_EXPIRY_SECONDS = 3600
 EXPIRATION_BUFFER = 30
-TOKEN_CACHE = {}
 
 
-class MyAuthClient(object):
+class AuthClient(object):
     def __init__(self, prefix, client_id, client_secret, **kwargs):
         self.prefix = prefix
         self.client_id = client_id
         self.client_secret = client_secret
+        self.oauth1 = kwargs["oauth_version"] == 1
+        self.oauth2 = kwargs["oauth_version"] == 2
         self.authorization_base_url = kwargs["authorization_base_url"]
-        self.token_url = kwargs["token_url"]
-        self.refresh_url = kwargs["refresh_url"]
         self.redirect_uri = kwargs["redirect_uri"]
         self.api_base_url = kwargs["api_base_url"]
         self.account_id = kwargs["account_id"]
+        self.state = kwargs.get("state")
+        self.created_at = None
+        self.error = ""
+
+    @property
+    def expired(self):
+        return self.expires_at <= dt.now() + timedelta(seconds=EXPIRATION_BUFFER)
+
+
+class MyAuth2Client(AuthClient):
+    def __init__(self, prefix, client_id, client_secret, **kwargs):
+        super().__init__(prefix, client_id, client_secret, **kwargs)
+        self.token_url = kwargs["token_url"]
+        self.refresh_url = kwargs["refresh_url"]
         self.scope = kwargs.get("scope", "")
         self.tenant_id = kwargs.get("tenant_id", "")
         self.extra = {"client_id": self.client_id, "client_secret": self.client_secret}
-        self.error = ""
-
-        if kwargs.get("state"):
-            self.state = kwargs["state"]
-
+        self.expires_at = dt.now()
+        self.expires_in = 0
         self.restore()
 
         if self.state and self.access_token:
@@ -119,6 +129,7 @@ class MyAuthClient(object):
         cache.set(f"{self.prefix}_state", self.state)
         cache.set(f"{self.prefix}_access_token", self.access_token)
         cache.set(f"{self.prefix}_refresh_token", self.refresh_token)
+        cache.set(f"{self.prefix}_created_at", self.created_at)
         cache.set(f"{self.prefix}_expires_in", self.expires_in, SET_TIMEOUT)
         cache.set(f"{self.prefix}_tenant_id", self.tenant_id)
 
@@ -128,6 +139,7 @@ class MyAuthClient(object):
         )
         self.access_token = cache.get(f"{self.prefix}_access_token")
         self.refresh_token = cache.get(f"{self.prefix}_refresh_token")
+        self.created_at = cache.get(f"{self.prefix}_created_at")
         self.expires_in = cache.get(f"{self.prefix}_expires_in") or SET_TIMEOUT
         self.tenant_id = cache.get(f"{self.prefix}_tenant_id")
 
@@ -146,7 +158,7 @@ class MyAuthClient(object):
         self.refresh_token = value["refresh_token"]
         self.token_type = value["token_type"]
         self.expires_in = value.get("expires_in", SET_TIMEOUT)
-        self.created_at = value.get("created_at")
+        self.created_at = value.get("created_at", dt.now())
         self.save()
 
     def get_authorization_url(self):
@@ -181,18 +193,11 @@ class MyAuthClient(object):
             self.error = error
 
 
-class MyAuth1Client(object):
+class MyAuth1Client(AuthClient):
     def __init__(self, prefix, client_id, client_secret, **kwargs):
+        super().__init__(prefix, client_id, client_secret, **kwargs)
         self.request_url = kwargs["request_url"]
-        self.authorization_base_url = kwargs["authorization_base_url"]
         self.token_url = kwargs["token_url"]
-        self.client_id = client_id
-        self.client_secret = client_secret
-        self.api_base_url = kwargs["api_base_url"]
-        self.redirect_uri = kwargs["redirect_uri"]
-        self.error = ""
-        self.oauth1 = True
-
         self.verified = False
         self.oauth_token = None
         self.oauth_token_secret = None
@@ -203,44 +208,60 @@ class MyAuth1Client(object):
         self.save()
 
     def restore(self):
-        attrs = ['verified', 'oauth_token', 'oauth_token_secret', 'oauth_expires_at','oauth_authorization_expires_at']
-        [setattr(self, attr, TOKEN_CACHE[attr]) for attr in attrs if TOKEN_CACHE.get(attr)]
+        self.oauth_token = cache.get(f"{self.prefix}_oauth_token")
+        self.oauth_token_secret = cache.get(f"{self.prefix}_oauth_token_secret")
+        self.created_at = cache.get(f"{self.prefix}_created_at")
+        self.oauth_expires_at = cache.get(f"{self.prefix}_oauth_expires_at") or dt.now() + timedelta(seconds=SET_TIMEOUT)
+        self.oauth_authorization_expires_at = cache.get(f"{self.prefix}_oauth_authorization_expires_at") or dt.now() + timedelta(seconds=SET_TIMEOUT)
+        self.oauth_expires_in = self.oauth_expires_at - dt.now()
+        self.oauth_authorization_expires_in = self.oauth_authorization_expires_at - dt.now()
+        self.verified = cache.get(f"{self.prefix}_verified")
 
     def _init_credentials(self):
         if not(self.oauth_token and self.oauth_token_secret):
             oauth_kwargs = {"client_secret": self.client_secret, "callback_uri": self.redirect_uri}
             oauth = OAuth1(self.client_id, **oauth_kwargs)
-            r = requests.post(url=self.request_url, auth=oauth)
-            self._process_oauth_response(r)
+            self.token = requests.post(url=self.request_url, auth=oauth)
 
     @property
     def oauth(self):
         oauth_kwargs = {**self.resource_kwargs, "client_secret": self.client_secret}
         return OAuth1(self.client_id, **oauth_kwargs)
 
-    def _process_oauth_response(self, response):
-        if response.ok:
-            credentials = {k: v[0] for k, v in parse_qs(response.text).items()}
-            self.oauth_token = credentials['oauth_token']
-            self.oauth_token_secret = credentials['oauth_token_secret']
-
-            oauth_expires_in = credentials.get('oauth_expires_in', OAUTH_EXPIRY_SECONDS)
-            oauth_authorisation_expires_in = credentials.get('oauth_authorization_expires_in', OAUTH_EXPIRY_SECONDS)
-
-            self.oauth_expires_at = dt.now() + timedelta(seconds=int(oauth_expires_in))
-            self.oauth_authorization_expires_at = dt.now() + timedelta(seconds=int(oauth_authorisation_expires_in))
-            self.save()
-        else:
-            logger.error(f"not ok! {response.text}")
-            self.error = response.text
-
-    def save(self):
-        TOKEN_CACHE.update(self.token)
-
     @property
     def token(self):
-        attrs = ['verified', 'oauth_token', 'oauth_token_secret', 'oauth_expires_at','oauth_authorization_expires_at']
-        return {attr: getattr(self, attr) for attr in attrs}
+        return {
+            "oauth_token": self.oauth_token,
+            "oauth_token_secret": self.oauth_token_secret,
+            "expires_in": self.oauth_expires_in,
+            "expires_at": self.oauth_expires_at,
+            "verified": self.verified,
+            "created_at": self.created_at
+        }
+
+    @token.setter
+    def token(self, response):
+        token = {k: v[0] for k, v in parse_qs(response.text).items()}
+        self.oauth_token = token['oauth_token']
+        self.oauth_token_secret = token['oauth_token_secret']
+
+        oauth_expires_in = token.get('oauth_expires_in', OAUTH_EXPIRY_SECONDS)
+        oauth_authorisation_expires_in = token.get('oauth_authorization_expires_in', OAUTH_EXPIRY_SECONDS)
+
+        self.created_at = token.get("created_at", dt.now())
+        self.oauth_expires_at = dt.now() + timedelta(seconds=int(oauth_expires_in))
+        self.oauth_authorization_expires_at = dt.now() + timedelta(seconds=int(oauth_authorisation_expires_in))
+
+        self.save()
+        logger.debug(self.token)
+
+    def save(self):
+        cache.set(f"{self.prefix}_oauth_token", self.oauth_token)
+        cache.set(f"{self.prefix}_oauth_token_secret", self.oauth_token_secret)
+        cache.set(f"{self.prefix}_created_at", self.created_at)
+        cache.set(f"{self.prefix}_oauth_expires_at", self.oauth_expires_at)
+        cache.set(f"{self.prefix}_oauth_authorization_expires_at", self.oauth_authorization_expires_at)
+        cache.set(f"{self.prefix}_verified", self.verified)
 
     @property
     def resource_kwargs(self):
@@ -254,21 +275,18 @@ class MyAuth1Client(object):
         oauth_kwargs = {"client_secret": self.client_secret, **self.resource_kwargs}
         return OAuth1Session(self.client_id, **oauth_kwargs)
 
-    def verify(self, verifier):
-        oauth = OAuth1(
-            self.client_id,
-            client_secret=self.client_secret,
-            resource_owner_key=self.oauth_token,
-            resource_owner_secret=self.oauth_token_secret,
-            verifier=verifier,
-        )
+    def fetch_token(self):
+        oauth_response = request.args
+        oauth_kwargs = {"client_secret": self.client_secret, **self.resource_kwargs}
+        oauth = OAuth1(self.client_id, verifier=oauth_response['oauth_verifier'], **oauth_kwargs)
+        r = requests.post(url=self.token_url, auth=oauth)
 
-        response = requests.post(url=self.token_url, auth=oauth)
-        self._process_oauth_response(response)
-
-        if response.ok:
+        if r.ok:
             self.verified = True
-            self.save()
+            self.token = r
+        else:
+            self.error = r.text
+            logger.error(f"Error authenticating: {self.error}")
 
     @property
     def authorization_url(self):
@@ -276,9 +294,18 @@ class MyAuth1Client(object):
         return f"{self.authorization_base_url}?{urlencode(query_string)}"
 
     @property
-    def expired(self):
-        expires_at = self.token.get("oauth_expires_at", dt.now())
-        return expires_at <= dt.now() + timedelta(seconds=EXPIRATION_BUFFER)
+    def expires_at(self):
+        return self.oauth_expires_at
+
+    @property
+    def expires_in(self):
+        return self.oauth_expires_in
+
+    def renew_token(self):
+        self.oauth_token = None
+        self.oauth_token_secret = None
+        self.verified = False
+        self._init_credentials()
 
 
 def get_auth_client(prefix, state=None, **kwargs):
@@ -288,6 +315,7 @@ def get_auth_client(prefix, state=None, **kwargs):
         oauth_version = kwargs.get(f"{prefix}_OAUTH_VERSION", 2)
 
         if oauth_version == 1:
+            MyAuthClient = MyAuth1Client
             client_id = kwargs[f"{prefix}_CONSUMER_KEY"]
             client_secret = kwargs[f"{prefix}_CONSUMER_SECRET"]
 
@@ -297,6 +325,7 @@ def get_auth_client(prefix, state=None, **kwargs):
                 "token_url": kwargs.get(f"{prefix}_TOKEN_URL_V1"),
             }
         else:
+            MyAuthClient = MyAuth2Client
             client_id = kwargs[f"{prefix}_CLIENT_ID"]
             client_secret = kwargs[f"{prefix}_SECRET"]
 
@@ -310,7 +339,6 @@ def get_auth_client(prefix, state=None, **kwargs):
             }
 
         auth_kwargs = {
-            **kwargs,
             **_auth_kwargs,
             "oauth_version": oauth_version,
             "api_base_url": kwargs[f"{prefix}_API_BASE_URL"],
@@ -318,7 +346,7 @@ def get_auth_client(prefix, state=None, **kwargs):
             "account_id": kwargs.get(f"{prefix}_ACCOUNT_ID"),
         }
 
-        client = MyAuth1Client(prefix, client_id, client_secret, **auth_kwargs)
+        client = MyAuthClient(prefix, client_id, client_secret, **auth_kwargs)
 
     return client
 
@@ -445,7 +473,7 @@ def get_realtime_response(url, client, params=None, **kwargs):
             response = uncache_header(response)
             return response
 
-    if status_code == 401 and not (client.oauth1 or kwargs.get("renewed")):
+    if status_code == 401 and not kwargs.get("renewed"):
         # Token expired
         client.renew_token()
         response = get_realtime_response(
@@ -466,14 +494,15 @@ def get_redirect_url(prefix):
     """
     oauth_response = request.args
 
-    if not all(map(oauth_response.get, ['oauth_token', 'oauth_verifier', 'org'])):
-        logger.error('Missing parameters required.')
-
+    state = oauth_response.get("state") or session.get(f"{prefix}_state")
+    valid = all(map(oauth_response.get, ['oauth_token', 'oauth_verifier', 'org']))
     client = get_auth_client(prefix, **app.config)
-    client.verify(oauth_response['oauth_verifier'])
-    redirect_url = url_for(f".{prefix}_status".lower())
 
-
+    if state or valid:
+        client.fetch_token()
+        redirect_url = url_for(f".{prefix}_status".lower())
+    else:
+        redirect_url = url_for(f".{prefix}_auth".lower())
 
     return redirect_url
 
@@ -524,7 +553,7 @@ def xero_status():
 
     response = get_realtime_response(api_url, xero, **app.config)
 
-    if not xero.oauth1:
+    if xero.oauth2:
         if response.get("status_code", 200) == 200:
             if result and result[0].get("tenantId"):
                 xero.tenant_id = result[0]["tenantId"]
@@ -619,6 +648,10 @@ class Auth(MethodView):
         if client.verified and not client.expired:
             redirect_url = url_for(f".{self.prefix}_status".lower())
         else:
+            if client.oauth1:
+                # clear previously cached token
+                client.renew_token()
+
             redirect_url = client.authorization_url
 
         logger.info("redirecting to %s", redirect_url)
@@ -651,7 +684,9 @@ class ProjectBase(MethodView):
         if self.prefix == "TIMELY":
             self.api_base_url = f"{self.client.api_base_url}/{self.client.account_id}"
         elif self.prefix == "XERO":
-            self.headers = {**HEADERS, "Xero-tenant-id": self.client.tenant_id}
+            if self.client.oauth2:
+                self.headers = {**HEADERS, "Xero-tenant-id": self.client.tenant_id}
+
             self.api_base_url = f"{self.client.api_base_url}/projects.xro/2.0"
             self.subkey = "items"
 
