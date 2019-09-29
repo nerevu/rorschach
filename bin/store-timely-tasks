@@ -1,5 +1,6 @@
 #!/usr/bin/env bash -uo pipefail
 
+curl 'http://localhost:5000/v1/timely-tasks?process=true&all=true&dictify=true' | jq '.result' > app/data/timely_tasks.json
 curl 'http://localhost:5000/v1/timely-tasks?process=true&id=2389295' | jq '.result' > app/data/timely_2389295_tasks.json
 curl 'http://localhost:5000/v1/timely-tasks?process=true&id=2906218' | jq '.result' > app/data/timely_2906218_tasks.json
 curl 'http://localhost:5000/v1/timely-tasks?process=true&id=2906240' | jq '.result' > app/data/timely_2906240_tasks.json

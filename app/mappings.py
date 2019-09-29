@@ -5,6 +5,10 @@
 
     Timely / Xero mappings
 """
+REUBEN = {933370}
+CONSULTANTS = {1281455, 1281876}
+TEAM = REUBEN | CONSULTANTS
+
 projects = [
     {"timely": 2960359, "xero": "15ff819d-6d69-406c-98c5-ed9ab9163779"},
     {"timely": 2906218},
@@ -30,60 +34,75 @@ users = [
     {"timely": 1281876, "xero": "b21daba7-83b1-4a94-8467-35bb1964abd0"},
 ]
 
+# TODO: mapping also depends on timely user
 tasks = [
     {
-        "timely": {"task": 1344431, "project": 2389295},
+        "timely": {"task": 1344431, "project": 2389295, "users": REUBEN},
         "xero": {
             "task": "ef251547-9e8a-4304-8a4b-ac6b4bd631e4",
             "project": "803591c3-72af-4475-888f-7c4c50044589",
         },
     },
     {
-        "timely": {"task": 1344444, "project": 2389295},
+        "timely": {"task": 1344444, "project": 2389295, "users": REUBEN},
         "xero": {
             "task": "9f34793b-56ec-4b09-a07e-6b99e0fec2f3",
             "project": "803591c3-72af-4475-888f-7c4c50044589",
         },
     },
     {
-        "timely": {"task": 1344445, "project": 2389295},
+        "timely": {"task": 1344445, "project": 2389295, "users": REUBEN},
         "xero": {
             "task": "f73a0a0d-92ca-4981-8008-44e9bc3cda9b",
             "project": "803591c3-72af-4475-888f-7c4c50044589",
         },
     },
     {
-        "timely": {"task": 1339639, "project": 2389295},
+        "timely": {"task": 1339639, "project": 2389295, "users": TEAM},
         "xero": {
             "task": "1bee78cf-3b74-460a-8e6a-d957276d7177",
             "project": "803591c3-72af-4475-888f-7c4c50044589",
         },
     },
     {
-        "timely": {"task": 1344464, "project": 2389295},
+        "timely": {"task": 1344464, "project": 2389295, "users": TEAM},
         "xero": {
             "task": "1bee78cf-3b74-460a-8e6a-d957276d7177",
             "project": "803591c3-72af-4475-888f-7c4c50044589",
         },
     },
     {
-        "timely": {"task": 1340560, "project": 2389295},
+        "timely": {"task": 1340560, "project": 2389295, "users": TEAM},
         "xero": {
             "task": "1bee78cf-3b74-460a-8e6a-d957276d7177",
             "project": "803591c3-72af-4475-888f-7c4c50044589",
         },
     },
     {
-        "timely": {"task": 1339636, "project": 2389295},
+        "timely": {"task": 1339636, "project": 2389295, "users": TEAM},
         "xero": {
             "task": "001313ee-c233-436e-9d29-ec6d46eaaa0e",
             "project": "803591c3-72af-4475-888f-7c4c50044589",
         },
     },
     {
-        "timely": {"task": 1344449, "project": 2389295},
+        "timely": {"task": 1344449, "project": 2389295, "users": REUBEN},
         "xero": {
-            "task": "803591c3-72af-4475-888f-7c4c50044589",
+            "task": "5ba6e7ab-f1dc-4395-a188-f26e9e5f1812",
+            "project": "803591c3-72af-4475-888f-7c4c50044589",
+        },
+    },
+    {
+        "timely": {"task": 1344449, "project": 2389295, "users": CONSULTANTS},
+        "xero": {
+            "task": "217bcc76-3558-4037-be9e-c71dc1a9d765",
+            "project": "803591c3-72af-4475-888f-7c4c50044589",
+        },
+    },
+    {
+        "timely": {"task": 1344431, "project": 2389295, "users": CONSULTANTS},
+        "xero": {
+            "task": "66a9506d-8c45-4cab-b97f-9b27bf53402d",
             "project": "803591c3-72af-4475-888f-7c4c50044589",
         },
     },
@@ -96,18 +115,28 @@ def reg_mapper(mapping, *args):
             yield tuple(map(pair.get, args))
 
 
-def task_mapper(mapping, *args, proj_pair=None):
+def task_mapper(mapping, *args, proj_pair=None, user=None):
     for task_pair in mapping:
-        if {task_pair.get(arg, {}).get("project") for arg in args} == proj_pair:
+        projects = {task_pair.get(arg, {}).get("project") for arg in args}
+        project_match = projects == proj_pair
+
+        # Timely tasks apply to all users whereas Xero tasks are user specific
+        # only implementing Timely -> Xero for now
+        users = task_pair.get(args[0], {}).get("users")
+        user_match = user in users
+
+        if project_match and user_match:
             yield tuple(task_pair[arg]["task"] for arg in args)
 
 
-def gen_proj_tasks(project_mapping, *args):
+def gen_proj_tasks(project_mapping, users, *args):
     for key, value in project_mapping.items():
-        proj_tasks = dict(task_mapper(tasks, *args, proj_pair={key, value}))
+        for user in users:
+            kwargs = {"proj_pair": {key, value}, "user": user}
+            proj_tasks = dict(task_mapper(tasks, *args, **kwargs))
 
-        if proj_tasks:
-            yield (key, proj_tasks)
+            if proj_tasks:
+                yield (key, user, proj_tasks)
 
 
 settings = [("projects", projects), ("users", users)]
@@ -122,10 +151,6 @@ xero_to_timely = {
     for map_name, mapping in settings
 }
 
-timely_to_xero["tasks"] = dict(
-    gen_proj_tasks(timely_to_xero["projects"], "timely", "xero")
-)
-
-xero_to_timely["tasks"] = dict(
-    gen_proj_tasks(xero_to_timely["projects"], "xero", "timely")
-)
+args = (timely_to_xero["projects"], timely_to_xero["users"].keys(), "timely", "xero")
+results = gen_proj_tasks(*args)
+timely_to_xero["tasks"] = {(key, user): proj_tasks for key, user, proj_tasks in results}
