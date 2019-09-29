@@ -87,17 +87,18 @@ class MyAuth2Client(AuthClient):
         self.restore()
 
         if self.state and self.access_token:
+            self.oauth_kwargs = {
+                "redirect_uri": self.redirect_uri,
+                "scope": self.scope,
+                "token": self.token,
+                "state": self.state,
+                "auto_refresh_kwargs": self.extra,
+                "auto_refresh_url": self.refresh_url,
+                "token_updater": self.update_token,
+            }
+
             try:
-                self.oauth_session = OAuth2Session(
-                    self.client_id,
-                    redirect_uri=self.redirect_uri,
-                    scope=self.scope,
-                    token=self.token,
-                    state=self.state,
-                    auto_refresh_kwargs=self.extra,
-                    auto_refresh_url=self.refresh_url,
-                    token_updater=self.update_token,
-                )
+                self.oauth_session = OAuth2Session(self.client_id, **self.oauth_kwargs)
             except TokenExpiredError:
                 # this path shouldn't be reached...
                 logger.info("Token expired. Attempting to renew...")
@@ -105,12 +106,13 @@ class MyAuth2Client(AuthClient):
             except Exception as e:
                 self.oauth_session = None
                 self.error = str(e)
-                logger.error(f"Error authenticating: {str(e)}")
+                logger.error(f"Error authenticating: {self.error}", exc_info=True)
             else:
                 if self.oauth_session.authorized:
                     logger.info("Successfully authenticated!")
                 else:
                     logger.info("Not authorized. Attempting to renew...")
+
                     self.renew_token()
         elif self.state:
             self.oauth_session = OAuth2Session(
@@ -124,13 +126,44 @@ class MyAuth2Client(AuthClient):
                 self.client_id, redirect_uri=self.redirect_uri, scope=self.scope
             )
 
+    @property
+    def verified(self):
+        return self.oauth_session.authorized
+
+    @property
+    def token(self):
+        return {
+            "access_token": self.access_token,
+            "refresh_token": self.refresh_token,
+            "token_type": "Bearer",
+            "expires_in": self.expires_in,
+            "expires_at": self.expires_at,
+            "created_at": self.created_at,
+        }
+
+    @token.setter
+    def token(self, value):
+        self.access_token = value["access_token"]
+        self.refresh_token = value["refresh_token"]
+        self.token_type = value["token_type"]
+        self.created_at = value.get("created_at", dt.now())
+        self.expires_in = value.get("expires_in", SET_TIMEOUT)
+        self.expires_at = dt.now() + timedelta(seconds=self.expires_in)
+
+        self.save()
+        logger.debug(self.token)
+
+    @property
+    def authorization_url(self):
+        return self.oauth_session.authorization_url(self.authorization_base_url)
+
     def save(self):
         self.state = session.get(f"{self.prefix}_state") or self.state
         cache.set(f"{self.prefix}_state", self.state)
         cache.set(f"{self.prefix}_access_token", self.access_token)
         cache.set(f"{self.prefix}_refresh_token", self.refresh_token)
         cache.set(f"{self.prefix}_created_at", self.created_at)
-        cache.set(f"{self.prefix}_expires_in", self.expires_in, SET_TIMEOUT)
+        cache.set(f"{self.prefix}_expires_at", self.expires_at)
         cache.set(f"{self.prefix}_tenant_id", self.tenant_id)
 
     def restore(self):
@@ -140,34 +173,23 @@ class MyAuth2Client(AuthClient):
         self.access_token = cache.get(f"{self.prefix}_access_token")
         self.refresh_token = cache.get(f"{self.prefix}_refresh_token")
         self.created_at = cache.get(f"{self.prefix}_created_at")
-        self.expires_in = cache.get(f"{self.prefix}_expires_in") or SET_TIMEOUT
+        self.expires_at = cache.get(f"{self.prefix}_expires_at") or dt.now()
+        self.expires_in = (self.expires_at - dt.now()).total_seconds()
         self.tenant_id = cache.get(f"{self.prefix}_tenant_id")
 
-    @property
-    def token(self):
-        return {
-            "access_token": self.access_token,
-            "refresh_token": self.refresh_token,
-            "token_type": "Bearer",
-            "expires_in": self.expires_in,
-        }
+    def fetch_token(self):
+        args = (self.token_url,)
+        kwargs = {"client_secret": self.client_secret}
 
-    @token.setter
-    def token(self, value):
-        self.access_token = value["access_token"]
-        self.refresh_token = value["refresh_token"]
-        self.token_type = value["token_type"]
-        self.expires_in = value.get("expires_in", SET_TIMEOUT)
-        self.created_at = value.get("created_at", dt.now())
-        self.save()
+        if request.args.get("code"):
+            kwargs["code"] = request.args["code"]
+            token = self.oauth_session.fetch_token(*args, **kwargs)
+        else:
+            kwargs["authorization_response"] = request.url
+            token = self.oauth_session.fetch_token(*args, **kwargs)
 
-    def get_authorization_url(self):
-        return self.oauth_session.authorization_url(self.authorization_base_url)
-
-    def fetch_token(self, **kwargs):
-        return self.oauth_session.fetch_token(
-            self.token_url, client_secret=self.client_secret, **kwargs
-        )
+        self.token = token
+        return token
 
     def update_token(self, token):
         self.token = token
@@ -176,10 +198,12 @@ class MyAuth2Client(AuthClient):
         if self.refresh_token:
             try:
                 logger.info(f"Renewing token using {self.refresh_url}...")
-                token = self.oauth_session.refresh_token(self.refresh_url, self.refresh_token)
+                token = self.oauth_session.refresh_token(
+                    self.refresh_url, self.refresh_token
+                )
             except Exception as e:
-                logger.error(f"Failed to renew token: {str(e)}")
                 self.error = str(e)
+                logger.error(f"Failed to renew token: {self.error}", exc_info=True)
             else:
                 if self.oauth_session.authorized:
                     logger.info("Successfully renewed token!")
@@ -203,6 +227,7 @@ class MyAuth1Client(AuthClient):
         self.oauth_token_secret = None
         self.oauth_expires_at = None
         self.oauth_authorization_expires_at = None
+
         self.restore()
         self._init_credentials()
         self.save()
@@ -211,22 +236,27 @@ class MyAuth1Client(AuthClient):
         self.oauth_token = cache.get(f"{self.prefix}_oauth_token")
         self.oauth_token_secret = cache.get(f"{self.prefix}_oauth_token_secret")
         self.created_at = cache.get(f"{self.prefix}_created_at")
-        self.oauth_expires_at = cache.get(f"{self.prefix}_oauth_expires_at") or dt.now() + timedelta(seconds=SET_TIMEOUT)
-        self.oauth_authorization_expires_at = cache.get(f"{self.prefix}_oauth_authorization_expires_at") or dt.now() + timedelta(seconds=SET_TIMEOUT)
-        self.oauth_expires_in = self.oauth_expires_at - dt.now()
-        self.oauth_authorization_expires_in = self.oauth_authorization_expires_at - dt.now()
+        self.oauth_expires_at = cache.get(f"{self.prefix}_oauth_expires_at") or dt.now()
+        self.oauth_authorization_expires_at = cache.get(f"{self.prefix}_oauth_authorization_expires_at") or dt.now()
+        self.oauth_expires_in = (self.oauth_expires_at - dt.now()).total_seconds()
+        self.oauth_authorization_expires_in = (self.oauth_authorization_expires_at - dt.now()).total_seconds()
         self.verified = cache.get(f"{self.prefix}_verified")
 
     def _init_credentials(self):
-        if not(self.oauth_token and self.oauth_token_secret):
+        if not (self.oauth_token and self.oauth_token_secret):
             oauth_kwargs = {"client_secret": self.client_secret, "callback_uri": self.redirect_uri}
             oauth = OAuth1(self.client_id, **oauth_kwargs)
-            self.token = requests.post(url=self.request_url, auth=oauth)
+            r = requests.post(url=self.request_url, auth=oauth)
+
+            if r.ok:
+                self.token = r
+            else:
+                self.error = r.text
+                logger.error(f"Error authenticating: {self.error}")
 
     @property
     def oauth(self):
-        oauth_kwargs = {**self.resource_kwargs, "client_secret": self.client_secret}
-        return OAuth1(self.client_id, **oauth_kwargs)
+        return OAuth1(self.client_id, **self.oauth_kwargs)
 
     @property
     def token(self):
@@ -264,21 +294,19 @@ class MyAuth1Client(AuthClient):
         cache.set(f"{self.prefix}_verified", self.verified)
 
     @property
-    def resource_kwargs(self):
+    def oauth_kwargs(self):
         return {
             "resource_owner_key": self.oauth_token,
             "resource_owner_secret": self.oauth_token_secret,
+            "client_secret": self.client_secret,
         }
 
     @property
     def oauth_session(self):
-        oauth_kwargs = {"client_secret": self.client_secret, **self.resource_kwargs}
-        return OAuth1Session(self.client_id, **oauth_kwargs)
+        return OAuth1Session(self.client_id, **self.oauth_kwargs)
 
     def fetch_token(self):
-        oauth_response = request.args
-        oauth_kwargs = {"client_secret": self.client_secret, **self.resource_kwargs}
-        oauth = OAuth1(self.client_id, verifier=oauth_response['oauth_verifier'], **oauth_kwargs)
+        oauth = OAuth1(self.client_id, verifier=request.args['oauth_verifier'], **self.oauth_kwargs)
         r = requests.post(url=self.token_url, auth=oauth)
 
         if r.ok:
@@ -291,7 +319,8 @@ class MyAuth1Client(AuthClient):
     @property
     def authorization_url(self):
         query_string = {'oauth_token': self.oauth_token}
-        return f"{self.authorization_base_url}?{urlencode(query_string)}"
+        authorization_url = f"{self.authorization_base_url}?{urlencode(query_string)}"
+        return (authorization_url, False)
 
     @property
     def expires_at(self):
@@ -504,7 +533,7 @@ def get_redirect_url(prefix):
     else:
         redirect_url = url_for(f".{prefix}_auth".lower())
 
-    return redirect_url
+    return redirect_url, client
 
 
 ###########################################################################
@@ -524,12 +553,32 @@ def home():
 
 @blueprint.route(f"{PREFIX}/timely-callback")
 def timely_callback():
-    return redirect(get_redirect_url("TIMELY"))
+    redirect_url, client = get_redirect_url("TIMELY")
+
+    if client.error:
+        response = {
+            "message": client.error,
+            "status_code": 401,
+            "links": list(gen_links()),
+        }
+        return jsonify(**response)
+    else:
+        return redirect(redirect_url)
 
 
 @blueprint.route(f"{PREFIX}/xero-callback")
 def xero_callback():
-    return redirect(get_redirect_url("XERO"))
+    redirect_url, client = get_redirect_url("XERO")
+
+    if client.error:
+        response = {
+            "message": client.error,
+            "status_code": 401,
+            "links": list(gen_links()),
+        }
+        return jsonify(**response)
+    else:
+        return redirect(redirect_url)
 
 
 @blueprint.route(f"{PREFIX}/timely-status")
@@ -643,6 +692,9 @@ class Auth(MethodView):
 
         # https://gist.github.com/ib-lundgren/6507798#gistcomment-1006218
         # State is used to prevent CSRF, keep this for later.
+        authorization_url, state = client.authorization_url
+        client.state = session[f"{self.prefix}_state"] = state
+        client.save()
 
         # Step 2: User authorization, this happens on the provider.
         if client.verified and not client.expired:
@@ -651,8 +703,9 @@ class Auth(MethodView):
             if client.oauth1:
                 # clear previously cached token
                 client.renew_token()
+                authorization_url = client.authorization_url[0]
 
-            redirect_url = client.authorization_url
+            redirect_url = authorization_url
 
         logger.info("redirecting to %s", redirect_url)
         return redirect(redirect_url)
