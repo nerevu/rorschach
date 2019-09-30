@@ -887,6 +887,37 @@ class Tasks(ProjectBase):
             self.api_url = f"{self.api_base_url}/projects/{self.project_id}/tasks"
             self.fields = ["name", "taskId", "status", "rate.value", "projectId"]
 
+    def post(self):
+        # url = 'http://localhost:5000/v1/timely-tasks'
+        # r = requests.post(url, data={"name": "Test task", "dryRun": True})
+        if self.prefix == "TIMELY":
+            self.api_url = f"{self.api_base_url}/labels"
+
+            data = dict(request.values)
+            dry_run = data.pop("dryRun", "").lower()
+            kwargs = {
+                **app.config,
+                "headers": self.headers,
+                "method": "post",
+                "json": {"label": data},
+            }
+
+            if dry_run == "true":
+                response = {"result": {"label": data}}
+            else:
+                response = get_realtime_response(self.api_url, self.client, **kwargs)
+        else:
+            base_url = get_request_base()
+            self.error_msg = f"The {request.method}:{base_url} route is not yet enabled."
+            response = {"status_code": 404}
+
+        response["links"] = list(gen_links())
+
+        if self.error_msg:
+            response["message"] = self.error_msg
+
+        return jsonify(**response)
+
 
 class Time(ProjectBase):
     def __init__(self, prefix):
@@ -920,41 +951,35 @@ class Time(ProjectBase):
             self.params = {"dateAfterUtc": start, "dateBeforeUtc": end}
             self.api_url = f"{self.api_base_url}/projects/{self.project_id}/time"
 
-    def put(self):
-        # r = requests.put(url, data={"eventId": 165829339, "dryRun": "true"})
+    def patch(self):
+        # url = 'http://localhost:5000/v1/timely-time'
+        # r = requests.patch(url, data={"eventId": 165829339, "dryRun": True})
         if self.prefix == "TIMELY":
-            if request.form.get("eventId"):
-                event_id = request.form["eventId"]
-            else:
-                project_id = request.form.get("projectId", self.project_id)
-                p = Path(f"app/data/timely_{project_id}_events.json")
+            if request.values.get("eventId"):
+                event_id = request.values["eventId"]
+                p = Path(f"app/data/timely_events.json")
 
                 try:
-                    timely_events = load(p.open())
+                    events = load(p.open())
                 except FileNotFoundError:
-                    timely_events = {}
-                    error_msg = f"File {p} not found!"
+                    events = {}
+                    self.error_msg = f"{p} not found!"
+                    logger.error(self.error_msg)
+            else:
+                events = {}
+                self.error_msg = "No 'projectId' given!"
+                logger.error(self.error_msg)
 
-                if timely_events:
-                    try:
-                        event = timely_events[self.event_pos]
-                    except IndexError:
-                        event = {}
-                        eof = True
+            if events:
+                event = events.get(event_id)
+            else:
+                event = {}
 
-                        if not error_msg:
-                            error_msg = f"Event position {self.event_pos} not found!"
-                            logger.error(error_msg)
-                else:
-                    event = {}
+                if not self.error_msg:
+                    self.error_msg = "No events found!"
+                    logger.error(self.error_msg)
 
-                    if not error_msg:
-                        error_msg = "No events found!"
-                        logger.error(error_msg)
-
-                event_id = event.get("id")
-
-            if event_id:
+            if event:
                 self.api_url = f"{self.api_base_url}/events/{event_id}"
                 total_minutes = event["duration.total_minutes"]
 
@@ -970,34 +995,29 @@ class Time(ProjectBase):
                     **app.config,
                     "headers": self.headers,
                     "method": "put",
-                    "data": data,
+                    "json": {"event": data},
                 }
 
-                if request.values.get("dryRun") == "true":
-                    response = {"result": data}
+                if request.values.get("dryRun", "").lower() == "true":
+                    response = {"result": {"event": data}}
                 else:
                     response = get_realtime_response(
                         self.api_url, self.client, **kwargs
                     )
             else:
-                if not error_msg:
-                    error_msg = f"No event_id found!"
-                    logger.error(error_msg)
+                if not self.error_msg:
+                    self.error_msg = f"event ID {event_id} not found!"
+                    logger.error(self.error_msg)
 
                 response = {"status_code": 404}
 
         else:
             base_url = get_request_base()
-            error_msg = f"The {request.method}:{base_url} route is not yet enabled."
+            self.error_msg = f"The {request.method}:{base_url} route is not yet enabled."
             response = {"status_code": 404}
 
         response.update(
-            {
-                "links": list(gen_links()),
-                "message": error_msg,
-                "eof": eof,
-                "event_id": event["id"],
-            }
+            {"links": list(gen_links()), "message": self.error_msg, "event_id": event.get("id")}
         )
         return jsonify(**response)
 
