@@ -2,4 +2,5 @@
 
 curl 'http://localhost:5000/v1/timely-projects?process=true&dictify=true' | jq '.result' > app/data/timely_projects.json
 curl 'http://localhost:5000/v1/timely-projects?process=true' | jq '.result' > app/data/timely_project_list.json
-curl 'http://localhost:5000/v1/xero-projects?process=true' | jq '.result' > app/data/xero_projects.json
+curl 'http://localhost:5000/v1/xero-projects?process=true&dictify=true' | jq '.result' > app/data/xero_projects.json
+curl 'http://localhost:5000/v1/xero-projects?process=true' | jq '.result' > app/data/xero_projects_list.json

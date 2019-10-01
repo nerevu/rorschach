@@ -11,16 +11,6 @@
   },
   {
     "billed": false,
-    "day": "2019-08-27",
-    "duration.total_minutes": 7,
-    "id": 165799129,
-    "label_ids[0]": 1344447,
-    "note": "Fastmail",
-    "project.id": 2906311,
-    "user.id": 933370
-  },
-  {
-    "billed": false,
     "day": "2019-09-16",
     "duration.total_minutes": 120,
     "id": 165997697,

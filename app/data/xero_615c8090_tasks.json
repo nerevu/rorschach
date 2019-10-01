@@ -12,5 +12,12 @@
     "rate.value": 0,
     "status": "ACTIVE",
     "taskId": "bef4ecbf-78ba-41af-b902-da865cc497fa"
+  },
+  {
+    "name": "1 Hour Client Work (Non-Billable)",
+    "projectId": "615c8090-938d-4ee7-8f4e-6ae945920507",
+    "rate.value": 0,
+    "status": "ACTIVE",
+    "taskId": "41682eef-2a95-4227-91bb-73d441907df3"
   }
 ]

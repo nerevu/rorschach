@@ -1,16 +1,6 @@
 [
   {
     "billed": false,
-    "day": "2019-09-09",
-    "duration.total_minutes": 23,
-    "id": 165829339,
-    "label_ids[0]": 1344445,
-    "note": "DinerDiver Companies • DinerDiver Menus • Untitled spreadsheet •  • Google Drive File Stream",
-    "project.id": 2389295,
-    "user.id": 933370
-  },
-  {
-    "billed": false,
     "day": "2019-09-11",
     "duration.total_minutes": 161,
     "id": 165865574,
@@ -126,6 +116,86 @@
     "id": 166175825,
     "label_ids[0]": 1344431,
     "note": "Atom • Terminal • Finder • API Reference — gspread 3.1.0 documentation • Stack Overflow • data",
+    "project.id": 2389295,
+    "user.id": 1281876
+  },
+  {
+    "billed": false,
+    "day": "2019-09-24",
+    "duration.total_minutes": 94,
+    "id": 166203544,
+    "label_ids[0]": 1344431,
+    "note": "Terminal • Atom • Pandas dataframe.groupby() - GeeksforGeeks • Preview • QAM • data",
+    "project.id": 2389295,
+    "user.id": 1281876
+  },
+  {
+    "billed": false,
+    "day": "2019-09-25",
+    "duration.total_minutes": 25,
+    "id": 166204875,
+    "label_ids[0]": 1340560,
+    "note": "nerevu/handbook Wiki • DinerDiver • nerevu/dinerdiver-api: API for the Diner Diver webapp",
+    "project.id": 2389295,
+    "user.id": 1281876
+  },
+  {
+    "billed": false,
+    "day": "2019-09-25",
+    "duration.total_minutes": 132,
+    "id": 166204882,
+    "label_ids[0]": 1344431,
+    "note": "Google Search • Chat • data • nerevu/dinerdiver-api • Atom • DinerDiver Menus • Terminal",
+    "project.id": 2389295,
+    "user.id": 1281876
+  },
+  {
+    "billed": false,
+    "day": "2019-09-24",
+    "duration.total_minutes": 88,
+    "id": 166227832,
+    "label_ids[0]": 1339639,
+    "note": "dga-ryvt-dgx • nerevu/dinerdiver-api • Admin console • Fastmail",
+    "project.id": 2389295,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2019-09-27",
+    "duration.total_minutes": 85,
+    "id": 166244476,
+    "label_ids[0]": 1344431,
+    "note": "",
+    "project.id": 2389295,
+    "user.id": 1281876
+  },
+  {
+    "billed": false,
+    "day": "2019-09-26",
+    "duration.total_minutes": 108,
+    "id": 166245080,
+    "label_ids[0]": 1344431,
+    "note": "DinerDiver Menus • Preview • Atom • Google Search • DinverDiverTest • QAM • Terminal • Stack Overflow",
+    "project.id": 2389295,
+    "user.id": 1281876
+  },
+  {
+    "billed": false,
+    "day": "2019-09-26",
+    "duration.total_minutes": 26,
+    "id": 166245114,
+    "label_ids[0]": 1339639,
+    "note": "Chat • UberConference • Terminal • nerevu/dinerdiver-api • DinerDiver • Fastmail",
+    "project.id": 2389295,
+    "user.id": 1281876
+  },
+  {
+    "billed": false,
+    "day": "2019-09-28",
+    "duration.total_minutes": 216,
+    "id": 166254673,
+    "label_ids[0]": 1344431,
+    "note": "Atom • Stack Overflow • Trey Hunner • QAM • Terminal",
     "project.id": 2389295,
     "user.id": 1281876
   }

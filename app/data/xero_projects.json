@@ -1,37 +1,87 @@
-[
-  {
-    "name": "DinerDiver",
-    "projectId": "803591c3-72af-4475-888f-7c4c50044589",
-    "status": "INPROGRESS"
-  },
-  {
+{
+  "132489d0-9094-4da6-a739-ced4d0a1f0c9": {
     "name": "IPA/AEA Site",
     "projectId": "132489d0-9094-4da6-a739-ced4d0a1f0c9",
     "status": "CLOSED"
   },
-  {
-    "name": "Commission Dashboard",
-    "projectId": "b1d797e3-e54b-4686-b83f-d8ea5a35f1c2",
-    "status": "INPROGRESS"
-  },
-  {
+  "15ff819d-6d69-406c-98c5-ed9ab9163779": {
     "name": "Data Hub",
     "projectId": "15ff819d-6d69-406c-98c5-ed9ab9163779",
     "status": "INPROGRESS"
   },
-  {
-    "name": "Open Peoria",
-    "projectId": "615c8090-938d-4ee7-8f4e-6ae945920507",
+  "23be1505-900b-4504-b1fe-cf1b1c7e1d12": {
+    "name": "BOD",
+    "projectId": "23be1505-900b-4504-b1fe-cf1b1c7e1d12",
     "status": "INPROGRESS"
   },
-  {
+  "2d4c9cd1-40b3-41ba-b584-1f84e1d88910": {
+    "name": "Smart Airport",
+    "projectId": "2d4c9cd1-40b3-41ba-b584-1f84e1d88910",
+    "status": "INPROGRESS"
+  },
+  "37b69d72-7168-47d4-8a9f-d225fccf8b38": {
+    "name": "GP Data",
+    "projectId": "37b69d72-7168-47d4-8a9f-d225fccf8b38",
+    "status": "INPROGRESS"
+  },
+  "3fe4d0ef-b45f-4812-8ca8-9c64f6bd679c": {
     "name": "NomCom",
     "projectId": "3fe4d0ef-b45f-4812-8ca8-9c64f6bd679c",
     "status": "INPROGRESS"
   },
-  {
-    "name": "BOD",
-    "projectId": "23be1505-900b-4504-b1fe-cf1b1c7e1d12",
+  "4ae942e8-af62-4318-b569-7476df14cbef": {
+    "name": "Analytics Committee",
+    "projectId": "4ae942e8-af62-4318-b569-7476df14cbef",
+    "status": "INPROGRESS"
+  },
+  "615c8090-938d-4ee7-8f4e-6ae945920507": {
+    "name": "Open Peoria",
+    "projectId": "615c8090-938d-4ee7-8f4e-6ae945920507",
+    "status": "INPROGRESS"
+  },
+  "62859aaa-0b21-4a8c-9009-03f3458a9fe2": {
+    "name": "Smart Cities",
+    "projectId": "62859aaa-0b21-4a8c-9009-03f3458a9fe2",
+    "status": "INPROGRESS"
+  },
+  "69cb6ef7-7886-4172-8112-bbc70e949a9e": {
+    "name": "Invoice/Billing Service",
+    "projectId": "69cb6ef7-7886-4172-8112-bbc70e949a9e",
+    "status": "INPROGRESS"
+  },
+  "7fe1e7c0-24e2-4c26-809f-654f1cbae1f1": {
+    "name": "Company Website",
+    "projectId": "7fe1e7c0-24e2-4c26-809f-654f1cbae1f1",
+    "status": "INPROGRESS"
+  },
+  "803591c3-72af-4475-888f-7c4c50044589": {
+    "name": "DinerDiver",
+    "projectId": "803591c3-72af-4475-888f-7c4c50044589",
+    "status": "INPROGRESS"
+  },
+  "b1d797e3-e54b-4686-b83f-d8ea5a35f1c2": {
+    "name": "Commission Dashboard",
+    "projectId": "b1d797e3-e54b-4686-b83f-d8ea5a35f1c2",
+    "status": "INPROGRESS"
+  },
+  "ba4c61a8-e189-4fd4-a113-fb2c67626bbd": {
+    "name": "Surveys",
+    "projectId": "ba4c61a8-e189-4fd4-a113-fb2c67626bbd",
+    "status": "INPROGRESS"
+  },
+  "c74d4b92-4a5c-4301-80ac-a601593b41ba": {
+    "name": "Hiring",
+    "projectId": "c74d4b92-4a5c-4301-80ac-a601593b41ba",
+    "status": "INPROGRESS"
+  },
+  "c8b18830-fed0-4979-8c42-6619c4b6b67c": {
+    "name": "Onboarding",
+    "projectId": "c8b18830-fed0-4979-8c42-6619c4b6b67c",
+    "status": "INPROGRESS"
+  },
+  "f9d0e04b-f07c-423d-8975-418159180dab": {
+    "name": "Internal",
+    "projectId": "f9d0e04b-f07c-423d-8975-418159180dab",
     "status": "INPROGRESS"
   }
-]
+}

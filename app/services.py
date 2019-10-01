@@ -17,27 +17,30 @@ def add_xero_time(project_id=None, position=None, dry_run=False, **kwargs):
     data = {"timelyProjectId": project_id, "eventPos": position}
 
     if dry_run:
-        data.update({"dryRun": "true"})
+        data["dryRun"] = "true"
 
     r = requests.post(url, data=data)
     json = r.json()
-    result = json["result"]
+
     return {
         "event_id": json.get("event_id"),
         "ok": r.ok,
+        "conflict": r.status_code == 409,
         "eof": json.get("eof"),
-        "message": json["message"],
+        "message": json.get("message"),
     }
 
 
-def mark_billed(event_id):
+def mark_billed(event_id, dry_run=False, **kwargs):
     url = "http://localhost:5000/v1/timely-time"
-    data = {"timelyProjectId": project}
+    data = {"eventId": event_id}
 
     if dry_run:
-        data.update({"dryRun": "true"})
+        data["dryRun"] = "true"
 
-    r = requests.post(url, data=data)
-    json = r.json()
-    result = json["result"]
-    return (json["event_id"], r.ok, json["eof"])
+    r = requests.patch(url, data=data)
+    return {
+        "ok": r.ok,
+        "conflict": r.status_code == 409,
+        "message": r.json()["message"],
+    }
