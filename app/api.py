@@ -590,6 +590,20 @@ def get_redirect_url(prefix):
     return redirect_url, client
 
 
+def callback(prefix):
+    redirect_url, client = get_redirect_url(prefix)
+
+    if client.error:
+        response = {
+            "message": client.error,
+            "status_code": 401,
+            "links": list(gen_links()),
+        }
+        return jsonify(**response)
+    else:
+        return redirect(redirect_url)
+
+
 ###########################################################################
 # ROUTES
 ###########################################################################
@@ -607,32 +621,12 @@ def home():
 
 @blueprint.route(f"{PREFIX}/timely-callback")
 def timely_callback():
-    redirect_url, client = get_redirect_url("TIMELY")
-
-    if client.error:
-        response = {
-            "message": client.error,
-            "status_code": 401,
-            "links": list(gen_links()),
-        }
-        return jsonify(**response)
-    else:
-        return redirect(redirect_url)
+    return callback("TIMELY")
 
 
 @blueprint.route(f"{PREFIX}/xero-callback")
 def xero_callback():
-    redirect_url, client = get_redirect_url("XERO")
-
-    if client.error:
-        response = {
-            "message": client.error,
-            "status_code": 401,
-            "links": list(gen_links()),
-        }
-        return jsonify(**response)
-    else:
-        return redirect(redirect_url)
+    return callback("XERO")
 
 
 @blueprint.route(f"{PREFIX}/timely-status")
@@ -827,7 +821,6 @@ class ProjectBase(MethodView):
                 result = chain(billable, non_billable)
             else:
                 result = process_result(result, self.fields)
-
 
         if self.add_day and result:
             result = (add_day(item) for item in result)
