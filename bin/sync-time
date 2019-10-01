@@ -1,0 +1,12 @@
+#!/usr/bin/env bash -uo pipefail
+
+# bin/store-users
+# bin/store-projects
+# bin/store-timely-events
+# bin/store-timely-tasks
+# bin/store-xero-events
+# bin/store-xero-tasks
+
+for PROJECT in $(jq -r 'to_entries[] | .key' app/data/timely_projects.json); do
+    manage sync -de 1 -p $PROJECT
+done

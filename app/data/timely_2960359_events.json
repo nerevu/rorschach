@@ -31,31 +31,11 @@
   },
   {
     "billed": false,
-    "day": "2019-08-28",
-    "duration.total_minutes": 17,
-    "id": 165757635,
-    "label_ids[0]": 1339640,
-    "note": "Fastmail",
-    "project.id": 2960359,
-    "user.id": 933370
-  },
-  {
-    "billed": false,
     "day": "2019-09-03",
     "duration.total_minutes": 57,
     "id": 165757762,
     "label_ids[0]": 1339639,
     "note": "Project Meeting",
-    "project.id": 2960359,
-    "user.id": 933370
-  },
-  {
-    "billed": false,
-    "day": "2019-08-27",
-    "duration.total_minutes": 55,
-    "id": 165799351,
-    "label_ids[0]": 1340560,
-    "note": "Greater Peoria Data Hub • GPEDC Data Hub Info • Fastmail • Collaborators",
     "project.id": 2960359,
     "user.id": 933370
   },
@@ -78,5 +58,15 @@
     "note": "Atom • nerevu/data-hub-etl: GPEDC Data Hub API • New File • nerevu/commissioner-api: Alegna commission calculation API • Terminal • Fastmail",
     "project.id": 2960359,
     "user.id": 1281876
+  },
+  {
+    "billed": false,
+    "day": "2019-09-24",
+    "duration.total_minutes": 8,
+    "id": 166227893,
+    "label_ids[0]": 1339639,
+    "note": "GPEDC Data Hub Info • Emsi • Datasets",
+    "project.id": 2960359,
+    "user.id": 933370
   }
 ]

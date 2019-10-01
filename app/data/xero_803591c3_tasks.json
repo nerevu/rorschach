@@ -47,5 +47,12 @@
     "rate.value": 68,
     "status": "ACTIVE",
     "taskId": "217bcc76-3558-4037-be9e-c71dc1a9d765"
+  },
+  {
+    "name": "1 Hour Development (Developer)",
+    "projectId": "803591c3-72af-4475-888f-7c4c50044589",
+    "rate.value": 68,
+    "status": "ACTIVE",
+    "taskId": "66a9506d-8c45-4cab-b97f-9b27bf53402d"
   }
 ]

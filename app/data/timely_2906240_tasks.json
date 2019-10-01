@@ -1,66 +1,55 @@
 [
   {
-    "billable": false,
     "id": 1339636,
     "name": "R&D (creating new frameworks/libraries, tools, processes, etc.)",
     "projectId": "2906240"
   },
   {
-    "billable": false,
     "id": 1339639,
     "name": "Admin (meetings, time tracking, email, calendar, organizing, paperwork, etc.)",
     "projectId": "2906240"
   },
   {
-    "billable": false,
     "id": 1339640,
     "name": "Sales (validating, prospecting, proposals, contracts, etc.)",
     "projectId": "2906240"
   },
   {
-    "billable": false,
     "id": 1340560,
     "name": "Instructing (explaining, wiki documentation, reviewing, etc.)",
     "projectId": "2906240"
   },
   {
-    "billable": false,
     "id": 1344451,
     "name": "Evaluating (selecting internal tools and services)",
     "projectId": "2906240"
   },
   {
-    "billable": false,
     "id": 1344452,
     "name": "Marketing (blogging, social media, etc.)",
     "projectId": "2906240"
   },
   {
-    "billable": false,
     "id": 1344464,
     "name": "Learning (general: via articles, books, tutorials, courses, etc.)",
     "projectId": "2906240"
   },
   {
-    "billable": false,
     "id": 1344466,
     "name": "Networking (social media, meetups, conferences, etc.)",
     "projectId": "2906240"
   },
   {
-    "billable": false,
     "id": 1344521,
     "name": "HR (benefits, contracts, payroll, etc.)",
     "projectId": "2906240"
   },
   {
-    "billable": false,
     "id": 1344604,
     "name": "Misc (doesn't fit elsewhere)",
     "projectId": "2906240"
   },
   {
-    "billable": false,
     "id": 1344671,
     "name": "Finance & Accounting (bookeeping, budgeting, forecasting, invoicing, etc.)",
     "projectId": "2906240"

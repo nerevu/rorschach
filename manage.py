@@ -7,7 +7,9 @@ from os import path as p
 from subprocess import call, check_call, CalledProcessError
 from urllib.parse import urlsplit, urlencode, parse_qs
 from datetime import datetime as dt, timedelta
-from itertools import count
+from itertools import count, chain
+from json import load, dump
+from pathlib import Path
 
 import pygogo as gogo
 
@@ -16,6 +18,14 @@ from flask_script import Server, Manager
 from requests.exceptions import ConnectionError
 
 from app import create_app, cache, services
+from app.api import (
+    timely_users,
+    timely_events,
+    timely_projects,
+    timely_tasks,
+    sync_results_p,
+)
+
 
 BASEDIR = p.dirname(__file__)
 DEF_PORT = 5000
@@ -95,31 +105,90 @@ def serve(**kwargs):
 @manager.option("-d", "--dry-run", help="Perform a dry run", action="store_true")
 def sync(**kwargs):
     """Sync Timely events with Xero time entries"""
-    added_events = []
-    skipped_events = []
+    sync_results = load(sync_results_p.open())
+    added_events = set()
+    skipped_events = set()
+    patched_events = set()
+    unpatched_events = set()
+
+    logger.info(f"Project ID {kwargs['project_id']}")
+    logger.info("——————————————————")
 
     if kwargs["end_position"]:
         _range = range(kwargs["start_position"], kwargs["end_position"])
     else:
         _range = count(kwargs["start_position"])
 
+    logger.info("Adding events...")
     for pos in _range:
-        result = services.add_xero_time(**kwargs, position=pos)
+        result = services.add_xero_time(position=pos, **kwargs)
 
-        if result["ok"]:
-            added_events.append(result["event_id"])
+        if result["ok"] or result["conflict"]:
+            added_events.add(str(result["event_id"]))
+            message = result["message"] or f"Added Event {result['event_id']}"
+            logger.info(f"- {message}")
         elif result["eof"]:
             break
         else:
-            skipped_events.append(result["event_id"])
-
-        if result["message"]:
-            logger.info(result["message"])
+            skipped_events.add(result["event_id"])
+            message = result["message"] or "Unknown error!"
+            logger.info(f"- {message}")
 
     num_added_events = len(added_events)
     num_skipped_events = len(skipped_events)
     num_total_events = num_added_events + num_skipped_events
-    logger.info(f"Added {num_added_events} of {num_total_events} events")
+
+    if added_events:
+        logger.info("\nPatching events...")
+
+    for event_id in added_events:
+        result = services.mark_billed(event_id, **kwargs)
+
+        if result["ok"] or result["conflict"]:
+            patched_events.add(event_id)
+            event = timely_events.get(event_id)
+
+            if result["message"]:
+                logger.info(f"- {result['message']}")
+            elif event:
+                user_name = timely_users.get(str(event["user.id"]), {}).get(
+                    "name", "Unknown"
+                )
+                project_name = timely_projects.get(str(event["project.id"]), {}).get(
+                    "name", "Unknown"
+                )
+                task = timely_tasks.get(str(event["label_ids[0]"]), {})
+                task_name = task.get("name", "Unknown").split(" ")[0]
+                event_time = event["duration.total_minutes"]
+                event_day = event["day"]
+                logger.debug(
+                    f"- {user_name} did {event_time}m of {task_name} on {event_day} for {project_name}"
+                )
+            else:
+                logger.info(f"- Event {event_id} patched, but not found in {events_p}.")
+        else:
+            unpatched_events.add(event_id)
+            message = result["message"] or "Unknown error!"
+            logger.info(f"- {message}")
+
+    num_patched_events = len(patched_events)
+    all_events = set(
+        chain(added_events, skipped_events, patched_events, unpatched_events)
+    )
+
+    if not kwargs["dry_run"]:
+        for event in all_events:
+            sync_results[event] = {
+                "added": event in added_events,
+                "patched": event in patched_events,
+            }
+
+    logger.info("------------------------------------")
+    logger.info(
+        f"Of {num_total_events} events: {num_added_events} added and {num_patched_events} patched"
+    )
+    logger.info("------------------------------------")
+    dump(sync_results, sync_results_p.open(mode="w"), indent=2)
 
 
 @manager.command

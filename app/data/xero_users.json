@@ -1,18 +1,18 @@
-[
-  {
-    "name": "Reuben Cummings",
-    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+{
+  "3f7626f2-5064-4499-a96c-e73653e5aa01": {
+    "name": "Mitchell Sotto",
+    "userId": "3f7626f2-5064-4499-a96c-e73653e5aa01"
   },
-  {
+  "714186d5-20fc-4ede-86c8-2f929584b679": {
     "name": "Xero Support",
     "userId": "714186d5-20fc-4ede-86c8-2f929584b679"
   },
-  {
+  "a76380db-eb5f-4fe4-8975-99ad2fabbd13": {
+    "name": "Reuben Cummings",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  },
+  "b21daba7-83b1-4a94-8467-35bb1964abd0": {
     "name": "Aditya Sahay",
     "userId": "b21daba7-83b1-4a94-8467-35bb1964abd0"
-  },
-  {
-    "name": "Mitchell Sotto",
-    "userId": "3f7626f2-5064-4499-a96c-e73653e5aa01"
   }
-]
+}

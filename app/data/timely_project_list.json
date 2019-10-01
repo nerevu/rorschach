@@ -1,0 +1,104 @@
+[
+  {
+    "active": true,
+    "billable": true,
+    "id": 2960359,
+    "name": "Data Automation"
+  },
+  {
+    "active": true,
+    "billable": true,
+    "id": 2906218,
+    "name": "Surveys"
+  },
+  {
+    "active": true,
+    "billable": true,
+    "id": 2389295,
+    "name": "DinerDiver"
+  },
+  {
+    "active": true,
+    "billable": false,
+    "id": 2906240,
+    "name": "Internal"
+  },
+  {
+    "active": true,
+    "billable": true,
+    "id": 2954285,
+    "name": "Commission Dashboard"
+  },
+  {
+    "active": true,
+    "billable": false,
+    "id": 3013676,
+    "name": "Timely/Xero Sync Service"
+  },
+  {
+    "active": true,
+    "billable": false,
+    "id": 2980115,
+    "name": "Hiring"
+  },
+  {
+    "active": true,
+    "billable": false,
+    "id": 2906311,
+    "name": "Open Peoria"
+  },
+  {
+    "active": true,
+    "billable": false,
+    "id": 2973420,
+    "name": "BOD"
+  },
+  {
+    "active": true,
+    "billable": false,
+    "id": 2973544,
+    "name": "Smart Airport"
+  },
+  {
+    "active": true,
+    "billable": false,
+    "id": 2973418,
+    "name": "Analytics Committee"
+  },
+  {
+    "active": true,
+    "billable": false,
+    "id": 2973417,
+    "name": "NomCom"
+  },
+  {
+    "active": true,
+    "billable": false,
+    "id": 2973485,
+    "name": "Invoice/Billing Service"
+  },
+  {
+    "active": true,
+    "billable": false,
+    "id": 2906312,
+    "name": "GP Data Community"
+  },
+  {
+    "active": true,
+    "billable": false,
+    "id": 2954247,
+    "name": "Onboarding"
+  },
+  {
+    "active": true,
+    "billable": false,
+    "id": 2906239,
+    "name": "Company Website"
+  },
+  {
+    "active": true,
+    "billable": false,
+    "id": 2906308,
+    "name": "Smart Cities"
+  }
+]

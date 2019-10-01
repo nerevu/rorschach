@@ -1,18 +1,7 @@
 #!/usr/bin/env bash -uo pipefail
 
-curl 'http://localhost:5000/v1/timely-tasks?process=true&id=2389295' | jq '.result' > app/data/timely_2389295_tasks.json
-curl 'http://localhost:5000/v1/timely-tasks?process=true&id=2906218' | jq '.result' > app/data/timely_2906218_tasks.json
-curl 'http://localhost:5000/v1/timely-tasks?process=true&id=2906240' | jq '.result' > app/data/timely_2906240_tasks.json
-curl 'http://localhost:5000/v1/timely-tasks?process=true&id=2906239' | jq '.result' > app/data/timely_2906239_tasks.json
-curl 'http://localhost:5000/v1/timely-tasks?process=true&id=2906311' | jq '.result' > app/data/timely_2906311_tasks.json
-curl 'http://localhost:5000/v1/timely-tasks?process=true&id=2906312' | jq '.result' > app/data/timely_2906312_tasks.json
-curl 'http://localhost:5000/v1/timely-tasks?process=true&id=2906308' | jq '.result' > app/data/timely_2906308_tasks.json
-curl 'http://localhost:5000/v1/timely-tasks?process=true&id=2954247' | jq '.result' > app/data/timely_2954247_tasks.json
-curl 'http://localhost:5000/v1/timely-tasks?process=true&id=2954285' | jq '.result' > app/data/timely_2954285_tasks.json
-curl 'http://localhost:5000/v1/timely-tasks?process=true&id=2960359' | jq '.result' > app/data/timely_2960359_tasks.json
-curl 'http://localhost:5000/v1/timely-tasks?process=true&id=2973418' | jq '.result' > app/data/timely_2973418_tasks.json
-curl 'http://localhost:5000/v1/timely-tasks?process=true&id=2973485' | jq '.result' > app/data/timely_2973485_tasks.json
-curl 'http://localhost:5000/v1/timely-tasks?process=true&id=2973420' | jq '.result' > app/data/timely_2973420_tasks.json
-curl 'http://localhost:5000/v1/timely-tasks?process=true&id=2973417' | jq '.result' > app/data/timely_2973417_tasks.json
-curl 'http://localhost:5000/v1/timely-tasks?process=true&id=2973544' | jq '.result' > app/data/timely_2973544_tasks.json
-curl 'http://localhost:5000/v1/timely-tasks?process=true&id=2980115' | jq '.result' > app/data/timely_2980115_tasks.json
+curl 'http://localhost:5000/v1/timely-tasks?process=true&all=true&dictify=true' | jq '.result' > app/data/timely_tasks.json
+
+for PROJECT in $(jq -r 'to_entries[] | .key' app/data/timely_projects.json); do
+    curl "http://localhost:5000/v1/timely-tasks?process=true&id=${PROJECT}" | jq '.result' > "app/data/timely_${PROJECT}_tasks.json"
+done

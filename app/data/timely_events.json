@@ -1,0 +1,1962 @@
+{
+  "165715166": {
+    "billed": false,
+    "day": "2019-09-03",
+    "duration.total_minutes": 107,
+    "id": 165715166,
+    "label_ids[0]": 1339639,
+    "note": "Meetings with Reuben and Aditya",
+    "project.id": 2906240,
+    "user.id": 1281455
+  },
+  "165715173": {
+    "billed": false,
+    "day": "2019-09-03",
+    "duration.total_minutes": 120,
+    "id": 165715173,
+    "label_ids[0]": 1340560,
+    "note": "Prep for meetings and tasks and documentation after",
+    "project.id": 2906240,
+    "user.id": 1281455
+  },
+  "165733243": {
+    "billed": false,
+    "day": "2019-09-03",
+    "duration.total_minutes": 73,
+    "id": 165733243,
+    "label_ids[0]": 1344521,
+    "note": "Gusto • Income Tax Withholding Information • 604 • Wikipedia",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  "165733279": {
+    "billed": false,
+    "day": "2019-09-03",
+    "duration.total_minutes": 217,
+    "id": 165733279,
+    "label_ids[0]": 1339639,
+    "note": "Staff meeting",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  "165733568": {
+    "billed": false,
+    "day": "2019-09-01",
+    "duration.total_minutes": 40,
+    "id": 165733568,
+    "label_ids[0]": null,
+    "note": "Glassdoor • Clients • Gmail • SignNow vs DocuSign vs HelloSign • HelloSign • HelloSign API",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  "165733851": {
+    "billed": false,
+    "day": "2019-08-31",
+    "duration.total_minutes": 29,
+    "id": 165733851,
+    "label_ids[0]": null,
+    "note": "Northwestern Mutual • Take Command Health • HealthCare.gov • QSEHRA or Small Group Health Insurance? What's the Difference? • healthinsurance.org • Small Business Group Health Insurance Plans • Justworks",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  "165733888": {
+    "billed": false,
+    "day": "2019-08-31",
+    "duration.total_minutes": 27,
+    "id": 165733888,
+    "label_ids[0]": 1339640,
+    "note": "GPEDC Proposal by Nerevu Group.pages • IBA_Master_Licence_Agreement_Usage_Historical.pdf",
+    "project.id": 2960359,
+    "user.id": 933370
+  },
+  "165736195": {
+    "billed": false,
+    "day": "2019-09-03",
+    "duration.total_minutes": 66,
+    "id": 165736195,
+    "label_ids[0]": 1339639,
+    "note": "Nerevu Staff Meeting",
+    "project.id": 2906240,
+    "user.id": 1281876
+  },
+  "165736199": {
+    "billed": false,
+    "day": "2019-09-03",
+    "duration.total_minutes": 131,
+    "id": 165736199,
+    "label_ids[0]": 1339639,
+    "note": "One-on-one meeting",
+    "project.id": 2906240,
+    "user.id": 1281876
+  },
+  "165737426": {
+    "billed": false,
+    "day": "2019-09-03",
+    "duration.total_minutes": 178,
+    "id": 165737426,
+    "label_ids[0]": 1339639,
+    "note": "Nerevu Group • nerevu/handbook Wiki • UberConference • Notes • KeePassX • nerevu • adisahay@gmail.com • nerevu/data-hub-etl • GP Labor Force Updates • nerevu/data-hub-etl: GPEDC Data Hub API • Data Hub Automation • nerevu/hdxscraper-fts: Collector for the Financial Tracking Service (FTS) API • ne...",
+    "project.id": 2960359,
+    "user.id": 1281876
+  },
+  "165745166": {
+    "billed": false,
+    "day": "2019-09-01",
+    "duration.total_minutes": 36,
+    "id": 165745166,
+    "label_ids[0]": 1344451,
+    "note": "HelloSign • SignNow vs DocuSign vs HelloSign • Signority API Documentation • HelloSign API • Choose the right plan for you",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  "165745184": {
+    "billed": false,
+    "day": "2019-08-31",
+    "duration.total_minutes": 42,
+    "id": 165745184,
+    "label_ids[0]": 1344451,
+    "note": "HelloSign API • ProgrammableWeb • hellosign whitelabel at DuckDuckGo • HelloSign • HelloWorks",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  "165745190": {
+    "billed": false,
+    "day": "2019-08-31",
+    "duration.total_minutes": 19,
+    "id": 165745190,
+    "label_ids[0]": 1344521,
+    "note": "Gusto",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  "165745229": {
+    "billed": false,
+    "day": "2019-08-31",
+    "duration.total_minutes": 86,
+    "id": 165745229,
+    "label_ids[0]": 1344521,
+    "note": "Aditya Sahay Fall Internship Offer - Nerevu Data Analyst & Backend Development Intern.pages",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  "165745322": {
+    "billed": false,
+    "day": "2019-08-31",
+    "duration.total_minutes": 3,
+    "id": 165745322,
+    "label_ids[0]": null,
+    "note": "iBooks",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  "165745371": {
+    "billed": false,
+    "day": "2019-08-30",
+    "duration.total_minutes": 32,
+    "id": 165745371,
+    "label_ids[0]": 1344451,
+    "note": "FAQ • Task Bullet • Zirtual • VirtualAssistant • Virtual Secretary",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  "165745402": {
+    "billed": false,
+    "day": "2019-08-30",
+    "duration.total_minutes": 17,
+    "id": 165745402,
+    "label_ids[0]": 1344521,
+    "note": "Aditya Sahay Fall Internship Offer - Nerevu Data Analyst & Backend Development Intern.pages • 2019.08.25 Nerevu Gruop Intern Letter-Agreement.docx",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  "165746457": {
+    "billed": false,
+    "day": "2019-08-30",
+    "duration.total_minutes": 67,
+    "id": 165746457,
+    "label_ids[0]": 1339639,
+    "note": "Dropbox • Help • Dropbox Help",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  "165746496": {
+    "billed": false,
+    "day": "2019-08-30",
+    "duration.total_minutes": 5,
+    "id": 165746496,
+    "label_ids[0]": 1344451,
+    "note": "Justworks",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  "165746570": {
+    "billed": false,
+    "day": "2019-08-30",
+    "duration.total_minutes": 37,
+    "id": 165746570,
+    "label_ids[0]": 1344451,
+    "note": "Meeting notes: Add an event name • Client Meeting: Alegna • Minutes • Project plan: Add a project • Content • Members",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  "165746671": {
+    "billed": false,
+    "day": "2019-08-30",
+    "duration.total_minutes": 29,
+    "id": 165746671,
+    "label_ids[0]": 1340560,
+    "note": "nerevu/data-hub-etl",
+    "project.id": 2960359,
+    "user.id": 933370
+  },
+  "165746930": {
+    "billed": false,
+    "day": "2019-08-30",
+    "duration.total_minutes": 5,
+    "id": 165746930,
+    "label_ids[0]": 1340560,
+    "note": "nerevu/commissioner-api",
+    "project.id": 2954285,
+    "user.id": 933370
+  },
+  "165747124": {
+    "billed": false,
+    "day": "2019-08-30",
+    "duration.total_minutes": 94,
+    "id": 165747124,
+    "label_ids[0]": 1339639,
+    "note": "Finder • Calendar",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  "165757686": {
+    "billed": false,
+    "day": "2019-08-31",
+    "duration.total_minutes": 12,
+    "id": 165757686,
+    "label_ids[0]": 1339639,
+    "note": "Options • Cloze",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  "165757705": {
+    "billed": false,
+    "day": "2019-09-03",
+    "duration.total_minutes": 7,
+    "id": 165757705,
+    "label_ids[0]": 1344671,
+    "note": "First Mid Bank and Trust Secure Browser",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  "165757762": {
+    "billed": false,
+    "day": "2019-09-03",
+    "duration.total_minutes": 57,
+    "id": 165757762,
+    "label_ids[0]": 1339639,
+    "note": "Project Meeting",
+    "project.id": 2960359,
+    "user.id": 933370
+  },
+  "165757805": {
+    "billed": false,
+    "day": "2019-09-04",
+    "duration.total_minutes": 60,
+    "id": 165757805,
+    "label_ids[0]": 1339640,
+    "note": "Hanson Contract Review",
+    "project.id": 2973544,
+    "user.id": 933370
+  },
+  "165757808": {
+    "billed": false,
+    "day": "2019-09-04",
+    "duration.total_minutes": 12,
+    "id": 165757808,
+    "label_ids[0]": null,
+    "note": "Amazon.com: Positioning: The Battle for Your Mind eBook: Al Ries, Jack Trout, Philip Kotler: Kindle Store • Amazon Business • Contact Us • Amazon.com: Manage Your Content and Devices",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  "165757846": {
+    "billed": false,
+    "day": "2019-09-04",
+    "duration.total_minutes": 202,
+    "id": 165757846,
+    "label_ids[0]": 1344431,
+    "note": "openpeoria/data-portal Wiki • openpeoria/data-portal: CKAN data portal • heroku run command env vars at DuckDuckGo • Data Portal • openpeoria • Open Peoria Discussion • Terminal • Stack Overflow • Heroku Dev Center • Sublime Text • Heroku • Open Peoria",
+    "project.id": 2906311,
+    "user.id": 933370
+  },
+  "165757876": {
+    "billed": false,
+    "day": "2019-09-04",
+    "duration.total_minutes": 10,
+    "id": 165757876,
+    "label_ids[0]": 1344464,
+    "note": "Timely • Google Hangouts",
+    "project.id": 2954247,
+    "user.id": 1281876
+  },
+  "165757893": {
+    "billed": false,
+    "day": "2019-09-05",
+    "duration.total_minutes": 181,
+    "id": 165757893,
+    "label_ids[0]": 1344464,
+    "note": "Worked on disk image encryption and editing of Wiki.",
+    "project.id": 2954247,
+    "user.id": 1281876
+  },
+  "165757900": {
+    "billed": false,
+    "day": "2019-09-05",
+    "duration.total_minutes": 50,
+    "id": 165757900,
+    "label_ids[0]": 1339639,
+    "note": "Read the Internship Agreement and signed it.",
+    "project.id": 2954247,
+    "user.id": 1281876
+  },
+  "165780561": {
+    "billed": false,
+    "day": "2019-09-06",
+    "duration.total_minutes": 60,
+    "id": 165780561,
+    "label_ids[0]": 1340560,
+    "note": "Getting all my small todos done and updating wiki’s.",
+    "project.id": 2906240,
+    "user.id": 1281455
+  },
+  "165780585": {
+    "billed": false,
+    "day": "2019-09-06",
+    "duration.total_minutes": 58,
+    "id": 165780585,
+    "label_ids[0]": 1340560,
+    "note": "Timely • Fastmail • nerevu/handbook Wiki • Gusto • Nerevu Group",
+    "project.id": 2906240,
+    "user.id": 1281876
+  },
+  "165780795": {
+    "billed": false,
+    "day": "2019-09-07",
+    "duration.total_minutes": 45,
+    "id": 165780795,
+    "label_ids[0]": 1344464,
+    "note": "Learn more about the Cloze API with the explorer",
+    "project.id": 2954285,
+    "user.id": 1281455
+  },
+  "165825827": {
+    "billed": false,
+    "day": "2019-09-10",
+    "duration.total_minutes": 68,
+    "id": 165825827,
+    "label_ids[0]": 1339639,
+    "note": "Weekly Progress Report with Reuben\n\nTalked about Calendaring, generator functions, and being proactive on the frontend",
+    "project.id": 2906240,
+    "user.id": 1281455
+  },
+  "165825863": {
+    "billed": false,
+    "day": "2019-09-10",
+    "duration.total_minutes": 25,
+    "id": 165825863,
+    "label_ids[0]": 1339639,
+    "note": "Preparing for Meeting with Reuben",
+    "project.id": 2906240,
+    "user.id": 1281455
+  },
+  "165827384": {
+    "billed": false,
+    "day": "2019-09-10",
+    "duration.total_minutes": 78,
+    "id": 165827384,
+    "label_ids[0]": 1339639,
+    "note": "Overhaul Calendar so Nerevu Group can see it",
+    "project.id": 2906240,
+    "user.id": 1281455
+  },
+  "165828185": {
+    "billed": false,
+    "day": "2019-09-04",
+    "duration.total_minutes": 26,
+    "id": 165828185,
+    "label_ids[0]": 1344452,
+    "note": "LinkedIn",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  "165828202": {
+    "billed": false,
+    "day": "2019-09-04",
+    "duration.total_minutes": 114,
+    "id": 165828202,
+    "label_ids[0]": 1339639,
+    "note": "Timely • Gmail • Fastmail • Calendar • OmniFocus • stacy.malden@timely-707183132d54.intercom-mail.com",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  "165828346": {
+    "billed": false,
+    "day": "2019-09-04",
+    "duration.total_minutes": 10,
+    "id": 165828346,
+    "label_ids[0]": 1340560,
+    "note": "nerevu/handbook Wiki • tech amigos • Version history",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  "165828370": {
+    "billed": false,
+    "day": "2019-09-04",
+    "duration.total_minutes": 62,
+    "id": 165828370,
+    "label_ids[0]": 1344521,
+    "note": "Mitchell Sotto Internship Agreement - Nerevu.pages • Finder • Gusto",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  "165828429": {
+    "billed": false,
+    "day": "2019-09-05",
+    "duration.total_minutes": 679,
+    "id": 165828429,
+    "label_ids[0]": 1339639,
+    "note": "",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  "165828437": {
+    "billed": false,
+    "day": "2019-09-05",
+    "duration.total_minutes": 51,
+    "id": 165828437,
+    "label_ids[0]": 1339640,
+    "note": "Fastmail • GPEDC Master Services Agreement by Nerevu Group.pages • GPEDC Proposal by Nerevu Group.pages • GPEDC Statement of Work by Nerevu Group.pages • Finder",
+    "project.id": 2960359,
+    "user.id": 933370
+  },
+  "165828443": {
+    "billed": false,
+    "day": "2019-09-05",
+    "duration.total_minutes": 9,
+    "id": 165828443,
+    "label_ids[0]": null,
+    "note": "audible app multiple accounts at DuckDuckGo • Amazon Business • Amazon.com: Audible Thank You",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  "165828576": {
+    "billed": false,
+    "day": "2019-09-06",
+    "duration.total_minutes": 93,
+    "id": 165828576,
+    "label_ids[0]": 1344671,
+    "note": "Bill Pay • iPay SSO • First Mid Bank and Trust Secure Browser • Business Online • Gusto • Home • Fastmail",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  "165828652": {
+    "billed": false,
+    "day": "2019-09-06",
+    "duration.total_minutes": 105,
+    "id": 165828652,
+    "label_ids[0]": 1340560,
+    "note": "nerevu/commissioner-api • Sublime Text",
+    "project.id": 2954285,
+    "user.id": 933370
+  },
+  "165828687": {
+    "billed": false,
+    "day": "2019-09-06",
+    "duration.total_minutes": 59,
+    "id": 165828687,
+    "label_ids[0]": 1339639,
+    "note": "",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  "165828704": {
+    "billed": false,
+    "day": "2019-09-06",
+    "duration.total_minutes": 36,
+    "id": 165828704,
+    "label_ids[0]": 1339639,
+    "note": "Sign up for G Suite • Google • Google Hangouts • Terminal • Notification settings • MacDown",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  "165828939": {
+    "billed": false,
+    "day": "2019-09-10",
+    "duration.total_minutes": 136,
+    "id": 165828939,
+    "label_ids[0]": 1340560,
+    "note": "Wiki updates and Video for Google Calendar integration with Fastmail",
+    "project.id": 2906240,
+    "user.id": 1281455
+  },
+  "165828964": {
+    "billed": false,
+    "day": "2019-09-06",
+    "duration.total_minutes": 13,
+    "id": 165828964,
+    "label_ids[0]": 1339640,
+    "note": "Preview • KeePassX",
+    "project.id": 2973544,
+    "user.id": 933370
+  },
+  "165828976": {
+    "billed": false,
+    "day": "2019-09-06",
+    "duration.total_minutes": 47,
+    "id": 165828976,
+    "label_ids[0]": 1340560,
+    "note": "Fastmail • nerevu/handbook Wiki • Google Hangouts",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  "165829018": {
+    "billed": false,
+    "day": "2019-09-08",
+    "duration.total_minutes": 692,
+    "id": 165829018,
+    "label_ids[0]": 1339639,
+    "note": "Timely • hours-report-1.csv • Projects • Calendar • Nerevu • Account type: Meanin... • Commission Dashboard • Fastmail • Business Online • Admin Console • Glassdoor • All Jobs • Chat • convert week number to date and vice versa • BOD",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  "165829092": {
+    "billed": false,
+    "day": "2019-09-09",
+    "duration.total_minutes": 420,
+    "id": 165829092,
+    "label_ids[0]": 1339639,
+    "note": "Timely & Xero",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  "165829202": {
+    "billed": false,
+    "day": "2019-09-09",
+    "duration.total_minutes": 30,
+    "id": 165829202,
+    "label_ids[0]": 1344671,
+    "note": "Accounting firm call",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  "165829217": {
+    "billed": false,
+    "day": "2019-09-09",
+    "duration.total_minutes": 149,
+    "id": 165829217,
+    "label_ids[0]": 1339639,
+    "note": "Aditya 1on1",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  "165829264": {
+    "billed": false,
+    "day": "2019-09-09",
+    "duration.total_minutes": 58,
+    "id": 165829264,
+    "label_ids[0]": 1340560,
+    "note": "Python Cheatsheet • Fastmail • nerevu/kazeeki-api • Nerevu Labs Discussion • Nerevu Labs Team",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  "165829285": {
+    "billed": false,
+    "day": "2019-09-09",
+    "duration.total_minutes": 35,
+    "id": 165829285,
+    "label_ids[0]": 1339639,
+    "note": "G Suite • Google Drive Help • Finder • Admin Console • Google Drive • Calendar • UberConference",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  "165829388": {
+    "billed": false,
+    "day": "2019-09-09",
+    "duration.total_minutes": 10,
+    "id": 165829388,
+    "label_ids[0]": 1339639,
+    "note": "CalendarLabs • Calendar • Fastmail",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  "165829582": {
+    "billed": false,
+    "day": "2019-09-09",
+    "duration.total_minutes": 49,
+    "id": 165829582,
+    "label_ids[0]": 1339639,
+    "note": "Postmark Support Center",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  "165833444": {
+    "billed": false,
+    "day": "2019-09-01",
+    "duration.total_minutes": 184,
+    "id": 165833444,
+    "label_ids[0]": 1344464,
+    "note": "LeetCode",
+    "project.id": 2906240,
+    "user.id": 1281876
+  },
+  "165833470": {
+    "billed": false,
+    "day": "2019-09-05",
+    "duration.total_minutes": 38,
+    "id": 165833470,
+    "label_ids[0]": 1344464,
+    "note": "LeetCode",
+    "project.id": 2906240,
+    "user.id": 1281876
+  },
+  "165833478": {
+    "billed": false,
+    "day": "2019-09-06",
+    "duration.total_minutes": 59,
+    "id": 165833478,
+    "label_ids[0]": 1344464,
+    "note": "Medium • Grokking the System Design Interview • checkcheckzz/system-design-interview: System design interview for IT companies",
+    "project.id": 2906240,
+    "user.id": 1281876
+  },
+  "165833508": {
+    "billed": false,
+    "day": "2019-09-07",
+    "duration.total_minutes": 184,
+    "id": 165833508,
+    "label_ids[0]": 1344464,
+    "note": "Grokking the System Design Interview • System Design Interviews: A step by step guide • LeetCode • Google Search • Wikipedia",
+    "project.id": 2906240,
+    "user.id": 1281876
+  },
+  "165833523": {
+    "billed": false,
+    "day": "2019-09-08",
+    "duration.total_minutes": 46,
+    "id": 165833523,
+    "label_ids[0]": 1344431,
+    "note": "Atom • nerevu/data-hub-etl: GPEDC Data Hub API • New File • nerevu/commissioner-api: Alegna commission calculation API • Terminal • Fastmail",
+    "project.id": 2960359,
+    "user.id": 1281876
+  },
+  "165833543": {
+    "billed": false,
+    "day": "2019-09-08",
+    "duration.total_minutes": 140,
+    "id": 165833543,
+    "label_ids[0]": 1344464,
+    "note": "Google Search • LeetCode • Medium",
+    "project.id": 2906240,
+    "user.id": 1281876
+  },
+  "165833566": {
+    "billed": false,
+    "day": "2019-09-09",
+    "duration.total_minutes": 144,
+    "id": 165833566,
+    "label_ids[0]": 1339639,
+    "note": "Notes • UberConference • Fastmail • reubano/meza • nerevu/data-hub-etl • nerevu/hdxscraper-fts: Collector for the Financial Tracking Service (FTS) API • nerevu/hdxscraper-fts • Timely",
+    "project.id": 2906240,
+    "user.id": 1281876
+  },
+  "165833581": {
+    "billed": false,
+    "day": "2019-09-10",
+    "duration.total_minutes": 39,
+    "id": 165833581,
+    "label_ids[0]": 1339639,
+    "note": "Timely",
+    "project.id": 2906240,
+    "user.id": 1281876
+  },
+  "165865574": {
+    "billed": false,
+    "day": "2019-09-11",
+    "duration.total_minutes": 161,
+    "id": 165865574,
+    "label_ids[0]": 1344464,
+    "note": "",
+    "project.id": 2389295,
+    "user.id": 1281876
+  },
+  "165871430": {
+    "billed": false,
+    "day": "2019-09-10",
+    "duration.total_minutes": 187,
+    "id": 165871430,
+    "label_ids[0]": 1339639,
+    "note": "Google Hangouts • nerevu/commissioner-api • Timely • PaymoPlus • Calendar • Commission Dashboard • Gusto • hours-report.xlsx",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  "165871460": {
+    "billed": false,
+    "day": "2019-09-10",
+    "duration.total_minutes": 150,
+    "id": 165871460,
+    "label_ids[0]": 1344671,
+    "note": "",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  "165882356": {
+    "billed": false,
+    "day": "2019-09-12",
+    "duration.total_minutes": 358,
+    "id": 165882356,
+    "label_ids[0]": 1339640,
+    "note": "",
+    "project.id": 2973544,
+    "user.id": 933370
+  },
+  "165892834": {
+    "billed": false,
+    "day": "2019-09-13",
+    "duration.total_minutes": 214,
+    "id": 165892834,
+    "label_ids[0]": 1344464,
+    "note": "Atom • GeeksforGeeks • Collections (Java Platform SE 7 ) • Terminal • Activate Fountain - LeetCode Discuss",
+    "project.id": 2906240,
+    "user.id": 1281876
+  },
+  "165906451": {
+    "billed": false,
+    "day": "2019-09-13",
+    "duration.total_minutes": 30,
+    "id": 165906451,
+    "label_ids[0]": 1339639,
+    "note": "Emails, setting up meeting with Aditya, looking through Alegna Drive Folder",
+    "project.id": 2906240,
+    "user.id": 1281455
+  },
+  "165906476": {
+    "billed": false,
+    "day": "2019-09-13",
+    "duration.total_minutes": 30,
+    "id": 165906476,
+    "label_ids[0]": 1344431,
+    "note": "Adding Weighted Avg Sales to frontend",
+    "project.id": 2954285,
+    "user.id": 1281455
+  },
+  "165908344": {
+    "billed": false,
+    "day": "2019-09-13",
+    "duration.total_minutes": 25,
+    "id": 165908344,
+    "label_ids[0]": 1339639,
+    "note": "Talk to Aditya about Calendar etiquette, learn about Timely tags, talk about flask-admin, and learn about Amazon Business ",
+    "project.id": 2906240,
+    "user.id": 1281455
+  },
+  "165908368": {
+    "billed": false,
+    "day": "2019-09-13",
+    "duration.total_minutes": 35,
+    "id": 165908368,
+    "label_ids[0]": 1344449,
+    "note": "Understanding how to do requests and have the code rerender",
+    "project.id": 2954285,
+    "user.id": 1281455
+  },
+  "165909130": {
+    "billed": false,
+    "day": "2019-09-12",
+    "duration.total_minutes": 196,
+    "id": 165909130,
+    "label_ids[0]": 1344464,
+    "note": "Atom • Terminal • LeetCode • Watering Plants - LeetCode Discuss • Real Python",
+    "project.id": 2906240,
+    "user.id": 1281876
+  },
+  "165909211": {
+    "billed": false,
+    "day": "2019-09-12",
+    "duration.total_minutes": 84,
+    "id": 165909211,
+    "label_ids[0]": 1344449,
+    "note": "nerevu/dinerdiver-api: API for the Diner Diver webapp • nerevu/dinerdiver-api • Terminal • Atom",
+    "project.id": 2389295,
+    "user.id": 1281876
+  },
+  "165909281": {
+    "billed": false,
+    "day": "2019-09-13",
+    "duration.total_minutes": 37,
+    "id": 165909281,
+    "label_ids[0]": 1339639,
+    "note": "Fastmail • UberConference • Notes • Chat",
+    "project.id": 2906240,
+    "user.id": 1281876
+  },
+  "165910985": {
+    "billed": false,
+    "day": "2019-09-13",
+    "duration.total_minutes": 347,
+    "id": 165910985,
+    "label_ids[0]": 1344431,
+    "note": "Coding Weighted sales frontend",
+    "project.id": 2954285,
+    "user.id": 1281455
+  },
+  "165910996": {
+    "billed": false,
+    "day": "2019-09-13",
+    "duration.total_minutes": 70,
+    "id": 165910996,
+    "label_ids[0]": 1339639,
+    "note": "Xero/Timely Meeting",
+    "project.id": 2906240,
+    "user.id": 1281455
+  },
+  "165913741": {
+    "billed": false,
+    "day": "2019-09-13",
+    "duration.total_minutes": 112,
+    "id": 165913741,
+    "label_ids[0]": 1339639,
+    "note": "Fastmail • Timely • UberConference • Nerevu Labs",
+    "project.id": 2906240,
+    "user.id": 1281876
+  },
+  "165915848": {
+    "billed": false,
+    "day": "2019-09-13",
+    "duration.total_minutes": 35,
+    "id": 165915848,
+    "label_ids[0]": 1344431,
+    "note": "Calculate Commission Score on Backend",
+    "project.id": 2954285,
+    "user.id": 1281455
+  },
+  "165939335": {
+    "billed": false,
+    "day": "2019-09-10",
+    "duration.total_minutes": 73,
+    "id": 165939335,
+    "label_ids[0]": 1339639,
+    "note": "Mitchell 1-on-1",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  "165939416": {
+    "billed": false,
+    "day": "2019-09-10",
+    "duration.total_minutes": 39,
+    "id": 165939416,
+    "label_ids[0]": 1344452,
+    "note": "Terminal • Finder • Buffer Publish • LinkedIn • Fastmail • Cloze",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  "165939445": {
+    "billed": false,
+    "day": "2019-09-10",
+    "duration.total_minutes": 83,
+    "id": 165939445,
+    "label_ids[0]": 1339639,
+    "note": "UberConference • PaymoPlus • Calendar • Fastmail • LinkedIn",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  "165939537": {
+    "billed": false,
+    "day": "2019-09-11",
+    "duration.total_minutes": 528,
+    "id": 165939537,
+    "label_ids[0]": 1344671,
+    "note": "Retainer • How can I undo a voi... • secure bank browser site:reddit.com at DuckDuckGo • xero unvoided invoice at DuckDuckGo • First Mid Bank and Trust Secure Browser • Create a customer quote • New invoice for Commission Dashboard • Mul... • Nerevu • Xero • Project Summary • Commission Dashboard...",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  "165939557": {
+    "billed": false,
+    "day": "2019-09-11",
+    "duration.total_minutes": 59,
+    "id": 165939557,
+    "label_ids[0]": 1344451,
+    "note": "Looking for accountant",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  "165939567": {
+    "billed": false,
+    "day": "2019-09-11",
+    "duration.total_minutes": 73,
+    "id": 165939567,
+    "label_ids[0]": 1339640,
+    "note": "Fastmail • Finder • Hanson • TextEdit • Hanson - Nerevu Master Services Agreement.pages • Hanson / Nerevu Contract • Nerevu Master Services Agreement.txt",
+    "project.id": 2973544,
+    "user.id": 933370
+  },
+  "165939673": {
+    "billed": false,
+    "day": "2019-09-11",
+    "duration.total_minutes": 94,
+    "id": 165939673,
+    "label_ids[0]": 1340560,
+    "note": "Project Review w Aditya",
+    "project.id": 2389295,
+    "user.id": 933370
+  },
+  "165940057": {
+    "billed": false,
+    "day": "2019-09-12",
+    "duration.total_minutes": 31,
+    "id": 165940057,
+    "label_ids[0]": 1344521,
+    "note": "Utah-ID Account Maintenance • Utah Unemployment Insurance and New Hire Reporting • KeePassX • Interaction Web Tools",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  "165940094": {
+    "billed": false,
+    "day": "2019-09-12",
+    "duration.total_minutes": 26,
+    "id": 165940094,
+    "label_ids[0]": null,
+    "note": "Finder • Meetup • Calendar",
+    "project.id": 2906312,
+    "user.id": 933370
+  },
+  "165940104": {
+    "billed": false,
+    "day": "2019-09-12",
+    "duration.total_minutes": 22,
+    "id": 165940104,
+    "label_ids[0]": null,
+    "note": "Finder • Content • BOD • Groups",
+    "project.id": 2973420,
+    "user.id": 933370
+  },
+  "165940367": {
+    "billed": false,
+    "day": "2019-09-12",
+    "duration.total_minutes": 60,
+    "id": 165940367,
+    "label_ids[0]": 1339639,
+    "note": "Databox • Project Details • Commission Dashboard",
+    "project.id": 2954285,
+    "user.id": 933370
+  },
+  "165940439": {
+    "billed": false,
+    "day": "2019-09-13",
+    "duration.total_minutes": 190,
+    "id": 165940439,
+    "label_ids[0]": 1339640,
+    "note": "Hanson Statement of Work by Nerevu Group (example).pages • Hanson - Nerevu Master Services Agreement.pages • 25 Invoicing Mistakes to Avoid in Your Small Business • The 4 most effective email templates to get paid on time • The Beginner's Guide To Getting Upfront Payment From Freelance Clients ⋆ ...",
+    "project.id": 2973544,
+    "user.id": 933370
+  },
+  "165940496": {
+    "billed": false,
+    "day": "2019-09-13",
+    "duration.total_minutes": 66,
+    "id": 165940496,
+    "label_ids[0]": 1340560,
+    "note": "Xero/Timely/Project Training",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  "165940508": {
+    "billed": false,
+    "day": "2019-09-13",
+    "duration.total_minutes": 30,
+    "id": 165940508,
+    "label_ids[0]": 1344671,
+    "note": "Fastmail • Nerevu",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  "165940522": {
+    "billed": false,
+    "day": "2019-09-13",
+    "duration.total_minutes": 62,
+    "id": 165940522,
+    "label_ids[0]": 1344521,
+    "note": "Benefits • IRS Reminds Employers: Wellness Incentives Are Taxable • Paid Time Off: Basic information • Gusto • Fastmail • Qualtrics Survey Solutions • hours-report-5.csv",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  "165940530": {
+    "billed": false,
+    "day": "2019-09-13",
+    "duration.total_minutes": 15,
+    "id": 165940530,
+    "label_ids[0]": 1339639,
+    "note": "Fastmail • Google Hangouts",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  "165940573": {
+    "billed": false,
+    "day": "2019-09-13",
+    "duration.total_minutes": 48,
+    "id": 165940573,
+    "label_ids[0]": 1339639,
+    "note": "Fastmail • Calendar • nerevu/alegna-dashboard • Alegna Commission Dashboard • Timely",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  "165963392": {
+    "billed": false,
+    "day": "2019-09-15",
+    "duration.total_minutes": 342,
+    "id": 165963392,
+    "label_ids[0]": 1344671,
+    "note": "Personal • Transaction history  |  Vanguard • FutureAdvisor • Account Transactions • Account Details • Simple • Gnucash • Add your organisation • Account History • KeePassX • Bank Services • Download transactions • Account activity • Balances by date",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  "165963416": {
+    "billed": false,
+    "day": "2019-09-15",
+    "duration.total_minutes": 177,
+    "id": 165963416,
+    "label_ids[0]": 1339639,
+    "note": "Timely • Nerevu • PaymoPlus • Fastmail",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  "165963477": {
+    "billed": false,
+    "day": "2019-09-15",
+    "duration.total_minutes": 37,
+    "id": 165963477,
+    "label_ids[0]": 1339639,
+    "note": "List all tabs • Gusto • KeePassX • Stripe • Balance settings • Fastmail • Nerevu",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  "165997697": {
+    "billed": false,
+    "day": "2019-09-16",
+    "duration.total_minutes": 120,
+    "id": 165997697,
+    "label_ids[0]": null,
+    "note": "OmniFocus • openpeoria/data-portal Wiki • Terminal • Heroku • Stack Overflow • Sublime Text • Heroku Dev Center • Heroku Data • GitX",
+    "project.id": 2906311,
+    "user.id": 933370
+  },
+  "165997774": {
+    "billed": false,
+    "day": "2019-09-16",
+    "duration.total_minutes": 60,
+    "id": 165997774,
+    "label_ids[0]": 1344521,
+    "note": "Benefits",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  "166001453": {
+    "billed": false,
+    "day": "2019-09-17",
+    "duration.total_minutes": 45,
+    "id": 166001453,
+    "label_ids[0]": 1339639,
+    "note": "Read Email, Make Progress Report",
+    "project.id": 2906240,
+    "user.id": 1281455
+  },
+  "166001489": {
+    "billed": false,
+    "day": "2019-09-17",
+    "duration.total_minutes": 330,
+    "id": 166001489,
+    "label_ids[0]": 1344431,
+    "note": "Getting Weighted Avg Sales Showing Correctly",
+    "project.id": 2954285,
+    "user.id": 1281455
+  },
+  "166002638": {
+    "billed": false,
+    "day": "2019-09-16",
+    "duration.total_minutes": 46,
+    "id": 166002638,
+    "label_ids[0]": 1344671,
+    "note": "Nerevu • Xero • Invoice INV-00056 • Invoice INV-0055 • Fastmail • Nerevu > Edit Template",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  "166003210": {
+    "billed": false,
+    "day": "2019-09-16",
+    "duration.total_minutes": 17,
+    "id": 166003210,
+    "label_ids[0]": 1339639,
+    "note": "How is grokking the system design interview course? Is it worth buying for $80? • Designing a URL Shortening service like TinyURL • Timely",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  "166003270": {
+    "billed": false,
+    "day": "2019-09-16",
+    "duration.total_minutes": 83,
+    "id": 166003270,
+    "label_ids[0]": 1340560,
+    "note": "Project Meeting",
+    "project.id": 2389295,
+    "user.id": 933370
+  },
+  "166003288": {
+    "billed": false,
+    "day": "2019-09-16",
+    "duration.total_minutes": 227,
+    "id": 166003288,
+    "label_ids[0]": 1344671,
+    "note": "Personal • Home • chase.com • Account Transactions • EC2 Management Console • Cost Reports • Yodlee Bank Feeds: R... • Feature Requests • Finder • Gnucash • hours-report-5.csv",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  "166003471": {
+    "billed": false,
+    "day": "2019-09-16",
+    "duration.total_minutes": 35,
+    "id": 166003471,
+    "label_ids[0]": 1344604,
+    "note": "Home • Facebook • Reuben Cummings",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  "166004961": {
+    "billed": false,
+    "day": "2019-09-17",
+    "duration.total_minutes": 19,
+    "id": 166004961,
+    "label_ids[0]": 1339639,
+    "note": "",
+    "project.id": 2906240,
+    "user.id": 1281876
+  },
+  "166009358": {
+    "billed": false,
+    "day": "2019-09-17",
+    "duration.total_minutes": 65,
+    "id": 166009358,
+    "label_ids[0]": 1339639,
+    "note": "Weekly Meeting",
+    "project.id": 2906240,
+    "user.id": 1281455
+  },
+  "166010827": {
+    "billed": false,
+    "day": "2019-09-17",
+    "duration.total_minutes": 105,
+    "id": 166010827,
+    "label_ids[0]": 1344431,
+    "note": "Change the way weighted avg sale data is returned by the API (send it all together with the other data)",
+    "project.id": 2954285,
+    "user.id": 1281455
+  },
+  "166016377": {
+    "billed": false,
+    "day": "2019-09-16",
+    "duration.total_minutes": 165,
+    "id": 166016377,
+    "label_ids[0]": 1339639,
+    "note": "Atom • Fastmail • QAM • Timely • UberConference • DinerDiver Menus • Notes",
+    "project.id": 2389295,
+    "user.id": 1281876
+  },
+  "166028595": {
+    "billed": false,
+    "day": "2019-09-17",
+    "duration.total_minutes": 100,
+    "id": 166028595,
+    "label_ids[0]": 1344464,
+    "note": "Atom • Flask-Admin • Terminal • Stack Overflow • Finder",
+    "project.id": 2389295,
+    "user.id": 1281876
+  },
+  "166031899": {
+    "billed": false,
+    "day": "2019-09-17",
+    "duration.total_minutes": 75,
+    "id": 166031899,
+    "label_ids[0]": 1339639,
+    "note": "1-on-1",
+    "project.id": 2954285,
+    "user.id": 933370
+  },
+  "166031937": {
+    "billed": false,
+    "day": "2019-09-17",
+    "duration.total_minutes": 18,
+    "id": 166031937,
+    "label_ids[0]": 1339639,
+    "note": "Timely • Preview",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  "166031975": {
+    "billed": false,
+    "day": "2019-09-17",
+    "duration.total_minutes": 129,
+    "id": 166031975,
+    "label_ids[0]": 1344521,
+    "note": "Benefits meeting",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  "166032082": {
+    "billed": false,
+    "day": "2019-09-17",
+    "duration.total_minutes": 168,
+    "id": 166032082,
+    "label_ids[0]": 1339639,
+    "note": "Work schedule email",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  "166032126": {
+    "billed": false,
+    "day": "2019-09-17",
+    "duration.total_minutes": 7,
+    "id": 166032126,
+    "label_ids[0]": 1344604,
+    "note": "Transfer Money Online — Send Money Abroad with TransferWise • business hire your child at DuckDuckGo",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  "166032159": {
+    "billed": false,
+    "day": "2019-09-17",
+    "duration.total_minutes": 78,
+    "id": 166032159,
+    "label_ids[0]": 1339639,
+    "note": "Contacts • Fastmail",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  "166066323": {
+    "billed": false,
+    "day": "2019-09-19",
+    "duration.total_minutes": 282,
+    "id": 166066323,
+    "label_ids[0]": 1344464,
+    "note": "Notes • Preview • Finder • Atom • Terminal • QAM • PyPI • Learn Flask for Python • DataCamp • REST API With Flask & SQL Alchemy",
+    "project.id": 2389295,
+    "user.id": 1281876
+  },
+  "166066709": {
+    "billed": false,
+    "day": "2019-09-18",
+    "duration.total_minutes": 118,
+    "id": 166066709,
+    "label_ids[0]": 1339639,
+    "note": "Timely • Fastmail • nerevu/handbook Wiki • nerevu/handbook",
+    "project.id": 2906240,
+    "user.id": 1281876
+  },
+  "166066793": {
+    "billed": false,
+    "day": "2019-09-18",
+    "duration.total_minutes": 224,
+    "id": 166066793,
+    "label_ids[0]": 1344464,
+    "note": "Atom • QAM • Preview • Ian Lewis • Mixin and Custom Base Classes — SQLAlchemy 1.3 Documentation • Easy as Python • Stack Overflow • Chris Bartos • DinerDiver Menus • Linking Relationships with Backref — SQLAlchemy 1.3 Documentation • Terminal • Flask-Admin",
+    "project.id": 2389295,
+    "user.id": 1281876
+  },
+  "166077488": {
+    "billed": false,
+    "day": "2019-09-20",
+    "duration.total_minutes": 11,
+    "id": 166077488,
+    "label_ids[0]": 1339639,
+    "note": "",
+    "project.id": 2906240,
+    "user.id": 1281876
+  },
+  "166091303": {
+    "billed": false,
+    "day": "2019-09-19",
+    "duration.total_minutes": 584,
+    "id": 166091303,
+    "label_ids[0]": 1344671,
+    "note": "Notes • hours-report-5.csv • Calendar • Business Online • Gnucash • Balance Sheet • Mark as Reconciled w... • Account Transactions • Fastmail • chase.com • PayPal • Mint > Settings • Mint > Overview • Personal • Timely",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  "166091591": {
+    "billed": false,
+    "day": "2019-09-19",
+    "duration.total_minutes": 60,
+    "id": 166091591,
+    "label_ids[0]": 1344431,
+    "note": "Get the frontend working with weighted avg sales and upsells",
+    "project.id": 2954285,
+    "user.id": 1281455
+  },
+  "166092803": {
+    "billed": false,
+    "day": "2019-09-20",
+    "duration.total_minutes": 182,
+    "id": 166092803,
+    "label_ids[0]": 1344431,
+    "note": "",
+    "project.id": 2389295,
+    "user.id": 1281876
+  },
+  "166093558": {
+    "billed": false,
+    "day": "2019-09-20",
+    "duration.total_minutes": 240,
+    "id": 166093558,
+    "label_ids[0]": 1344431,
+    "note": "Return more data from backend",
+    "project.id": 2954285,
+    "user.id": 1281455
+  },
+  "166097295": {
+    "billed": false,
+    "day": "2019-09-19",
+    "duration.total_minutes": 9,
+    "id": 166097295,
+    "label_ids[0]": 1339639,
+    "note": "Timely",
+    "project.id": 2906240,
+    "user.id": 1281876
+  },
+  "166099883": {
+    "billed": false,
+    "day": "2019-09-20",
+    "duration.total_minutes": 190,
+    "id": 166099883,
+    "label_ids[0]": 1344431,
+    "note": "Get frontend to display everything properly",
+    "project.id": 2954285,
+    "user.id": 1281455
+  },
+  "166101054": {
+    "billed": false,
+    "day": "2019-09-20",
+    "duration.total_minutes": 71,
+    "id": 166101054,
+    "label_ids[0]": 1340560,
+    "note": "",
+    "project.id": 2954285,
+    "user.id": 933370
+  },
+  "166110626": {
+    "billed": false,
+    "day": "2019-09-20",
+    "duration.total_minutes": 388,
+    "id": 166110626,
+    "label_ids[0]": 1344431,
+    "note": "Finder • Wikipedia • Sublime Text • Activity Monitor • GitX •  • Preview • Gnucash • Terminal • Chat • Dash • Calendar",
+    "project.id": 2389295,
+    "user.id": 933370
+  },
+  "166110884": {
+    "billed": false,
+    "day": "2019-09-20",
+    "duration.total_minutes": 40,
+    "id": 166110884,
+    "label_ids[0]": 1339639,
+    "note": "Timely • Calendar",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  "166110900": {
+    "billed": false,
+    "day": "2019-09-20",
+    "duration.total_minutes": 25,
+    "id": 166110900,
+    "label_ids[0]": 1340560,
+    "note": "Chat • Sublime Text",
+    "project.id": 2389295,
+    "user.id": 933370
+  },
+  "166110908": {
+    "billed": false,
+    "day": "2019-09-20",
+    "duration.total_minutes": 60,
+    "id": 166110908,
+    "label_ids[0]": 1339640,
+    "note": "Transportation Meeting",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  "166110973": {
+    "billed": false,
+    "day": "2019-09-18",
+    "duration.total_minutes": 559,
+    "id": 166110973,
+    "label_ids[0]": 1344671,
+    "note": "Personal • Nerevu • Gnucash • TextEdit • hours-report-5.csv • Billing Subscription • Fastmail • Ally • Finder • Account History • chase.com • Rich Landing Account History",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  "166111037": {
+    "billed": false,
+    "day": "2019-09-18",
+    "duration.total_minutes": 97,
+    "id": 166111037,
+    "label_ids[0]": 1339639,
+    "note": "Data Meetup",
+    "project.id": 2906312,
+    "user.id": 933370
+  },
+  "166111061": {
+    "billed": false,
+    "day": "2019-09-18",
+    "duration.total_minutes": 34,
+    "id": 166111061,
+    "label_ids[0]": 1339639,
+    "note": "Fastmail • Timely • Nerevu",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  "166117620": {
+    "billed": false,
+    "day": "2019-09-17",
+    "duration.total_minutes": 104,
+    "id": 166117620,
+    "label_ids[0]": 1344464,
+    "note": "LeetCode",
+    "project.id": 2906240,
+    "user.id": 1281876
+  },
+  "166117952": {
+    "billed": false,
+    "day": "2019-09-22",
+    "duration.total_minutes": 8,
+    "id": 166117952,
+    "label_ids[0]": 1339639,
+    "note": "",
+    "project.id": 2906240,
+    "user.id": 1281876
+  },
+  "166153143": {
+    "billed": false,
+    "day": "2019-09-21",
+    "duration.total_minutes": 138,
+    "id": 166153143,
+    "label_ids[0]": 1344431,
+    "note": "Example of how to use Flask with requests-oauthlib to fetch a GitHub user profile using an OAuth 2 token. • joestump/python-oauth2 • dermesser/yup-oauth2: An oauth2 client implementation providing the Device, Installed and Service Account flows. • Web App Example of OAuth 2 web application flow —...",
+    "project.id": 3013676,
+    "user.id": 933370
+  },
+  "166153246": {
+    "billed": false,
+    "day": "2019-09-21",
+    "duration.total_minutes": 93,
+    "id": 166153246,
+    "label_ids[0]": 1339639,
+    "note": "PaymoPlus • Timely • Zapier • Timely Help Center",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  "166153252": {
+    "billed": false,
+    "day": "2019-09-21",
+    "duration.total_minutes": 13,
+    "id": 166153252,
+    "label_ids[0]": 1344671,
+    "note": "Mint > Overview • Home • chase.com",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  "166153285": {
+    "billed": false,
+    "day": "2019-09-22",
+    "duration.total_minutes": 720,
+    "id": 166153285,
+    "label_ids[0]": 1344431,
+    "note": "http://127.0.0.1:5000/v1/events • http://127.0.0.1:5000/v1/labels • NameError: name 'sss' is not defined // Werkzeug Debugger • AttributeError: 'OAuth2Token' object has no attribute 'access_token' // Werkzeug Debugger • NameError: name 'sdsdf' is not defined // Werkzeug Debugger • TypeError: list...",
+    "project.id": 3013676,
+    "user.id": 933370
+  },
+  "166170167": {
+    "billed": false,
+    "day": "2019-09-24",
+    "duration.total_minutes": 60,
+    "id": 166170167,
+    "label_ids[0]": 1344431,
+    "note": "Integrating Front and Backend for Weighted Avg Sales",
+    "project.id": 2954285,
+    "user.id": 1281455
+  },
+  "166175825": {
+    "billed": false,
+    "day": "2019-09-23",
+    "duration.total_minutes": 120,
+    "id": 166175825,
+    "label_ids[0]": 1344431,
+    "note": "Atom • Terminal • Finder • API Reference — gspread 3.1.0 documentation • Stack Overflow • data",
+    "project.id": 2389295,
+    "user.id": 1281876
+  },
+  "166176019": {
+    "billed": false,
+    "day": "2019-09-24",
+    "duration.total_minutes": 20,
+    "id": 166176019,
+    "label_ids[0]": 1344449,
+    "note": "Understanding Cloze API",
+    "project.id": 2954285,
+    "user.id": 1281455
+  },
+  "166176028": {
+    "billed": false,
+    "day": "2019-09-24",
+    "duration.total_minutes": 220,
+    "id": 166176028,
+    "label_ids[0]": 1344431,
+    "note": "Commissioner Score in Backend",
+    "project.id": 2954285,
+    "user.id": 1281455
+  },
+  "166177261": {
+    "billed": false,
+    "day": "2019-09-24",
+    "duration.total_minutes": 20,
+    "id": 166177261,
+    "label_ids[0]": 1339636,
+    "note": "Set up Serveo so we don't have to debug from Heroku",
+    "project.id": 2906240,
+    "user.id": 1281455
+  },
+  "166177264": {
+    "billed": false,
+    "day": "2019-09-24",
+    "duration.total_minutes": 10,
+    "id": 166177264,
+    "label_ids[0]": 1339639,
+    "note": "Create Weekly Progress Report",
+    "project.id": 2906240,
+    "user.id": 1281455
+  },
+  "166182682": {
+    "billed": false,
+    "day": "2019-09-24",
+    "duration.total_minutes": 80,
+    "id": 166182682,
+    "label_ids[0]": 1339639,
+    "note": "Weekly Progress Update Meeting",
+    "project.id": 2906240,
+    "user.id": 1281455
+  },
+  "166203540": {
+    "billed": false,
+    "day": "2019-09-24",
+    "duration.total_minutes": 107,
+    "id": 166203540,
+    "label_ids[0]": 1339639,
+    "note": "dga-ryvt-dgx • DinverDiverTest • Atom • Notes • QAM • Preview • Fastmail • Timely • Chat • Gusto",
+    "project.id": 2906240,
+    "user.id": 1281876
+  },
+  "166203544": {
+    "billed": false,
+    "day": "2019-09-24",
+    "duration.total_minutes": 94,
+    "id": 166203544,
+    "label_ids[0]": 1344431,
+    "note": "Terminal • Atom • Pandas dataframe.groupby() - GeeksforGeeks • Preview • QAM • data",
+    "project.id": 2389295,
+    "user.id": 1281876
+  },
+  "166204875": {
+    "billed": false,
+    "day": "2019-09-25",
+    "duration.total_minutes": 25,
+    "id": 166204875,
+    "label_ids[0]": 1340560,
+    "note": "nerevu/handbook Wiki • DinerDiver • nerevu/dinerdiver-api: API for the Diner Diver webapp",
+    "project.id": 2389295,
+    "user.id": 1281876
+  },
+  "166204882": {
+    "billed": false,
+    "day": "2019-09-25",
+    "duration.total_minutes": 132,
+    "id": 166204882,
+    "label_ids[0]": 1344431,
+    "note": "Google Search • Chat • data • nerevu/dinerdiver-api • Atom • DinerDiver Menus • Terminal",
+    "project.id": 2389295,
+    "user.id": 1281876
+  },
+  "166204893": {
+    "billed": false,
+    "day": "2019-09-25",
+    "duration.total_minutes": 81,
+    "id": 166204893,
+    "label_ids[0]": 1340560,
+    "note": "nerevu/handbook Wiki • Google Cloud Platform • Finder • Notes",
+    "project.id": 2906240,
+    "user.id": 1281876
+  },
+  "166215290": {
+    "billed": false,
+    "day": "2019-09-25",
+    "duration.total_minutes": 75,
+    "id": 166215290,
+    "label_ids[0]": 1344431,
+    "note": "Commission Score Calculation (mostly frontend)",
+    "project.id": 2954285,
+    "user.id": 1281455
+  },
+  "166216324": {
+    "billed": false,
+    "day": "2019-09-26",
+    "duration.total_minutes": 180,
+    "id": 166216324,
+    "label_ids[0]": 1344431,
+    "note": "Frontend Commission Score & PR change requests",
+    "project.id": 2954285,
+    "user.id": 1281455
+  },
+  "166227784": {
+    "billed": false,
+    "day": "2019-09-26",
+    "duration.total_minutes": 25,
+    "id": 166227784,
+    "label_ids[0]": 1339639,
+    "note": "Meet with Aditya to talk about confusion with Kanban Board",
+    "project.id": 2906240,
+    "user.id": 1281455
+  },
+  "166227795": {
+    "billed": false,
+    "day": "2019-09-23",
+    "duration.total_minutes": 599,
+    "id": 166227795,
+    "label_ids[0]": 1344431,
+    "note": "http://localhost:5000/v1/timely-projects • http://localhost:5000/v1/xero-projects?process=true • http://localhost:5000/v1/xero-tasks?process=true • http://localhost:5000/v1/timely-tasks?process=true • AttributeError: 'str' object has no attribute 'get' // Werkzeug Debugger • http://localhost:5000...",
+    "project.id": 3013676,
+    "user.id": 933370
+  },
+  "166227807": {
+    "billed": false,
+    "day": "2019-09-23",
+    "duration.total_minutes": 74,
+    "id": 166227807,
+    "label_ids[0]": 1339639,
+    "note": "LinkedIn • Fastmail • My Drive • PIA • Best Practices • Gmail",
+    "project.id": 2973417,
+    "user.id": 933370
+  },
+  "166227808": {
+    "billed": false,
+    "day": "2019-09-23",
+    "duration.total_minutes": 9,
+    "id": 166227808,
+    "label_ids[0]": 1344521,
+    "note": "Preview • Finder • Fastmail",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  "166227813": {
+    "billed": false,
+    "day": "2019-09-23",
+    "duration.total_minutes": 10,
+    "id": 166227813,
+    "label_ids[0]": 1339639,
+    "note": "Calendar",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  "166227826": {
+    "billed": false,
+    "day": "2019-09-24",
+    "duration.total_minutes": 302,
+    "id": 166227826,
+    "label_ids[0]": 1344431,
+    "note": "Sublime Text • Timely API v1.1 • Terminal • GitX • KeePassX",
+    "project.id": 3013676,
+    "user.id": 933370
+  },
+  "166227832": {
+    "billed": false,
+    "day": "2019-09-24",
+    "duration.total_minutes": 88,
+    "id": 166227832,
+    "label_ids[0]": 1339639,
+    "note": "dga-ryvt-dgx • nerevu/dinerdiver-api • Admin console • Fastmail",
+    "project.id": 2389295,
+    "user.id": 933370
+  },
+  "166227843": {
+    "billed": false,
+    "day": "2019-09-24",
+    "duration.total_minutes": 181,
+    "id": 166227843,
+    "label_ids[0]": 1344431,
+    "note": "Fastmail • Zapier • Databox • Databox Metrics • Issue Tracker • Eventbrite • Calendar • Gmail",
+    "project.id": 2973418,
+    "user.id": 933370
+  },
+  "166227852": {
+    "billed": false,
+    "day": "2019-09-24",
+    "duration.total_minutes": 95,
+    "id": 166227852,
+    "label_ids[0]": 1339639,
+    "note": "nerevu/commissioner-api • Fastmail •  • Chat • UberConference • Serveo: expose local servers to the internet using SSH • record video conference call at DuckDuckGo",
+    "project.id": 2954285,
+    "user.id": 933370
+  },
+  "166227869": {
+    "billed": false,
+    "day": "2019-09-24",
+    "duration.total_minutes": 12,
+    "id": 166227869,
+    "label_ids[0]": 1344671,
+    "note": "Xero • Nerevu",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  "166227881": {
+    "billed": false,
+    "day": "2019-09-24",
+    "duration.total_minutes": 4,
+    "id": 166227881,
+    "label_ids[0]": 1339640,
+    "note": "Comparison of Hanson • Hanson",
+    "project.id": 2973544,
+    "user.id": 933370
+  },
+  "166227893": {
+    "billed": false,
+    "day": "2019-09-24",
+    "duration.total_minutes": 8,
+    "id": 166227893,
+    "label_ids[0]": 1339639,
+    "note": "GPEDC Data Hub Info • Emsi • Datasets",
+    "project.id": 2960359,
+    "user.id": 933370
+  },
+  "166227898": {
+    "billed": false,
+    "day": "2019-09-24",
+    "duration.total_minutes": 8,
+    "id": 166227898,
+    "label_ids[0]": 1344521,
+    "note": "Gusto",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  "166227905": {
+    "billed": false,
+    "day": "2019-09-24",
+    "duration.total_minutes": 12,
+    "id": 166227905,
+    "label_ids[0]": 1339639,
+    "note": "nerevu/meetings: Nerevu meetings agendas and minutes • Fastmail • KeePassX",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  "166227911": {
+    "billed": false,
+    "day": "2019-09-25",
+    "duration.total_minutes": 513,
+    "id": 166227911,
+    "label_ids[0]": 1344431,
+    "note": "NameError: name 'ddd' is not defined // Werkzeug Debugger • Developer Interface — Requests-OAuthlib 1.0.0 documentation • requests/requests-oauthlib • oauthlib/oauthlib • oauthlib.oauth2.rfc6749.errors.InvalidClientIdError: (invalid_request) Invalid client_id parameter value. // Werkzeug Debugger...",
+    "project.id": 3013676,
+    "user.id": 933370
+  },
+  "166227916": {
+    "billed": false,
+    "day": "2019-09-25",
+    "duration.total_minutes": 80,
+    "id": 166227916,
+    "label_ids[0]": 1339639,
+    "note": "Education • Social Media • Databox • Zapier • Fastmail",
+    "project.id": 2973420,
+    "user.id": 933370
+  },
+  "166239183": {
+    "billed": false,
+    "day": "2019-09-25",
+    "duration.total_minutes": 39,
+    "id": 166239183,
+    "label_ids[0]": 1344671,
+    "note": "xero email payment receipt at DuckDuckGo • Stripe: Help & Support • Stripe • Google Hangouts • Sublime Text • requests/requests-oauthlib • Nerevu",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  "166239438": {
+    "billed": false,
+    "day": "2019-09-26",
+    "duration.total_minutes": 60,
+    "id": 166239438,
+    "label_ids[0]": 1340560,
+    "note": "Alegna Commission Dashboard • Google Hangouts • Terminal • GitX • Sublime Text",
+    "project.id": 2954285,
+    "user.id": 933370
+  },
+  "166239451": {
+    "billed": false,
+    "day": "2019-09-26",
+    "duration.total_minutes": 67,
+    "id": 166239451,
+    "label_ids[0]": 1344431,
+    "note": "Sublime Text • GitX • Terminal • nerevu/commissioner-api",
+    "project.id": 2954285,
+    "user.id": 933370
+  },
+  "166239455": {
+    "billed": false,
+    "day": "2019-09-26",
+    "duration.total_minutes": 36,
+    "id": 166239455,
+    "label_ids[0]": 1339639,
+    "note": "Fastmail • Timely",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  "166239527": {
+    "billed": false,
+    "day": "2019-09-26",
+    "duration.total_minutes": 105,
+    "id": 166239527,
+    "label_ids[0]": 1340560,
+    "note": "Terminal • nerevu • nerevu/commissioner-api • nerevu/alegna-dashboard • http://localhost:5000/v1/xero-status • Dash",
+    "project.id": 2954285,
+    "user.id": 933370
+  },
+  "166243620": {
+    "billed": false,
+    "day": "2019-09-27",
+    "duration.total_minutes": 15,
+    "id": 166243620,
+    "label_ids[0]": 1340560,
+    "note": "Review Merge Request",
+    "project.id": 2954285,
+    "user.id": 1281455
+  },
+  "166243646": {
+    "billed": false,
+    "day": "2019-09-27",
+    "duration.total_minutes": 45,
+    "id": 166243646,
+    "label_ids[0]": null,
+    "note": "Work on Merging and Commission Scores",
+    "project.id": 2954285,
+    "user.id": 1281455
+  },
+  "166244476": {
+    "billed": false,
+    "day": "2019-09-27",
+    "duration.total_minutes": 85,
+    "id": 166244476,
+    "label_ids[0]": 1344431,
+    "note": "",
+    "project.id": 2389295,
+    "user.id": 1281876
+  },
+  "166245080": {
+    "billed": false,
+    "day": "2019-09-26",
+    "duration.total_minutes": 108,
+    "id": 166245080,
+    "label_ids[0]": 1344431,
+    "note": "DinerDiver Menus • Preview • Atom • Google Search • DinverDiverTest • QAM • Terminal • Stack Overflow",
+    "project.id": 2389295,
+    "user.id": 1281876
+  },
+  "166245114": {
+    "billed": false,
+    "day": "2019-09-26",
+    "duration.total_minutes": 26,
+    "id": 166245114,
+    "label_ids[0]": 1339639,
+    "note": "Chat • UberConference • Terminal • nerevu/dinerdiver-api • DinerDiver • Fastmail",
+    "project.id": 2389295,
+    "user.id": 1281876
+  },
+  "166245278": {
+    "billed": false,
+    "day": "2019-09-27",
+    "duration.total_minutes": 250,
+    "id": 166245278,
+    "label_ids[0]": 1344431,
+    "note": "Commission Score Backend and Frontend",
+    "project.id": 2954285,
+    "user.id": 1281455
+  },
+  "166245297": {
+    "billed": false,
+    "day": "2019-09-27",
+    "duration.total_minutes": 20,
+    "id": 166245297,
+    "label_ids[0]": 1344431,
+    "note": "Documentation",
+    "project.id": 2954285,
+    "user.id": 1281455
+  },
+  "166246500": {
+    "billed": false,
+    "day": "2019-09-27",
+    "duration.total_minutes": 39,
+    "id": 166246500,
+    "label_ids[0]": 1339639,
+    "note": "Timely • Nerevu Group • Fastmail",
+    "project.id": 2906240,
+    "user.id": 1281876
+  },
+  "166246592": {
+    "billed": false,
+    "day": "2019-09-27",
+    "duration.total_minutes": 30,
+    "id": 166246592,
+    "label_ids[0]": 1344432,
+    "note": "Fixing the version of python so libraries don't break and updating the remotes",
+    "project.id": 2954285,
+    "user.id": 1281455
+  },
+  "166247478": {
+    "billed": false,
+    "day": "2019-09-27",
+    "duration.total_minutes": 100,
+    "id": 166247478,
+    "label_ids[0]": 1339636,
+    "note": "Set up process to allow our apps to access quickbooks through Serveo",
+    "project.id": 2906240,
+    "user.id": 1281455
+  },
+  "166254673": {
+    "billed": false,
+    "day": "2019-09-28",
+    "duration.total_minutes": 216,
+    "id": 166254673,
+    "label_ids[0]": 1344431,
+    "note": "Atom • Stack Overflow • Trey Hunner • QAM • Terminal",
+    "project.id": 2389295,
+    "user.id": 1281876
+  },
+  "166254677": {
+    "billed": false,
+    "day": "2019-09-28",
+    "duration.total_minutes": 24,
+    "id": 166254677,
+    "label_ids[0]": 1339639,
+    "note": "Timely",
+    "project.id": 2906240,
+    "user.id": 1281876
+  },
+  "166254687": {
+    "billed": false,
+    "day": "2019-09-26",
+    "duration.total_minutes": 129,
+    "id": 166254687,
+    "label_ids[0]": 1344464,
+    "note": "Designing a URL Shortening service like TinyURL • SQL vs. NoSQL",
+    "project.id": 2906240,
+    "user.id": 1281876
+  }
+}

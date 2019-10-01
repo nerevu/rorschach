@@ -1,27 +1,5 @@
 [
   {
-    "dateEnteredUtc": "2019-09-11T16:54:04.9105773Z",
-    "dateUtc": "2019-08-24T05:00:00Z",
-    "day": "2019-08-24",
-    "duration": 517,
-    "projectId": "15ff819d-6d69-406c-98c5-ed9ab9163779",
-    "status": "ACTIVE",
-    "taskId": "98929c61-8a38-4c32-8557-8f83f24f3d93",
-    "timeEntryId": "527d0fdc-e28b-4b16-8c58-58a4f94ab2da",
-    "userId": "b21daba7-83b1-4a94-8467-35bb1964abd0"
-  },
-  {
-    "dateEnteredUtc": "2019-09-11T16:54:38.8220274Z",
-    "dateUtc": "2019-08-24T05:00:00Z",
-    "day": "2019-08-24",
-    "duration": 84,
-    "projectId": "15ff819d-6d69-406c-98c5-ed9ab9163779",
-    "status": "ACTIVE",
-    "taskId": "cbd8f1be-d627-446b-8f0a-8cfc01adef85",
-    "timeEntryId": "9a044a4c-8275-4546-989f-270e86a93660",
-    "userId": "b21daba7-83b1-4a94-8467-35bb1964abd0"
-  },
-  {
     "dateEnteredUtc": "2019-09-11T16:55:01.4911947Z",
     "dateUtc": "2019-08-31T05:00:00Z",
     "day": "2019-08-31",

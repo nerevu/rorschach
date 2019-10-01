@@ -1,51 +1,11 @@
 [
   {
     "billed": false,
-    "day": "2019-08-27",
-    "duration.total_minutes": 220,
-    "id": 165594996,
-    "label_ids[0]": 1344464,
-    "note": "Understanding Mithril and working on alegna-dashboard",
-    "project.id": 2954285,
-    "user.id": 1281455
-  },
-  {
-    "billed": false,
     "day": "2019-08-30",
     "duration.total_minutes": 5,
     "id": 165746930,
     "label_ids[0]": 1340560,
     "note": "nerevu/commissioner-api",
-    "project.id": 2954285,
-    "user.id": 933370
-  },
-  {
-    "billed": false,
-    "day": "2019-08-29",
-    "duration.total_minutes": 9,
-    "id": 165747223,
-    "label_ids[0]": 1340560,
-    "note": "nerevu/commissioner-api",
-    "project.id": 2954285,
-    "user.id": 933370
-  },
-  {
-    "billed": false,
-    "day": "2019-08-27",
-    "duration.total_minutes": 53,
-    "id": 165757427,
-    "label_ids[0]": 1340560,
-    "note": "Sublime Text • GitX",
-    "project.id": 2954285,
-    "user.id": 933370
-  },
-  {
-    "billed": false,
-    "day": "2019-08-28",
-    "duration.total_minutes": 180,
-    "id": 165757514,
-    "label_ids[0]": 1340560,
-    "note": "nerevu/alegna-dashboard • Sublime Text • nerevu/commissioner-api • Alegna Commission Dashboard • Heroku • iTerm2 • GitX • Cloze",
     "project.id": 2954285,
     "user.id": 933370
   },
@@ -212,10 +172,120 @@
   {
     "billed": false,
     "day": "2019-09-24",
-    "duration.total_minutes": 140,
+    "duration.total_minutes": 220,
     "id": 166176028,
     "label_ids[0]": 1344431,
     "note": "Commissioner Score in Backend",
+    "project.id": 2954285,
+    "user.id": 1281455
+  },
+  {
+    "billed": false,
+    "day": "2019-09-25",
+    "duration.total_minutes": 75,
+    "id": 166215290,
+    "label_ids[0]": 1344431,
+    "note": "Commission Score Calculation (mostly frontend)",
+    "project.id": 2954285,
+    "user.id": 1281455
+  },
+  {
+    "billed": false,
+    "day": "2019-09-26",
+    "duration.total_minutes": 180,
+    "id": 166216324,
+    "label_ids[0]": 1344431,
+    "note": "Frontend Commission Score & PR change requests",
+    "project.id": 2954285,
+    "user.id": 1281455
+  },
+  {
+    "billed": false,
+    "day": "2019-09-24",
+    "duration.total_minutes": 95,
+    "id": 166227852,
+    "label_ids[0]": 1339639,
+    "note": "nerevu/commissioner-api • Fastmail •  • Chat • UberConference • Serveo: expose local servers to the internet using SSH • record video conference call at DuckDuckGo",
+    "project.id": 2954285,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2019-09-26",
+    "duration.total_minutes": 60,
+    "id": 166239438,
+    "label_ids[0]": 1340560,
+    "note": "Alegna Commission Dashboard • Google Hangouts • Terminal • GitX • Sublime Text",
+    "project.id": 2954285,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2019-09-26",
+    "duration.total_minutes": 67,
+    "id": 166239451,
+    "label_ids[0]": 1344431,
+    "note": "Sublime Text • GitX • Terminal • nerevu/commissioner-api",
+    "project.id": 2954285,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2019-09-26",
+    "duration.total_minutes": 105,
+    "id": 166239527,
+    "label_ids[0]": 1340560,
+    "note": "Terminal • nerevu • nerevu/commissioner-api • nerevu/alegna-dashboard • http://localhost:5000/v1/xero-status • Dash",
+    "project.id": 2954285,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2019-09-27",
+    "duration.total_minutes": 15,
+    "id": 166243620,
+    "label_ids[0]": 1340560,
+    "note": "Review Merge Request",
+    "project.id": 2954285,
+    "user.id": 1281455
+  },
+  {
+    "billed": false,
+    "day": "2019-09-27",
+    "duration.total_minutes": 45,
+    "id": 166243646,
+    "label_ids[0]": null,
+    "note": "Work on Merging and Commission Scores",
+    "project.id": 2954285,
+    "user.id": 1281455
+  },
+  {
+    "billed": false,
+    "day": "2019-09-27",
+    "duration.total_minutes": 250,
+    "id": 166245278,
+    "label_ids[0]": 1344431,
+    "note": "Commission Score Backend and Frontend",
+    "project.id": 2954285,
+    "user.id": 1281455
+  },
+  {
+    "billed": false,
+    "day": "2019-09-27",
+    "duration.total_minutes": 20,
+    "id": 166245297,
+    "label_ids[0]": 1344431,
+    "note": "Documentation",
+    "project.id": 2954285,
+    "user.id": 1281455
+  },
+  {
+    "billed": false,
+    "day": "2019-09-27",
+    "duration.total_minutes": 30,
+    "id": 166246592,
+    "label_ids[0]": 1344432,
+    "note": "Fixing the version of python so libraries don't break and updating the remotes",
     "project.id": 2954285,
     "user.id": 1281455
   }
