@@ -1028,6 +1028,7 @@ class Time(ProjectBase):
                         "hours": total_minutes // 60,
                         "minutes": total_minutes % 60,
                         "billed": True,
+                        "user_id": event["user.id"],
                     }
 
                     kwargs = {
