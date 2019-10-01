@@ -1,0 +1,80 @@
+[
+  {
+    "billable": true,
+    "id": 1344431,
+    "name": "Development (setup, programming, debugging, testing, documentation etc.)",
+    "projectId": "2980115"
+  },
+  {
+    "billable": true,
+    "id": 1344444,
+    "name": "Design (web, database, spec, etc.)",
+    "projectId": "2980115"
+  },
+  {
+    "billable": true,
+    "id": 1344445,
+    "name": "Consulting (strategizing, client meetings, presentations, demos, etc.)",
+    "projectId": "2980115"
+  },
+  {
+    "billable": true,
+    "id": 1344449,
+    "name": "Research (specific: via blogs, documentation, etc.)",
+    "projectId": "2980115"
+  },
+  {
+    "billable": false,
+    "id": 1339636,
+    "name": "R&D (creating new frameworks/libraries, tools, processes, etc.)",
+    "projectId": "2980115"
+  },
+  {
+    "billable": false,
+    "id": 1339639,
+    "name": "Admin (meetings, time tracking, email, calendar, organizing, paperwork, etc.)",
+    "projectId": "2980115"
+  },
+  {
+    "billable": false,
+    "id": 1340560,
+    "name": "Instructing (explaining, wiki documentation, reviewing, etc.)",
+    "projectId": "2980115"
+  },
+  {
+    "billable": false,
+    "id": 1344451,
+    "name": "Evaluating (selecting internal tools and services)",
+    "projectId": "2980115"
+  },
+  {
+    "billable": false,
+    "id": 1344452,
+    "name": "Marketing (blogging, social media, etc.)",
+    "projectId": "2980115"
+  },
+  {
+    "billable": false,
+    "id": 1344464,
+    "name": "Learning (general: via articles, books, tutorials, courses, etc.)",
+    "projectId": "2980115"
+  },
+  {
+    "billable": false,
+    "id": 1344521,
+    "name": "HR (benefits, contracts, payroll, etc.)",
+    "projectId": "2980115"
+  },
+  {
+    "billable": false,
+    "id": 1344604,
+    "name": "Misc (doesn't fit elsewhere)",
+    "projectId": "2980115"
+  },
+  {
+    "billable": false,
+    "id": 1344671,
+    "name": "Finance & Accounting (bookeeping, budgeting, forecasting, invoicing, etc.)",
+    "projectId": "2980115"
+  }
+]

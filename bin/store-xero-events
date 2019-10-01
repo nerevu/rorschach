@@ -1,0 +1,8 @@
+#!/usr/bin/env bash -uo pipefail
+
+curl 'http://localhost:5000/v1/xero-time?process=true&id=15ff819d-6d69-406c-98c5-ed9ab9163779' | jq '.result' > app/data/xero_15ff819d_events.json
+curl 'http://localhost:5000/v1/xero-time?process=true&id=23be1505-900b-4504-b1fe-cf1b1c7e1d12' | jq '.result' > app/data/xero_23be1505_events.json
+curl 'http://localhost:5000/v1/xero-time?process=true&id=3fe4d0ef-b45f-4812-8ca8-9c64f6bd679c' | jq '.result' > app/data/xero_3fe4d0ef_events.json
+curl 'http://localhost:5000/v1/xero-time?process=true&id=615c8090-938d-4ee7-8f4e-6ae945920507' | jq '.result' > app/data/xero_615c8090_events.json
+curl 'http://localhost:5000/v1/xero-time?process=true&id=803591c3-72af-4475-888f-7c4c50044589' | jq '.result' > app/data/xero_803591c3_events.json
+curl 'http://localhost:5000/v1/xero-time?process=true&id=b1d797e3-e54b-4686-b83f-d8ea5a35f1c2' | jq '.result' > app/data/xero_b1d797e3_events.json

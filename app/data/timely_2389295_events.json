@@ -1,0 +1,132 @@
+[
+  {
+    "billed": false,
+    "day": "2019-09-09",
+    "duration.total_minutes": 23,
+    "id": 165829339,
+    "label_ids[0]": 1344445,
+    "note": "DinerDiver Companies • DinerDiver Menus • Untitled spreadsheet •  • Google Drive File Stream",
+    "project.id": 2389295,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2019-09-11",
+    "duration.total_minutes": 161,
+    "id": 165865574,
+    "label_ids[0]": 1344464,
+    "note": "",
+    "project.id": 2389295,
+    "user.id": 1281876
+  },
+  {
+    "billed": false,
+    "day": "2019-09-12",
+    "duration.total_minutes": 84,
+    "id": 165909211,
+    "label_ids[0]": 1344449,
+    "note": "nerevu/dinerdiver-api: API for the Diner Diver webapp • nerevu/dinerdiver-api • Terminal • Atom",
+    "project.id": 2389295,
+    "user.id": 1281876
+  },
+  {
+    "billed": false,
+    "day": "2019-09-11",
+    "duration.total_minutes": 94,
+    "id": 165939673,
+    "label_ids[0]": 1340560,
+    "note": "Project Review w Aditya",
+    "project.id": 2389295,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2019-09-16",
+    "duration.total_minutes": 83,
+    "id": 166003270,
+    "label_ids[0]": 1340560,
+    "note": "Project Meeting",
+    "project.id": 2389295,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2019-09-16",
+    "duration.total_minutes": 165,
+    "id": 166016377,
+    "label_ids[0]": 1339639,
+    "note": "Atom • Fastmail • QAM • Timely • UberConference • DinerDiver Menus • Notes",
+    "project.id": 2389295,
+    "user.id": 1281876
+  },
+  {
+    "billed": false,
+    "day": "2019-09-17",
+    "duration.total_minutes": 100,
+    "id": 166028595,
+    "label_ids[0]": 1344464,
+    "note": "Atom • Flask-Admin • Terminal • Stack Overflow • Finder",
+    "project.id": 2389295,
+    "user.id": 1281876
+  },
+  {
+    "billed": false,
+    "day": "2019-09-19",
+    "duration.total_minutes": 282,
+    "id": 166066323,
+    "label_ids[0]": 1344464,
+    "note": "Notes • Preview • Finder • Atom • Terminal • QAM • PyPI • Learn Flask for Python • DataCamp • REST API With Flask & SQL Alchemy",
+    "project.id": 2389295,
+    "user.id": 1281876
+  },
+  {
+    "billed": false,
+    "day": "2019-09-18",
+    "duration.total_minutes": 224,
+    "id": 166066793,
+    "label_ids[0]": 1344464,
+    "note": "Atom • QAM • Preview • Ian Lewis • Mixin and Custom Base Classes — SQLAlchemy 1.3 Documentation • Easy as Python • Stack Overflow • Chris Bartos • DinerDiver Menus • Linking Relationships with Backref — SQLAlchemy 1.3 Documentation • Terminal • Flask-Admin",
+    "project.id": 2389295,
+    "user.id": 1281876
+  },
+  {
+    "billed": false,
+    "day": "2019-09-20",
+    "duration.total_minutes": 182,
+    "id": 166092803,
+    "label_ids[0]": 1344431,
+    "note": "",
+    "project.id": 2389295,
+    "user.id": 1281876
+  },
+  {
+    "billed": false,
+    "day": "2019-09-20",
+    "duration.total_minutes": 388,
+    "id": 166110626,
+    "label_ids[0]": 1344431,
+    "note": "Finder • Wikipedia • Sublime Text • Activity Monitor • GitX •  • Preview • Gnucash • Terminal • Chat • Dash • Calendar",
+    "project.id": 2389295,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2019-09-20",
+    "duration.total_minutes": 25,
+    "id": 166110900,
+    "label_ids[0]": 1340560,
+    "note": "Chat • Sublime Text",
+    "project.id": 2389295,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2019-09-23",
+    "duration.total_minutes": 120,
+    "id": 166175825,
+    "label_ids[0]": 1344431,
+    "note": "Atom • Terminal • Finder • API Reference — gspread 3.1.0 documentation • Stack Overflow • data",
+    "project.id": 2389295,
+    "user.id": 1281876
+  }
+]

@@ -1,0 +1,4 @@
+#!/usr/bin/env bash -uo pipefail
+
+curl 'http://localhost:5000/v1/timely-projects?process=true' | jq '.result' > app/data/timely_projects.json
+curl 'http://localhost:5000/v1/xero-projects?process=true' | jq '.result' > app/data/xero_projects.json

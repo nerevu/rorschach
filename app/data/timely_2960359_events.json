@@ -1,0 +1,82 @@
+[
+  {
+    "billed": false,
+    "day": "2019-08-31",
+    "duration.total_minutes": 27,
+    "id": 165733888,
+    "label_ids[0]": 1339640,
+    "note": "GPEDC Proposal by Nerevu Group.pages • IBA_Master_Licence_Agreement_Usage_Historical.pdf",
+    "project.id": 2960359,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2019-09-03",
+    "duration.total_minutes": 178,
+    "id": 165737426,
+    "label_ids[0]": 1339639,
+    "note": "Nerevu Group • nerevu/handbook Wiki • UberConference • Notes • KeePassX • nerevu • adisahay@gmail.com • nerevu/data-hub-etl • GP Labor Force Updates • nerevu/data-hub-etl: GPEDC Data Hub API • Data Hub Automation • nerevu/hdxscraper-fts: Collector for the Financial Tracking Service (FTS) API • ne...",
+    "project.id": 2960359,
+    "user.id": 1281876
+  },
+  {
+    "billed": false,
+    "day": "2019-08-30",
+    "duration.total_minutes": 29,
+    "id": 165746671,
+    "label_ids[0]": 1340560,
+    "note": "nerevu/data-hub-etl",
+    "project.id": 2960359,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2019-08-28",
+    "duration.total_minutes": 17,
+    "id": 165757635,
+    "label_ids[0]": 1339640,
+    "note": "Fastmail",
+    "project.id": 2960359,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2019-09-03",
+    "duration.total_minutes": 57,
+    "id": 165757762,
+    "label_ids[0]": 1339639,
+    "note": "Project Meeting",
+    "project.id": 2960359,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2019-08-27",
+    "duration.total_minutes": 55,
+    "id": 165799351,
+    "label_ids[0]": 1340560,
+    "note": "Greater Peoria Data Hub • GPEDC Data Hub Info • Fastmail • Collaborators",
+    "project.id": 2960359,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2019-09-05",
+    "duration.total_minutes": 51,
+    "id": 165828437,
+    "label_ids[0]": 1339640,
+    "note": "Fastmail • GPEDC Master Services Agreement by Nerevu Group.pages • GPEDC Proposal by Nerevu Group.pages • GPEDC Statement of Work by Nerevu Group.pages • Finder",
+    "project.id": 2960359,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2019-09-08",
+    "duration.total_minutes": 46,
+    "id": 165833523,
+    "label_ids[0]": 1344431,
+    "note": "Atom • nerevu/data-hub-etl: GPEDC Data Hub API • New File • nerevu/commissioner-api: Alegna commission calculation API • Terminal • Fastmail",
+    "project.id": 2960359,
+    "user.id": 1281876
+  }
+]

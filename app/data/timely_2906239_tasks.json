@@ -1,0 +1,26 @@
+[
+  {
+    "billable": true,
+    "id": 1344431,
+    "name": "Development (setup, programming, debugging, testing, documentation etc.)",
+    "projectId": "2906239"
+  },
+  {
+    "billable": true,
+    "id": 1344432,
+    "name": "Maintenance (server upgrades, bug fixes, etc.)",
+    "projectId": "2906239"
+  },
+  {
+    "billable": true,
+    "id": 1344444,
+    "name": "Design (web, database, spec, etc.)",
+    "projectId": "2906239"
+  },
+  {
+    "billable": true,
+    "id": 1344449,
+    "name": "Research (specific: via blogs, documentation, etc.)",
+    "projectId": "2906239"
+  }
+]
