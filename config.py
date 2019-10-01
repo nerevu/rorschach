@@ -89,15 +89,24 @@ class Config(object):
     TIMELY_REFRESH_URL = TIMELY_TOKEN_URL
 
     # https://developer.xero.com/myapps/
+    XERO_API_BASE_URL = "https://api.xero.com"
+    XERO_OAUTH_VERSION = 1
+
+    # oauth2
     XERO_CLIENT_ID = getenv("XERO_CLIENT_ID")
     XERO_SECRET = getenv("XERO_SECRET")
+    XERO_AUTHORIZATION_BASE_URL = "https://login.xero.com/identity/connect/authorize"
+    XERO_TOKEN_URL = f"{XERO_API_BASE_URL}/oauth/token"
+    XERO_REFRESH_URL = XERO_TOKEN_URL
+    # XERO_AUTHENTICATE_REFRESH = False
+    XERO_SCOPES = ["projects", "offline_access"]
+
+    # oauth1
     XERO_CONSUMER_KEY = getenv("XERO_CONSUMER_KEY")
     XERO_CONSUMER_SECRET = getenv("XERO_CONSUMER_SECRET")
-    XERO_SCOPES = ["projects", "offline_access"]
-    XERO_API_BASE_URL = "https://api.xero.com"
-    XERO_AUTHORIZATION_BASE_URL = "https://login.xero.com/identity/connect/authorize"
-    XERO_TOKEN_URL = "https://identity.xero.com/connect/token"
-    XERO_REFRESH_URL = XERO_TOKEN_URL
+    XERO_REQUEST_URL = f"{XERO_API_BASE_URL}/oauth/RequestToken"
+    XERO_AUTHORIZATION_BASE_URL_V1 = f"{XERO_API_BASE_URL}/oauth/Authorize"
+    XERO_TOKEN_URL_V1 = f"{XERO_API_BASE_URL}/oauth/AccessToken"
 
     # Change based on mode
     TIMELY_REDIRECT_URI = "urn:ietf:wg:oauth:2.0:oob"

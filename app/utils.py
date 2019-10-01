@@ -45,6 +45,16 @@ MIMETYPES = [
 get_hash = lambda text: md5(str(text).encode(ENCODING)).hexdigest()
 
 
+class CustomEncoder(ft.CustomEncoder):
+    def default(self, obj):
+        if "days" in set(dir(obj)):
+            encoded = str(obj)
+        else:
+            encoded = super().default(obj)
+
+        return encoded
+
+
 def responsify(mimetype, status_code=200, indent=2, sort_keys=True, **kwargs):
     """ Creates a jsonified response. Necessary because the default
     flask.jsonify doesn't correctly handle sets, dates, or iterators
@@ -63,7 +73,7 @@ def responsify(mimetype, status_code=200, indent=2, sort_keys=True, **kwargs):
     kwargs["status"] = responses[status_code]
 
     if mimetype.endswith("json"):
-        content = dumps(kwargs, cls=ft.CustomEncoder, **options)
+        content = dumps(kwargs, cls=CustomEncoder, **options)
     elif mimetype.endswith("csv") and kwargs.get(result):
         content = cv.records2csv(kwargs[result]).getvalue()
     else:
