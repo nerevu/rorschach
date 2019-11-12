@@ -751,7 +751,7 @@ class Auth(MethodView):
         return redirect(url_for(f".{self.prefix}_status".lower()))
 
 
-class ProjectBase(MethodView):
+class APIBase(MethodView):
     def __init__(self, prefix):
         self.prefix = prefix
         self.lowered = self.prefix.lower()
@@ -839,7 +839,7 @@ class ProjectBase(MethodView):
         return jsonify(**response)
 
 
-class Projects(ProjectBase):
+class Projects(APIBase):
     def __init__(self, prefix):
         super().__init__(prefix)
 
@@ -886,7 +886,7 @@ class Projects(ProjectBase):
         return jsonify(**response)
 
 
-class Users(ProjectBase):
+class Users(APIBase):
     def __init__(self, prefix):
         super().__init__(prefix)
 
@@ -898,7 +898,7 @@ class Users(ProjectBase):
             self.fields = ["name", "userId"]
 
 
-class Tasks(ProjectBase):
+class Tasks(APIBase):
     def __init__(self, prefix):
         super().__init__(prefix)
 
@@ -950,7 +950,7 @@ class Tasks(ProjectBase):
         return jsonify(**response)
 
 
-class Time(ProjectBase):
+class Time(APIBase):
     def __init__(self, prefix):
         super().__init__(prefix)
 
