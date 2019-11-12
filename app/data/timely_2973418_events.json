@@ -8,5 +8,15 @@
     "note": "Fastmail • Zapier • Databox • Databox Metrics • Issue Tracker • Eventbrite • Calendar • Gmail",
     "project.id": 2973418,
     "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2019-10-15",
+    "duration.total_minutes": 22,
+    "id": 166628833,
+    "label_ids[0]": 1344431,
+    "note": "Zapier • Databox • Fastmail",
+    "project.id": 2973418,
+    "user.id": 933370
   }
 ]

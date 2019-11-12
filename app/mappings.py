@@ -193,6 +193,14 @@ tasks = [
             "project": "f9d0e04b-f07c-423d-8975-418159180dab",
         },
     },
+    # - Timely->Xero mapping for Aditya Sahay:Maintenance on DinerDiver not found!
+    {
+      "timely": {"task": 1344432, "project": 2389295, "users": CONSULTANTS},
+      "xero": {
+        "task": "66a9506d-8c45-4cab-b97f-9b27bf53402d",
+        "project": "803591c3-72af-4475-888f-7c4c50044589"
+      }
+    },
 ]
 
 

@@ -1,56 +1,6 @@
 [
   {
     "billed": false,
-    "day": "2019-09-04",
-    "duration.total_minutes": 60,
-    "id": 165757805,
-    "label_ids[0]": 1339640,
-    "note": "Hanson Contract Review",
-    "project.id": 2973544,
-    "user.id": 933370
-  },
-  {
-    "billed": false,
-    "day": "2019-09-06",
-    "duration.total_minutes": 13,
-    "id": 165828964,
-    "label_ids[0]": 1339640,
-    "note": "Preview • KeePassX",
-    "project.id": 2973544,
-    "user.id": 933370
-  },
-  {
-    "billed": false,
-    "day": "2019-09-12",
-    "duration.total_minutes": 358,
-    "id": 165882356,
-    "label_ids[0]": 1339640,
-    "note": "",
-    "project.id": 2973544,
-    "user.id": 933370
-  },
-  {
-    "billed": false,
-    "day": "2019-09-11",
-    "duration.total_minutes": 73,
-    "id": 165939567,
-    "label_ids[0]": 1339640,
-    "note": "Fastmail • Finder • Hanson • TextEdit • Hanson - Nerevu Master Services Agreement.pages • Hanson / Nerevu Contract • Nerevu Master Services Agreement.txt",
-    "project.id": 2973544,
-    "user.id": 933370
-  },
-  {
-    "billed": false,
-    "day": "2019-09-13",
-    "duration.total_minutes": 190,
-    "id": 165940439,
-    "label_ids[0]": 1339640,
-    "note": "Hanson Statement of Work by Nerevu Group (example).pages • Hanson - Nerevu Master Services Agreement.pages • 25 Invoicing Mistakes to Avoid in Your Small Business • The 4 most effective email templates to get paid on time • The Beginner's Guide To Getting Upfront Payment From Freelance Clients ⋆ ...",
-    "project.id": 2973544,
-    "user.id": 933370
-  },
-  {
-    "billed": false,
     "day": "2019-09-24",
     "duration.total_minutes": 4,
     "id": 166227881,

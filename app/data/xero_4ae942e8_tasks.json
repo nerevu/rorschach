@@ -5,5 +5,12 @@
     "rate.value": 0,
     "status": "ACTIVE",
     "taskId": "c1b1fb50-94b4-4e65-bcd3-2c6bdcd24260"
+  },
+  {
+    "name": "1 Hour Development (Pro-Bono)",
+    "projectId": "4ae942e8-af62-4318-b569-7476df14cbef",
+    "rate.value": 0,
+    "status": "ACTIVE",
+    "taskId": "fa6d6aee-1820-40a8-9f9c-804a828baf25"
   }
 ]

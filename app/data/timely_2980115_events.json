@@ -1,1 +1,22 @@
-[]
+[
+  {
+    "billed": false,
+    "day": "2019-10-08",
+    "duration.total_minutes": 27,
+    "id": 166494492,
+    "label_ids[0]": 1344464,
+    "note": "MIT IAP Other Opportunities • Externship Experience: Coding for Humanity • Externship Experience: Life at a Startup • Externship Experience: Exploring Medicine • alum.mit.edu • externship_sample_job_description.pdf",
+    "project.id": 2980115,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2019-10-14",
+    "duration.total_minutes": 34,
+    "id": 166615504,
+    "label_ids[0]": 1344449,
+    "note": "research internship sites",
+    "project.id": 2980115,
+    "user.id": 933370
+  }
+]

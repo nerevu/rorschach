@@ -1,21 +1,21 @@
 [
   {
     "billed": false,
-    "day": "2019-09-12",
-    "duration.total_minutes": 26,
-    "id": 165940094,
-    "label_ids[0]": null,
-    "note": "Finder • Meetup • Calendar",
-    "project.id": 2906312,
-    "user.id": 933370
-  },
-  {
-    "billed": false,
     "day": "2019-09-18",
     "duration.total_minutes": 97,
     "id": 166111037,
     "label_ids[0]": 1339639,
     "note": "Data Meetup",
+    "project.id": 2906312,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2019-10-04",
+    "duration.total_minutes": 25,
+    "id": 166438979,
+    "label_ids[0]": 1344452,
+    "note": "(1) July Data Meetup (Apache Hadoop) • FB Events.key • Meetup • LinkedIn • (1) October Data Meetup (How the Peoria Fire Department uses Data) • Facebook • (1) Roland Tenley",
     "project.id": 2906312,
     "user.id": 933370
   }

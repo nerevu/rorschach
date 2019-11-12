@@ -1,0 +1,32 @@
+[
+  {
+    "billed": false,
+    "day": "2019-10-02",
+    "duration.total_minutes": 22,
+    "id": 166379958,
+    "label_ids[0]": 1339640,
+    "note": "Initial call",
+    "project.id": 3028598,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2019-10-04",
+    "duration.total_minutes": 151,
+    "id": 166438868,
+    "label_ids[0]": 1339640,
+    "note": "Website Audit Pricelist • Fastmail • How to conduct an Ecommerce website audit like a pro? • UX Design Audit, a Key to Improve User Experience of your Website • Nerevu • My Drive • nerevu/alegna-dashboard • nerevu/commissioner-api • Google Hangouts • Zapier",
+    "project.id": 3028598,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2019-10-10",
+    "duration.total_minutes": 130,
+    "id": 166585840,
+    "label_ids[0]": 1339640,
+    "note": "Meeting w Mark",
+    "project.id": 3028598,
+    "user.id": 933370
+  }
+]
