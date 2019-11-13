@@ -77,7 +77,7 @@ class Config(object):
     SEND_FILE_MAX_AGE_DEFAULT = ROUTE_TIMEOUT
     EMPTY_TIMEOUT = ROUTE_TIMEOUT * 10
     API_URL_PREFIX = "/v1"
-    SECRET_KEY = getenv("ALEGNA_SECRET_KEY", urandom(24))
+    SECRET_KEY = getenv("TIMERO_SECRET_KEY", urandom(24))
 
     # https://app.timelyapp.com/777870/oauth_applications
     TIMELY_ACCOUNT_ID = "777870"
