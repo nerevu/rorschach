@@ -184,6 +184,11 @@ class Development(Config):
     OAUTHLIB_INSECURE_TRANSPORT = True
 
 
+class Serveo(Development):
+    # Xero localhost callbacks work fine
+    TIMELY_REDIRECT_URI = f"https://nerevu.serveo.net{API_URL_PREFIX}/timely-callback"
+
+
 class Test(Config):
     SQLALCHEMY_DATABASE_URI = "sqlite:///:memory:"
     DEBUG = True
