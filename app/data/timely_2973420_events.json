@@ -1,16 +1,6 @@
 [
   {
     "billed": false,
-    "day": "2019-09-12",
-    "duration.total_minutes": 22,
-    "id": 165940104,
-    "label_ids[0]": null,
-    "note": "Finder • Content • BOD • Groups",
-    "project.id": 2973420,
-    "user.id": 933370
-  },
-  {
-    "billed": false,
     "day": "2019-09-25",
     "duration.total_minutes": 80,
     "id": 166227916,

@@ -1,10 +1,5 @@
 [
   {
-    "id": 1340560,
-    "name": "Instructing (explaining, wiki documentation, reviewing, etc.)",
-    "projectId": "2906308"
-  },
-  {
     "id": 1344431,
     "name": "Development (setup, programming, debugging, testing, documentation etc.)",
     "projectId": "2906308"
@@ -32,6 +27,11 @@
   {
     "id": 1344449,
     "name": "Research (specific: via blogs, documentation, etc.)",
+    "projectId": "2906308"
+  },
+  {
+    "id": 1340560,
+    "name": "Instructing (explaining, wiki documentation, reviewing, etc.)",
     "projectId": "2906308"
   }
 ]

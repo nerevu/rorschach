@@ -1,62 +1,72 @@
 [
   {
+    "id": 1339636,
+    "name": "R&D (creating new frameworks/libraries, tools, processes, etc.)",
+    "projectId": "3028598"
+  },
+  {
     "id": 1339639,
     "name": "Admin (meetings, time tracking, email, calendar, organizing, paperwork, etc.)",
-    "projectId": "2906311"
+    "projectId": "3028598"
+  },
+  {
+    "id": 1339640,
+    "name": "Sales (validating, prospecting, proposals, contracts, etc.)",
+    "projectId": "3028598"
   },
   {
     "id": 1340560,
     "name": "Instructing (explaining, wiki documentation, reviewing, etc.)",
-    "projectId": "2906311"
+    "projectId": "3028598"
   },
   {
     "id": 1344431,
     "name": "Development (setup, programming, debugging, testing, documentation etc.)",
-    "projectId": "2906311"
+    "projectId": "3028598"
   },
   {
     "id": 1344432,
     "name": "Maintenance (server upgrades, bug fixes, etc.)",
-    "projectId": "2906311"
+    "projectId": "3028598"
   },
   {
     "id": 1344444,
     "name": "Design (web, database, spec, etc.)",
-    "projectId": "2906311"
+    "projectId": "3028598"
   },
   {
     "id": 1344445,
     "name": "Consulting (strategizing, client meetings, presentations, demos, etc.)",
-    "projectId": "2906311"
+    "projectId": "3028598"
   },
   {
     "id": 1344447,
     "name": "Instructing (workshops, seminars, coaching sessions, etc.)",
-    "projectId": "2906311"
+    "projectId": "3028598"
   },
   {
     "id": 1344449,
     "name": "Research (specific: via blogs, documentation, etc.)",
-    "projectId": "2906311"
+    "projectId": "3028598"
   },
   {
     "id": 1344451,
     "name": "Evaluating (selecting internal tools and services)",
-    "projectId": "2906311"
-  },
-  {
-    "id": 1344452,
-    "name": "Marketing (blogging, social media, etc.)",
-    "projectId": "2906311"
+    "projectId": "3028598"
   },
   {
     "id": 1344464,
     "name": "Learning (general: via articles, books, tutorials, courses, etc.)",
-    "projectId": "2906311"
+    "projectId": "3028598"
   },
   {
     "id": 1344466,
     "name": "Networking (social media, meetups, conferences, etc.)",
-    "projectId": "2906311"
+    "projectId": "3028598"
+  },
+  {
+    "id": 1344604,
+    "name": "Misc (doesn't fit elsewhere)",
+    "projectId": "3028598"
   }
 ]

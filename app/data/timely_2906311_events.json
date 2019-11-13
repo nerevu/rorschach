@@ -1,21 +1,31 @@
 [
   {
     "billed": false,
-    "day": "2019-09-04",
-    "duration.total_minutes": 202,
-    "id": 165757846,
+    "day": "2019-09-16",
+    "duration.total_minutes": 98,
+    "id": 165997697,
     "label_ids[0]": 1344431,
-    "note": "openpeoria/data-portal Wiki • openpeoria/data-portal: CKAN data portal • heroku run command env vars at DuckDuckGo • Data Portal • openpeoria • Open Peoria Discussion • Terminal • Stack Overflow • Heroku Dev Center • Sublime Text • Heroku • Open Peoria",
+    "note": "OmniFocus • openpeoria/data-portal Wiki • Terminal • Heroku • Stack Overflow • Sublime Text • Heroku Dev Center • Heroku Data • GitX",
     "project.id": 2906311,
     "user.id": 933370
   },
   {
     "billed": false,
-    "day": "2019-09-16",
-    "duration.total_minutes": 120,
-    "id": 165997697,
-    "label_ids[0]": null,
-    "note": "OmniFocus • openpeoria/data-portal Wiki • Terminal • Heroku • Stack Overflow • Sublime Text • Heroku Dev Center • Heroku Data • GitX",
+    "day": "2019-10-09",
+    "duration.total_minutes": 255,
+    "id": 166585671,
+    "label_ids[0]": 1344432,
+    "note": "Meetup and Development",
+    "project.id": 2906311,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2019-10-11",
+    "duration.total_minutes": 13,
+    "id": 166585977,
+    "label_ids[0]": 1344431,
+    "note": "ckan/ckan • Plugin interfaces reference — CKAN 2.9.0a documentation • Sublime Text • nerevu/dinerdiver-api",
     "project.id": 2906311,
     "user.id": 933370
   }

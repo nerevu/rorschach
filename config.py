@@ -90,7 +90,7 @@ class Config(object):
 
     # https://developer.xero.com/myapps/
     XERO_API_BASE_URL = "https://api.xero.com"
-    XERO_OAUTH_VERSION = 1
+    XERO_OAUTH_VERSION = 2
 
     # oauth2
     XERO_CLIENT_ID = getenv("XERO_CLIENT_ID")
@@ -182,6 +182,11 @@ class Development(Config):
     ROW_LIMIT = 16
     SQLALCHEMY_TRACK_MODIFICATIONS = True
     OAUTHLIB_INSECURE_TRANSPORT = True
+
+
+class Serveo(Development):
+    # Xero localhost callbacks work fine
+    TIMELY_REDIRECT_URI = f"https://nerevu.serveo.net{API_URL_PREFIX}/timely-callback"
 
 
 class Test(Config):

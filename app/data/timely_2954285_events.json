@@ -1,86 +1,6 @@
 [
   {
     "billed": false,
-    "day": "2019-08-30",
-    "duration.total_minutes": 5,
-    "id": 165746930,
-    "label_ids[0]": 1340560,
-    "note": "nerevu/commissioner-api",
-    "project.id": 2954285,
-    "user.id": 933370
-  },
-  {
-    "billed": false,
-    "day": "2019-09-07",
-    "duration.total_minutes": 45,
-    "id": 165780795,
-    "label_ids[0]": 1344464,
-    "note": "Learn more about the Cloze API with the explorer",
-    "project.id": 2954285,
-    "user.id": 1281455
-  },
-  {
-    "billed": false,
-    "day": "2019-09-06",
-    "duration.total_minutes": 105,
-    "id": 165828652,
-    "label_ids[0]": 1340560,
-    "note": "nerevu/commissioner-api • Sublime Text",
-    "project.id": 2954285,
-    "user.id": 933370
-  },
-  {
-    "billed": false,
-    "day": "2019-09-13",
-    "duration.total_minutes": 30,
-    "id": 165906476,
-    "label_ids[0]": 1344431,
-    "note": "Adding Weighted Avg Sales to frontend",
-    "project.id": 2954285,
-    "user.id": 1281455
-  },
-  {
-    "billed": false,
-    "day": "2019-09-13",
-    "duration.total_minutes": 35,
-    "id": 165908368,
-    "label_ids[0]": 1344449,
-    "note": "Understanding how to do requests and have the code rerender",
-    "project.id": 2954285,
-    "user.id": 1281455
-  },
-  {
-    "billed": false,
-    "day": "2019-09-13",
-    "duration.total_minutes": 347,
-    "id": 165910985,
-    "label_ids[0]": 1344431,
-    "note": "Coding Weighted sales frontend",
-    "project.id": 2954285,
-    "user.id": 1281455
-  },
-  {
-    "billed": false,
-    "day": "2019-09-13",
-    "duration.total_minutes": 35,
-    "id": 165915848,
-    "label_ids[0]": 1344431,
-    "note": "Calculate Commission Score on Backend",
-    "project.id": 2954285,
-    "user.id": 1281455
-  },
-  {
-    "billed": false,
-    "day": "2019-09-12",
-    "duration.total_minutes": 60,
-    "id": 165940367,
-    "label_ids[0]": 1339639,
-    "note": "Databox • Project Details • Commission Dashboard",
-    "project.id": 2954285,
-    "user.id": 933370
-  },
-  {
-    "billed": false,
     "day": "2019-09-17",
     "duration.total_minutes": 330,
     "id": 166001489,
@@ -254,7 +174,7 @@
     "day": "2019-09-27",
     "duration.total_minutes": 45,
     "id": 166243646,
-    "label_ids[0]": null,
+    "label_ids[0]": 1344431,
     "note": "Work on Merging and Commission Scores",
     "project.id": 2954285,
     "user.id": 1281455
@@ -286,6 +206,146 @@
     "id": 166246592,
     "label_ids[0]": 1344432,
     "note": "Fixing the version of python so libraries don't break and updating the remotes",
+    "project.id": 2954285,
+    "user.id": 1281455
+  },
+  {
+    "billed": false,
+    "day": "2019-09-27",
+    "duration.total_minutes": 45,
+    "id": 166310324,
+    "label_ids[0]": 1339639,
+    "note": "Call w Mitchell",
+    "project.id": 2954285,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2019-09-27",
+    "duration.total_minutes": 2,
+    "id": 166310987,
+    "label_ids[0]": 1340560,
+    "note": "nerevu/alegna-dashboard",
+    "project.id": 2954285,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2019-10-01",
+    "duration.total_minutes": 45,
+    "id": 166320991,
+    "label_ids[0]": 1344431,
+    "note": "Fixing Issues",
+    "project.id": 2954285,
+    "user.id": 1281455
+  },
+  {
+    "billed": false,
+    "day": "2019-10-01",
+    "duration.total_minutes": 84,
+    "id": 166340567,
+    "label_ids[0]": 1339639,
+    "note": "1-on-1",
+    "project.id": 2954285,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2019-10-03",
+    "duration.total_minutes": 220,
+    "id": 166373976,
+    "label_ids[0]": 1344431,
+    "note": "Combining commission_score endpoint into data endpoint",
+    "project.id": 2954285,
+    "user.id": 1281455
+  },
+  {
+    "billed": false,
+    "day": "2019-10-03",
+    "duration.total_minutes": 70,
+    "id": 166381939,
+    "label_ids[0]": 1344464,
+    "note": "Figuring out how to do tests",
+    "project.id": 2954285,
+    "user.id": 1281455
+  },
+  {
+    "billed": false,
+    "day": "2019-10-04",
+    "duration.total_minutes": 310,
+    "id": 166402517,
+    "label_ids[0]": 1344431,
+    "note": "Fixing review comments for front and backend",
+    "project.id": 2954285,
+    "user.id": 1281455
+  },
+  {
+    "billed": false,
+    "day": "2019-10-04",
+    "duration.total_minutes": 90,
+    "id": 166439557,
+    "label_ids[0]": 1340560,
+    "note": "nerevu/commissioner-api • nerevu/alegna-dashboard",
+    "project.id": 2954285,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2019-10-07",
+    "duration.total_minutes": 16,
+    "id": 166462585,
+    "label_ids[0]": 1340560,
+    "note": "nerevu/alegna-dashboard • nerevu/commissioner-api",
+    "project.id": 2954285,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2019-10-08",
+    "duration.total_minutes": 30,
+    "id": 166473068,
+    "label_ids[0]": 1340560,
+    "note": "Refactor PR review",
+    "project.id": 2954285,
+    "user.id": 1281455
+  },
+  {
+    "billed": false,
+    "day": "2019-10-08",
+    "duration.total_minutes": 20,
+    "id": 166474382,
+    "label_ids[0]": 1344432,
+    "note": "Bug fix",
+    "project.id": 2954285,
+    "user.id": 1281455
+  },
+  {
+    "billed": false,
+    "day": "2019-10-08",
+    "duration.total_minutes": 46,
+    "id": 166494411,
+    "label_ids[0]": 1344445,
+    "note": "Google Hangouts • sales commission calculator • nerevu/alegna-dashboard • Alegna Commission Dashboard • Chat • Cloze",
+    "project.id": 2954285,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2019-10-08",
+    "duration.total_minutes": 47,
+    "id": 166494426,
+    "label_ids[0]": 1340560,
+    "note": "Sublime Text • GitX • Alegna Commission Dashboard • nerevu/commissioner-api • Terminal • Chat • Google Hangouts • nerevu/alegna-dashboard",
+    "project.id": 2954285,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2019-10-15",
+    "duration.total_minutes": 55,
+    "id": 166613758,
+    "label_ids[0]": 1344431,
+    "note": "Looking at Internal error on initial loading of Dashboard",
     "project.id": 2954285,
     "user.id": 1281455
   }

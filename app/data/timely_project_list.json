@@ -13,12 +13,6 @@
   },
   {
     "active": true,
-    "billable": true,
-    "id": 2389295,
-    "name": "DinerDiver"
-  },
-  {
-    "active": true,
     "billable": false,
     "id": 2906240,
     "name": "Internal"
@@ -26,8 +20,8 @@
   {
     "active": true,
     "billable": true,
-    "id": 2954285,
-    "name": "Commission Dashboard"
+    "id": 2389295,
+    "name": "DinerDiver"
   },
   {
     "active": true,
@@ -38,8 +32,14 @@
   {
     "active": true,
     "billable": false,
-    "id": 2980115,
-    "name": "Hiring"
+    "id": 2973544,
+    "name": "Smart Airport"
+  },
+  {
+    "active": true,
+    "billable": true,
+    "id": 2954285,
+    "name": "Commission Dashboard"
   },
   {
     "active": true,
@@ -50,20 +50,44 @@
   {
     "active": true,
     "billable": false,
+    "id": 2906312,
+    "name": "GP Data Community"
+  },
+  {
+    "active": true,
+    "billable": false,
     "id": 2973420,
     "name": "BOD"
   },
   {
     "active": true,
     "billable": false,
-    "id": 2973544,
-    "name": "Smart Airport"
+    "id": 2954247,
+    "name": "Onboarding"
   },
   {
     "active": true,
     "billable": false,
     "id": 2973418,
     "name": "Analytics Committee"
+  },
+  {
+    "active": true,
+    "billable": false,
+    "id": 2980115,
+    "name": "Hiring"
+  },
+  {
+    "active": true,
+    "billable": false,
+    "id": 3028598,
+    "name": "Website Audit"
+  },
+  {
+    "active": true,
+    "billable": false,
+    "id": 2906239,
+    "name": "Company Website"
   },
   {
     "active": true,
@@ -76,24 +100,6 @@
     "billable": false,
     "id": 2973485,
     "name": "Invoice/Billing Service"
-  },
-  {
-    "active": true,
-    "billable": false,
-    "id": 2906312,
-    "name": "GP Data Community"
-  },
-  {
-    "active": true,
-    "billable": false,
-    "id": 2954247,
-    "name": "Onboarding"
-  },
-  {
-    "active": true,
-    "billable": false,
-    "id": 2906239,
-    "name": "Company Website"
   },
   {
     "active": true,

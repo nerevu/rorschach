@@ -1,0 +1,122 @@
+[
+  {
+    "billed": false,
+    "day": "2019-09-21",
+    "duration.total_minutes": 138,
+    "id": 166153143,
+    "label_ids[0]": 1344431,
+    "note": "Example of how to use Flask with requests-oauthlib to fetch a GitHub user profile using an OAuth 2 token. • joestump/python-oauth2 • dermesser/yup-oauth2: An oauth2 client implementation providing the Device, Installed and Service Account flows. • Web App Example of OAuth 2 web application flow —...",
+    "project.id": 3013676,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2019-09-22",
+    "duration.total_minutes": 720,
+    "id": 166153285,
+    "label_ids[0]": 1344431,
+    "note": "http://127.0.0.1:5000/v1/events • http://127.0.0.1:5000/v1/labels • NameError: name 'sss' is not defined // Werkzeug Debugger • AttributeError: 'OAuth2Token' object has no attribute 'access_token' // Werkzeug Debugger • NameError: name 'sdsdf' is not defined // Werkzeug Debugger • TypeError: list...",
+    "project.id": 3013676,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2019-09-23",
+    "duration.total_minutes": 611,
+    "id": 166227795,
+    "label_ids[0]": 1344431,
+    "note": "http://localhost:5000/v1/timely-projects • http://localhost:5000/v1/xero-projects?process=true • http://localhost:5000/v1/xero-tasks?process=true • http://localhost:5000/v1/timely-tasks?process=true • AttributeError: 'str' object has no attribute 'get' // Werkzeug Debugger • http://localhost:5000...",
+    "project.id": 3013676,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2019-09-24",
+    "duration.total_minutes": 302,
+    "id": 166227826,
+    "label_ids[0]": 1344431,
+    "note": "Sublime Text • Timely API v1.1 • Terminal • GitX • KeePassX",
+    "project.id": 3013676,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2019-09-25",
+    "duration.total_minutes": 513,
+    "id": 166227911,
+    "label_ids[0]": 1344431,
+    "note": "NameError: name 'ddd' is not defined // Werkzeug Debugger • Developer Interface — Requests-OAuthlib 1.0.0 documentation • requests/requests-oauthlib • oauthlib/oauthlib • oauthlib.oauth2.rfc6749.errors.InvalidClientIdError: (invalid_request) Invalid client_id parameter value. // Werkzeug Debugger...",
+    "project.id": 3013676,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2019-09-27",
+    "duration.total_minutes": 520,
+    "id": 166281569,
+    "label_ids[0]": 1344431,
+    "note": "Tumblr OAuth1 Tutorial — Requests-OAuthlib 1.0.0 documentation • Bitbucket OAuth 1 Tutorial — Requests-OAuthlib 1.0.0 documentation • http://localhost:5000/v1/xero-status • requests_oauthlib.oauth1_session.TokenRequestDenied: Token request failed with code 401, response was 'oauth_problem=signatu...",
+    "project.id": 3013676,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2019-09-28",
+    "duration.total_minutes": 495,
+    "id": 166311018,
+    "label_ids[0]": 1344431,
+    "note": "json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0) // Werkzeug Debugger • Dash • TypeError: __init__() got multiple values for argument 'client_id' // Werkzeug Debugger • http://localhost:5000/v1/xero-status • Sublime Text • Timely • Terminal • GitX • WhatsApp",
+    "project.id": 3013676,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2019-09-29",
+    "duration.total_minutes": 873,
+    "id": 166311118,
+    "label_ids[0]": 1344431,
+    "note": "http://localhost:5000/v1/xero-status • AttributeError: 'MyAuth1Client' object has no attribute 'oauth_kwargs' // Werkzeug Debugger • Xero Developer • http://localhost:5000/v1/timely-status • http://localhost:5000/v1/accounts • Timely API v1.1 • psf/requests • KeyError: 'id' // Werkzeug Debugger •...",
+    "project.id": 3013676,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2019-09-30",
+    "duration.total_minutes": 221,
+    "id": 166311178,
+    "label_ids[0]": 1344431,
+    "note": "Sublime Text • Terminal • Dash • Timely",
+    "project.id": 3013676,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2019-09-30",
+    "duration.total_minutes": 49,
+    "id": 166311476,
+    "label_ids[0]": 1344432,
+    "note": "Timely • GitX • Sublime Text • DinerDiver • Nerevu • Projects",
+    "project.id": 3013676,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2019-09-30",
+    "duration.total_minutes": 56,
+    "id": 166311519,
+    "label_ids[0]": 1344431,
+    "note": "Sublime Text • Internal • Projects • Terminal",
+    "project.id": 3013676,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2019-10-01",
+    "duration.total_minutes": 46,
+    "id": 166341182,
+    "label_ids[0]": 1344432,
+    "note": "Terminal • DinerDiver • Sublime Text • Timely • GitX",
+    "project.id": 3013676,
+    "user.id": 933370
+  }
+]
