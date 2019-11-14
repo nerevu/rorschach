@@ -64,7 +64,15 @@ To create a symlink:
 - Open a Command Prompt (right click and `Run as Administrator`)
 - run the following code with the correct paths
     ```bash
-    mklink "C:\{path_to_project}\commissioner\.env" "C:\{path_to_dropbox}\Nerevu Group Security\{username}\timero-env"
+    mklink "C:\{path_to_project}\\.env" "C:\{path_to_nerevu_dropbox}\Security\{username}\timero-env"
     ```
 
 You can read more about symlinks [here](https://www.maketecheasier.com/create-symbolic-links-windows10/).
+
+`Linux`
+
+- Open a Terminal
+- run the following code with the correct paths to create a soft link
+    ```bash
+    ln -s /{path_to_nerevu_dropbox}/Security/{username}/timero-env /{path_to_project}/.env
+    ```
