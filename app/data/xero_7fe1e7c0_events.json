@@ -1,1 +1,26 @@
-[]
+[
+  {
+    "dateEnteredUtc": "2019-11-30T21:48:57.9904893Z",
+    "dateUtc": "2019-11-06T12:00:00Z",
+    "day": "2019-11-06",
+    "description": "Case Studies — Nerevu Group",
+    "duration": 35,
+    "projectId": "7fe1e7c0-24e2-4c26-809f-654f1cbae1f1",
+    "status": "ACTIVE",
+    "taskId": "9da8e8b0-47b9-4e10-9273-d0087b987d77",
+    "timeEntryId": "da5da42c-00b4-4d35-8c8a-4e2934d3c3f6",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  },
+  {
+    "dateEnteredUtc": "2019-12-01T00:04:10.3653086Z",
+    "dateUtc": "2019-11-07T12:00:00Z",
+    "day": "2019-11-07",
+    "description": "New Content",
+    "duration": 503,
+    "projectId": "7fe1e7c0-24e2-4c26-809f-654f1cbae1f1",
+    "status": "ACTIVE",
+    "taskId": "9da8e8b0-47b9-4e10-9273-d0087b987d77",
+    "timeEntryId": "ed945812-34b7-45ce-ad9d-f6a4d193987f",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  }
+]

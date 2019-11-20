@@ -1,1 +1,14 @@
-[]
+[
+  {
+    "dateEnteredUtc": "2019-12-01T02:56:51.455587Z",
+    "dateUtc": "2019-11-20T12:00:00Z",
+    "day": "2019-11-20",
+    "description": "RStudio • Terminal • localhost:5000/v1/xero-status • (1) Data Sc…",
+    "duration": 120,
+    "projectId": "37b69d72-7168-47d4-8a9f-d225fccf8b38",
+    "status": "ACTIVE",
+    "taskId": "95b4ed85-dade-4d61-96f2-e247c4beb61c",
+    "timeEntryId": "21b6a9c7-f8a3-435f-ba5d-a3a705db30f8",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  }
+]

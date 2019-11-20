@@ -1,0 +1,50 @@
+[
+  {
+    "dateEnteredUtc": "2019-11-26T22:48:35.6352895Z",
+    "dateUtc": "2019-11-11T12:00:00Z",
+    "day": "2019-11-11",
+    "description": "Data Marketing Funnels",
+    "duration": 13,
+    "projectId": "2e4c160d-a4bf-4eb4-b531-3cae6cfeb2fa",
+    "status": "ACTIVE",
+    "taskId": "6177f871-1cd9-4cbd-a732-2cf231ecc7d8",
+    "timeEntryId": "ef4bc486-dcbb-4163-9844-7bdb26396bb4",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  },
+  {
+    "dateEnteredUtc": "2019-11-27T02:04:49.163424Z",
+    "dateUtc": "2019-11-18T12:00:00Z",
+    "day": "2019-11-18",
+    "description": "gSheets mockup",
+    "duration": 75,
+    "projectId": "2e4c160d-a4bf-4eb4-b531-3cae6cfeb2fa",
+    "status": "ACTIVE",
+    "taskId": "db0e6752-7c1b-48a2-a411-f22b357ba78c",
+    "timeEntryId": "9aaa8f4b-e03d-4892-86e6-d0c55b97e914",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  },
+  {
+    "dateEnteredUtc": "2019-11-27T22:22:46.5090284Z",
+    "dateUtc": "2019-11-11T12:00:00Z",
+    "day": "2019-11-11",
+    "description": "Data Marketing Funnels",
+    "duration": 13,
+    "projectId": "2e4c160d-a4bf-4eb4-b531-3cae6cfeb2fa",
+    "status": "ACTIVE",
+    "taskId": "6177f871-1cd9-4cbd-a732-2cf231ecc7d8",
+    "timeEntryId": "dc3bdc0a-cffe-4f9d-b6d5-6fdb43e3efe9",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  },
+  {
+    "dateEnteredUtc": "2019-11-27T22:29:49.7150223Z",
+    "dateUtc": "2019-11-19T12:00:00Z",
+    "day": "2019-11-19",
+    "description": "Marketing Funnel Ideas • Google Hangouts • Chat • Calendar",
+    "duration": 26,
+    "projectId": "2e4c160d-a4bf-4eb4-b531-3cae6cfeb2fa",
+    "status": "ACTIVE",
+    "taskId": "37033e43-1e77-4431-839e-7535da6f5f42",
+    "timeEntryId": "4f9ed9bc-4737-4537-ba27-2b813b33165d",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  }
+]

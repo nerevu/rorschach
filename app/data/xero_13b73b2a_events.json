@@ -1,0 +1,14 @@
+[
+  {
+    "dateEnteredUtc": "2019-12-03T22:36:10.9522954Z",
+    "dateUtc": "2019-11-12T12:00:00Z",
+    "day": "2019-11-12",
+    "description": "Comparison of Hanson",
+    "duration": 35,
+    "projectId": "13b73b2a-d949-4887-9fc4-fbf4b1c62491",
+    "status": "ACTIVE",
+    "taskId": "c27f191b-a1d4-4da9-9068-cddfd5430088",
+    "timeEntryId": "c77f85bc-1067-486d-8cf7-f2446570230e",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  }
+]

@@ -1,31 +1,51 @@
 [
   {
     "billed": false,
-    "day": "2019-09-16",
-    "duration.total_minutes": 98,
-    "id": 165997697,
-    "label_ids[0]": 1344431,
-    "note": "OmniFocus • openpeoria/data-portal Wiki • Terminal • Heroku • Stack Overflow • Sublime Text • Heroku Dev Center • Heroku Data • GitX",
-    "project.id": 2906311,
-    "user.id": 933370
-  },
-  {
-    "billed": false,
-    "day": "2019-10-09",
-    "duration.total_minutes": 255,
-    "id": 166585671,
+    "day": "2019-11-06",
+    "duration.total_minutes": 138,
+    "id": 167280669,
     "label_ids[0]": 1344432,
-    "note": "Meetup and Development",
+    "note": "ckan debugging",
     "project.id": 2906311,
     "user.id": 933370
   },
   {
     "billed": false,
-    "day": "2019-10-11",
-    "duration.total_minutes": 13,
-    "id": 166585977,
-    "label_ids[0]": 1344431,
-    "note": "ckan/ckan • Plugin interfaces reference — CKAN 2.9.0a documentation • Sublime Text • nerevu/dinerdiver-api",
+    "day": "2019-11-06",
+    "duration.total_minutes": 30,
+    "id": 167280683,
+    "label_ids[0]": 1339639,
+    "note": "Meetup",
+    "project.id": 2906311,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2019-11-07",
+    "duration.total_minutes": 203,
+    "id": 167280898,
+    "label_ids[0]": 1344432,
+    "note": "ckan debugging ",
+    "project.id": 2906311,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2019-11-08",
+    "duration.total_minutes": 8,
+    "id": 167280958,
+    "label_ids[0]": 1344432,
+    "note": "pypa/twine",
+    "project.id": 2906311,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2019-11-12",
+    "duration.total_minutes": 75,
+    "id": 167281318,
+    "label_ids[0]": 1344452,
+    "note": "Meetup promotion",
     "project.id": 2906311,
     "user.id": 933370
   }

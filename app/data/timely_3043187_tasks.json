@@ -1,32 +1,47 @@
 [
   {
+    "id": 1339636,
+    "name": "R&D (creating new frameworks/libraries, tools, processes, etc.)",
+    "projectId": 3043187
+  },
+  {
     "id": 1339639,
     "name": "Admin (meetings, time tracking, email, calendar, organizing, paperwork, etc.)",
-    "projectId": 2906239
+    "projectId": 3043187
+  },
+  {
+    "id": 1340560,
+    "name": "Instructing (explaining, wiki documentation, reviewing, etc.)",
+    "projectId": 3043187
   },
   {
     "id": 1344431,
     "name": "Development (setup, programming, debugging, testing, documentation etc.)",
-    "projectId": 2906239
+    "projectId": 3043187
   },
   {
     "id": 1344432,
     "name": "Maintenance (server upgrades, bug fixes, etc.)",
-    "projectId": 2906239
+    "projectId": 3043187
   },
   {
     "id": 1344444,
     "name": "Design (web, database, spec, etc.)",
-    "projectId": 2906239
+    "projectId": 3043187
   },
   {
     "id": 1344449,
     "name": "Research (specific: via blogs, documentation, company sites, etc.)",
-    "projectId": 2906239
+    "projectId": 3043187
+  },
+  {
+    "id": 1344451,
+    "name": "Evaluating (selecting internal tools and services)",
+    "projectId": 3043187
   },
   {
     "id": 1344464,
     "name": "Learning (general: via articles, books, tutorials, courses, etc.)",
-    "projectId": 2906239
+    "projectId": 3043187
   }
 ]

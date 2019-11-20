@@ -1,110 +1,72 @@
 {
-  "2389295": {
-    "active": true,
-    "billable": true,
-    "id": 2389295,
-    "name": "DinerDiver"
-  },
-  "2906218": {
-    "active": true,
-    "billable": true,
-    "id": 2906218,
-    "name": "Surveys"
-  },
-  "2906239": {
-    "active": true,
-    "billable": false,
-    "id": 2906239,
-    "name": "Company Website"
-  },
   "2906240": {
     "active": true,
     "billable": false,
+    "budget": 0,
+    "client": {
+      "active": true,
+      "external_id": null,
+      "id": 1173714,
+      "name": "Nerevu Group",
+      "updated_at": "2019-12-03T21:26:59-06:00"
+    },
     "id": 2906240,
     "name": "Internal"
-  },
-  "2906308": {
-    "active": true,
-    "billable": false,
-    "id": 2906308,
-    "name": "Smart Cities"
-  },
-  "2906311": {
-    "active": true,
-    "billable": false,
-    "id": 2906311,
-    "name": "Open Peoria"
-  },
-  "2906312": {
-    "active": true,
-    "billable": false,
-    "id": 2906312,
-    "name": "GP Data Community"
   },
   "2954247": {
     "active": true,
     "billable": false,
+    "budget": 0,
+    "client": {
+      "active": true,
+      "external_id": null,
+      "id": 1173714,
+      "name": "Nerevu Group",
+      "updated_at": "2019-12-03T21:26:59-06:00"
+    },
     "id": 2954247,
     "name": "Onboarding"
   },
   "2954285": {
     "active": true,
     "billable": true,
+    "budget": 5000,
+    "client": {
+      "active": true,
+      "external_id": null,
+      "id": 1350543,
+      "name": "Alegna",
+      "updated_at": "2019-06-04T12:41:25-05:00"
+    },
     "id": 2954285,
     "name": "Commission Dashboard"
-  },
-  "2960359": {
-    "active": true,
-    "billable": true,
-    "id": 2960359,
-    "name": "Data Automation"
-  },
-  "2973417": {
-    "active": true,
-    "billable": false,
-    "id": 2973417,
-    "name": "NomCom"
-  },
-  "2973418": {
-    "active": true,
-    "billable": false,
-    "id": 2973418,
-    "name": "Analytics Committee"
-  },
-  "2973420": {
-    "active": true,
-    "billable": false,
-    "id": 2973420,
-    "name": "BOD"
-  },
-  "2973485": {
-    "active": true,
-    "billable": false,
-    "id": 2973485,
-    "name": "Invoice/Billing Service"
-  },
-  "2973544": {
-    "active": true,
-    "billable": false,
-    "id": 2973544,
-    "name": "Smart Airport"
-  },
-  "2980115": {
-    "active": true,
-    "billable": false,
-    "id": 2980115,
-    "name": "Hiring"
   },
   "3013676": {
     "active": true,
     "billable": false,
+    "budget": 0,
+    "client": {
+      "active": true,
+      "external_id": null,
+      "id": 1173714,
+      "name": "Nerevu Group",
+      "updated_at": "2019-12-03T21:26:59-06:00"
+    },
     "id": 3013676,
-    "name": "Timely/Xero Sync Service"
+    "name": "Timero"
   },
-  "3028598": {
+  "3077928": {
     "active": true,
     "billable": false,
-    "id": 3028598,
-    "name": "Website Audit"
+    "budget": 0,
+    "client": {
+      "active": true,
+      "external_id": null,
+      "id": 1350543,
+      "name": "Alegna",
+      "updated_at": "2019-06-04T12:41:25-05:00"
+    },
+    "id": 3077928,
+    "name": "OpenCart"
   }
 }

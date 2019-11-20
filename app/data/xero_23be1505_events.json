@@ -1,1 +1,14 @@
-[]
+[
+  {
+    "dateEnteredUtc": "2019-12-02T01:05:07.9436108Z",
+    "dateUtc": "2019-11-17T12:00:00Z",
+    "day": "2019-11-17",
+    "description": "General Assembly • WORK — Lettering Works • Assessment • SERVICE…",
+    "duration": 28,
+    "projectId": "23be1505-900b-4504-b1fe-cf1b1c7e1d12",
+    "status": "ACTIVE",
+    "taskId": "d0711e2c-d2c5-4e97-b7af-dd5f16b0447d",
+    "timeEntryId": "6db5a985-2c1c-4017-8343-a8e54f012ee8",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  }
+]

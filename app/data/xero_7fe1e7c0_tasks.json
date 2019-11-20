@@ -1,1 +1,9 @@
-[]
+[
+  {
+    "name": "1 Hour R&D (Non-Billable)",
+    "projectId": "7fe1e7c0-24e2-4c26-809f-654f1cbae1f1",
+    "rate.value": 0,
+    "status": "ACTIVE",
+    "taskId": "9da8e8b0-47b9-4e10-9273-d0087b987d77"
+  }
+]

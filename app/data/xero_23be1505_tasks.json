@@ -19,5 +19,12 @@
     "rate.value": 0,
     "status": "ACTIVE",
     "taskId": "a37f45e9-9f18-4a74-b131-ecfbfc8a878b"
+  },
+  {
+    "name": "1 Hour Coaching (Pro-Bono)",
+    "projectId": "23be1505-900b-4504-b1fe-cf1b1c7e1d12",
+    "rate.value": 0,
+    "status": "ACTIVE",
+    "taskId": "d0711e2c-d2c5-4e97-b7af-dd5f16b0447d"
   }
 ]
