@@ -7,9 +7,10 @@
 """
 from json.decoder import JSONDecodeError
 from json import load, dump, dumps
-from itertools import chain, islice
+from itertools import chain, islice, count
 from datetime import date, timedelta, datetime as dt
 from pathlib import Path
+import time
 from urllib.parse import urlencode, parse_qs
 
 from flask import Blueprint, request, redirect, session, url_for, g, current_app as app
@@ -38,6 +39,13 @@ from oauthlib.oauth2 import TokenExpiredError
 from riko.dotdict import DotDict
 
 import pygogo as gogo
+
+import platform
+# Selenium
+from selenium import webdriver
+from selenium.common.exceptions import NoSuchElementException
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.common.keys import Keys
 
 logger = gogo.Gogo(__name__, monolog=True).logger
 blueprint = Blueprint("API", __name__)
@@ -116,8 +124,7 @@ class MyAuth2Client(AuthClient):
             if self.verified:
                 logger.info("Successfully authenticated!")
             else:
-                logger.warning("Not authorized. Attempting to renew…")
-
+                logger.warning("Not authorized. Attempting to renew...")
                 self.renew_token()
 
     @property
@@ -217,6 +224,10 @@ class MyAuth2Client(AuthClient):
                     self.token = token
                 else:
                     logger.error("Failed to renew token!")
+        elif app.config[f"{self.prefix}_USERNAME"] and app.config[f"{self.prefix}_PASSWORD"] and not cache.get(f"{self.prefix}_headless_auth"):
+            logger.info(f"Attempting to renew using headless browser")
+            cache.set(f"{self.prefix}_headless_auth", True)
+            headless_auth(self.authorization_url[0], self.prefix)
         else:
             error = "No refresh token present. Please re-authenticate!"
             logger.error(error)
@@ -416,6 +427,10 @@ def get_auth_client(prefix, state=None, **kwargs):
         }
 
         client = MyAuthClient(prefix, client_id, client_secret, **auth_kwargs)
+        if cache.get(f'{prefix}_restore_from_headless'):
+            client.restore()
+            client.renew_token()
+            cache.set(f"{prefix}_restore_from_headless", False)
         setattr(g, auth_client_name, client)
 
     return g.get(auth_client_name)
@@ -672,6 +687,60 @@ def callback(prefix):
         return redirect(redirect_url)
 
 
+# get system specific chromedriver (currently version 78)
+def get_chromedriver_path():
+    operating_system = platform.system().lower()
+    driver_name = 'chromedriver'
+    if operating_system is 'darwin':
+        operating_system = 'mac'
+    elif operating_system is 'windows':
+        driver_name += '.exe'
+    return Path(f"{operating_system}/{driver_name}")
+
+
+def headless_auth(redirect_url, prefix):
+    # selectors
+    if prefix == 'TIMELY':
+        username_css = 'input#email'
+        password_css = 'input#password'
+        signin_css = '[type="submit"]'
+
+    # start a browser
+    options = Options()
+    options.headless = True
+    browser = webdriver.Chrome(executable_path=get_chromedriver_path(), chrome_options=options)
+
+    # navigate to auth page
+    browser.get(redirect_url)
+    browser.implicitly_wait(3) # seconds waited for elements
+
+    #######################################################
+    # TODO: Check to see if this is required when logging
+    # in without a headless browser (might remember creds).
+
+    # add username
+    username = browser.find_element_by_css_selector(username_css)
+    username.clear()
+    username.send_keys(app.config[f"{prefix}_USERNAME"])
+
+    # add password
+    password = browser.find_element_by_css_selector(password_css)
+    password.clear()
+    password.send_keys(app.config[f"{prefix}_PASSWORD"])
+
+    # Only set to True after the headless browser has closed (see below)
+    cache.set(f'{prefix}_restore_from_headless', False)
+
+    # click sign in
+    signIn = browser.find_element_by_css_selector(signin_css)
+    signIn.click()
+
+    #######################################################
+
+    browser.close()
+    cache.set(f'{prefix}_restore_from_headless', True)
+
+
 ###########################################################################
 # ROUTES
 ###########################################################################
@@ -699,6 +768,11 @@ def xero_callback():
 
 @blueprint.route(f"{PREFIX}/timely-status")
 def timely_status():
+    # TODO: Timely Headless Auth returns an error message
+    # saying "invalid_grant", but it also returns the valid
+    # credentials with the error message. Authentication is
+    # working fine I guess, but we should really look into
+    # making this work a little smoother.
     timely = get_auth_client("TIMELY", **app.config)
     api_url = f"{timely.api_base_url}/accounts"
     response = get_realtime_response(api_url, timely, **app.config)
@@ -805,6 +879,7 @@ class Auth(MethodView):
             redirect_url = authorization_url
 
         logger.info("redirecting to %s", redirect_url)
+
         return redirect(redirect_url)
 
     def patch(self):
