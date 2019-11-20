@@ -51,12 +51,14 @@ BILLABLE = 1344430
 NONBILLABLE = 1339635
 OAUTH_EXPIRY_SECONDS = 3600
 EXPIRATION_BUFFER = 30
+DATA_DIR = Path("app/data")
 
-timely_events_p = Path(f"app/data/timely_events.json")
-timely_users_p = Path(f"app/data/timely_users.json")
-timely_projects_p = Path(f"app/data/timely_projects.json")
-timely_tasks_p = Path(f"app/data/timely_tasks.json")
-sync_results_p = Path(f"app/data/sync_results.json")
+timely_events_p = DATA_DIR.joinpath("timely_events.json")
+timely_users_p = DATA_DIR.joinpath("timely_users.json")
+timely_projects_p = DATA_DIR.joinpath("timely_projects.json")
+timely_tasks_p = DATA_DIR.joinpath("timely_tasks.json")
+sync_results_p = DATA_DIR.joinpath("sync_results.json")
+
 timely_events = load(timely_events_p.open())
 timely_users = load(timely_users_p.open())
 timely_projects = load(timely_projects_p.open())
