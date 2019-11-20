@@ -698,12 +698,29 @@ def get_chromedriver_path():
     return Path(f"{operating_system}/{driver_name}")
 
 
+def find_element_loop(browser, selector):
+    cnt = count()
+    while True:
+        try:
+            time.sleep(.5)
+            elem = browser.find_element_by_css_selector(selector)
+            break
+        except NoSuchElementException as err:
+            if next(cnt) % 10 is 0:
+                raise err
+    return elem
+
+
 def headless_auth(redirect_url, prefix):
     # selectors
     if prefix == 'TIMELY':
         username_css = 'input#email'
         password_css = 'input#password'
         signin_css = '[type="submit"]'
+    elif prefix == 'XERO':
+        username_css = 'input[type="email"]'
+        password_css = 'input[type="password"]'
+        signin_css = 'button[name="button"]'
 
     # start a browser
     options = Options()
@@ -736,6 +753,13 @@ def headless_auth(redirect_url, prefix):
     signIn.click()
 
     #######################################################
+
+    if prefix == 'XERO':
+        # TODO: should I catch the error I raise here or let it crash the system?
+        # click allow access button
+        find_element_loop(browser, 'button[value="yes"]').click()
+        # click connect button
+        find_element_loop(browser, 'button[value="true"]').click()
 
     browser.close()
     cache.set(f'{prefix}_restore_from_headless', True)
@@ -808,6 +832,8 @@ def xero_status():
             message = "Failed to set Xero tenantId! "
             logger.error(message)
 
+    # TODO: we are overwriting the result value from the Xero api by doing this (no harm done).
+    # Maybe think about changing it eventually
     response["result"] = xero.token
 
     if message and response.get("message"):
