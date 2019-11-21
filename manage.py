@@ -28,7 +28,6 @@ from app.api import (
     sync_results_p,
 )
 
-
 BASEDIR = p.dirname(__file__)
 DEF_PORT = 5000
 
