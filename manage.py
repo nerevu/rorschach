@@ -22,6 +22,7 @@ from app import create_app, cache, services
 from app.api import (
     timely_users,
     timely_events,
+    timely_events_p,
     timely_projects,
     timely_tasks,
     sync_results_p,
@@ -166,7 +167,9 @@ def sync(**kwargs):
                     f"- {user_name} did {event_time}m of {task_name} on {event_day} for {project_name}"
                 )
             else:
-                logger.info(f"- Event {event_id} patched, but not found in {events_p}.")
+                logger.info(
+                    f"- Event {event_id} patched, but not found in {timely_events_p}."
+                )
         else:
             unpatched_events.add(event_id)
             message = result["message"] or "Unknown error!"
