@@ -757,7 +757,6 @@ class APIBase(MethodView):
     def __init__(self, prefix):
         self.prefix = prefix
         self.lowered = self.prefix.lower()
-        self.client = get_auth_client(self.prefix, **app.config)
         self.fields = []
         self.black_list = set()
         self.subkey = ""
@@ -765,26 +764,33 @@ class APIBase(MethodView):
         self.headers = {}
         self.populate = False
         self.add_day = False
+        self.client = None
 
         values = request.values or {}
         json = request.json or {}
         self.values = {**values, **json}
         self.project_pos = int(self.values.get("projectPos", 0))
         self.event_pos = int(self.values.get("eventPos", 0))
+        self.dry_run = self.values.get("dryRun", "").lower() == "true"
         self.error_msg = ""
 
         project_ids = (p[self.lowered] for p in projects if p.get(self.lowered))
         def_project_id = next(islice(project_ids, self.project_pos, None))
         self.project_id = self.values.get("id", def_project_id)
 
-        if self.prefix == "TIMELY":
-            self.api_base_url = f"{self.client.api_base_url}/{self.client.account_id}"
-        elif self.prefix == "XERO":
-            if self.client.oauth2:
-                self.headers = {**HEADERS, "Xero-tenant-id": self.client.tenant_id}
+        if not self.dry_run:
+            self.client = get_auth_client(self.prefix, **app.config)
 
-            self.api_base_url = f"{self.client.api_base_url}/projects.xro/2.0"
-            self.subkey = "items"
+            if self.prefix == "TIMELY":
+                self.api_base_url = (
+                    f"{self.client.api_base_url}/{self.client.account_id}"
+                )
+            elif self.prefix == "XERO":
+                if self.client.oauth2:
+                    self.headers = {**HEADERS, "Xero-tenant-id": self.client.tenant_id}
+
+                self.api_base_url = f"{self.client.api_base_url}/projects.xro/2.0"
+                self.subkey = "items"
 
     def get(self):
         process = request.args.get("process", "").lower() == "true"
@@ -869,7 +875,7 @@ class Projects(APIBase):
                 "data": data,
             }
 
-            if self.values.get("dryRun", "").lower() == "true":
+            if self.dry_run:
                 response = {"result": data}
             else:
                 response = get_realtime_response(self.api_url, self.client, **kwargs)
@@ -925,7 +931,8 @@ class Tasks(APIBase):
             self.api_url = f"{self.api_base_url}/labels"
 
             data = dict(self.values)
-            dry_run = data.pop("dryRun", "").lower()
+            data.pop("dryRun", "")
+
             kwargs = {
                 **app.config,
                 "headers": self.headers,
@@ -933,7 +940,7 @@ class Tasks(APIBase):
                 "json": {"label": data},
             }
 
-            if dry_run == "true":
+            if self.dry_run:
                 response = {"result": {"label": data}}
             else:
                 response = get_realtime_response(self.api_url, self.client, **kwargs)
@@ -961,7 +968,9 @@ class Time(APIBase):
         end = self.values.get("end", def_end.strftime("%Y-%m-%d"))
         start = self.values.get("start", def_start.strftime("%Y-%m-%d"))
 
-        if self.prefix == "TIMELY":
+        if self.dry_run:
+            pass
+        elif self.prefix == "TIMELY":
             self.params = {"since": start, "upto": end}
 
             if self.values.get("all", "").lower() == "true":
@@ -1016,7 +1025,6 @@ class Time(APIBase):
             if patched:
                 response = {"status_code": 409}
             elif event:
-                self.api_url = f"{self.api_base_url}/events/{event_id}"
                 total_minutes = event["duration.total_minutes"]
                 billed = event["billed"]
 
@@ -1040,9 +1048,10 @@ class Time(APIBase):
                         "json": {"event": data},
                     }
 
-                    if self.values.get("dryRun", "").lower() == "true":
+                    if self.dry_run:
                         response = {"result": {"event": data}}
                     else:
+                        self.api_url = f"{self.api_base_url}/events/{event_id}"
                         response = get_realtime_response(
                             self.api_url, self.client, **kwargs
                         )
@@ -1217,7 +1226,6 @@ class Time(APIBase):
                 day = duration = None
 
             if project_id and data:
-                self.api_url = f"{self.api_base_url}/projects/{project_id}/time"
                 xero_trunc_project_id = project_id.split("-")[0]
                 events_p = Path(f"app/data/xero_{xero_trunc_project_id}_events.json")
 
@@ -1272,9 +1280,10 @@ class Time(APIBase):
 
                 logger.debug(f"Xero time entry {truncated_key} is available!")
 
-                if self.values.get("dryRun", "").lower() == "true":
+                if self.dry_run:
                     response = {"result": data}
                 else:
+                    self.api_url = f"{self.api_base_url}/projects/{project_id}/time"
                     response = get_realtime_response(
                         self.api_url, self.client, **kwargs
                     )
