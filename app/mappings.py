@@ -8,14 +8,16 @@
 from json import load, dumps
 from pathlib import Path
 
-MAPPINGS_DIR = Path("app/mappings")
-projects_p = MAPPINGS_DIR.joinpath("projects.json")
-users_p = MAPPINGS_DIR.joinpath("users.json")
-tasks_p = MAPPINGS_DIR.joinpath("tasks.json")
+REUBEN = 933370
+ADITYA = 1281455
+MITCHELL = 1281876
+CONSULTANTS = [ADITYA, MITCHELL]
+TEAM = [REUBEN] + CONSULTANTS
 
-projects = load(projects_p.open())
-users = load(users_p.open())
-tasks = load(tasks_p.open())
+USERS = {REUBEN: [REUBEN], ADITYA: CONSULTANTS, MITCHELL: CONSULTANTS}
+
+MAPPINGS_DIR = Path("app/mappings")
+tasks_p = MAPPINGS_DIR.joinpath("tasks.json")
 
 
 def reg_mapper(mapping, *args):
@@ -38,7 +40,9 @@ def task_mapper(mapping, *args, proj_pair=None, user=None):
             yield tuple(task_pair[arg]["task"] for arg in args)
 
 
-def gen_proj_tasks(project_mapping, users, *args):
+def gen_task_mapping(project_mapping, users, *args):
+    tasks = load(tasks_p.open())
+
     for key, value in project_mapping.items():
         for user in users:
             kwargs = {"proj_pair": {key, value}, "user": user}
@@ -46,20 +50,3 @@ def gen_proj_tasks(project_mapping, users, *args):
 
             if proj_tasks:
                 yield (key, user, proj_tasks)
-
-
-settings = [("projects", projects), ("users", users)]
-
-timely_to_xero = {
-    map_name: dict(reg_mapper(mapping, "timely", "xero"))
-    for map_name, mapping in settings
-}
-
-xero_to_timely = {
-    map_name: dict(reg_mapper(mapping, "xero", "timely"))
-    for map_name, mapping in settings
-}
-
-args = (timely_to_xero["projects"], timely_to_xero["users"].keys(), "timely", "xero")
-results = gen_proj_tasks(*args)
-timely_to_xero["tasks"] = {(key, user): proj_tasks for key, user, proj_tasks in results}
