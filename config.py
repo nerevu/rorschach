@@ -186,7 +186,7 @@ class Development(Config):
 
 class Serveo(Development):
     # Xero localhost callbacks work fine
-    TIMELY_REDIRECT_URI = f"https://nerevu.serveo.net{API_URL_PREFIX}/timely-callback"
+    TIMELY_REDIRECT_URI = f"https://nerevu.serveo.net{Config.API_URL_PREFIX}/timely-callback"
 
 
 class Test(Config):
