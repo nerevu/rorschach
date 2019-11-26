@@ -190,7 +190,9 @@ class MyAuth2Client(AuthClient):
             logger.error(f"Failed to fetch token: {self.error}", exc_info=True)
             token = {}
         else:
-            self.token = token
+            self.error = ""
+
+        self.token = token
 
         return token
 
@@ -654,6 +656,8 @@ def xero_status():
 
     if xero.oauth2:
         if response.get("status_code", 200) == 200:
+            result = response["result"]
+
             if result and result[0].get("tenantId"):
                 xero.tenant_id = result[0]["tenantId"]
                 xero.save()

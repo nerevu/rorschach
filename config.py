@@ -96,7 +96,7 @@ class Config(object):
     XERO_CLIENT_ID = getenv("XERO_CLIENT_ID")
     XERO_SECRET = getenv("XERO_SECRET")
     XERO_AUTHORIZATION_BASE_URL = "https://login.xero.com/identity/connect/authorize"
-    XERO_TOKEN_URL = f"{XERO_API_BASE_URL}/oauth/token"
+    XERO_TOKEN_URL = "https://identity.xero.com/connect/token"
     XERO_REFRESH_URL = XERO_TOKEN_URL
     # XERO_AUTHENTICATE_REFRESH = False
     XERO_SCOPES = ["projects", "offline_access"]
