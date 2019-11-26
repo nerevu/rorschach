@@ -184,9 +184,11 @@ class Development(Config):
     OAUTHLIB_INSECURE_TRANSPORT = True
 
 
-class Serveo(Development):
+class Ngrok(Development):
     # Xero localhost callbacks work fine
-    TIMELY_REDIRECT_URI = f"https://nerevu.serveo.net{Config.API_URL_PREFIX}/timely-callback"
+    TIMELY_REDIRECT_URI = (
+        f"https://nerevu.ngrok.io{Config.API_URL_PREFIX}/timely-callback"
+    )
 
 
 class Test(Config):
