@@ -1,0 +1,8 @@
+#!/usr/bin/env bash -uo pipefail
+
+bin/store-users
+bin/store-projects
+bin/store-timely-events
+bin/store-timely-tasks
+bin/store-xero-events
+bin/store-xero-tasks

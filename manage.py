@@ -10,6 +10,7 @@ from datetime import datetime as dt, timedelta
 from itertools import count, chain
 from json import load, dump
 from pathlib import Path
+from sys import exit
 
 import pygogo as gogo
 
@@ -96,12 +97,12 @@ def serve(**kwargs):
 @manager.option("-p", "--project-id", help="The Timely Project ID", default=2389295)
 @manager.option(
     "-s",
-    "--start-position",
-    help="The start Timely event position",
+    "--start",
+    help="The Timely event start position",
     type=int,
     default=0,
 )
-@manager.option("-e", "--end-position", help="The end Timely event position", type=int)
+@manager.option("-e", "--end", help="The Timely event end position", type=int)
 @manager.option("-d", "--dry-run", help="Perform a dry run", action="store_true")
 def sync(**kwargs):
     """Sync Timely events with Xero time entries"""
@@ -114,10 +115,10 @@ def sync(**kwargs):
     logger.info(f"Project ID {kwargs['project_id']}")
     logger.info("——————————————————")
 
-    if kwargs["end_position"]:
-        _range = range(kwargs["start_position"], kwargs["end_position"])
+    if kwargs["end"]:
+        _range = range(kwargs["start"], kwargs["end"])
     else:
-        _range = count(kwargs["start_position"])
+        _range = count(kwargs["start"])
 
     logger.info("Adding events...")
     for pos in _range:
@@ -189,6 +190,7 @@ def sync(**kwargs):
     )
     logger.info("------------------------------------")
     dump(sync_results, sync_results_p.open(mode="w"), indent=2)
+    exit(len(skipped_events) + len(unpatched_events))
 
 
 @manager.command

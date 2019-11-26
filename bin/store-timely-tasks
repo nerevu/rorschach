@@ -2,6 +2,6 @@
 
 curl 'http://localhost:5000/v1/timely-tasks?process=true&all=true&dictify=true' | jq '.result' > app/data/timely_tasks.json
 
-for PROJECT in $(jq -r 'to_entries[] | .key' app/data/timely_projects.json); do
+for PROJECT in $(jq -r '.[] | .id' app/data/timely_project_list.json); do
     curl "http://localhost:5000/v1/timely-tasks?process=true&id=${PROJECT}" | jq '.result' > "app/data/timely_${PROJECT}_tasks.json"
 done
