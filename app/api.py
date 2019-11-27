@@ -790,12 +790,15 @@ class Auth(MethodView):
 
 
 class APIBase(MethodView):
-    def __init__(self, prefix):
+    def __init__(self, prefix, **kwargs):
         self.prefix = prefix
+        def_subkey = "items" if self.prefix == "XERO" else ""
+
+        self.domain = kwargs.get("domain", "projects")
+        self.subkey = kwargs.get("subkey", def_subkey)
         self.lowered = self.prefix.lower()
         self.fields = []
         self.black_list = set()
-        self.subkey = ""
         self.params = {}
         self.headers = {}
         self.populate = False
@@ -825,8 +828,7 @@ class APIBase(MethodView):
                 if self.client.oauth2:
                     self.headers = {**HEADERS, "Xero-tenant-id": self.client.tenant_id}
 
-                self.api_base_url = f"{self.client.api_base_url}/projects.xro/2.0"
-                self.subkey = "items"
+                self.api_base_url = f"{self.client.api_base_url}/{self.domain}.xro/2.0"
 
     def get(self):
         process = request.args.get("process", "").lower() == "true"
