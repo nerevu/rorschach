@@ -554,7 +554,7 @@ def get_realtime_response(url, client, params=None, **kwargs):
         try:
             json = result.json()
         except JSONDecodeError:
-            status_code = 401 if result.status_code == 200 else result.status_code
+            status_code = 500 if result.status_code == 200 else result.status_code
 
             if "<!DOCTYPE html>" in result.text:
                 message = "Got HTML response."
