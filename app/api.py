@@ -165,7 +165,6 @@ class MyAuth2Client(AuthClient):
         self.expires_at = dt.now() + timedelta(seconds=self.expires_in)
 
         self.save()
-        logger.debug(self.token)
 
     @property
     def verified(self):
@@ -508,6 +507,8 @@ def add_day(item):
 
 
 def get_realtime_response(url, client, params=None, **kwargs):
+    ok = False
+
     if client.error:
         response = {"status_code": 500, "message": client.error}
     elif not client.verified:
@@ -522,6 +523,7 @@ def get_realtime_response(url, client, params=None, **kwargs):
         headers = kwargs.get("headers", HEADERS)
         verb = getattr(client.oauth_session, method)
         result = verb(url, params=params, data=data, json=json, headers=headers)
+        ok = result.ok
         logger.debug("%s %s", result.request.method, result.request.url)
 
         try:
@@ -538,22 +540,48 @@ def get_realtime_response(url, client, params=None, **kwargs):
 
             response = {"message": message, "status_code": status_code}
         else:
-            if result.ok:
+            if ok:
                 response = {"result": json}
             else:
-                logger.debug(result.request.headers.get("Authorization"))
-                # logger.debug(result.request.headers.get("Accept"))
-                # logger.debug(result.request.headers.get("Xero-tenant-id"))
+                message_keys = ["message", "Message", "detail", "error"]
 
-                for part in (result.request.body or "").split("&"):
-                    logger.debug(part)
+                try:
+                    message = next(json[key] for key in message_keys if json.get(key))
+                except StopIteration:
+                    logger.debug(json)
+                    message = ""
 
-                message = json.get("message") or json.get("detail") or json.get("error")
+                if json.get("modelState"):
+                    items = json["modelState"].items()
+                    message += " "
+                    message += ". ".join(f"{k}: {', '.join(v)}" for k, v in items)
+                elif json.get("Elements"):
+                    items = chain.from_iterable(e.items() for e in json["Elements"])
+                    message += " "
+                    message += ". ".join(f"{k}: {', '.join(e['Message'] for e in v)}" for k, v in items)
+
                 response = {"status_code": result.status_code, "message": message}
 
-    status_code = response.get("status_code", 200)
+        if not ok:
+            header_names = ["Authorization", "Accept", "Content-Type"]
 
-    if status_code != 200:
+            if client.oauth2:
+                header_names.append("Xero-tenant-id")
+
+            for name in header_names:
+                logger.debug({name: result.request.headers.get(name, "")[:32]})
+
+            body = result.request.body or ""
+            logger.debug({"body": body})
+            parsed = parse_qs(result.request.body or "")
+
+            if parsed:
+                logger.debug({k: v[0] for k, v in parsed.items()})
+
+    status_code = response.get("status_code", 200)
+    response["ok"] = ok
+
+    if not ok:
 
         @after_this_request
         def clear_cache(response):
@@ -568,6 +596,10 @@ def get_realtime_response(url, client, params=None, **kwargs):
         )
     else:
         response["links"] = list(gen_links())
+
+    if not ok:
+        message = response.get("message", "")
+        logger.error(f"Server returned {status_code}: {message}")
 
     return response
 
@@ -655,7 +687,7 @@ def xero_status():
     response = get_realtime_response(api_url, xero, **app.config)
 
     if xero.oauth2:
-        if response.get("status_code", 200) == 200:
+        if response["ok"]:
             result = response["result"]
 
             if result and result[0].get("tenantId"):
@@ -1116,10 +1148,12 @@ class Time(APIBase):
                     eof = True
 
                     if not self.error_msg:
-                        self.error_msg = f"Event {self.event_pos} not found!"
+                        self.error_msg = (
+                            f"Event at position {self.event_pos} not found!"
+                        )
                         logger.error(self.error_msg)
                 else:
-                    logger.debug(f"Event {self.event_pos} found!")
+                    logger.debug(f"Event at position {self.event_pos} found!")
             else:
                 event = {}
 

@@ -126,7 +126,7 @@ def sync(**kwargs):
 
         if result["ok"] or result["conflict"]:
             added_events.add(str(result["event_id"]))
-            message = result["message"] or f"Added Event {result['event_id']}"
+            message = result["message"] or f"Added event {result['event_id']}"
             logger.info(f"- {message}")
         elif result["eof"]:
             break
