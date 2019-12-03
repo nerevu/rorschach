@@ -75,10 +75,6 @@ except JSONDecodeError:
     timely_projects = {}
 
 timely_tasks = load(timely_tasks_p.open())
-xero_projects = load(xero_projects_p.open())
-xero_inventory = load(xero_inventory_p.open())
-position_users = load(position_users_p.open())
-task_names = load(task_names_p.open())
 
 
 class AuthClient(object):
@@ -832,11 +828,26 @@ class APIBase(MethodView):
         self.values = {**values, **json}
         self.project_pos = int(self.values.get("projectPos", 0))
         self.event_pos = int(self.values.get("eventPos", 0))
+
         self.dry_run = self.values.pop("dryRun", "").lower() == "true"
         self.use_default = self.values.pop("useDefault", "").lower() == "true"
         self.error_msg = ""
 
         self.projects = load(projects_p.open())
+
+        try:
+            self.xero_projects = load(xero_projects_p.open())
+        except JSONDecodeError:
+            self.xero_projects = {}
+
+        try:
+            self.xero_inventory = load(xero_inventory_p.open())
+        except JSONDecodeError:
+            self.xero_inventory = []
+
+        self.position_users = load(position_users_p.open())
+        self.task_names = load(task_names_p.open())
+
         project_ids = (p[self.lowered] for p in self.projects if p.get(self.lowered))
 
         try:
@@ -1230,7 +1241,7 @@ class Time(APIBase):
         default = {"name": "Unknown"}
         timely_task = timely_tasks.get(str(self.timely_event["label_id"]), default)
         trunc_name = timely_task["name"].split(" ")[0]
-        mapped_name = task_names.get(trunc_name, "Unknown")
+        mapped_name = self.task_names.get(trunc_name, "Unknown")
         timely_task.update({"trunc_name": trunc_name, "mapped_name": mapped_name})
         return timely_task
 
@@ -1289,8 +1300,8 @@ class Time(APIBase):
         task_name = task[field]
         position_name = task_name.split("(")[1][:-1]
 
-        if position_name in position_users:
-            user_ids = position_users[position_name]
+        if position_name in self.position_users:
+            user_ids = self.position_users[position_name]
         else:
             logger.debug(
                 f"{position_users_p} doesn't contain position '{position_name}'!"
@@ -1299,11 +1310,14 @@ class Time(APIBase):
 
         return user_ids
 
-    def update_project_map(self):
+    def update_project_map(self, projects=None):
+        _projects = projects or self.xero_projects
+        project_id = None
+
         try:
             project_id = next(
                 k
-                for k, v in xero_projects.items()
+                for k, v in _projects.items()
                 if self.timely_project["name"] == v["name"]
             )
         except StopIteration:
@@ -1374,7 +1388,7 @@ class Time(APIBase):
         logger.debug(message)
 
         matching_inventory = [
-            i for i in xero_inventory if self.timely_task["mapped_name"] in i["Name"]
+            i for i in self.xero_inventory if self.timely_task["mapped_name"] in i["Name"]
         ]
         matching_positions = [
             i
