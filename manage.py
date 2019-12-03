@@ -129,7 +129,7 @@ def sync(**kwargs):
             logger.info(f"- {message}")
         elif result["eof"]:
             break
-        else:
+        elif result.get("event_id"):
             skipped_events.add(result["event_id"])
             message = result["message"] or "Unknown error!"
             logger.info(f"- {message}")
