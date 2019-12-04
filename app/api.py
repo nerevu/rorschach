@@ -1241,8 +1241,8 @@ class Time(APIBase):
         default = {"name": "Unknown"}
         timely_task = timely_tasks.get(str(self.timely_event["label_id"]), default)
         trunc_name = timely_task["name"].split(" ")[0]
-        mapped_name = self.task_names.get(trunc_name, "Unknown")
-        timely_task.update({"trunc_name": trunc_name, "mapped_name": mapped_name})
+        mapped_names = self.task_names.get(trunc_name, ["Unknown"])
+        timely_task.update({"trunc_name": trunc_name, "mapped_names": mapped_names})
         return timely_task
 
     @property
@@ -1349,6 +1349,7 @@ class Time(APIBase):
         if self.xero_project_id:
             xero_tasks_filename = f"xero_{self.xero_project_id.split('-')[0]}_tasks.json"
             xero_tasks_p = DATA_DIR.joinpath(xero_tasks_filename)
+            mapped_names = self.timely_task["mapped_names"]
 
             try:
                 # TODO: filter by active tasks
@@ -1357,7 +1358,7 @@ class Time(APIBase):
                 xero_tasks = []
 
             matching_tasks = [
-                t for t in xero_tasks if self.timely_task["mapped_name"] in t["name"]
+                t for t in xero_tasks if any(name in t["name"] for name in mapped_names)
             ]
             matching_positions = [
                 t
@@ -1387,8 +1388,9 @@ class Time(APIBase):
         message = f"No Xero {self.timely_project['name']} project tasks matching {self.timely_task['trunc_name']} for {self.timely_user['name']} found!"
         logger.debug(message)
 
+        mapped_names = self.timely_task["mapped_names"]
         matching_inventory = [
-            i for i in self.xero_inventory if self.timely_task["mapped_name"] in i["Name"]
+            i for i in self.xero_inventory if any(name in i["Name"] for name in mapped_names)
         ]
         matching_positions = [
             i
