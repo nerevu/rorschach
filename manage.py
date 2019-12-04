@@ -9,6 +9,7 @@ from urllib.parse import urlsplit, urlencode, parse_qs
 from datetime import datetime as dt, timedelta
 from itertools import count, chain
 from json import load, dump
+from json.decoder import JSONDecodeError
 from pathlib import Path
 from sys import exit
 
@@ -20,11 +21,10 @@ from requests.exceptions import ConnectionError
 
 from app import create_app, cache, services
 from app.api import (
-    timely_users,
-    timely_events,
+    timely_users_p,
     timely_events_p,
-    timely_projects,
-    timely_tasks,
+    timely_projects_p,
+    timely_tasks_p,
     sync_results_p,
 )
 
@@ -35,6 +35,26 @@ manager = Manager(create_app)
 manager.add_option("-m", "--cfgmode", dest="config_mode", default="Development")
 manager.add_option("-f", "--cfgfile", dest="config_file", type=p.abspath)
 manager.main = manager.run  # Needed to do `manage <command>` from the cli
+
+try:
+    timely_users = load(timely_users_p.open())
+except JSONDecodeError:
+    timely_users = {}
+
+try:
+    timely_events = load(timely_events_p.open())
+except JSONDecodeError:
+    timely_users = {}
+
+try:
+    timely_projects = load(timely_projects_p.open())
+except JSONDecodeError:
+    timely_users = {}
+
+try:
+    timely_tasks = load(timely_tasks_p.open())
+except JSONDecodeError:
+    timely_tasks = {}
 
 logger = gogo.Gogo(__name__, monolog=True).logger
 get_logger = lambda ok: logger.info if ok else logger.error

@@ -68,7 +68,12 @@ task_names_p = MAPPINGS_DIR.joinpath("task-names.json")
 
 timely_events = load(timely_events_p.open())
 timely_users = load(timely_users_p.open())
-timely_projects = load(timely_projects_p.open())
+
+try:
+    timely_projects = load(timely_projects_p.open())
+except JSONDecodeError:
+    timely_projects = {}
+
 timely_tasks = load(timely_tasks_p.open())
 xero_projects = load(xero_projects_p.open())
 xero_inventory = load(xero_inventory_p.open())
@@ -489,7 +494,7 @@ def extract_fields(record, fields, **kwargs):
             except IndexError:
                 value = None
         else:
-            value = item[field]
+            value = item.get(field)
 
         yield (field, value)
 
@@ -833,7 +838,12 @@ class APIBase(MethodView):
 
         self.projects = load(projects_p.open())
         project_ids = (p[self.lowered] for p in self.projects if p.get(self.lowered))
-        self.def_project_id = next(islice(project_ids, self.project_pos, None))
+
+        try:
+            self.def_project_id = next(islice(project_ids, self.project_pos, None))
+        except StopIteration:
+            self.def_project_id = 0
+
         self.timely_project_id = self.values.get("timelyProjectId")
         self.xero_project_id = self.values.get("xeroProjectId")
         self._project_id = None
@@ -1326,8 +1336,12 @@ class Time(APIBase):
             xero_tasks_filename = f"xero_{self.xero_project_id.split('-')[0]}_tasks.json"
             xero_tasks_p = DATA_DIR.joinpath(xero_tasks_filename)
 
-            # TODO: filter by active tasks
-            xero_tasks = load(xero_tasks_p.open())
+            try:
+                # TODO: filter by active tasks
+                xero_tasks = load(xero_tasks_p.open())
+            except FileNotFoundError:
+                xero_tasks = []
+
             matching_tasks = [
                 t for t in xero_tasks if self.timely_task["mapped_name"] in t["name"]
             ]
