@@ -115,8 +115,8 @@ class MyAuth2Client(AuthClient):
         try:
             self.oauth_session = OAuth2Session(self.client_id, **self.oauth_kwargs)
         except TokenExpiredError:
-            # this path shouldn't be reached...
-            logger.warning("Token expired. Attempting to renew...")
+            # this path shouldn't be reached…
+            logger.warning("Token expired. Attempting to renew…")
             self.renew_token()
         except Exception as e:
             self.error = str(e)
@@ -125,7 +125,7 @@ class MyAuth2Client(AuthClient):
             if self.verified:
                 logger.info("Successfully authenticated!")
             else:
-                logger.warning("Not authorized. Attempting to renew...")
+                logger.warning("Not authorized. Attempting to renew…")
 
                 self.renew_token()
 
@@ -213,7 +213,7 @@ class MyAuth2Client(AuthClient):
     def renew_token(self):
         if self.refresh_token:
             try:
-                logger.info(f"Renewing token using {self.refresh_url}...")
+                logger.info(f"Renewing token using {self.refresh_url}…")
                 token = self.oauth_session.refresh_token(
                     self.refresh_url, self.refresh_token
                 )
@@ -1342,7 +1342,7 @@ class Time(APIBase):
 
     def update_task_map(self):
         self.tasks.append(self.task_entry)
-        logger.debug(f"Updating {tasks_p}...")
+        logger.debug(f"Updating {tasks_p}…")
         return dump(self.tasks, tasks_p.open(mode="w"), indent=2)
 
     def find_matching_xero_task_id(self):
