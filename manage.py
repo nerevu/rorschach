@@ -28,6 +28,8 @@ from app.api import (
     sync_results_p,
 )
 
+from app.utils import load_path
+
 BASEDIR = p.dirname(__file__)
 DEF_PORT = 5000
 
@@ -36,25 +38,10 @@ manager.add_option("-m", "--cfgmode", dest="config_mode", default="Development")
 manager.add_option("-f", "--cfgfile", dest="config_file", type=p.abspath)
 manager.main = manager.run  # Needed to do `manage <command>` from the cli
 
-try:
-    timely_users = load(timely_users_p.open())
-except JSONDecodeError:
-    timely_users = {}
-
-try:
-    timely_events = load(timely_events_p.open())
-except JSONDecodeError:
-    timely_users = {}
-
-try:
-    timely_projects = load(timely_projects_p.open())
-except JSONDecodeError:
-    timely_users = {}
-
-try:
-    timely_tasks = load(timely_tasks_p.open())
-except JSONDecodeError:
-    timely_tasks = {}
+timely_users = load_path(timely_users_p, {})
+timely_events = load_path(timely_events_p, {})
+timely_projects = load_path(timely_projects_p, {})
+timely_tasks = load_path(timely_tasks_p, {})
 
 logger = gogo.Gogo(__name__, monolog=True).logger
 get_logger = lambda ok: logger.info if ok else logger.error

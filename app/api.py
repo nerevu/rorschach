@@ -28,6 +28,7 @@ from app.utils import (
     cache_header,
     make_cache_key,
     uncache_header,
+    load_path,
 )
 
 from app.mappings import MAPPINGS_DIR, USERS, tasks_p, gen_task_mapping, reg_mapper
@@ -833,20 +834,17 @@ class APIBase(MethodView):
         self.use_default = self.values.pop("useDefault", "").lower() == "true"
         self.error_msg = ""
 
+        # mappings
         self.projects = load(projects_p.open())
-
-        try:
-            self.xero_projects = load(xero_projects_p.open())
-        except JSONDecodeError:
-            self.xero_projects = {}
-
-        try:
-            self.xero_inventory = load(xero_inventory_p.open())
-        except JSONDecodeError:
-            self.xero_inventory = []
-
         self.position_users = load(position_users_p.open())
+        self.users = load(users_p.open())
+        self.tasks = load(tasks_p.open())
         self.task_names = load(task_names_p.open())
+
+        # data
+        self.sync_results = load_path(sync_results_p, {})
+        self.xero_projects = load_path(xero_projects_p, {})
+        self.xero_inventory = load_path(xero_inventory_p, [])
 
         project_ids = (p[self.lowered] for p in self.projects if p.get(self.lowered))
 
@@ -1137,9 +1135,6 @@ class Time(APIBase):
         self._timely_event = None
         self._xero_task_id = None
         self._xero_user_id = None
-        self.sync_results = load(sync_results_p.open())
-        self.users = load(users_p.open())
-        self.tasks = load(tasks_p.open())
 
         self.project_mapping = dict(reg_mapper(self.projects, "timely", "xero"))
         self.user_mapping = dict(reg_mapper(self.users, "timely", "xero"))
