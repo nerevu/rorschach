@@ -1329,16 +1329,19 @@ class Time(APIBase):
 
         if project_id:
             self.xero_project_id = project_id
-            project_entry = {
-                "timely": self.timely_project["id"],
-                "xero": self.xero_project_id,
-            }
-            self.projects.append(project_entry)
-            logger.debug(f"Updating {projects_p}...")
-            dump(self.projects, projects_p.open(mode="w"), indent=2)
-        else:
-            self.error = f"No project matching {self.timely_project['name']} found!"
-            logger.error(self.error)
+            mapped_id = self.project_mapping.get(self.timely_project["id"])
+
+            if mapped_id != self.xero_project_id:
+                project_entry = {
+                    "timely": self.timely_project["id"],
+                    "xero": self.xero_project_id,
+                }
+                self.projects.append(project_entry)
+                logger.debug(f"Updating {projects_p}…")
+                dump(self.projects, projects_p.open(mode="w"), indent=2)
+        elif not self.error_msg:
+            self.error_msg = f"No project matching {self.timely_project['name']} found!"
+            logger.error(self.error_msg)
 
     def update_task_map(self):
         self.tasks.append(self.task_entry)
