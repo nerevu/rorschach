@@ -215,7 +215,6 @@ class MyAuth2Client(AuthClient):
                 if self.oauth_session.authorized:
                     logger.info("Successfully renewed token!")
                     self.token = token
-                    self.save()
                 else:
                     logger.error("Failed to renew token!")
         else:
