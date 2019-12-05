@@ -1,0 +1,5 @@
+#!/usr/bin/env bash -uo pipefail
+
+manage prune -f users
+manage prune -f projects
+manage prune -f tasks

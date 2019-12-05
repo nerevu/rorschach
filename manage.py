@@ -21,11 +21,16 @@ from requests.exceptions import ConnectionError
 
 from app import create_app, cache, services
 from app.api import (
+    sync_results_p,
     timely_users_p,
     timely_events_p,
     timely_projects_p,
     timely_tasks_p,
-    sync_results_p,
+    xero_users_p,
+    xero_projects_p,
+    projects_p,
+    users_p,
+    tasks_p,
 )
 
 from app.utils import load_path
@@ -38,10 +43,24 @@ manager.add_option("-m", "--cfgmode", dest="config_mode", default="Development")
 manager.add_option("-f", "--cfgfile", dest="config_file", type=p.abspath)
 manager.main = manager.run  # Needed to do `manage <command>` from the cli
 
+# data
 timely_users = load_path(timely_users_p, {})
 timely_events = load_path(timely_events_p, {})
 timely_projects = load_path(timely_projects_p, {})
 timely_tasks = load_path(timely_tasks_p, {})
+xero_users = load_path(xero_users_p, {})
+xero_projects = load_path(xero_projects_p, {})
+
+# mappings
+projects = load(projects_p.open())
+users = load(users_p.open())
+tasks = load(tasks_p.open())
+
+PRUNINGS = {
+    "users": {"mapping": users, "save": users_p, "timely": timely_users, "xero": xero_users},
+    "projects": {"mapping": projects, "save": projects_p, "timely": timely_projects, "xero": xero_projects},
+    "tasks": {"mapping": tasks, "save": tasks_p},
+}
 
 logger = gogo.Gogo(__name__, monolog=True).logger
 get_logger = lambda ok: logger.info if ok else logger.error
@@ -99,6 +118,54 @@ def serve(**kwargs):
     # Alias for `runserver`
     """Runs the flask development server"""
     runserver(**kwargs)
+
+
+@manager.option("-f", "--file", help="The mapping file to prune", default="users")
+def prune(**kwargs):
+    """Remove duplicated and outdated mapping entries"""
+    item_names = ["xero", "timely"]
+    checking_name = item_names[0]
+    added_names = set()
+    _file = kwargs["file"]
+    is_tasks = _file == "tasks"
+    pruning = PRUNINGS[_file]
+
+    def gen_items():
+        # if there are dupes, keep the most recent
+        for item in reversed(pruning["mapping"]):
+            if is_tasks:
+                timely_project_id = str(item["timely"]["project"])
+                timely_task_id = str(item["timely"]["task"])
+                timely_proj_tasks_p = Path(f"app/data/timely_{timely_project_id}_tasks.json")
+                timely_proj_tasks = load_path(timely_proj_tasks_p, [])
+                timely_task_ids = {str(t["id"]) for t in timely_proj_tasks}
+                has_timely_task = timely_task_id in timely_task_ids
+
+                if not has_timely_task:
+                    continue
+
+                xero_project_id = item["xero"]["project"]
+                trunc_id = xero_project_id.split('-')[0]
+                xero_task_id = item["xero"]["task"]
+                xero_proj_tasks_p = Path(f"app/data/xero_{trunc_id}_tasks.json")
+                xero_proj_tasks = load_path(xero_proj_tasks_p, [])
+                xero_task_ids = {t["taskId"] for t in xero_proj_tasks}
+                valid = xero_task_id in xero_task_ids
+            else:
+                valid = all(str(item[name]) in str(pruning[name]) for name in item_names)
+
+            if valid:
+                to_check = item[checking_name]
+
+                if is_tasks:
+                    to_check = (to_check['task'], to_check['project'])
+
+                if to_check not in added_names:
+                    added_names.add(to_check)
+                    yield item
+
+    results = list(reversed(list(gen_items())))
+    dump(results, pruning["save"].open(mode="w"), indent=2)
 
 
 @manager.option("-p", "--project-id", help="The Timely Project ID", default=2389295)

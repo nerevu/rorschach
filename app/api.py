@@ -59,6 +59,7 @@ timely_users_p = DATA_DIR.joinpath("timely_users.json")
 timely_projects_p = DATA_DIR.joinpath("timely_projects.json")
 timely_tasks_p = DATA_DIR.joinpath("timely_tasks.json")
 sync_results_p = DATA_DIR.joinpath("sync_results.json")
+xero_users_p = DATA_DIR.joinpath("xero_users.json")
 xero_projects_p = DATA_DIR.joinpath("xero_projects.json")
 xero_inventory_p = DATA_DIR.joinpath("xero_inventory.json")
 

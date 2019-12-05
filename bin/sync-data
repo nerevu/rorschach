@@ -7,3 +7,4 @@ bin/store-timely-tasks
 bin/store-xero-events
 bin/store-xero-tasks
 bin/store-xero-inventory
+bin/prune-mappings
