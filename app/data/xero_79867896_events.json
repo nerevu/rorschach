@@ -1,0 +1,74 @@
+[
+  {
+    "dateEnteredUtc": "2019-11-26T23:04:50.6441862Z",
+    "dateUtc": "2019-11-13T12:00:00Z",
+    "day": "2019-11-13",
+    "description": "Setup Timero Project",
+    "duration": 14,
+    "projectId": "79867896-5504-4215-9a1a-8f9ca45ac7ec",
+    "status": "ACTIVE",
+    "taskId": "3b674ca9-5b3d-4685-a6c3-818f62ff7219",
+    "timeEntryId": "adba40d8-b031-412c-bcb7-c5f54db17291",
+    "userId": "3f7626f2-5064-4499-a96c-e73653e5aa01"
+  },
+  {
+    "dateEnteredUtc": "2019-11-26T23:14:44.7619366Z",
+    "dateUtc": "2019-11-14T12:00:00Z",
+    "day": "2019-11-14",
+    "description": "Understanding Timero Code Base",
+    "duration": 60,
+    "projectId": "79867896-5504-4215-9a1a-8f9ca45ac7ec",
+    "status": "ACTIVE",
+    "taskId": "3b674ca9-5b3d-4685-a6c3-818f62ff7219",
+    "timeEntryId": "e77cb232-d861-4c93-a66c-4503db59d686",
+    "userId": "3f7626f2-5064-4499-a96c-e73653e5aa01"
+  },
+  {
+    "dateEnteredUtc": "2019-11-27T22:51:22.238308Z",
+    "dateUtc": "2019-11-13T12:00:00Z",
+    "day": "2019-11-13",
+    "description": "Updating documentation",
+    "duration": 58,
+    "projectId": "79867896-5504-4215-9a1a-8f9ca45ac7ec",
+    "status": "ACTIVE",
+    "taskId": "3b674ca9-5b3d-4685-a6c3-818f62ff7219",
+    "timeEntryId": "7af1e8ca-1657-482c-aeb3-84052375d4a9",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  },
+  {
+    "dateEnteredUtc": "2019-11-30T22:03:06.6876984Z",
+    "dateUtc": "2019-11-18T12:00:00Z",
+    "day": "2019-11-18",
+    "description": "Headless Authentication",
+    "duration": 67,
+    "projectId": "79867896-5504-4215-9a1a-8f9ca45ac7ec",
+    "status": "ACTIVE",
+    "taskId": "3b674ca9-5b3d-4685-a6c3-818f62ff7219",
+    "timeEntryId": "bac6a033-d1c4-4b3d-877e-97d193927483",
+    "userId": "3f7626f2-5064-4499-a96c-e73653e5aa01"
+  },
+  {
+    "dateEnteredUtc": "2019-11-30T22:57:47.3506638Z",
+    "dateUtc": "2019-11-19T12:00:00Z",
+    "day": "2019-11-19",
+    "description": "Headless Authentication",
+    "duration": 223,
+    "projectId": "79867896-5504-4215-9a1a-8f9ca45ac7ec",
+    "status": "ACTIVE",
+    "taskId": "3b674ca9-5b3d-4685-a6c3-818f62ff7219",
+    "timeEntryId": "fccddbc5-6be0-4168-85f4-05f6a36c5bb2",
+    "userId": "3f7626f2-5064-4499-a96c-e73653e5aa01"
+  },
+  {
+    "dateEnteredUtc": "2019-11-30T23:10:19.7416715Z",
+    "dateUtc": "2019-11-19T12:00:00Z",
+    "day": "2019-11-19",
+    "description": "Headless Authentication",
+    "duration": 223,
+    "projectId": "79867896-5504-4215-9a1a-8f9ca45ac7ec",
+    "status": "ACTIVE",
+    "taskId": "3b674ca9-5b3d-4685-a6c3-818f62ff7219",
+    "timeEntryId": "508c0e76-22ce-4c14-8049-c0e489ee7a92",
+    "userId": "3f7626f2-5064-4499-a96c-e73653e5aa01"
+  }
+]

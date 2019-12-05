@@ -1,0 +1,23 @@
+[
+  {
+    "name": "1 Hour Research (Partner)",
+    "projectId": "2e4c160d-a4bf-4eb4-b531-3cae6cfeb2fa",
+    "rate.value": 125,
+    "status": "ACTIVE",
+    "taskId": "6177f871-1cd9-4cbd-a732-2cf231ecc7d8"
+  },
+  {
+    "name": "1 Hour Development (Technical Director)",
+    "projectId": "2e4c160d-a4bf-4eb4-b531-3cae6cfeb2fa",
+    "rate.value": 125,
+    "status": "ACTIVE",
+    "taskId": "db0e6752-7c1b-48a2-a411-f22b357ba78c"
+  },
+  {
+    "name": "1 Hour Consulting (Partner)",
+    "projectId": "2e4c160d-a4bf-4eb4-b531-3cae6cfeb2fa",
+    "rate.value": 125,
+    "status": "ACTIVE",
+    "taskId": "37033e43-1e77-4431-839e-7535da6f5f42"
+  }
+]

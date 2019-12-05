@@ -7,7 +7,7 @@
 """
 import random
 
-from json import loads, dumps
+from json import load, loads, dumps
 from json.decoder import JSONDecodeError
 from ast import literal_eval
 from datetime import date, datetime as dt, timedelta
@@ -228,3 +228,14 @@ def get_mimetype(request):
         mimetype = "text/html"
 
     return mimetype
+
+
+def load_path(path, default=None):
+    default = default or {}
+
+    try:
+        contents = load(path.open())
+    except (JSONDecodeError, FileNotFoundError):
+        contents = default
+
+    return contents

@@ -1,52 +1,62 @@
 [
   {
     "billed": false,
-    "day": "2019-09-24",
-    "duration.total_minutes": 8,
-    "id": 166227893,
-    "label_ids[0]": 1339639,
-    "note": "GPEDC Data Hub Info • Emsi • Datasets",
-    "project.id": 2960359,
-    "user.id": 933370
-  },
-  {
-    "billed": false,
-    "day": "2019-10-07",
-    "duration.total_minutes": 80,
-    "id": 166462143,
-    "label_ids[0]": 1339639,
-    "note": "1-on-1",
-    "project.id": 2960359,
-    "user.id": 933370
-  },
-  {
-    "billed": false,
-    "day": "2019-10-08",
-    "duration.total_minutes": 59,
-    "id": 166494359,
+    "day": "2019-11-07",
+    "duration.total_minutes": 27,
+    "id": 167119754,
     "label_ids[0]": 1344449,
-    "note": "National Employment Matrix_IND_TE1000 • Fastmail • cost of living index vs CPI at DuckDuckGo • C2ER Cost of Living Index • DifferenceBetween.com • U.S. Bureau of Labor Statistics • Cost of Living Calculator",
-    "project.id": 2960359,
-    "user.id": 933370
-  },
-  {
-    "billed": false,
-    "day": "2019-10-10",
-    "duration.total_minutes": 204,
-    "id": 166525177,
-    "label_ids[0]": 1344449,
-    "note": "",
+    "note": "Fastmail • Atom",
     "project.id": 2960359,
     "user.id": 1281876
   },
   {
     "billed": false,
-    "day": "2019-10-15",
-    "duration.total_minutes": 17,
-    "id": 166607380,
-    "label_ids[0]": 1344449,
-    "note": "",
+    "day": "2019-11-13",
+    "duration.total_minutes": 447,
+    "id": 167281441,
+    "label_ids[0]": 1344431,
+    "note": "Demographics",
     "project.id": 2960359,
-    "user.id": 1281876
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2019-11-14",
+    "duration.total_minutes": 370,
+    "id": 167281726,
+    "label_ids[0]": 1344431,
+    "note": "Refactoring",
+    "project.id": 2960359,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2019-11-15",
+    "duration.total_minutes": 210,
+    "id": 167281779,
+    "label_ids[0]": 1344431,
+    "note": "Demographics",
+    "project.id": 2960359,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2019-11-20",
+    "duration.total_minutes": 119,
+    "id": 167397776,
+    "label_ids[0]": 1344431,
+    "note": "Preview • Labor Force Participation Rate • ACSST5Y2017.S1501_metadata_2019-11-20T152133.csv • Education Attainment • Table Results • Educational Attainment • GPEDC Data Hub Info • Terminal • Labor Force • Sublime Text • Demographics • ACSDP1Y2018.DP05_data.xlsx",
+    "project.id": 2960359,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2019-11-22",
+    "duration.total_minutes": 37,
+    "id": 167435646,
+    "label_ids[0]": 1344445,
+    "note": "Project review",
+    "project.id": 2960359,
+    "user.id": 933370
   }
 ]

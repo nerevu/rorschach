@@ -1,1 +1,14 @@
-[]
+[
+  {
+    "dateEnteredUtc": "2019-12-03T22:43:07.8312245Z",
+    "dateUtc": "2019-11-05T12:00:00Z",
+    "day": "2019-11-05",
+    "description": "ckan debugging",
+    "duration": 161,
+    "projectId": "615c8090-938d-4ee7-8f4e-6ae945920507",
+    "status": "ACTIVE",
+    "taskId": "03c04504-ae82-4f6d-bb97-36b479299cd2",
+    "timeEntryId": "18fa2304-ae99-4042-8d26-e30e8095991e",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  }
+]

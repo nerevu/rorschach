@@ -1,41 +1,11 @@
 [
   {
     "billed": false,
-    "day": "2019-10-02",
-    "duration.total_minutes": 288,
-    "id": 166379789,
-    "label_ids[0]": 1344431,
-    "note": "Press Quote — Nerevu Group • New Page — Nerevu Group • Our Team — Nerevu Group • Team — Nerevu Group • About • Who we are — Nerevu Group • Press — Nerevu Group • Media — Nerevu Group • Nerevu Group • About — Nerevu Group • Quest Charter Academy • SCORE • LinkedIn • Finder • Terminal • Sublime Tex...",
-    "project.id": 2906239,
-    "user.id": 933370
-  },
-  {
-    "billed": false,
-    "day": "2019-10-02",
-    "duration.total_minutes": 142,
-    "id": 166379859,
-    "label_ids[0]": 1344449,
-    "note": "Content creation",
-    "project.id": 2906239,
-    "user.id": 933370
-  },
-  {
-    "billed": false,
-    "day": "2019-10-03",
-    "duration.total_minutes": 373,
-    "id": 166396097,
-    "label_ids[0]": 1344431,
-    "note": "Services — Nerevu Group • About — Nerevu Group • Press — Nerevu Group • Finder • Nerevu Group • MacDown • Contact — Nerevu Group • Cloze • Squarespace Help • Zapier • Admin console • Admin Console • Analytics • Peoria Innovation Alliance • CoffeeScript Logo • Preview • Terminal • shakiba/svgexpor...",
-    "project.id": 2906239,
-    "user.id": 933370
-  },
-  {
-    "billed": false,
-    "day": "2019-10-04",
+    "day": "2019-11-21",
     "duration.total_minutes": 16,
-    "id": 166439658,
-    "label_ids[0]": 1344431,
-    "note": "Analytics • Nerevu Group • Finder",
+    "id": 167417408,
+    "label_ids[0]": 1344432,
+    "note": "Oxfam Kenya: La Niña Consortium 4W — Nerevu Group • UNOCHA's Centre for Humanitarian Data: HDX Data Monitor — Nerevu Group • Nerevu Group • About — Nerevu Group",
     "project.id": 2906239,
     "user.id": 933370
   }

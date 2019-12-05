@@ -1,1 +1,14 @@
-[]
+[
+  {
+    "dateEnteredUtc": "2019-12-02T01:05:09.5639895Z",
+    "dateUtc": "2019-11-17T12:00:00Z",
+    "day": "2019-11-17",
+    "description": "Zapier <> Google Alerts",
+    "duration": 34,
+    "projectId": "4ae942e8-af62-4318-b569-7476df14cbef",
+    "status": "ACTIVE",
+    "taskId": "c1b1fb50-94b4-4e65-bcd3-2c6bdcd24260",
+    "timeEntryId": "e66fa2c1-1e02-43ea-8bc4-aa7123670da2",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  }
+]

@@ -1,17 +1,17 @@
 [
   {
+    "id": 1339639,
+    "name": "Admin (meetings, time tracking, email, calendar, organizing, paperwork, etc.)",
+    "projectId": 2954247
+  },
+  {
     "id": 1340560,
     "name": "Instructing (explaining, wiki documentation, reviewing, etc.)",
-    "projectId": "2954247"
+    "projectId": 2954247
   },
   {
     "id": 1344464,
     "name": "Learning (general: via articles, books, tutorials, courses, etc.)",
-    "projectId": "2954247"
-  },
-  {
-    "id": 1339639,
-    "name": "Admin (meetings, time tracking, email, calendar, organizing, paperwork, etc.)",
-    "projectId": "2954247"
+    "projectId": 2954247
   }
 ]

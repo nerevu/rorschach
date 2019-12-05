@@ -77,7 +77,7 @@ class Config(object):
     SEND_FILE_MAX_AGE_DEFAULT = ROUTE_TIMEOUT
     EMPTY_TIMEOUT = ROUTE_TIMEOUT * 10
     API_URL_PREFIX = "/v1"
-    SECRET_KEY = getenv("ALEGNA_SECRET_KEY", urandom(24))
+    SECRET_KEY = getenv("TIMERO_SECRET_KEY", urandom(24))
 
     # https://app.timelyapp.com/777870/oauth_applications
     TIMELY_ACCOUNT_ID = "777870"
@@ -90,13 +90,13 @@ class Config(object):
 
     # https://developer.xero.com/myapps/
     XERO_API_BASE_URL = "https://api.xero.com"
-    XERO_OAUTH_VERSION = 2
+    XERO_OAUTH_VERSION = 1
 
     # oauth2
     XERO_CLIENT_ID = getenv("XERO_CLIENT_ID")
     XERO_SECRET = getenv("XERO_SECRET")
     XERO_AUTHORIZATION_BASE_URL = "https://login.xero.com/identity/connect/authorize"
-    XERO_TOKEN_URL = f"{XERO_API_BASE_URL}/oauth/token"
+    XERO_TOKEN_URL = "https://identity.xero.com/connect/token"
     XERO_REFRESH_URL = XERO_TOKEN_URL
     # XERO_AUTHENTICATE_REFRESH = False
     XERO_SCOPES = ["projects", "offline_access"]
@@ -184,9 +184,11 @@ class Development(Config):
     OAUTHLIB_INSECURE_TRANSPORT = True
 
 
-class Serveo(Development):
+class Ngrok(Development):
     # Xero localhost callbacks work fine
-    TIMELY_REDIRECT_URI = f"https://nerevu.serveo.net{API_URL_PREFIX}/timely-callback"
+    TIMELY_REDIRECT_URI = (
+        f"https://nerevu.ngrok.io{Config.API_URL_PREFIX}/timely-callback"
+    )
 
 
 class Test(Config):

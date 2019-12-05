@@ -1,15 +1,18 @@
-# Alegna Commission Calculator
+# Timero — Timely <-> Xero sync service
 
 ## Usage
 
 1. Create and activate a virtual environment:
 
     `Mac`
+
     ```bash
     virtualenv env
     source env/bin/activate
     ```
+
     `Windows`
+
     ```bash
     virtualenv env
      ./env/Scripts/activate
@@ -21,52 +24,47 @@
     pip install -r requirements.txt
     ```
 
-3. Run the application:
+3. Run the service:
 
     ```bash
-    manage serve
+    bin/sync-time
     ```
-    This code may break at first if some needed packes were not properly installed. Look at the error in the console to determine what packages need installed, and `pip install` them individually. After each `pip install` you can run `manage serve` again to see if there are any more packages that need installed. If not, the app should start running.
 
-
-4. Open API
-
-    [127.0.0.1:5000/v1](http://127.0.0.1:5000/v1)
-
-5. If you are contributing to this repo, install dev-requirements::
+4. If you are contributing to this repo, install dev-requirements::
 
 ```bash
 pip install -r dev-requirements.txt
 ```
 
-## Quickbooks Setup
-Your own developer account is required to work with the Quickbooks sandbox. To set up your own account, visit [this site](https://developer.intuit.com/app/developer/sandbox) and follow the instructions using your work email address.
+## Xero Setup
 
-*If you are already logged into a personal account, you will need to log out first.*
+Your own [Xero](https://developer.xero.com/documentation/getting-started/getting-started-guide) API account is required.
 
-## Notes
+## API Docs
 
-- To disable route caching, set [config.py#L67](https://github.com/nerevu/commissioner/blob/6feb4945e2971fc5bf949b33fe7edfa124d7c218/config.py#L67) to `ROUTE_TIMEOUT = get_seconds(0)`
-- The debugger for VScode will not work because it does not use the `manage.py` file. If you figure out a way to configure it to work with the manage.py file, please let everyone know.
+- [Timely](https://dev.timelyapp.com/)
+- [Xero Projects](https://developer.xero.com/documentation/projects/projects)
 
 ## Configuration
 
 Environment Variable | Description
 ---------------------|------------
-QB_SANDBOX_CLIENT_ID | Quickbooks sandbox client ID (requires QB dev account)
-QB_SANDBOX_CLIENT_SECRET | Quickbooks sandbox client secret (requires QB dev account)
-ALEGNA_QB_CLIENT_ID | Quickbooks Alegna, Inc client ID
-ALEGNA_QB_CLIENT_SECRET | Quickbooks Alegna, Inc client secret
+TIMERO_SECRET_KEY | Flask App secret key
+TIMELY_CLIENT_ID | Timely API client ID
+TIMELY_SECRET | Timely API secret
+XERO_CLIENT_ID | Xero API client ID
+XERO_SECRET | Xero API secret
 
-We use python-dotenv to manage environment variables. To access the values to the environment variables above, you need to create a symbolic link (symlink) to the Alegna Commissioner App's `.env` file.
+We use python-dotenv to manage environment variables. To access the values to the environment variables above, you need to create a symbolic link (symlink) to Timero's `.env` file.
 
 To create a symlink:
 
 `Windows`
+
 - Open a Command Prompt (right click and `Run as Administrator`)
 - run the following code with the correct paths
     ```bash
-    mklink "C:\{path_to_project}\commissioner\.env" "C:\{path_to_dropbox}\Nerevu Group Dropbox\Clients\Alegna\commissioner\.env"
+    mklink "C:\{path_to_project}\commissioner\.env" "C:\{path_to_dropbox}\Nerevu Group Security\{username}\timero-env"
     ```
 
 You can read more about symlinks [here](https://www.maketecheasier.com/create-symbolic-links-windows10/).

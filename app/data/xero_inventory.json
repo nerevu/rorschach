@@ -1,0 +1,288 @@
+[
+  {
+    "Code": "coaching-1h-L0",
+    "Description": "1 hour of pro-bono coaching services",
+    "ItemID": "f2cccc94-f44e-47a5-bcde-83da41feb243",
+    "Name": "1 Hour Coaching (Pro-Bono)",
+    "SalesDetails": {
+      "AccountCode": "4015",
+      "TaxType": "NONE",
+      "UnitPrice": 0
+    }
+  },
+  {
+    "Code": "coaching-1h-L5-old",
+    "Description": "1 hour of coaching by a Partner",
+    "ItemID": "b1d2284f-59bd-4845-9451-62f139c25c89",
+    "Name": "1 Hour Coaching (Partner)",
+    "SalesDetails": {
+      "AccountCode": "4015",
+      "TaxType": "NONE",
+      "UnitPrice": 125
+    }
+  },
+  {
+    "Code": "consulting-1h-L0",
+    "Description": "1 hour of pro-bono consulting services",
+    "ItemID": "90892f1d-e246-4f75-a6d6-3d30319b552a",
+    "Name": "1 Hour Consulting (Pro-Bono)",
+    "SalesDetails": {
+      "AccountCode": "4010",
+      "TaxType": "NONE",
+      "UnitPrice": 0
+    }
+  },
+  {
+    "Code": "consulting-1h-L2",
+    "Description": "1 hour of consulting services by a Consultant",
+    "ItemID": "a9f023cd-ba81-4a5e-b80d-077a268ad904",
+    "Name": "1 Hour Consulting (Consultant)",
+    "SalesDetails": {
+      "AccountCode": "4010",
+      "TaxType": "AVALARA",
+      "UnitPrice": 68
+    }
+  },
+  {
+    "Code": "consulting-1h-L3",
+    "Description": "1 hour of consulting services by a Senior Consultant",
+    "ItemID": "91f5101b-b4af-4a04-bd86-96f9fe8d654f",
+    "Name": "1 Hour Consulting (Senior Consultant)",
+    "SalesDetails": {
+      "AccountCode": "4010",
+      "TaxType": "AVALARA",
+      "UnitPrice": 95
+    }
+  },
+  {
+    "Code": "consulting-1h-L5",
+    "Description": "1 hour of consulting services by a Partner",
+    "ItemID": "57a9d185-f4a4-4f86-b540-267785cce9d6",
+    "Name": "1 Hour Consulting (Partner)",
+    "SalesDetails": {
+      "AccountCode": "4010",
+      "TaxType": "",
+      "UnitPrice": 130
+    }
+  },
+  {
+    "Code": "consulting-1h-L5-old",
+    "Description": "1 hour of consulting services by a Partner",
+    "ItemID": "e566ec3f-5ae4-49f5-b277-7fffad9e0c0c",
+    "Name": "1 Hour Consulting (Partner)",
+    "SalesDetails": {
+      "AccountCode": "4010",
+      "TaxType": "AVALARA",
+      "UnitPrice": 125
+    }
+  },
+  {
+    "Code": "design-1h-L3",
+    "Description": "1 hour of design services by a Senior Designer",
+    "ItemID": "0aea19eb-9e2e-4206-b917-e151dcdb31a5",
+    "Name": "1 Hour Design (Senior Designer)",
+    "SalesDetails": {
+      "AccountCode": "4025",
+      "TaxType": "AVALARA",
+      "UnitPrice": 95
+    }
+  },
+  {
+    "Code": "design-1h-L5",
+    "Description": "1 hour of design services by a Creative Director",
+    "ItemID": "0ab58ea8-2d0e-48ce-a49a-9ae4be2d08c0",
+    "Name": "1 Hour Design (Creative Director)",
+    "SalesDetails": {
+      "AccountCode": "4025",
+      "TaxType": "AVALARA",
+      "UnitPrice": 130
+    }
+  },
+  {
+    "Code": "design-1h-L5-old",
+    "Description": "1 hour of design services by a Creative Director",
+    "ItemID": "ebfa94b1-9b67-462e-9c22-02cc77ff2f80",
+    "Name": "1 Hour Design (Creative Director)",
+    "SalesDetails": {
+      "AccountCode": "4025",
+      "TaxType": "AVALARA",
+      "UnitPrice": 125
+    }
+  },
+  {
+    "Code": "development-1h-L0",
+    "Description": "1 hour of pro-bono development services",
+    "ItemID": "0f070ec3-6d09-4e01-a526-7bb52d6810a7",
+    "Name": "1 Hour Development (Pro-Bono)",
+    "SalesDetails": {
+      "AccountCode": "4005",
+      "TaxType": "NONE",
+      "UnitPrice": 0
+    }
+  },
+  {
+    "Code": "development-1h-L1",
+    "Description": "1 Hour Development by a Junior Developer",
+    "ItemID": "719b4acb-03d0-470b-b5c9-c1e4d2e7cbbc",
+    "Name": "1 Hour Development (Junior Developer)",
+    "SalesDetails": {
+      "AccountCode": "4005",
+      "TaxType": "NONE",
+      "UnitPrice": 50
+    }
+  },
+  {
+    "Code": "development-1h-L2",
+    "Description": "1 hour of development services by a Developer",
+    "ItemID": "0bf58f70-7446-47e8-aa96-afcfdb0df08b",
+    "Name": "1 Hour Development (Developer)",
+    "SalesDetails": {
+      "AccountCode": "4005",
+      "TaxType": "NONE",
+      "UnitPrice": 68
+    }
+  },
+  {
+    "Code": "development-1h-L3",
+    "Description": "1 hour of development services by a Senior Developer",
+    "ItemID": "d9852cb2-1f4e-4b43-8373-31141b1f97a7",
+    "Name": "1 Hour Development (Senior Developer)",
+    "SalesDetails": {
+      "AccountCode": "4005",
+      "TaxType": "NONE",
+      "UnitPrice": 95
+    }
+  },
+  {
+    "Code": "development-1h-L4",
+    "Description": "1 hour of development services by a Principal Developer",
+    "ItemID": "595ac584-38fc-43ed-a8ad-61700db20e37",
+    "Name": "1 Hour Development (Principal Developer)",
+    "SalesDetails": {
+      "AccountCode": "4005",
+      "TaxType": "NONE",
+      "UnitPrice": 115
+    }
+  },
+  {
+    "Code": "development-1h-L5",
+    "Description": "1 hour of development services by a Technical Director",
+    "ItemID": "141e8b3c-7960-4a4c-9261-a0cda2ccf992",
+    "Name": "1 Hour Development (Technical Director)",
+    "SalesDetails": {
+      "AccountCode": "4005",
+      "TaxType": "NONE",
+      "UnitPrice": 130
+    }
+  },
+  {
+    "Code": "development-1h-L5-old",
+    "Description": "1 hour of development services by a Technical Director",
+    "ItemID": "afa0e207-9719-4119-a897-d3426add2c9a",
+    "Name": "1 Hour Development (Technical Director)",
+    "SalesDetails": {
+      "AccountCode": "4005",
+      "TaxType": "AVALARA",
+      "UnitPrice": 125
+    }
+  },
+  {
+    "Code": "internal-1h-L0",
+    "Description": "1 Hour Internal Work (Non-Billable)",
+    "ItemID": "bfdee22e-9f2a-4600-95e0-c7a84221d3c7",
+    "Name": "1 Hour Internal Work (Non-Billable)",
+    "SalesDetails": {
+      "AccountCode": "6920",
+      "TaxType": "INPUT",
+      "UnitPrice": 0
+    }
+  },
+  {
+    "Code": "misc-1h-L0",
+    "Description": "1 hour of non-billable client work",
+    "ItemID": "4a82b497-7b5b-4f30-a985-b7ca40617774",
+    "Name": "1 Hour Client Work (Non-Billable)",
+    "SalesDetails": {
+      "AccountCode": "6910",
+      "TaxType": "AVALARA",
+      "UnitPrice": 0
+    }
+  },
+  {
+    "Code": "research-1h-L0",
+    "Description": "1 hour of Research & Development",
+    "ItemID": "c3526551-d600-4730-ad80-1b8961b5f812",
+    "Name": "1 Hour R&D (Non-Billable)",
+    "SalesDetails": {
+      "AccountCode": "6900",
+      "TaxType": "INPUT",
+      "UnitPrice": 0
+    }
+  },
+  {
+    "Code": "research-1h-L2",
+    "Description": "1 hour of research services by a Consultant",
+    "ItemID": "a1751ab3-8abb-4467-831b-25147f0cfab3",
+    "Name": "1 Hour Research (Consultant)",
+    "SalesDetails": {
+      "AccountCode": "4030",
+      "TaxType": "OUTPUT",
+      "UnitPrice": 68
+    }
+  },
+  {
+    "Code": "research-1h-L3",
+    "Description": "1 hour of research services by a Senior Consultant",
+    "ItemID": "876995b3-bcc5-4c2b-a56b-98cbdab5b521",
+    "Name": "1 Hour Research (Senior Consultant)",
+    "SalesDetails": {
+      "AccountCode": "4030",
+      "TaxType": "OUTPUT",
+      "UnitPrice": 95
+    }
+  },
+  {
+    "Code": "research-1h-L5",
+    "Description": "1 hour of research services by a Partner",
+    "ItemID": "368fa9e2-d9b3-4b23-8381-63137acf989f",
+    "Name": "1 Hour Research (Partner)",
+    "SalesDetails": {
+      "AccountCode": "4030",
+      "TaxType": "OUTPUT",
+      "UnitPrice": 130
+    }
+  },
+  {
+    "Code": "research-1h-L5-old",
+    "Description": "1 hour of research services by a Partner",
+    "ItemID": "5c44370d-1140-47b8-b12c-031081525ffa",
+    "Name": "1 Hour Research (Partner)",
+    "SalesDetails": {
+      "AccountCode": "4030",
+      "TaxType": "NONE",
+      "UnitPrice": 125
+    }
+  },
+  {
+    "Code": "retainer-1w",
+    "Description": "1 Week (5 days) of Professional Services",
+    "ItemID": "b4c0898c-7dcf-431d-bdc3-44c7e9040af1",
+    "Name": "1 Week Retainer",
+    "SalesDetails": {
+      "AccountCode": "4000",
+      "TaxType": "NONE",
+      "UnitPrice": 5000
+    }
+  },
+  {
+    "Code": "retainer-20h",
+    "Description": "20 Hours of Professional Services",
+    "ItemID": "7abd425d-2267-4ef7-99ac-78eefacccd30",
+    "Name": "20 Hour Retainer",
+    "SalesDetails": {
+      "AccountCode": "4000",
+      "TaxType": "NONE",
+      "UnitPrice": 2500
+    }
+  }
+]

@@ -42,12 +42,12 @@
   "1344447": {
     "billable": true,
     "id": 1344447,
-    "name": "Instructing (workshops, seminars, coaching sessions, etc.)"
+    "name": "Coaching (leading a: workshop, seminar, coaching session, etc.)"
   },
   "1344449": {
     "billable": true,
     "id": 1344449,
-    "name": "Research (specific: via blogs, documentation, etc.)"
+    "name": "Research (specific: via blogs, documentation, company sites, etc.)"
   },
   "1344451": {
     "billable": false,
@@ -57,7 +57,7 @@
   "1344452": {
     "billable": false,
     "id": 1344452,
-    "name": "Marketing (blogging, social media, etc.)"
+    "name": "Marketing/PR (blogging, social media, etc.)"
   },
   "1344464": {
     "billable": false,
@@ -82,6 +82,6 @@
   "1344671": {
     "billable": false,
     "id": 1344671,
-    "name": "Finance & Accounting (bookeeping, budgeting, forecasting, invoicing, etc.)"
+    "name": "Finance & Accounting (bookkeeping, budgeting, forecasting, invoicing, etc.)"
   }
 }
