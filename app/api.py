@@ -1450,7 +1450,7 @@ class Time(APIBase):
                     json = response.json
 
                     if json["ok"]:
-                        project_id = json.get["result"]["projectId"]
+                        project_id = json["result"]["projectId"]
                     else:
                         self.error_msg = json.get("message")
                         logger.error(self.error_msg)
@@ -1665,7 +1665,7 @@ class Time(APIBase):
 
             if not (self.timely_event["label_id"] or self.error_msg):
                 self.error_msg = (
-                    f"Event {self.timely_event['id']} missing label in {events_p}!"
+                    f"Event {self.timely_event['id']} missing label!"
                 )
                 logger.error(self.error_msg)
 
