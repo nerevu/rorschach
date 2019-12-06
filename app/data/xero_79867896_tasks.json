@@ -5,5 +5,12 @@
     "rate.value": 0,
     "status": "ACTIVE",
     "taskId": "3b674ca9-5b3d-4685-a6c3-818f62ff7219"
+  },
+  {
+    "name": "1 Hour Internal Work (Non-Billable)",
+    "projectId": "79867896-5504-4215-9a1a-8f9ca45ac7ec",
+    "rate.value": 0,
+    "status": "ACTIVE",
+    "taskId": "29d8790d-b4cd-42e4-a821-071944a1d7e4"
   }
 ]

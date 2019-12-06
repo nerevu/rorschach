@@ -1,12 +1,1 @@
-[
-  {
-    "billed": false,
-    "day": "2019-12-05",
-    "duration.total_minutes": 65,
-    "id": 167685266,
-    "label_ids[0]": 1344431,
-    "note": "Setting up REST API for OpenCart",
-    "project.id": 3077928,
-    "user.id": 1281455
-  }
-]
+[]

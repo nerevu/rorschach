@@ -47,5 +47,19 @@
     "rate.value": 0,
     "status": "ACTIVE",
     "taskId": "b78cdaa4-7496-4ba0-8355-8f8fdbff48cb"
+  },
+  {
+    "name": "1 Hour Development (Technical Director)",
+    "projectId": "15ff819d-6d69-406c-98c5-ed9ab9163779",
+    "rate.value": 130,
+    "status": "ACTIVE",
+    "taskId": "434e06ff-b033-4528-afe4-33c0ed3280a4"
+  },
+  {
+    "name": "1 Hour Consulting (Partner)",
+    "projectId": "15ff819d-6d69-406c-98c5-ed9ab9163779",
+    "rate.value": 130,
+    "status": "ACTIVE",
+    "taskId": "d476ebf4-5b32-4b15-bd79-135489cee0be"
   }
 ]

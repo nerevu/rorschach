@@ -6,7 +6,7 @@
     "description": "Data Marketing Funnels",
     "duration": 13,
     "projectId": "2e4c160d-a4bf-4eb4-b531-3cae6cfeb2fa",
-    "status": "ACTIVE",
+    "status": "INVOICED",
     "taskId": "6177f871-1cd9-4cbd-a732-2cf231ecc7d8",
     "timeEntryId": "ef4bc486-dcbb-4163-9844-7bdb26396bb4",
     "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
@@ -18,7 +18,7 @@
     "description": "gSheets mockup",
     "duration": 75,
     "projectId": "2e4c160d-a4bf-4eb4-b531-3cae6cfeb2fa",
-    "status": "ACTIVE",
+    "status": "INVOICED",
     "taskId": "db0e6752-7c1b-48a2-a411-f22b357ba78c",
     "timeEntryId": "9aaa8f4b-e03d-4892-86e6-d0c55b97e914",
     "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
@@ -30,7 +30,7 @@
     "description": "Data Marketing Funnels",
     "duration": 13,
     "projectId": "2e4c160d-a4bf-4eb4-b531-3cae6cfeb2fa",
-    "status": "ACTIVE",
+    "status": "INVOICED",
     "taskId": "6177f871-1cd9-4cbd-a732-2cf231ecc7d8",
     "timeEntryId": "dc3bdc0a-cffe-4f9d-b6d5-6fdb43e3efe9",
     "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
@@ -42,9 +42,81 @@
     "description": "Marketing Funnel Ideas • Google Hangouts • Chat • Calendar",
     "duration": 26,
     "projectId": "2e4c160d-a4bf-4eb4-b531-3cae6cfeb2fa",
-    "status": "ACTIVE",
+    "status": "INVOICED",
     "taskId": "37033e43-1e77-4431-839e-7535da6f5f42",
     "timeEntryId": "4f9ed9bc-4737-4537-ba27-2b813b33165d",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  },
+  {
+    "dateEnteredUtc": "2019-12-05T20:24:21.5999028Z",
+    "dateUtc": "2019-12-05T12:00:00Z",
+    "day": "2019-12-05",
+    "description": "Setting up REST API for OpenCart",
+    "duration": 65,
+    "projectId": "2e4c160d-a4bf-4eb4-b531-3cae6cfeb2fa",
+    "status": "ACTIVE",
+    "taskId": "51caaa33-d74c-490d-a8f7-cb61eb2d2b4b",
+    "timeEntryId": "95bacdd1-1d2c-4049-a0d2-2d155ef4a18f",
+    "userId": "3f7626f2-5064-4499-a96c-e73653e5aa01"
+  },
+  {
+    "dateEnteredUtc": "2019-12-09T18:11:47.8762673Z",
+    "dateUtc": "2019-11-26T12:00:00Z",
+    "day": "2019-11-26",
+    "description": "Client Meeting",
+    "duration": 45,
+    "projectId": "2e4c160d-a4bf-4eb4-b531-3cae6cfeb2fa",
+    "status": "ACTIVE",
+    "taskId": "37033e43-1e77-4431-839e-7535da6f5f42",
+    "timeEntryId": "bfb72892-f2b0-416b-a991-61a3c37c30e0",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  },
+  {
+    "dateEnteredUtc": "2019-12-09T18:11:51.9432146Z",
+    "dateUtc": "2019-11-26T12:00:00Z",
+    "day": "2019-11-26",
+    "description": "Order Sync POC",
+    "duration": 45,
+    "projectId": "2e4c160d-a4bf-4eb4-b531-3cae6cfeb2fa",
+    "status": "ACTIVE",
+    "taskId": "6177f871-1cd9-4cbd-a732-2cf231ecc7d8",
+    "timeEntryId": "1c756e3c-2893-4ddd-8bda-0a85065ef29a",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  },
+  {
+    "dateEnteredUtc": "2019-12-09T18:11:55.8914267Z",
+    "dateUtc": "2019-12-03T12:00:00Z",
+    "day": "2019-12-03",
+    "description": "Opencart REST API • Pricing",
+    "duration": 12,
+    "projectId": "2e4c160d-a4bf-4eb4-b531-3cae6cfeb2fa",
+    "status": "ACTIVE",
+    "taskId": "6177f871-1cd9-4cbd-a732-2cf231ecc7d8",
+    "timeEntryId": "d0079656-cae3-4368-9239-8befda1fba6d",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  },
+  {
+    "dateEnteredUtc": "2019-12-09T18:11:59.6810185Z",
+    "dateUtc": "2019-12-06T12:00:00Z",
+    "day": "2019-12-06",
+    "description": "Opencart REST API Installation and troubleshooting",
+    "duration": 135,
+    "projectId": "2e4c160d-a4bf-4eb4-b531-3cae6cfeb2fa",
+    "status": "ACTIVE",
+    "taskId": "db0e6752-7c1b-48a2-a411-f22b357ba78c",
+    "timeEntryId": "5d78d7ca-9260-4abe-b1d4-9024add6f80d",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  },
+  {
+    "dateEnteredUtc": "2019-12-09T18:12:27.1772027Z",
+    "dateUtc": "2019-12-08T12:00:00Z",
+    "day": "2019-12-08",
+    "description": "Stack Overflow • python aysnc polling at DuckDuckGo • Asynchrono…",
+    "duration": 63,
+    "projectId": "2e4c160d-a4bf-4eb4-b531-3cae6cfeb2fa",
+    "status": "ACTIVE",
+    "taskId": "6177f871-1cd9-4cbd-a732-2cf231ecc7d8",
+    "timeEntryId": "5a753596-dad9-4894-8cc9-f5bc8f5df511",
     "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
   }
 ]

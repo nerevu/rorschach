@@ -1,1 +1,62 @@
-[]
+[
+  {
+    "dateEnteredUtc": "2019-12-06T04:53:38.208153Z",
+    "dateUtc": "2019-11-13T12:00:00Z",
+    "day": "2019-11-13",
+    "description": "Demographics",
+    "duration": 447,
+    "projectId": "15ff819d-6d69-406c-98c5-ed9ab9163779",
+    "status": "ACTIVE",
+    "taskId": "434e06ff-b033-4528-afe4-33c0ed3280a4",
+    "timeEntryId": "d6a66b75-edc0-443e-a3f3-8e1fc22aa7cd",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  },
+  {
+    "dateEnteredUtc": "2019-12-06T04:53:38.7481436Z",
+    "dateUtc": "2019-11-14T12:00:00Z",
+    "day": "2019-11-14",
+    "description": "Refactoring",
+    "duration": 370,
+    "projectId": "15ff819d-6d69-406c-98c5-ed9ab9163779",
+    "status": "ACTIVE",
+    "taskId": "434e06ff-b033-4528-afe4-33c0ed3280a4",
+    "timeEntryId": "22fe2d73-ff6d-4275-8c9f-8ea7636abb63",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  },
+  {
+    "dateEnteredUtc": "2019-12-06T04:53:42.8018525Z",
+    "dateUtc": "2019-11-15T12:00:00Z",
+    "day": "2019-11-15",
+    "description": "Demographics",
+    "duration": 210,
+    "projectId": "15ff819d-6d69-406c-98c5-ed9ab9163779",
+    "status": "ACTIVE",
+    "taskId": "434e06ff-b033-4528-afe4-33c0ed3280a4",
+    "timeEntryId": "50d08657-3033-4223-96c7-62f0f00e29ad",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  },
+  {
+    "dateEnteredUtc": "2019-12-06T04:53:46.6151097Z",
+    "dateUtc": "2019-11-20T12:00:00Z",
+    "day": "2019-11-20",
+    "description": "Preview%20%E2%80%A2%20Labor%20Force%20Participation%20Rate%20%E2%80%A2%20ACSST5Y2017.S1501_met%E2%80%A6",
+    "duration": 119,
+    "projectId": "15ff819d-6d69-406c-98c5-ed9ab9163779",
+    "status": "ACTIVE",
+    "taskId": "434e06ff-b033-4528-afe4-33c0ed3280a4",
+    "timeEntryId": "e195072b-13d9-40b7-97be-7fccaf4c8278",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  },
+  {
+    "dateEnteredUtc": "2019-12-06T04:54:03.5312549Z",
+    "dateUtc": "2019-11-22T12:00:00Z",
+    "day": "2019-11-22",
+    "description": "Project%20review",
+    "duration": 37,
+    "projectId": "15ff819d-6d69-406c-98c5-ed9ab9163779",
+    "status": "ACTIVE",
+    "taskId": "d476ebf4-5b32-4b15-bd79-135489cee0be",
+    "timeEntryId": "cc4075d3-09df-4065-94e8-cdb54dc85b86",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  }
+]

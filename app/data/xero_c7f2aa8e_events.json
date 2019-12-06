@@ -1,1 +1,14 @@
-[]
+[
+  {
+    "dateEnteredUtc": "2019-12-06T05:34:18.9212541Z",
+    "dateUtc": "2019-11-10T12:00:00Z",
+    "day": "2019-11-10",
+    "description": "The free alternative to Google Alerts • Talkwalker • Mention",
+    "duration": 20,
+    "projectId": "c7f2aa8e-bf50-4359-8e3e-0721f5cd49bc",
+    "status": "ACTIVE",
+    "taskId": "832fa5b8-9b4d-4c8c-b5c5-c39f984eda5f",
+    "timeEntryId": "5dbc9dbb-08af-4269-bcdd-4a34ea991f2e",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  }
+]

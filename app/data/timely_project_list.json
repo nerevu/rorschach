@@ -6,12 +6,12 @@
     "client": {
       "active": true,
       "external_id": null,
-      "id": 1173714,
-      "name": "Nerevu Group",
-      "updated_at": "2019-12-03T21:26:59-06:00"
+      "id": 1350585,
+      "name": "Peoria Innovation Alliance",
+      "updated_at": "2019-06-04T14:49:08-05:00"
     },
-    "id": 2906240,
-    "name": "Internal"
+    "id": 2973418,
+    "name": "Analytics Committee"
   },
   {
     "active": true,
@@ -20,17 +20,87 @@
     "client": {
       "active": true,
       "external_id": null,
-      "id": 1350543,
-      "name": "Alegna",
-      "updated_at": "2019-06-04T12:41:25-05:00"
+      "id": 1350585,
+      "name": "Peoria Innovation Alliance",
+      "updated_at": "2019-06-04T14:49:08-05:00"
     },
-    "id": 3077928,
-    "name": "OpenCart"
+    "id": 2973420,
+    "name": "BOD"
   },
   {
     "active": true,
     "billable": false,
     "budget": 0,
+    "client": {
+      "active": true,
+      "external_id": null,
+      "id": 1350585,
+      "name": "Peoria Innovation Alliance",
+      "updated_at": "2019-06-04T14:49:08-05:00"
+    },
+    "id": 2973417,
+    "name": "NomCom"
+  },
+  {
+    "active": true,
+    "billable": true,
+    "budget": 20000,
+    "client": {
+      "active": true,
+      "external_id": null,
+      "id": 1350586,
+      "name": "GPEDC",
+      "updated_at": "2019-08-12T15:16:14-05:00"
+    },
+    "id": 3078743,
+    "name": "WEI Case Management System"
+  },
+  {
+    "active": true,
+    "billable": true,
+    "budget": 1900,
+    "client": {
+      "active": true,
+      "external_id": null,
+      "id": 1350543,
+      "name": "Alegna",
+      "updated_at": "2019-06-04T12:41:25-05:00"
+    },
+    "id": 2906218,
+    "name": "Retainer"
+  },
+  {
+    "active": true,
+    "billable": true,
+    "budget": 5000,
+    "client": {
+      "active": true,
+      "external_id": null,
+      "id": 1350585,
+      "name": "Peoria Innovation Alliance",
+      "updated_at": "2019-06-04T14:49:08-05:00"
+    },
+    "id": 2906311,
+    "name": "Open Peoria"
+  },
+  {
+    "active": true,
+    "billable": true,
+    "budget": 2500,
+    "client": {
+      "active": true,
+      "external_id": null,
+      "id": 1173714,
+      "name": "Nerevu Group",
+      "updated_at": "2019-12-03T21:26:59-06:00"
+    },
+    "id": 2906239,
+    "name": "Company Website"
+  },
+  {
+    "active": true,
+    "billable": true,
+    "budget": 5000,
     "client": {
       "active": true,
       "external_id": null,
@@ -40,6 +110,146 @@
     },
     "id": 3013676,
     "name": "Timero"
+  },
+  {
+    "active": true,
+    "billable": true,
+    "budget": 30000,
+    "client": {
+      "active": true,
+      "external_id": null,
+      "id": 1350542,
+      "name": "Notionovus",
+      "updated_at": "2019-06-04T12:39:29-05:00"
+    },
+    "id": 2389295,
+    "name": "DinerDiver"
+  },
+  {
+    "active": true,
+    "billable": false,
+    "budget": 0,
+    "client": {
+      "active": true,
+      "external_id": null,
+      "id": 1173714,
+      "name": "Nerevu Group",
+      "updated_at": "2019-12-03T21:26:59-06:00"
+    },
+    "id": 2906240,
+    "name": "Internal"
+  },
+  {
+    "active": true,
+    "billable": true,
+    "budget": 500,
+    "client": {
+      "active": true,
+      "external_id": null,
+      "id": 1376902,
+      "name": "Web Professionals",
+      "updated_at": "2019-10-03T17:46:54-04:00"
+    },
+    "id": 3028598,
+    "name": "Website Audit"
+  },
+  {
+    "active": true,
+    "billable": true,
+    "budget": 1000,
+    "client": {
+      "active": true,
+      "external_id": null,
+      "id": 1173714,
+      "name": "Nerevu Group",
+      "updated_at": "2019-12-03T21:26:59-06:00"
+    },
+    "id": 2973485,
+    "name": "Invoice/Billing Service"
+  },
+  {
+    "active": true,
+    "billable": true,
+    "budget": 20000,
+    "client": {
+      "active": true,
+      "external_id": null,
+      "id": 1390597,
+      "name": "ICC",
+      "updated_at": "2019-12-06T15:33:33-06:00"
+    },
+    "id": 3078744,
+    "name": "Workforce Initiative Website"
+  },
+  {
+    "active": true,
+    "billable": true,
+    "budget": 3000,
+    "client": {
+      "active": true,
+      "external_id": null,
+      "id": 1350586,
+      "name": "GPEDC",
+      "updated_at": "2019-08-12T15:16:14-05:00"
+    },
+    "id": 2960359,
+    "name": "Data Automation"
+  },
+  {
+    "active": true,
+    "billable": true,
+    "budget": 500,
+    "client": {
+      "active": true,
+      "external_id": null,
+      "id": 1350590,
+      "name": "Hanson",
+      "updated_at": "2019-08-12T16:16:27-04:00"
+    },
+    "id": 2973544,
+    "name": "Smart Airport"
+  },
+  {
+    "active": true,
+    "billable": false,
+    "budget": 0,
+    "client": {
+      "active": true,
+      "external_id": null,
+      "id": 1173714,
+      "name": "Nerevu Group",
+      "updated_at": "2019-12-03T21:26:59-06:00"
+    },
+    "id": 2980115,
+    "name": "Hiring"
+  },
+  {
+    "active": true,
+    "billable": false,
+    "budget": 0,
+    "client": {
+      "active": true,
+      "external_id": null,
+      "id": 1173714,
+      "name": "Nerevu Group",
+      "updated_at": "2019-12-03T21:26:59-06:00"
+    },
+    "id": 3043187,
+    "name": "Company Metrics"
+  },
+  {
+    "active": true,
+    "billable": true,
+    "budget": 5000,
+    "client": {
+      "active": true,
+      "external_id": null,
+      "id": 1350543,
+      "name": "Alegna",
+      "updated_at": "2019-06-04T12:41:25-05:00"
+    },
+    "id": 2954285,
+    "name": "Commission Dashboard"
   },
   {
     "active": true,
@@ -57,16 +267,30 @@
   },
   {
     "active": true,
-    "billable": true,
-    "budget": 5000,
+    "billable": false,
+    "budget": 0,
     "client": {
       "active": true,
       "external_id": null,
-      "id": 1350543,
-      "name": "Alegna",
-      "updated_at": "2019-06-04T12:41:25-05:00"
+      "id": 1350585,
+      "name": "Peoria Innovation Alliance",
+      "updated_at": "2019-06-04T14:49:08-05:00"
     },
-    "id": 2954285,
-    "name": "Commission Dashboard"
+    "id": 2906312,
+    "name": "GP Data Community"
+  },
+  {
+    "active": true,
+    "billable": false,
+    "budget": 0,
+    "client": {
+      "active": true,
+      "external_id": null,
+      "id": 1350585,
+      "name": "Peoria Innovation Alliance",
+      "updated_at": "2019-06-04T14:49:08-05:00"
+    },
+    "id": 2906308,
+    "name": "Smart Cities"
   }
 ]

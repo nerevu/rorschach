@@ -10,5 +10,17 @@
     "taskId": "c1b1fb50-94b4-4e65-bcd3-2c6bdcd24260",
     "timeEntryId": "e66fa2c1-1e02-43ea-8bc4-aa7123670da2",
     "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  },
+  {
+    "dateEnteredUtc": "2019-12-09T19:22:06.7447477Z",
+    "dateUtc": "2019-11-27T12:00:00Z",
+    "day": "2019-11-27",
+    "description": "Databox • PIA Databox Metrics • Google Alerts • Gmail • Traffic …",
+    "duration": 131,
+    "projectId": "4ae942e8-af62-4318-b569-7476df14cbef",
+    "status": "ACTIVE",
+    "taskId": "348ad52e-a328-45ed-b26c-bceb22a58ef9",
+    "timeEntryId": "21dddedf-b50c-42c3-bf63-4bb0dab06e88",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
   }
 ]
