@@ -57,8 +57,18 @@ users = load(users_p.open())
 tasks = load(tasks_p.open())
 
 PRUNINGS = {
-    "users": {"mapping": users, "save": users_p, "timely": timely_users, "xero": xero_users},
-    "projects": {"mapping": projects, "save": projects_p, "timely": timely_projects, "xero": xero_projects},
+    "users": {
+        "mapping": users,
+        "save": users_p,
+        "timely": timely_users,
+        "xero": xero_users,
+    },
+    "projects": {
+        "mapping": projects,
+        "save": projects_p,
+        "timely": timely_projects,
+        "xero": xero_projects,
+    },
     "tasks": {"mapping": tasks, "save": tasks_p},
 }
 
@@ -136,7 +146,9 @@ def prune(**kwargs):
             if is_tasks:
                 timely_project_id = str(item["timely"]["project"])
                 timely_task_id = str(item["timely"]["task"])
-                timely_proj_tasks_p = Path(f"app/data/timely_{timely_project_id}_tasks.json")
+                timely_proj_tasks_p = Path(
+                    f"app/data/timely_{timely_project_id}_tasks.json"
+                )
                 timely_proj_tasks = load_path(timely_proj_tasks_p, [])
                 timely_task_ids = {str(t["id"]) for t in timely_proj_tasks}
                 has_timely_task = timely_task_id in timely_task_ids
@@ -145,20 +157,22 @@ def prune(**kwargs):
                     continue
 
                 xero_project_id = item["xero"]["project"]
-                trunc_id = xero_project_id.split('-')[0]
+                trunc_id = xero_project_id.split("-")[0]
                 xero_task_id = item["xero"]["task"]
                 xero_proj_tasks_p = Path(f"app/data/xero_{trunc_id}_tasks.json")
                 xero_proj_tasks = load_path(xero_proj_tasks_p, [])
                 xero_task_ids = {t["taskId"] for t in xero_proj_tasks}
                 valid = xero_task_id in xero_task_ids
             else:
-                valid = all(str(item[name]) in str(pruning[name]) for name in item_names)
+                valid = all(
+                    str(item[name]) in str(pruning[name]) for name in item_names
+                )
 
             if valid:
                 to_check = item[checking_name]
 
                 if is_tasks:
-                    to_check = (to_check['task'], to_check['project'])
+                    to_check = (to_check["task"], to_check["project"])
 
                 if to_check not in added_names:
                     added_names.add(to_check)
@@ -170,11 +184,7 @@ def prune(**kwargs):
 
 @manager.option("-p", "--project-id", help="The Timely Project ID", default=2389295)
 @manager.option(
-    "-s",
-    "--start",
-    help="The Timely event start position",
-    type=int,
-    default=0,
+    "-s", "--start", help="The Timely event start position", type=int, default=0
 )
 @manager.option("-e", "--end", help="The Timely event end position", type=int)
 @manager.option("-d", "--dry-run", help="Perform a dry run", action="store_true")
@@ -194,7 +204,7 @@ def sync(**kwargs):
     else:
         _range = count(kwargs["start"])
 
-    logger.info("Adding events...")
+    logger.info("Adding events…")
     for pos in _range:
         result = services.add_xero_time(position=pos, **kwargs)
 
@@ -214,7 +224,7 @@ def sync(**kwargs):
     num_total_events = num_added_events + num_skipped_events
 
     if added_events:
-        logger.info("\nPatching events...")
+        logger.info("\nPatching events…")
 
     for event_id in added_events:
         result = services.mark_billed(event_id, **kwargs)
