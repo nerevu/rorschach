@@ -11,14 +11,14 @@
     }
   },
   {
-    "Code": "coaching-1h-L5-old",
+    "Code": "coaching-1h-L5",
     "Description": "1 hour of coaching by a Partner",
     "ItemID": "b1d2284f-59bd-4845-9451-62f139c25c89",
     "Name": "1 Hour Coaching (Partner)",
     "SalesDetails": {
       "AccountCode": "4015",
       "TaxType": "NONE",
-      "UnitPrice": 125
+      "UnitPrice": 130
     }
   },
   {
@@ -57,23 +57,12 @@
   {
     "Code": "consulting-1h-L5",
     "Description": "1 hour of consulting services by a Partner",
-    "ItemID": "57a9d185-f4a4-4f86-b540-267785cce9d6",
-    "Name": "1 Hour Consulting (Partner)",
-    "SalesDetails": {
-      "AccountCode": "4010",
-      "TaxType": "",
-      "UnitPrice": 130
-    }
-  },
-  {
-    "Code": "consulting-1h-L5-old",
-    "Description": "1 hour of consulting services by a Partner",
     "ItemID": "e566ec3f-5ae4-49f5-b277-7fffad9e0c0c",
     "Name": "1 Hour Consulting (Partner)",
     "SalesDetails": {
       "AccountCode": "4010",
       "TaxType": "AVALARA",
-      "UnitPrice": 125
+      "UnitPrice": 130
     }
   },
   {
@@ -90,23 +79,12 @@
   {
     "Code": "design-1h-L5",
     "Description": "1 hour of design services by a Creative Director",
-    "ItemID": "0ab58ea8-2d0e-48ce-a49a-9ae4be2d08c0",
-    "Name": "1 Hour Design (Creative Director)",
-    "SalesDetails": {
-      "AccountCode": "4025",
-      "TaxType": "AVALARA",
-      "UnitPrice": 130
-    }
-  },
-  {
-    "Code": "design-1h-L5-old",
-    "Description": "1 hour of design services by a Creative Director",
     "ItemID": "ebfa94b1-9b67-462e-9c22-02cc77ff2f80",
     "Name": "1 Hour Design (Creative Director)",
     "SalesDetails": {
       "AccountCode": "4025",
       "TaxType": "AVALARA",
-      "UnitPrice": 125
+      "UnitPrice": 130
     }
   },
   {
@@ -167,23 +145,12 @@
   {
     "Code": "development-1h-L5",
     "Description": "1 hour of development services by a Technical Director",
-    "ItemID": "141e8b3c-7960-4a4c-9261-a0cda2ccf992",
-    "Name": "1 Hour Development (Technical Director)",
-    "SalesDetails": {
-      "AccountCode": "4005",
-      "TaxType": "NONE",
-      "UnitPrice": 130
-    }
-  },
-  {
-    "Code": "development-1h-L5-old",
-    "Description": "1 hour of development services by a Technical Director",
     "ItemID": "afa0e207-9719-4119-a897-d3426add2c9a",
     "Name": "1 Hour Development (Technical Director)",
     "SalesDetails": {
       "AccountCode": "4005",
       "TaxType": "AVALARA",
-      "UnitPrice": 125
+      "UnitPrice": 130
     }
   },
   {
@@ -244,23 +211,12 @@
   {
     "Code": "research-1h-L5",
     "Description": "1 hour of research services by a Partner",
-    "ItemID": "368fa9e2-d9b3-4b23-8381-63137acf989f",
-    "Name": "1 Hour Research (Partner)",
-    "SalesDetails": {
-      "AccountCode": "4030",
-      "TaxType": "OUTPUT",
-      "UnitPrice": 130
-    }
-  },
-  {
-    "Code": "research-1h-L5-old",
-    "Description": "1 hour of research services by a Partner",
     "ItemID": "5c44370d-1140-47b8-b12c-031081525ffa",
     "Name": "1 Hour Research (Partner)",
     "SalesDetails": {
       "AccountCode": "4030",
       "TaxType": "NONE",
-      "UnitPrice": 125
+      "UnitPrice": 130
     }
   },
   {
