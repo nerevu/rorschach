@@ -8,3 +8,5 @@ for PROJECT in $(jq -r '.[] | .id' app/data/timely_project_list.json); do
     exit
   fi
 done
+
+bin/sync-data

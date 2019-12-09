@@ -1,4 +1,9 @@
 {
+  "0d4a1f7f-173f-47e5-98f2-6b37eb4974cf": {
+    "name": "Website Audit",
+    "projectId": "0d4a1f7f-173f-47e5-98f2-6b37eb4974cf",
+    "status": "INPROGRESS"
+  },
   "132489d0-9094-4da6-a739-ced4d0a1f0c9": {
     "name": "IPA/AEA Site",
     "projectId": "132489d0-9094-4da6-a739-ced4d0a1f0c9",
@@ -54,6 +59,11 @@
     "projectId": "69cb6ef7-7886-4172-8112-bbc70e949a9e",
     "status": "INPROGRESS"
   },
+  "6bee8c68-9266-40f2-9a4b-3bb03186d322": {
+    "name": "WEI Case Management System",
+    "projectId": "6bee8c68-9266-40f2-9a4b-3bb03186d322",
+    "status": "INPROGRESS"
+  },
   "79867896-5504-4215-9a1a-8f9ca45ac7ec": {
     "name": "Timero",
     "projectId": "79867896-5504-4215-9a1a-8f9ca45ac7ec",
@@ -84,14 +94,14 @@
     "projectId": "c7f2aa8e-bf50-4359-8e3e-0721f5cd49bc",
     "status": "INPROGRESS"
   },
-  "c894bc65-3d7b-4861-bd1a-3139e54adb28": {
-    "name": "OpenCart",
-    "projectId": "c894bc65-3d7b-4861-bd1a-3139e54adb28",
-    "status": "INPROGRESS"
-  },
   "c8b18830-fed0-4979-8c42-6619c4b6b67c": {
     "name": "Onboarding",
     "projectId": "c8b18830-fed0-4979-8c42-6619c4b6b67c",
+    "status": "INPROGRESS"
+  },
+  "d2812acb-40dc-4ed2-8e83-e105ef21b9ef": {
+    "name": "Workforce Initiative Website",
+    "projectId": "d2812acb-40dc-4ed2-8e83-e105ef21b9ef",
     "status": "INPROGRESS"
   },
   "f9d0e04b-f07c-423d-8975-418159180dab": {

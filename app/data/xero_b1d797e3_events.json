@@ -1,1 +1,122 @@
-[]
+[
+  {
+    "dateEnteredUtc": "2019-12-06T05:09:07.64849Z",
+    "dateUtc": "2019-11-12T12:00:00Z",
+    "day": "2019-11-12",
+    "description": "Rebasing%20and%20cleaning%20up%20branches",
+    "duration": 30,
+    "projectId": "b1d797e3-e54b-4686-b83f-d8ea5a35f1c2",
+    "status": "ACTIVE",
+    "taskId": "4f7e7f1b-7c12-47f1-b843-2fd0994cd5d8",
+    "timeEntryId": "5a9ceb62-d91b-4617-b063-ff68aa4bd9cf",
+    "userId": "3f7626f2-5064-4499-a96c-e73653e5aa01"
+  },
+  {
+    "dateEnteredUtc": "2019-12-06T05:09:11.7394416Z",
+    "dateUtc": "2019-11-12T12:00:00Z",
+    "day": "2019-11-12",
+    "description": "Fixing%20dashboard%20bug",
+    "duration": 100,
+    "projectId": "b1d797e3-e54b-4686-b83f-d8ea5a35f1c2",
+    "status": "ACTIVE",
+    "taskId": "8f0882ba-fbfa-42d9-86f5-c86c8e5a71b4",
+    "timeEntryId": "03eb6cfa-1402-47f8-ae6f-eb57f7db9fb3",
+    "userId": "3f7626f2-5064-4499-a96c-e73653e5aa01"
+  },
+  {
+    "dateEnteredUtc": "2019-12-06T05:09:15.6199254Z",
+    "dateUtc": "2019-11-12T12:00:00Z",
+    "day": "2019-11-12",
+    "description": "Cleanup%20tests%20and%20documentation%20branches%20and%20create%20PR",
+    "duration": 60,
+    "projectId": "b1d797e3-e54b-4686-b83f-d8ea5a35f1c2",
+    "status": "ACTIVE",
+    "taskId": "8f0882ba-fbfa-42d9-86f5-c86c8e5a71b4",
+    "timeEntryId": "a3d2c735-7dec-418f-a127-b35c6794c352",
+    "userId": "3f7626f2-5064-4499-a96c-e73653e5aa01"
+  },
+  {
+    "dateEnteredUtc": "2019-12-06T05:09:19.4480092Z",
+    "dateUtc": "2019-11-14T12:00:00Z",
+    "day": "2019-11-14",
+    "description": "Converting%20OAuthClient%20to%20new%20version",
+    "duration": 365,
+    "projectId": "b1d797e3-e54b-4686-b83f-d8ea5a35f1c2",
+    "status": "ACTIVE",
+    "taskId": "8f0882ba-fbfa-42d9-86f5-c86c8e5a71b4",
+    "timeEntryId": "a781473f-be77-4371-9ebd-b6d27394cff7",
+    "userId": "3f7626f2-5064-4499-a96c-e73653e5aa01"
+  },
+  {
+    "dateEnteredUtc": "2019-12-06T05:24:19.6146306Z",
+    "dateUtc": "2019-11-15T12:00:00Z",
+    "day": "2019-11-15",
+    "description": "Debugging new Auth Connection",
+    "duration": 226,
+    "projectId": "b1d797e3-e54b-4686-b83f-d8ea5a35f1c2",
+    "status": "ACTIVE",
+    "taskId": "8f0882ba-fbfa-42d9-86f5-c86c8e5a71b4",
+    "timeEntryId": "df71a8f8-c223-4996-8091-c516e050d405",
+    "userId": "3f7626f2-5064-4499-a96c-e73653e5aa01"
+  },
+  {
+    "dateEnteredUtc": "2019-12-06T05:24:50.5604431Z",
+    "dateUtc": "2019-11-12T12:00:00Z",
+    "day": "2019-11-12",
+    "description": "nerevu|commissioner-api",
+    "duration": 18,
+    "projectId": "b1d797e3-e54b-4686-b83f-d8ea5a35f1c2",
+    "status": "ACTIVE",
+    "taskId": "53d25b8c-dbd0-4b25-b050-93e6094369c5",
+    "timeEntryId": "64372dc6-25f6-4bd1-801c-5d63cbc3412d",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  },
+  {
+    "dateEnteredUtc": "2019-12-06T05:24:52.8443121Z",
+    "dateUtc": "2019-11-15T12:00:00Z",
+    "day": "2019-11-15",
+    "description": "nerevu|commissioner-api • Sublime Text • GitX • Sign in to manag…",
+    "duration": 50,
+    "projectId": "b1d797e3-e54b-4686-b83f-d8ea5a35f1c2",
+    "status": "ACTIVE",
+    "taskId": "4f7e7f1b-7c12-47f1-b843-2fd0994cd5d8",
+    "timeEntryId": "9c43a892-c1ed-4b26-b381-ab4b1d3856cb",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  },
+  {
+    "dateEnteredUtc": "2019-12-06T05:24:56.6699151Z",
+    "dateUtc": "2019-11-15T12:00:00Z",
+    "day": "2019-11-15",
+    "description": "code review",
+    "duration": 34,
+    "projectId": "b1d797e3-e54b-4686-b83f-d8ea5a35f1c2",
+    "status": "ACTIVE",
+    "taskId": "53d25b8c-dbd0-4b25-b050-93e6094369c5",
+    "timeEntryId": "a13eb9ba-d8fe-4d35-ace0-8467f150c6fd",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  },
+  {
+    "dateEnteredUtc": "2019-12-06T05:25:00.4723155Z",
+    "dateUtc": "2019-11-19T12:00:00Z",
+    "day": "2019-11-19",
+    "description": "Fix PR comments",
+    "duration": 189,
+    "projectId": "b1d797e3-e54b-4686-b83f-d8ea5a35f1c2",
+    "status": "ACTIVE",
+    "taskId": "8f0882ba-fbfa-42d9-86f5-c86c8e5a71b4",
+    "timeEntryId": "aea1a9c5-a59f-465a-a114-aa6f3dc7c5ca",
+    "userId": "3f7626f2-5064-4499-a96c-e73653e5aa01"
+  },
+  {
+    "dateEnteredUtc": "2019-12-06T05:32:44.7969028Z",
+    "dateUtc": "2019-12-03T12:00:00Z",
+    "day": "2019-12-03",
+    "description": "Address Issues & update branches",
+    "duration": 110,
+    "projectId": "b1d797e3-e54b-4686-b83f-d8ea5a35f1c2",
+    "status": "ACTIVE",
+    "taskId": "8f0882ba-fbfa-42d9-86f5-c86c8e5a71b4",
+    "timeEntryId": "d1bbca91-05d1-4ddb-9df0-e4ffe8940c9c",
+    "userId": "3f7626f2-5064-4499-a96c-e73653e5aa01"
+  }
+]

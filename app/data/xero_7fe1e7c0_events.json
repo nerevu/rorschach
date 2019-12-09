@@ -1,26 +1,26 @@
 [
   {
-    "dateEnteredUtc": "2019-11-30T21:48:57.9904893Z",
-    "dateUtc": "2019-11-06T12:00:00Z",
-    "day": "2019-11-06",
-    "description": "Case Studies — Nerevu Group",
-    "duration": 35,
+    "dateEnteredUtc": "2019-12-06T05:37:22.9355941Z",
+    "dateUtc": "2019-11-21T12:00:00Z",
+    "day": "2019-11-21",
+    "description": "Oxfam Kenya: La Niña Consortium 4W — Nerevu Group • UNOCHA's Cen…",
+    "duration": 16,
     "projectId": "7fe1e7c0-24e2-4c26-809f-654f1cbae1f1",
     "status": "ACTIVE",
-    "taskId": "9da8e8b0-47b9-4e10-9273-d0087b987d77",
-    "timeEntryId": "da5da42c-00b4-4d35-8c8a-4e2934d3c3f6",
+    "taskId": "ce9eeb72-b6a4-45db-9dcd-3f7fb47047d9",
+    "timeEntryId": "c3431d61-d92c-4fc3-9823-202ba0017b0b",
     "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
   },
   {
-    "dateEnteredUtc": "2019-12-01T00:04:10.3653086Z",
-    "dateUtc": "2019-11-07T12:00:00Z",
-    "day": "2019-11-07",
-    "description": "New Content",
-    "duration": 503,
+    "dateEnteredUtc": "2019-12-09T18:58:44.6995018Z",
+    "dateUtc": "2019-11-25T12:00:00Z",
+    "day": "2019-11-25",
+    "description": "Project intake form",
+    "duration": 239,
     "projectId": "7fe1e7c0-24e2-4c26-809f-654f1cbae1f1",
     "status": "ACTIVE",
-    "taskId": "9da8e8b0-47b9-4e10-9273-d0087b987d77",
-    "timeEntryId": "ed945812-34b7-45ce-ad9d-f6a4d193987f",
+    "taskId": "ce9eeb72-b6a4-45db-9dcd-3f7fb47047d9",
+    "timeEntryId": "c0c1a02c-d9fa-4c92-9fa0-3cfa22131828",
     "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
   }
 ]

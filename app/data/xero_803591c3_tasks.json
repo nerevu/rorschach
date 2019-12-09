@@ -35,13 +35,6 @@
     "taskId": "001313ee-c233-436e-9d29-ec6d46eaaa0e"
   },
   {
-    "name": "1 Hour Research (Partner)",
-    "projectId": "803591c3-72af-4475-888f-7c4c50044589",
-    "rate.value": 130,
-    "status": "ACTIVE",
-    "taskId": "5ba6e7ab-f1dc-4395-a188-f26e9e5f1812"
-  },
-  {
     "name": "1 Hour Research (Consultant)",
     "projectId": "803591c3-72af-4475-888f-7c4c50044589",
     "rate.value": 68,
@@ -54,5 +47,19 @@
     "rate.value": 68,
     "status": "ACTIVE",
     "taskId": "66a9506d-8c45-4cab-b97f-9b27bf53402d"
+  },
+  {
+    "name": "1 Hour Coaching (Partner)",
+    "projectId": "803591c3-72af-4475-888f-7c4c50044589",
+    "rate.value": 125,
+    "status": "ACTIVE",
+    "taskId": "980d004f-7247-4a44-9063-b2aba3aa9ce6"
+  },
+  {
+    "name": "1 Hour Internal Work (Non-Billable)",
+    "projectId": "803591c3-72af-4475-888f-7c4c50044589",
+    "rate.value": 0,
+    "status": "ACTIVE",
+    "taskId": "4dd0bd16-b261-4ca7-bf0a-818b6451b6a6"
   }
 ]

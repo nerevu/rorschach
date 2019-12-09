@@ -10,5 +10,17 @@
     "taskId": "d0711e2c-d2c5-4e97-b7af-dd5f16b0447d",
     "timeEntryId": "6db5a985-2c1c-4017-8343-a8e54f012ee8",
     "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  },
+  {
+    "dateEnteredUtc": "2019-12-09T19:21:56.563929Z",
+    "dateUtc": "2019-11-27T12:00:00Z",
+    "day": "2019-11-27",
+    "description": "Board Meeting",
+    "duration": 104,
+    "projectId": "23be1505-900b-4504-b1fe-cf1b1c7e1d12",
+    "status": "ACTIVE",
+    "taskId": "46a3b991-5cc6-4f5f-ba6a-96c43233d009",
+    "timeEntryId": "ea34fe14-c109-4296-80ed-eb72f2792645",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
   }
 ]

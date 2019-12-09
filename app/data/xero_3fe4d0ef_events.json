@@ -1,1 +1,14 @@
-[]
+[
+  {
+    "dateEnteredUtc": "2019-12-09T19:20:26.054863Z",
+    "dateUtc": "2019-11-27T12:00:00Z",
+    "day": "2019-11-27",
+    "description": "LinkedIn • Committee Members",
+    "duration": 55,
+    "projectId": "3fe4d0ef-b45f-4812-8ca8-9c64f6bd679c",
+    "status": "ACTIVE",
+    "taskId": "c1ab2dac-1ea2-4e8f-9d6d-f32d8d4f243f",
+    "timeEntryId": "5ef48baa-6427-410a-8945-dbbaf8d8c575",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  }
+]

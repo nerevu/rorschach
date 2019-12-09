@@ -5,7 +5,7 @@
 """ A script to manage development tasks """
 from os import path as p
 from subprocess import call, check_call, CalledProcessError
-from urllib.parse import urlsplit, urlencode, parse_qs
+from urllib.parse import urlsplit, urlencode, parse_qs, urlparse
 from datetime import datetime as dt, timedelta
 from itertools import count, chain
 from json import load, dump
@@ -31,6 +31,9 @@ from app.api import (
     projects_p,
     users_p,
     tasks_p,
+    HEADERS,
+    get_auth_client,
+    get_realtime_response,
 )
 
 from app.utils import load_path
@@ -57,8 +60,18 @@ users = load(users_p.open())
 tasks = load(tasks_p.open())
 
 PRUNINGS = {
-    "users": {"mapping": users, "save": users_p, "timely": timely_users, "xero": xero_users},
-    "projects": {"mapping": projects, "save": projects_p, "timely": timely_projects, "xero": xero_projects},
+    "users": {
+        "mapping": users,
+        "save": users_p,
+        "timely": timely_users,
+        "xero": xero_users,
+    },
+    "projects": {
+        "mapping": projects,
+        "save": projects_p,
+        "timely": timely_projects,
+        "xero": xero_projects,
+    },
     "tasks": {"mapping": tasks, "save": tasks_p},
 }
 
@@ -136,7 +149,9 @@ def prune(**kwargs):
             if is_tasks:
                 timely_project_id = str(item["timely"]["project"])
                 timely_task_id = str(item["timely"]["task"])
-                timely_proj_tasks_p = Path(f"app/data/timely_{timely_project_id}_tasks.json")
+                timely_proj_tasks_p = Path(
+                    f"app/data/timely_{timely_project_id}_tasks.json"
+                )
                 timely_proj_tasks = load_path(timely_proj_tasks_p, [])
                 timely_task_ids = {str(t["id"]) for t in timely_proj_tasks}
                 has_timely_task = timely_task_id in timely_task_ids
@@ -145,20 +160,22 @@ def prune(**kwargs):
                     continue
 
                 xero_project_id = item["xero"]["project"]
-                trunc_id = xero_project_id.split('-')[0]
+                trunc_id = xero_project_id.split("-")[0]
                 xero_task_id = item["xero"]["task"]
                 xero_proj_tasks_p = Path(f"app/data/xero_{trunc_id}_tasks.json")
                 xero_proj_tasks = load_path(xero_proj_tasks_p, [])
                 xero_task_ids = {t["taskId"] for t in xero_proj_tasks}
                 valid = xero_task_id in xero_task_ids
             else:
-                valid = all(str(item[name]) in str(pruning[name]) for name in item_names)
+                valid = all(
+                    str(item[name]) in str(pruning[name]) for name in item_names
+                )
 
             if valid:
                 to_check = item[checking_name]
 
                 if is_tasks:
-                    to_check = (to_check['task'], to_check['project'])
+                    to_check = (to_check["task"], to_check["project"])
 
                 if to_check not in added_names:
                     added_names.add(to_check)
@@ -168,13 +185,97 @@ def prune(**kwargs):
     dump(results, pruning["save"].open(mode="w"), indent=2)
 
 
+@manager.option("-m", "--method", help="The HTTP method", default="get")
+@manager.option("-r", "--resource", help="The API Resource", default="time")
+def test(method=None, resource=None, **kwargs):
+    project_id = "f9d0e04b-f07c-423d-8975-418159180dab"
+
+    time_data = {
+        "userId": "3f7626f2-5064-4499-a96c-e73653e5aa01",
+        "taskId": "ed9d0041-3680-4011-a24a-a20e72210864",
+        "dateUtc": "2019-12-05T12:00:00Z",
+        "duration": 130,
+        "description": "Billy Bobby Tables",
+    }
+
+    task_data = {
+        "name": "Deep Fryer",
+        "rate": {"currency": "USD", "value": 99.99},
+        "isChargeable": True,
+        "chargeType": "TIME",
+        "estimateMinutes": 120,
+    }
+
+    project_data = {
+        "contactId": "566f4750-b349-490d-af8f-c13b0f5ee6fd",
+        "name": "New Kitchen",
+        "deadlineUtc": "2017-04-23T18:25:43.511Z",
+        "estimateAmount": 99.99,
+    }
+
+    xero = get_auth_client("XERO", **app.config)
+    accept = ("Accept", "application/json")
+    content_type = ("Content-Type", "application/x-www-form-urlencoded")
+
+    try:
+        tenant_id = ("Xero-tenant-id", xero.tenant_id)
+    except AttributeError:
+        tenant_id = ("Xero-tenant-id", "")
+
+    DATA = {
+        "time": time_data,
+        "task": task_data,
+        "project": project_data,
+        "contact": {"Name": "ABC Limited"},
+    }
+
+    HEADERS = {
+        (1, "post", "projects"): [accept, content_type],
+        (1, "get", "projects"): [accept],
+        (1, "post", "api"): [accept, content_type],
+        (1, "get", "api"): [accept],
+        (2, "post", "projects"): [accept, tenant_id],
+        (2, "get", "projects"): [accept, tenant_id],
+        (2, "post", "api"): [],
+        (2, "get", "api"): [accept],
+    }
+
+    PAYLOAD = {
+        (1, "post", "projects"): "data",
+        (1, "post", "api"): "json",
+        (2, "post", "projects"): "data",
+        (2, "post", "api"): "data",
+    }
+
+    URLS = {
+        "time": f"https://api.xero.com/projects.xro/2.0/projects/{project_id}/time",
+        "task": f"https://api.xero.com/projects.xro/2.0/projects/{project_id}/tasks",
+        "project": "https://api.xero.com/projects.xro/2.0/Projects",
+        "contact": "https://api.xero.com/api.xro/2.0/Contacts",
+        "invoice": "https://api.xero.com/api.xro/2.0/Invoices",
+    }
+
+    url = URLS[resource]
+    data = DATA[resource]
+    domain = urlparse(url).path.split("/")[1].split(".")[0]
+    key = (app.config["XERO_OAUTH_VERSION"], method, domain)
+    kwargs = {"method": method, "headers": dict(HEADERS[key])}
+
+    if method == "post":
+        kwargs[PAYLOAD[key]] = data
+
+    response = get_realtime_response(url, xero, **kwargs)
+
+    if response.get("message"):
+        print(response["message"])
+
+    if response.get("result"):
+        print(response["result"])
+
+
 @manager.option("-p", "--project-id", help="The Timely Project ID", default=2389295)
 @manager.option(
-    "-s",
-    "--start",
-    help="The Timely event start position",
-    type=int,
-    default=0,
+    "-s", "--start", help="The Timely event start position", type=int, default=0
 )
 @manager.option("-e", "--end", help="The Timely event end position", type=int)
 @manager.option("-d", "--dry-run", help="Perform a dry run", action="store_true")
@@ -194,16 +295,16 @@ def sync(**kwargs):
     else:
         _range = count(kwargs["start"])
 
-    logger.info("Adding events...")
+    logger.info("Adding events…")
     for pos in _range:
         result = services.add_xero_time(position=pos, **kwargs)
 
-        if result["ok"] or result["conflict"]:
+        if result["eof"]:
+            break
+        elif result["ok"] or result["conflict"]:
             added_events.add(str(result["event_id"]))
             message = result["message"] or f"Added event {result['event_id']}"
             logger.info(f"- {message}")
-        elif result["eof"]:
-            break
         elif result.get("event_id"):
             skipped_events.add(result["event_id"])
             message = result["message"] or "Unknown error!"
@@ -214,7 +315,7 @@ def sync(**kwargs):
     num_total_events = num_added_events + num_skipped_events
 
     if added_events:
-        logger.info("\nPatching events...")
+        logger.info("\nPatching events…")
 
     for event_id in added_events:
         result = services.mark_billed(event_id, **kwargs)

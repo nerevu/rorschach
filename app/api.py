@@ -8,10 +8,9 @@
 from json.decoder import JSONDecodeError
 from json import load, dump, dumps
 from itertools import chain, islice
-from datetime import date, timedelta
+from datetime import date, timedelta, datetime as dt
 from pathlib import Path
-from datetime import timedelta, datetime as dt
-from urllib.parse import urlencode, parse_qs, parse_qsl, unquote_plus
+from urllib.parse import urlencode, parse_qs
 
 from flask import Blueprint, request, redirect, session, url_for, g, current_app as app
 from flask import after_this_request
@@ -67,9 +66,6 @@ position_users_p = MAPPINGS_DIR.joinpath("position-users.json")
 projects_p = MAPPINGS_DIR.joinpath("projects.json")
 users_p = MAPPINGS_DIR.joinpath("users.json")
 task_names_p = MAPPINGS_DIR.joinpath("task-names.json")
-
-
-
 
 
 class AuthClient(object):
@@ -593,7 +589,9 @@ def get_realtime_response(url, client, params=None, **kwargs):
                 elif json.get("Elements"):
                     items = chain.from_iterable(e.items() for e in json["Elements"])
                     message += " "
-                    message += ". ".join(f"{k}: {', '.join(e['Message'] for e in v)}" for k, v in items)
+                    message += ". ".join(
+                        f"{k}: {', '.join(e['Message'] for e in v)}" for k, v in items
+                    )
 
                 response = {"status_code": result.status_code, "message": message}
 
@@ -891,6 +889,14 @@ class APIBase(MethodView):
         return self.values.get("all", "").lower() == "true"
 
     @property
+    def process(self):
+        return self.values.get("process", "").lower() == "true"
+
+    @property
+    def dictify(self):
+        return self.values.get("dictify", "").lower() == "true"
+
+    @property
     def domain(self):
         return self._domain
 
@@ -912,9 +918,7 @@ class APIBase(MethodView):
         if self.dry_run:
             api_base_url = ""
         elif self.is_timely:
-            api_base_url = (
-                f"{self.client.api_base_url}/{self.client.account_id}"
-            )
+            api_base_url = f"{self.client.api_base_url}/{self.client.account_id}"
         elif self.is_xero:
             api_base_url = f"{self.client.api_base_url}/{self.domain}.xro/2.0"
 
@@ -942,9 +946,6 @@ class APIBase(MethodView):
         return self._project_id
 
     def get(self):
-        process = self.values.get("process", "").lower() == "true"
-        dictify = self.values.get("dictify", "").lower() == "true"
-
         if self.dry_run:
             response = {"result": []}
         else:
@@ -966,9 +967,13 @@ class APIBase(MethodView):
 
         if self.populate and result:
             # populate result (list of ids) with mapping info
-            mapped = (self.timely_tasks[str(r)] for r in result if self.timely_tasks.get(str(r)))
+            mapped = (
+                self.timely_tasks[str(r)]
+                for r in result
+                if self.timely_tasks.get(str(r))
+            )
             result = process_result(mapped, self.fields, projectId=self.project_id)
-        elif self.fields and process and result:
+        elif self.fields and self.process and result:
             if "timely-tasks" in request.url:
                 _billable = (r["children"] for r in result if r["id"] == BILLABLE)
                 _non_billable = (
@@ -986,7 +991,7 @@ class APIBase(MethodView):
         if self.add_day and result:
             result = (add_day(item) for item in result)
 
-        if dictify and result:
+        if self.dictify and result:
             if self.fields:
                 id_field = next(f for f in self.fields if "id" in f.lower())
             else:
@@ -996,6 +1001,40 @@ class APIBase(MethodView):
             response["result"] = dict(result)
         else:
             response["result"] = list(result or [])
+
+        return jsonify(**response)
+
+    def post(self):
+        if self.is_xero:
+            if self.dry_run:
+                response = {"result": {}}
+            else:
+                kwargs = {
+                    **app.config,
+                    "headers": self.headers,
+                    "method": "post",
+                }
+
+                props = {"dictify", "process", "contacts"}
+                values = {k: v for k, v in self.values.items() if k not in props}
+
+                if self.domain == "api":
+                    kwargs["json"] = values
+                else:
+                    kwargs["data"] = values
+
+                response = get_realtime_response(self.api_url, self.client, **kwargs)
+        else:
+            base_url = get_request_base()
+            self.error_msg = (
+                f"The {request.method}:{base_url} route is not yet enabled."
+            )
+            response = {"status_code": 404}
+
+        response["links"] = list(gen_links())
+
+        if self.error_msg:
+            response["message"] = self.error_msg
 
         return jsonify(**response)
 
@@ -1015,40 +1054,6 @@ class Projects(APIBase):
             fields = ["name", "projectId", "status"]
 
         return fields
-
-    def post(self):
-        # url = 'http://localhost:5000/v1/xero-projects'
-        # data = {
-        #     "contactId": "69eab95a-775b-4a30-9bdb-de366253208a",
-        #     "name": "Project Name",
-        #     "dryRun": True
-        # }
-        # r = requests.post(url, data=data)
-        if self.is_xero:
-            if self.dry_run:
-                response = {"result": {}}
-            else:
-                kwargs = {
-                    **app.config,
-                    "headers": self.headers,
-                    "method": "post",
-                    "data": self.values,
-                }
-
-                response = get_realtime_response(self.api_url, self.client, **kwargs)
-        else:
-            base_url = get_request_base()
-            self.error_msg = (
-                f"The {request.method}:{base_url} route is not yet enabled."
-            )
-            response = {"status_code": 404}
-
-        response["links"] = list(gen_links())
-
-        if self.error_msg:
-            response["message"] = self.error_msg
-
-        return jsonify(**response)
 
 
 class Users(APIBase):
@@ -1119,17 +1124,10 @@ class Inventory(APIBase):
             if not self.dry_run:
                 self.api_url = f"{self.api_base_url}/Items"
 
-
     @property
     def fields(self):
         if self.is_xero:
-            fields = [
-                "Code",
-                "Description",
-                "ItemID",
-                "Name",
-                "SalesDetails",
-            ]
+            fields = ["Code", "Description", "ItemID", "Name", "SalesDetails"]
         else:
             fields = []
 
@@ -1221,6 +1219,7 @@ class Time(APIBase):
         start = self.values.get("start", def_start.strftime("%Y-%m-%d"))
 
         self.eof = False
+        self.new_project = False
         self._timely_event = None
         self._xero_task_id = None
         self._xero_user_id = None
@@ -1233,7 +1232,9 @@ class Time(APIBase):
         self.users_api = Users(prefix)
 
         def_timely_project = {"id": self.timely_project_id, "name": "Unknown"}
-        self.timely_project = self.timely_projects.get(str(self.timely_project_id), def_timely_project)
+        self.timely_project = self.timely_projects.get(
+            str(self.timely_project_id), def_timely_project
+        )
 
         if self.timely_project_id and not self.xero_project_id:
             self.xero_project_id = self.project_mapping.get(self.timely_project_id)
@@ -1267,7 +1268,7 @@ class Time(APIBase):
         if self.is_timely and not self.dry_run:
             if self.all:
                 api_url = f"{self.api_base_url}/events"
-            elif request.method in {'PATCH', 'PUT'}:
+            elif request.method in {"PATCH", "PUT"}:
                 api_url = f"{self.api_base_url}/events/{self.event_id}"
             else:
                 api_url = f"{self.api_base_url}/projects/{self.project_id}/events"
@@ -1280,7 +1281,9 @@ class Time(APIBase):
     @property
     def timely_proj_events(self):
         if self.timely_project_id:
-            proj_events_p = Path(f"app/data/timely_{self.timely_project_id}_events.json")
+            proj_events_p = Path(
+                f"app/data/timely_{self.timely_project_id}_events.json"
+            )
         else:
             proj_events_p = None
 
@@ -1323,7 +1326,9 @@ class Time(APIBase):
                     self.eof = True
 
                     if not self.error_msg:
-                        self.error_msg = f"Event at position {self.event_pos} not found!"
+                        self.error_msg = (
+                            f"Event at position {self.event_pos} not found!"
+                        )
                         logger.error(self.error_msg)
                 else:
                     logger.debug(f"Event at position {self.event_pos} found!")
@@ -1451,7 +1456,8 @@ class Time(APIBase):
                     json = response.json
 
                     if json["ok"]:
-                        project_id = json.get["result"]["projectId"]
+                        project_id = json["result"]["projectId"]
+                        self.new_project = True
                     else:
                         self.error_msg = json.get("message")
                         logger.error(self.error_msg)
@@ -1478,11 +1484,24 @@ class Time(APIBase):
         logger.debug(f"Updating {tasks_p}…")
         return dump(self.tasks, tasks_p.open(mode="w"), indent=2)
 
-    def find_matching_xero_task_id(self):
-        xero_task_id = None
-
-        if self.xero_project_id:
-            xero_tasks_filename = f"xero_{self.xero_project_id.split('-')[0]}_tasks.json"
+    def get_matching_xero_postions(self, use_inventory=False):
+        if use_inventory:
+            mapped_names = self.timely_task["mapped_names"]
+            matching_inventory = [
+                i
+                for i in self.xero_inventory
+                if any(name in i["Name"] for name in mapped_names)
+            ]
+            matching_positions = [
+                i
+                for i in matching_inventory
+                if self.timely_event["user.id"]
+                in self.get_position_user_ids(i, field="Name")
+            ]
+        elif self.xero_project_id:
+            xero_tasks_filename = (
+                f"xero_{self.xero_project_id.split('-')[0]}_tasks.json"
+            )
             xero_tasks_p = DATA_DIR.joinpath(xero_tasks_filename)
             mapped_names = self.timely_task["mapped_names"]
 
@@ -1498,13 +1517,22 @@ class Time(APIBase):
                 if self.timely_event["user.id"] in self.get_position_user_ids(t)
             ]
         else:
+            logger.debug("No xero_project_id!")
             matching_positions = []
 
+        return matching_positions
+
+    def find_matching_xero_task_id(self):
+        xero_task_id = None
+        matching_positions = self.get_matching_xero_postions()
+
         if matching_positions:
-            choices = list(enumerate(m["name"] for m in matching_positions))
             logger.debug(
                 f"Loading task choices for {self.timely_project['name']}:{self.timely_user['name']}:{self.timely_task['trunc_name']}…"
             )
+            matching = list(enumerate(m["name"] for m in matching_positions))
+            none_of_prev = [(len(matching), "None of the previous tasks")]
+            choices = matching + none_of_prev
             pos = fetch_choice(choices) if choices else None
 
             try:
@@ -1521,26 +1549,27 @@ class Time(APIBase):
         return xero_task_id
 
     def create_task_data(self):
-        mapped_names = self.timely_task["mapped_names"]
-        matching_inventory = [
-            i for i in self.xero_inventory if any(name in i["Name"] for name in mapped_names)
-        ]
+        logger.debug(
+            f"Loading inventory choices for {self.timely_project['name']}:{self.timely_user['name']}:{self.timely_task['trunc_name']}…"
+        )
+
+        matching_task_positions = self.get_matching_xero_postions()
+        task_position_names = {t["name"] for t in matching_task_positions}
+        matching_inventory_positions = self.get_matching_xero_postions(True)
         matching_positions = [
-            i
-            for i in matching_inventory
-            if self.timely_event["user.id"]
-            in self.get_position_user_ids(i, field="Name")
+            m
+            for m in matching_inventory_positions
+            if m["Name"] not in task_position_names
         ]
-        choices = list(
+
+        matching = list(
             enumerate(
                 f"{m['Name']} - {m['SalesDetails']['UnitPrice']}"
                 for m in matching_positions
             )
         )
-        logger.debug(
-            f"Loading inventory choices for {self.timely_project['name']}:{self.timely_user['name']}:{self.timely_task['trunc_name']}…"
-        )
-
+        none_of_prev = [(len(matching), "None of the previous tasks")]
+        choices = matching + none_of_prev
         pos = fetch_choice(choices) if choices else None
 
         try:
@@ -1550,14 +1579,18 @@ class Time(APIBase):
             logger.error(self.error_msg)
             task_data = {}
         else:
+            rate = item["SalesDetails"]["UnitPrice"]
             task_data = {
                 "name": item["Name"],
-                "rate": {"currency": "USD", "value": item["SalesDetails"]["UnitPrice"]},
+                "rate": {"currency": "USD", "value": rate},
                 "chargeType": "TIME",
-                "isChargeable": True,
+                "isChargeable": bool(rate),
             }
 
         return task_data
+
+    def create_client_data(self):
+        return {"Name": self.timely_project["client"]["name"]}
 
     def create_project_data(self):
         timely_client_name = self.timely_project["client"]["name"]
@@ -1567,10 +1600,28 @@ class Time(APIBase):
         try:
             matching_user = next(u for u in users if timely_client_name == u["Name"])
         except StopIteration:
-            project_data = {}
-            self.error_msg = f"No client matching {timely_client_name} found!"
-            logger.error(self.error_msg)
-        else:
+            message = f"No client matching {timely_client_name} found!"
+            message += " Do you want to create this client in Xero?"
+            answer = fetch_bool(message)
+            client_data = self.create_client_data() if answer == "y" else {}
+
+            if client_data:
+                response = self.create_client(client_data)
+                json = response.json
+
+                if json["ok"]:
+                    matching_user = json["result"]
+                else:
+                    matching_user = {}
+                    self.error_msg = json.get("message")
+                    logger.error(self.error_msg)
+                    logger.debug(f"Manually add {timely_client_name}.")
+            else:
+                matching_user = {}
+                self.error_msg = message
+                logger.error(self.error_msg)
+
+        if matching_user:
             project_data = {
                 "contactId": matching_user["ContactID"],
                 "name": self.timely_project["name"],
@@ -1578,6 +1629,8 @@ class Time(APIBase):
 
             if self.timely_project.get("budget"):
                 project_data["estimateAmount"] = self.timely_project["budget"]
+        else:
+            project_data = {}
 
         return project_data
 
@@ -1590,6 +1643,11 @@ class Time(APIBase):
     def create_project(self, project_data):
         self.projects_api.values = project_data
         return self.projects_api.post()
+
+    def create_client(self, client_data):
+        client_data.update({"contacts": "true", "process": "true"})
+        self.users_api.values = client_data
+        return self.users_api.post()
 
     def patch(self):
         # url = 'http://localhost:5000/v1/timely-time'
@@ -1666,7 +1724,7 @@ class Time(APIBase):
 
             if not (self.timely_event["label_id"] or self.error_msg):
                 self.error_msg = (
-                    f"Event {self.timely_event['id']} missing label in {events_p}!"
+                    f"Event {self.timely_event['id']} missing label!"
                 )
                 logger.error(self.error_msg)
 
@@ -1705,7 +1763,9 @@ class Time(APIBase):
                         else:
                             self.error_msg = json.get("message")
                             logger.error(self.error_msg)
-                            logger.debug(f"Manually add {task_data['name']} to {self.timely_project['name']}.")
+                            logger.debug(
+                                f"Manually add {task_data['name']} to {self.timely_project['name']}."
+                            )
 
                 if xero_task_id:
                     self.xero_event = {"task_id": xero_task_id}
@@ -1731,29 +1791,34 @@ class Time(APIBase):
 
                 logger.debug("Created data!")
             else:
-                day = duration = None
+                day = None
+                duration = 0
                 data = {}
 
-            if self.xero_project_id and data and not self.error_msg:
+            ready = self.xero_project_id and data and not self.error_msg
+
+            if ready and self.new_project:
+                xero_events = []
+            elif ready:
                 trunc_id = self.xero_project_id.split("-")[0]
                 events_p = Path(f"app/data/xero_{trunc_id}_events.json")
 
                 try:
                     xero_events = load(events_p.open())
                 except FileNotFoundError:
-                    xero_events = {}
+                    xero_events = []
                     self.error_msg = f"{events_p} not found!"
                     logger.error(self.error_msg)
                 else:
                     logger.debug(f"{events_p} found!")
             else:
-                xero_events = {}
+                xero_events = []
 
                 if not self.error_msg:
                     self.error_msg = "Xero project_id or data missing!"
                     logger.error(self.error_msg)
 
-            if day and duration and not self.error_msg:
+            if day and not self.error_msg:
                 key = (
                     day,
                     duration,
@@ -1768,14 +1833,14 @@ class Time(APIBase):
                 )
                 fields = ["day", "duration", "userId", "taskId"]
                 event_keys = {tuple(xe[f] for f in fields) for xe in xero_events}
-                exists = key in event_keys
+                exists = (key in event_keys) or not duration
                 logger.debug("Day and duration found!")
             else:
                 truncated_key = ()
                 exists = False
 
                 if not self.error_msg:
-                    self.error_msg = "Either day or duration (or both) are empty!"
+                    self.error_msg = "Task day is empty!"
                     logger.error(self.error_msg)
 
             if exists or self.timely_event["added"]:
