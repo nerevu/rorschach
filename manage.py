@@ -299,12 +299,12 @@ def sync(**kwargs):
     for pos in _range:
         result = services.add_xero_time(position=pos, **kwargs)
 
-        if result["ok"] or result["conflict"]:
+        if result["eof"]:
+            break
+        elif result["ok"] or result["conflict"]:
             added_events.add(str(result["event_id"]))
             message = result["message"] or f"Added event {result['event_id']}"
             logger.info(f"- {message}")
-        elif result["eof"]:
-            break
         elif result.get("event_id"):
             skipped_events.add(result["event_id"])
             message = result["message"] or "Unknown error!"
