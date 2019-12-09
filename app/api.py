@@ -1733,7 +1733,8 @@ class Time(APIBase):
 
                 logger.debug("Created data!")
             else:
-                day = duration = None
+                day = None
+                duration = 0
                 data = {}
 
             if self.xero_project_id and data and not self.error_msg:
@@ -1755,7 +1756,7 @@ class Time(APIBase):
                     self.error_msg = "Xero project_id or data missing!"
                     logger.error(self.error_msg)
 
-            if day and duration and not self.error_msg:
+            if day and not self.error_msg:
                 key = (
                     day,
                     duration,
@@ -1770,14 +1771,14 @@ class Time(APIBase):
                 )
                 fields = ["day", "duration", "userId", "taskId"]
                 event_keys = {tuple(xe[f] for f in fields) for xe in xero_events}
-                exists = key in event_keys
+                exists = (key in event_keys) or not duration
                 logger.debug("Day and duration found!")
             else:
                 truncated_key = ()
                 exists = False
 
                 if not self.error_msg:
-                    self.error_msg = "Either day or duration (or both) are empty!"
+                    self.error_msg = "Task day is empty!"
                     logger.error(self.error_msg)
 
             if exists or self.timely_event["added"]:
