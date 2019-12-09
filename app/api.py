@@ -1644,6 +1644,14 @@ class Time(APIBase):
                 f"Loading task choices for {self.timely_project['name']}:{self.timely_user['name']}:{self.timely_task['trunc_name']}…"
             )
             matching = list(enumerate(m["name"] for m in matching_positions))
+            # TODO: why is there a dupe task?
+            # Loading task choices for Open Peoria:Reuben Cummings:Development…
+            # [
+            #     (0, '1 Hour Development (Pro-Bono)'),
+            #     (1, '1 Hour Internal Work (Non-Billable)'),
+            #     (2, '1 Hour Internal Work (Non-Billable)'),
+            #     (3, 'None of the previous tasks')
+            # ]
             none_of_prev = [(len(matching), "None of the previous tasks")]
             choices = matching + none_of_prev
             pos = fetch_choice(choices) if choices else None
@@ -1900,6 +1908,7 @@ class Time(APIBase):
                     "dateUtc": date_utc,
                     "duration": duration,
                     "description": description,
+                    # "description": description.replace("/", "|"),
                 }
 
                 logger.debug("Created data!")
