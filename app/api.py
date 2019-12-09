@@ -1219,6 +1219,7 @@ class Time(APIBase):
         start = self.values.get("start", def_start.strftime("%Y-%m-%d"))
 
         self.eof = False
+        self.new_project = False
         self._timely_event = None
         self._xero_task_id = None
         self._xero_user_id = None
@@ -1456,6 +1457,7 @@ class Time(APIBase):
 
                     if json["ok"]:
                         project_id = json["result"]["projectId"]
+                        self.new_project = True
                     else:
                         self.error_msg = json.get("message")
                         logger.error(self.error_msg)
@@ -1793,20 +1795,24 @@ class Time(APIBase):
                 duration = 0
                 data = {}
 
-            if self.xero_project_id and data and not self.error_msg:
+            ready = self.xero_project_id and data and not self.error_msg
+
+            if ready and self.new_project:
+                xero_events = []
+            elif ready:
                 trunc_id = self.xero_project_id.split("-")[0]
                 events_p = Path(f"app/data/xero_{trunc_id}_events.json")
 
                 try:
                     xero_events = load(events_p.open())
                 except FileNotFoundError:
-                    xero_events = {}
+                    xero_events = []
                     self.error_msg = f"{events_p} not found!"
                     logger.error(self.error_msg)
                 else:
                     logger.debug(f"{events_p} found!")
             else:
-                xero_events = {}
+                xero_events = []
 
                 if not self.error_msg:
                     self.error_msg = "Xero project_id or data missing!"
