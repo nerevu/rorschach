@@ -1549,11 +1549,12 @@ class Time(APIBase):
             logger.error(self.error_msg)
             task_data = {}
         else:
+            rate = item["SalesDetails"]["UnitPrice"]
             task_data = {
                 "name": item["Name"],
-                "rate": {"currency": "USD", "value": item["SalesDetails"]["UnitPrice"]},
+                "rate": {"currency": "USD", "value": rate},
                 "chargeType": "TIME",
-                "isChargeable": True,
+                "isChargeable": bool(rate),
             }
 
         return task_data
