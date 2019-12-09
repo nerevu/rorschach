@@ -1,1 +1,22 @@
-[]
+[
+  {
+    "billed": false,
+    "day": "2019-07-11",
+    "duration.total_minutes": 263,
+    "id": 165751382,
+    "label_ids[0]": null,
+    "note": "intern positions • AngelList Talent • vatsalparikh/Traveling-Tourist-Problem • shivani3195/shivani3195.github.io • UberConference • nikiravi04/Weather-Prediction---Decision-Trees • vatsalparikh/HackRuFall2018 • PCA Tags Movie Recommendation System • Nerevu Group • Calendar • Fastmail",
+    "project.id": 2980115,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2019-10-14",
+    "duration.total_minutes": 34,
+    "id": 166615504,
+    "label_ids[0]": 1344449,
+    "note": "research internship sites",
+    "project.id": 2980115,
+    "user.id": 933370
+  }
+]

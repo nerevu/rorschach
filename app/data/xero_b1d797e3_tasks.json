@@ -54,5 +54,12 @@
     "rate.value": 0,
     "status": "ACTIVE",
     "taskId": "4f7e7f1b-7c12-47f1-b843-2fd0994cd5d8"
+  },
+  {
+    "name": "1 Hour Consulting (Partner)",
+    "projectId": "b1d797e3-e54b-4686-b83f-d8ea5a35f1c2",
+    "rate.value": 130,
+    "status": "ACTIVE",
+    "taskId": "46b70750-573f-48af-b047-1dee72eff5a9"
   }
 ]

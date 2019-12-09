@@ -1,1 +1,12 @@
-[]
+[
+  {
+    "billed": false,
+    "day": "2019-12-10",
+    "duration.total_minutes": 32,
+    "id": 167774439,
+    "label_ids[0]": 1344432,
+    "note": "Fixing Headless Auth for Xero",
+    "project.id": 3013676,
+    "user.id": 1281455
+  }
+]
