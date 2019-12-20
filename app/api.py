@@ -5,6 +5,7 @@
 
     Provides additional api endpoints
 """
+import base64
 from json.decoder import JSONDecodeError
 from json import load, dump, dumps
 from itertools import chain, islice, count
@@ -212,8 +213,20 @@ class MyAuth2Client(AuthClient):
         if self.refresh_token:
             try:
                 logger.info(f"Renewing token using {self.refresh_url}…")
+                #########################################################################
+                # Make renew for Xero work (always get invalid client)
+                if self.prefix is "XERO":
+                    # encode to prevent bytes-like error
+                    authorization = (self.client_id+':'+self.client_secret).encode('utf-8')
+                    # decode to prevent string-needed error
+                    headers = { 'Authorization': f"Basic {base64.b64encode(authorization).decode('utf-8')}" }
+                else:
+                    headers = None
+                #########################################################################
                 token = self.oauth_session.refresh_token(
-                    self.refresh_url, self.refresh_token
+                    self.refresh_url,
+                    self.refresh_token,
+                    headers=headers
                 )
             except Exception as e:
                 self.error = str(e)
