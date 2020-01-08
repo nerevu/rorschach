@@ -1707,7 +1707,7 @@ class Time(APIBase):
             task_data = {
                 "name": item["Name"],
                 "rate": {"currency": "USD", "value": rate},
-                "chargeType": "TIME",
+                "chargeType": "TIME" if rate else "NON_CHARGEABLE",
                 "isChargeable": bool(rate),
             }
 
