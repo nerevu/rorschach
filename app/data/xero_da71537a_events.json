@@ -1,0 +1,26 @@
+[
+  {
+    "dateEnteredUtc": "2020-01-08T07:03:00.7836017Z",
+    "dateUtc": "2019-12-27T12:00:00Z",
+    "day": "2019-12-27",
+    "description": "GDPR Policy Proposal by Nerevu Group.pages • LinkedIn • solomocl…",
+    "duration": 201,
+    "projectId": "da71537a-8806-4b4b-b3a1-6b470f52dd7e",
+    "status": "ACTIVE",
+    "taskId": "28034d2b-7a0f-417d-8351-da0e3478b601",
+    "timeEntryId": "7424eb93-f4b9-419c-abed-8ef820288d04",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  },
+  {
+    "dateEnteredUtc": "2020-01-08T07:03:01.0300987Z",
+    "dateUtc": "2019-12-28T12:00:00Z",
+    "day": "2019-12-28",
+    "description": "GDPR Policy Proposal by Nerevu Group.pages • Finder • Preview • …",
+    "duration": 67,
+    "projectId": "da71537a-8806-4b4b-b3a1-6b470f52dd7e",
+    "status": "ACTIVE",
+    "taskId": "28034d2b-7a0f-417d-8351-da0e3478b601",
+    "timeEntryId": "8dd699de-c21a-456a-83a5-b52f524b0f41",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  }
+]

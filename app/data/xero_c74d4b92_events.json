@@ -394,5 +394,17 @@
     "taskId": "c78b97dd-f2ba-41a3-888d-43e8677fdc31",
     "timeEntryId": "f4d58eb0-993a-417a-b3a7-859f26eb70a6",
     "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  },
+  {
+    "dateEnteredUtc": "2020-01-08T07:06:44.3550292Z",
+    "dateUtc": "2019-10-14T12:00:00Z",
+    "day": "2019-10-14",
+    "description": "research internship sites",
+    "duration": 34,
+    "projectId": "c74d4b92-4a5c-4301-80ac-a601593b41ba",
+    "status": "ACTIVE",
+    "taskId": "c78b97dd-f2ba-41a3-888d-43e8677fdc31",
+    "timeEntryId": "e22505e0-0021-441a-a59a-b760d860c11b",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
   }
 ]

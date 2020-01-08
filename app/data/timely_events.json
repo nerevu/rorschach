@@ -148,45 +148,5 @@
     "note": "LeetCode • itertools — Functions creating iterators for efficient looping — Python 3.7.4 documentation",
     "project.id": 2906240,
     "user.id": 1281876
-  },
-  "166615504": {
-    "billed": false,
-    "day": "2019-10-14",
-    "duration.total_minutes": 34,
-    "id": 166615504,
-    "label_ids[0]": 1344449,
-    "note": "research internship sites",
-    "project.id": 2980115,
-    "user.id": 933370
-  },
-  "167774439": {
-    "billed": false,
-    "day": "2019-12-10",
-    "duration.total_minutes": 32,
-    "id": 167774439,
-    "label_ids[0]": 1344432,
-    "note": "Fixing Headless Auth for Xero",
-    "project.id": 3013676,
-    "user.id": 1281455
-  },
-  "167806580": {
-    "billed": false,
-    "day": "2019-12-10",
-    "duration.total_minutes": 131,
-    "id": 167806580,
-    "label_ids[0]": 1469676,
-    "note": "Product Ideas • Calendar • Google Translate • LinkedIn • Fastmail • OmniFocus",
-    "project.id": 2906240,
-    "user.id": 933370
-  },
-  "167983398": {
-    "billed": false,
-    "day": "2019-12-18",
-    "duration.total_minutes": 26,
-    "id": 167983398,
-    "label_ids[0]": 1469676,
-    "note": "Facebook • Solutions • OmniFocus • Ad Metrics • Product Ideas",
-    "project.id": 2906240,
-    "user.id": 933370
   }
 }

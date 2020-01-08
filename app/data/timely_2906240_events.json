@@ -138,25 +138,5 @@
     "note": "LeetCode • itertools — Functions creating iterators for efficient looping — Python 3.7.4 documentation",
     "project.id": 2906240,
     "user.id": 1281876
-  },
-  {
-    "billed": false,
-    "day": "2019-12-10",
-    "duration.total_minutes": 131,
-    "id": 167806580,
-    "label_ids[0]": 1469676,
-    "note": "Product Ideas • Calendar • Google Translate • LinkedIn • Fastmail • OmniFocus",
-    "project.id": 2906240,
-    "user.id": 933370
-  },
-  {
-    "billed": false,
-    "day": "2019-12-18",
-    "duration.total_minutes": 26,
-    "id": 167983398,
-    "label_ids[0]": 1469676,
-    "note": "Facebook • Solutions • OmniFocus • Ad Metrics • Product Ideas",
-    "project.id": 2906240,
-    "user.id": 933370
   }
 ]

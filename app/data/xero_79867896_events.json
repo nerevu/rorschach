@@ -562,5 +562,41 @@
     "taskId": "3b674ca9-5b3d-4685-a6c3-818f62ff7219",
     "timeEntryId": "2eb29006-c84e-4ebb-b831-8dd63485549e",
     "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  },
+  {
+    "dateEnteredUtc": "2020-01-08T06:39:38.2566755Z",
+    "dateUtc": "2019-12-10T12:00:00Z",
+    "day": "2019-12-10",
+    "description": "Fixing Headless Auth for Xero",
+    "duration": 32,
+    "projectId": "79867896-5504-4215-9a1a-8f9ca45ac7ec",
+    "status": "ACTIVE",
+    "taskId": "3b674ca9-5b3d-4685-a6c3-818f62ff7219",
+    "timeEntryId": "b246231c-32d2-46ba-830c-cf9d98835e31",
+    "userId": "3f7626f2-5064-4499-a96c-e73653e5aa01"
+  },
+  {
+    "dateEnteredUtc": "2020-01-08T06:39:50.1531436Z",
+    "dateUtc": "2019-12-20T12:00:00Z",
+    "day": "2019-12-20",
+    "description": "Headless Auth, Fixing Xero Auth",
+    "duration": 230,
+    "projectId": "79867896-5504-4215-9a1a-8f9ca45ac7ec",
+    "status": "ACTIVE",
+    "taskId": "3b674ca9-5b3d-4685-a6c3-818f62ff7219",
+    "timeEntryId": "80de22a6-6f38-42f4-be3b-3c823b9eae01",
+    "userId": "3f7626f2-5064-4499-a96c-e73653e5aa01"
+  },
+  {
+    "dateEnteredUtc": "2020-01-08T06:39:50.5125301Z",
+    "dateUtc": "2019-12-23T12:00:00Z",
+    "day": "2019-12-23",
+    "description": "Sublime Text",
+    "duration": 22,
+    "projectId": "79867896-5504-4215-9a1a-8f9ca45ac7ec",
+    "status": "ACTIVE",
+    "taskId": "3b674ca9-5b3d-4685-a6c3-818f62ff7219",
+    "timeEntryId": "48ac7810-914f-4d86-b275-535cb1c9023e",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
   }
 ]

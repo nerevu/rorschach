@@ -35,10 +35,10 @@
     "taskId": "31f1eb88-adba-4db9-9aab-79cab22b805e"
   },
   {
-    "name": "1 Hour Internal Work (Non-Billable)",
+    "name": "1 Hour Research (Consultant)",
     "projectId": "2e4c160d-a4bf-4eb4-b531-3cae6cfeb2fa",
-    "rate.value": 0,
+    "rate.value": 68,
     "status": "ACTIVE",
-    "taskId": "0182f6db-1937-43f9-a5c3-5276b1b07186"
+    "taskId": "23163d8e-83b0-4b63-9977-e2dab9d2a321"
   }
 ]

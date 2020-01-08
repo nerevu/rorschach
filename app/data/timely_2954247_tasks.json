@@ -1,7 +1,7 @@
 [
   {
-    "id": 1344464,
-    "name": "Learning (general: via articles, books, tutorials, courses, etc.)",
+    "id": 1339639,
+    "name": "Admin (meetings, time tracking, email, calendar, organizing, paperwork, etc.)",
     "projectId": 2954247
   },
   {
@@ -10,8 +10,8 @@
     "projectId": 2954247
   },
   {
-    "id": 1339639,
-    "name": "Admin (meetings, time tracking, email, calendar, organizing, paperwork, etc.)",
+    "id": 1344464,
+    "name": "Learning (general: via articles, books, tutorials, courses, etc.)",
     "projectId": 2954247
   }
 ]

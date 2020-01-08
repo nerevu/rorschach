@@ -114,7 +114,7 @@
     "description": "Add Intercom to Pricecloser",
     "duration": 120,
     "projectId": "2e4c160d-a4bf-4eb4-b531-3cae6cfeb2fa",
-    "status": "ACTIVE",
+    "status": "INVOICED",
     "taskId": "51caaa33-d74c-490d-a8f7-cb61eb2d2b4b",
     "timeEntryId": "d1d2bbfa-5eec-4bbd-9627-c415abcd543b",
     "userId": "3f7626f2-5064-4499-a96c-e73653e5aa01"
@@ -126,7 +126,7 @@
     "description": "HostGator and Intercom setup research",
     "duration": 38,
     "projectId": "2e4c160d-a4bf-4eb4-b531-3cae6cfeb2fa",
-    "status": "ACTIVE",
+    "status": "INVOICED",
     "taskId": "6177f871-1cd9-4cbd-a732-2cf231ecc7d8",
     "timeEntryId": "d9557f65-59cf-4e13-925f-dd8e6e83d276",
     "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
@@ -138,7 +138,7 @@
     "description": "Working with Hostgator support to fix mod_security error (only o…",
     "duration": 150,
     "projectId": "2e4c160d-a4bf-4eb4-b531-3cae6cfeb2fa",
-    "status": "ACTIVE",
+    "status": "INVOICED",
     "taskId": "51caaa33-d74c-490d-a8f7-cb61eb2d2b4b",
     "timeEntryId": "5f2e4cdc-ca42-46df-8297-7901e5bbd441",
     "userId": "3f7626f2-5064-4499-a96c-e73653e5aa01"
@@ -162,7 +162,7 @@
     "description": "Setting up intercom",
     "duration": 95,
     "projectId": "2e4c160d-a4bf-4eb4-b531-3cae6cfeb2fa",
-    "status": "ACTIVE",
+    "status": "INVOICED",
     "taskId": "51caaa33-d74c-490d-a8f7-cb61eb2d2b4b",
     "timeEntryId": "4962544d-af96-463a-8823-959fb7dbdcb8",
     "userId": "3f7626f2-5064-4499-a96c-e73653e5aa01"
@@ -174,7 +174,7 @@
     "description": "ClozeCart api setup",
     "duration": 260,
     "projectId": "2e4c160d-a4bf-4eb4-b531-3cae6cfeb2fa",
-    "status": "ACTIVE",
+    "status": "INVOICED",
     "taskId": "51caaa33-d74c-490d-a8f7-cb61eb2d2b4b",
     "timeEntryId": "a6063454-90d5-45ea-aadb-234400157e11",
     "userId": "3f7626f2-5064-4499-a96c-e73653e5aa01"
@@ -187,7 +187,7 @@
     "duration": 20,
     "projectId": "2e4c160d-a4bf-4eb4-b531-3cae6cfeb2fa",
     "status": "ACTIVE",
-    "taskId": "0182f6db-1937-43f9-a5c3-5276b1b07186",
+    "taskId": "31f1eb88-adba-4db9-9aab-79cab22b805e",
     "timeEntryId": "782c4325-fe45-442d-9104-5d6c628473e0",
     "userId": "3f7626f2-5064-4499-a96c-e73653e5aa01"
   },
@@ -198,7 +198,7 @@
     "description": "Setup: Add important files to the api",
     "duration": 35,
     "projectId": "2e4c160d-a4bf-4eb4-b531-3cae6cfeb2fa",
-    "status": "ACTIVE",
+    "status": "INVOICED",
     "taskId": "51caaa33-d74c-490d-a8f7-cb61eb2d2b4b",
     "timeEntryId": "2ec256be-2fee-49e9-8f14-53485fe34f24",
     "userId": "3f7626f2-5064-4499-a96c-e73653e5aa01"
@@ -210,7 +210,7 @@
     "description": "Setting up intercom just right",
     "duration": 180,
     "projectId": "2e4c160d-a4bf-4eb4-b531-3cae6cfeb2fa",
-    "status": "ACTIVE",
+    "status": "INVOICED",
     "taskId": "51caaa33-d74c-490d-a8f7-cb61eb2d2b4b",
     "timeEntryId": "c1240ece-3666-4b8a-8860-3e89c436491a",
     "userId": "3f7626f2-5064-4499-a96c-e73653e5aa01"
@@ -222,7 +222,7 @@
     "description": "ClozeCart fix issues",
     "duration": 225,
     "projectId": "2e4c160d-a4bf-4eb4-b531-3cae6cfeb2fa",
-    "status": "ACTIVE",
+    "status": "INVOICED",
     "taskId": "51caaa33-d74c-490d-a8f7-cb61eb2d2b4b",
     "timeEntryId": "ce03c7bc-66c0-4fe1-8cd9-64f0fc8ec2bc",
     "userId": "3f7626f2-5064-4499-a96c-e73653e5aa01"
@@ -234,7 +234,7 @@
     "description": "Google Hangouts • Price Closer • GitX • Fastmail • HostGator Bil…",
     "duration": 60,
     "projectId": "2e4c160d-a4bf-4eb4-b531-3cae6cfeb2fa",
-    "status": "ACTIVE",
+    "status": "INVOICED",
     "taskId": "37033e43-1e77-4431-839e-7535da6f5f42",
     "timeEntryId": "1487d7a9-f44b-4cab-9669-4cbd64060778",
     "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
@@ -246,7 +246,7 @@
     "description": "Google Hangouts • Pricing • Cloze • Orders • Chat",
     "duration": 30,
     "projectId": "2e4c160d-a4bf-4eb4-b531-3cae6cfeb2fa",
-    "status": "ACTIVE",
+    "status": "INVOICED",
     "taskId": "db0e6752-7c1b-48a2-a411-f22b357ba78c",
     "timeEntryId": "24f60a12-9697-4690-b089-169ee334389b",
     "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
@@ -258,7 +258,7 @@
     "description": "nerevu/ClozeCart • Google Hangouts • Nerevu Labs • Collaborators",
     "duration": 15,
     "projectId": "2e4c160d-a4bf-4eb4-b531-3cae6cfeb2fa",
-    "status": "ACTIVE",
+    "status": "INVOICED",
     "taskId": "37033e43-1e77-4431-839e-7535da6f5f42",
     "timeEntryId": "42bbe4d6-4bf8-43da-aa4c-3643cb858870",
     "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
@@ -270,7 +270,7 @@
     "description": "Google Hangouts • Price Closer",
     "duration": 6,
     "projectId": "2e4c160d-a4bf-4eb4-b531-3cae6cfeb2fa",
-    "status": "ACTIVE",
+    "status": "INVOICED",
     "taskId": "37033e43-1e77-4431-839e-7535da6f5f42",
     "timeEntryId": "25206763-cdc0-44e3-8aef-615e9b7bf907",
     "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
@@ -282,9 +282,93 @@
     "description": "business_apps.xlsx • Google Hangouts • Finder • Chat • nerevu/Cl…",
     "duration": 105,
     "projectId": "2e4c160d-a4bf-4eb4-b531-3cae6cfeb2fa",
-    "status": "ACTIVE",
+    "status": "INVOICED",
     "taskId": "37033e43-1e77-4431-839e-7535da6f5f42",
     "timeEntryId": "fa0159d3-c174-4fd5-adf2-f26c69467706",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  },
+  {
+    "dateEnteredUtc": "2020-01-06T19:20:08.6611273Z",
+    "dateUtc": "2019-12-20T12:00:00Z",
+    "day": "2019-12-20",
+    "description": "Adding notes from Intercom Support to Issues",
+    "duration": 20,
+    "projectId": "2e4c160d-a4bf-4eb4-b531-3cae6cfeb2fa",
+    "status": "ACTIVE",
+    "taskId": "23163d8e-83b0-4b63-9977-e2dab9d2a321",
+    "timeEntryId": "a1418513-6020-48d5-b22f-781b117bd725",
+    "userId": "3f7626f2-5064-4499-a96c-e73653e5aa01"
+  },
+  {
+    "dateEnteredUtc": "2020-01-06T19:20:09.0048676Z",
+    "dateUtc": "2020-01-02T12:00:00Z",
+    "day": "2020-01-02",
+    "description": "Working with ClozeCart",
+    "duration": 40,
+    "projectId": "2e4c160d-a4bf-4eb4-b531-3cae6cfeb2fa",
+    "status": "ACTIVE",
+    "taskId": "51caaa33-d74c-490d-a8f7-cb61eb2d2b4b",
+    "timeEntryId": "7b225e56-018c-4200-b641-58f2e54041a5",
+    "userId": "3f7626f2-5064-4499-a96c-e73653e5aa01"
+  },
+  {
+    "dateEnteredUtc": "2020-01-06T19:20:09.3443099Z",
+    "dateUtc": "2020-01-03T12:00:00Z",
+    "day": "2020-01-03",
+    "description": "ClozeCart share with team and other issues",
+    "duration": 35,
+    "projectId": "2e4c160d-a4bf-4eb4-b531-3cae6cfeb2fa",
+    "status": "ACTIVE",
+    "taskId": "51caaa33-d74c-490d-a8f7-cb61eb2d2b4b",
+    "timeEntryId": "6304e951-9cf3-4fb9-85c0-a7ea757458d8",
+    "userId": "3f7626f2-5064-4499-a96c-e73653e5aa01"
+  },
+  {
+    "dateEnteredUtc": "2020-01-08T06:20:04.0695718Z",
+    "dateUtc": "2020-01-06T12:00:00Z",
+    "day": "2020-01-06",
+    "description": "ClozeCart Issues - adding fields",
+    "duration": 95,
+    "projectId": "2e4c160d-a4bf-4eb4-b531-3cae6cfeb2fa",
+    "status": "ACTIVE",
+    "taskId": "51caaa33-d74c-490d-a8f7-cb61eb2d2b4b",
+    "timeEntryId": "e8bf2961-e294-451a-b514-b761083b2648",
+    "userId": "3f7626f2-5064-4499-a96c-e73653e5aa01"
+  },
+  {
+    "dateEnteredUtc": "2020-01-08T06:20:20.4132023Z",
+    "dateUtc": "2020-01-02T12:00:00Z",
+    "day": "2020-01-02",
+    "description": "Web app tracking software research",
+    "duration": 157,
+    "projectId": "2e4c160d-a4bf-4eb4-b531-3cae6cfeb2fa",
+    "status": "ACTIVE",
+    "taskId": "6177f871-1cd9-4cbd-a732-2cf231ecc7d8",
+    "timeEntryId": "c2cf78a6-ffe5-4095-a5b2-22631071aa3f",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  },
+  {
+    "dateEnteredUtc": "2020-01-08T06:20:20.7197947Z",
+    "dateUtc": "2020-01-03T12:00:00Z",
+    "day": "2020-01-03",
+    "description": "Web User Tracking Tools Review",
+    "duration": 135,
+    "projectId": "2e4c160d-a4bf-4eb4-b531-3cae6cfeb2fa",
+    "status": "ACTIVE",
+    "taskId": "6177f871-1cd9-4cbd-a732-2cf231ecc7d8",
+    "timeEntryId": "0f9ac2ab-0eed-4477-adcf-0b56f6e76c38",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  },
+  {
+    "dateEnteredUtc": "2020-01-08T06:48:18.462978Z",
+    "dateUtc": "2019-12-23T12:00:00Z",
+    "day": "2019-12-23",
+    "description": "Cloze • nerevu/ClozeCart • ★ Cloze APIs Overview",
+    "duration": 18,
+    "projectId": "2e4c160d-a4bf-4eb4-b531-3cae6cfeb2fa",
+    "status": "ACTIVE",
+    "taskId": "31f1eb88-adba-4db9-9aab-79cab22b805e",
+    "timeEntryId": "f198d2a6-a936-419f-9245-90ec05b3f22f",
     "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
   }
 ]

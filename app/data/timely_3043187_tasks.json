@@ -1,7 +1,7 @@
 [
   {
-    "id": 1340560,
-    "name": "Instructing (explaining, wiki documentation, reviewing, etc.)",
+    "id": 1339636,
+    "name": "R&D (creating new products, services, frameworks, libraries, tools, processes, etc.)",
     "projectId": 3043187
   },
   {
@@ -10,28 +10,13 @@
     "projectId": 3043187
   },
   {
-    "id": 1344464,
-    "name": "Learning (general: via articles, books, tutorials, courses, etc.)",
+    "id": 1340560,
+    "name": "Instructing (explaining, wiki documentation, reviewing, etc.)",
     "projectId": 3043187
   },
   {
-    "id": 1339636,
-    "name": "R&D (creating new products, services, frameworks, libraries, tools, processes, etc.)",
-    "projectId": 3043187
-  },
-  {
-    "id": 1344451,
-    "name": "Evaluating (selecting internal tools and services)",
-    "projectId": 3043187
-  },
-  {
-    "id": 1344449,
-    "name": "Research (specific: via blogs, documentation, company sites, etc.)",
-    "projectId": 3043187
-  },
-  {
-    "id": 1344444,
-    "name": "Design (web, database, spec, etc.)",
+    "id": 1344431,
+    "name": "Development (setup, programming, debugging, testing, documentation etc.)",
     "projectId": 3043187
   },
   {
@@ -40,8 +25,23 @@
     "projectId": 3043187
   },
   {
-    "id": 1344431,
-    "name": "Development (setup, programming, debugging, testing, documentation etc.)",
+    "id": 1344444,
+    "name": "Design (web, database, spec, etc.)",
+    "projectId": 3043187
+  },
+  {
+    "id": 1344449,
+    "name": "Research (specific: via blogs, documentation, company sites, etc.)",
+    "projectId": 3043187
+  },
+  {
+    "id": 1344451,
+    "name": "Evaluating (selecting internal tools and services)",
+    "projectId": 3043187
+  },
+  {
+    "id": 1344464,
+    "name": "Learning (general: via articles, books, tutorials, courses, etc.)",
     "projectId": 3043187
   }
 ]
