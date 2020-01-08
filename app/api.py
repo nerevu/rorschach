@@ -13,6 +13,7 @@ from datetime import date, timedelta, datetime as dt
 from pathlib import Path
 import time
 from urllib.parse import urlencode, parse_qs
+from subprocess import call
 
 from flask import Blueprint, request, redirect, session, url_for, g, current_app as app
 from flask import after_this_request
@@ -537,6 +538,7 @@ def add_day(item):
 
 
 def fetch_choice(choices):
+    call(['say', 'enter a value'])
     pos = None
 
     while pos == None:
@@ -551,6 +553,7 @@ def fetch_choice(choices):
 
 
 def fetch_bool(message):
+    call(['say', 'enter a value'])
     invalid = True
 
     while invalid:
