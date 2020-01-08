@@ -87,10 +87,14 @@ class Config(object):
     TIMELY_AUTHORIZATION_BASE_URL = f"{TIMELY_API_BASE_URL}/oauth/authorize"
     TIMELY_TOKEN_URL = f"{TIMELY_API_BASE_URL}/oauth/token"
     TIMELY_REFRESH_URL = TIMELY_TOKEN_URL
+    TIMELY_USERNAME = getenv('TIMELY_USERNAME')
+    TIMELY_PASSWORD = getenv('TIMELY_PASSWORD')
 
     # https://developer.xero.com/myapps/
     XERO_API_BASE_URL = "https://api.xero.com"
     XERO_OAUTH_VERSION = 1
+    XERO_USERNAME = getenv('XERO_USERNAME')
+    XERO_PASSWORD = getenv('XERO_PASSWORD')
 
     # oauth2
     XERO_CLIENT_ID = getenv("XERO_CLIENT_ID")

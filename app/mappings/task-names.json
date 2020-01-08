@@ -1,7 +1,7 @@
 {
   "Admin": ["1 Hour Internal Work"],
   "Consulting": ["1 Hour Consulting"],
-  "Design": ["1 Hour Design"],
+  "Design": ["1 Hour Design", "1 Hour Internal Work"],
   "Development": ["1 Hour Development", "1 Hour R&D", "1 Hour Internal Work"],
   "Evaluating": ["1 Hour Internal Work"],
   "Finance": ["1 Hour Internal Work"],
@@ -12,11 +12,12 @@
   "Instructing": ["1 Hour Internal Work"],
   "Learning": ["1 Hour Client Work", "1 Hour Internal Work"],
   "Maintenance": ["1 Hour Development", "1 Hour R&D", "1 Hour Internal Work"],
+  "Market": ["1 Hour Internal Work"],
   "Marketing": ["1 Hour Internal Work"],
   "Marketing/PR": ["1 Hour Internal Work"],
   "Misc": ["1 Hour Internal Work"],
   "Networking": ["1 Hour Internal Work"],
   "R&D": ["1 Hour R&D"],
-  "Research": ["1 Hour Research", "1 Hour Consulting"],
+  "Research": ["1 Hour Research", "1 Hour Consulting", "1 Hour Internal Work"],
   "Sales": ["1 Hour Internal Work"]
 }

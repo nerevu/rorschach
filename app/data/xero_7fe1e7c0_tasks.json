@@ -12,5 +12,12 @@
     "rate.value": 0,
     "status": "ACTIVE",
     "taskId": "ce9eeb72-b6a4-45db-9dcd-3f7fb47047d9"
+  },
+  {
+    "name": "1 Hour Consulting (Pro-Bono)",
+    "projectId": "7fe1e7c0-24e2-4c26-809f-654f1cbae1f1",
+    "rate.value": 0,
+    "status": "ACTIVE",
+    "taskId": "13652831-a5ad-417b-b2c0-bc59b45e14e5"
   }
 ]

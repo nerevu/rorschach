@@ -10,5 +10,77 @@
     "taskId": "832fa5b8-9b4d-4c8c-b5c5-c39f984eda5f",
     "timeEntryId": "5dbc9dbb-08af-4269-bcdd-4a34ea991f2e",
     "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  },
+  {
+    "dateEnteredUtc": "2019-12-10T15:47:58.2471094Z",
+    "dateUtc": "2019-10-17T12:00:00Z",
+    "day": "2019-10-17",
+    "description": "Databox • Social Networks Overview • Analytics • Sprout Social",
+    "duration": 132,
+    "projectId": "c7f2aa8e-bf50-4359-8e3e-0721f5cd49bc",
+    "status": "ACTIVE",
+    "taskId": "832fa5b8-9b4d-4c8c-b5c5-c39f984eda5f",
+    "timeEntryId": "24911de3-b2a9-4b96-ae43-a370bf4faadb",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  },
+  {
+    "dateEnteredUtc": "2019-12-10T15:48:02.3928Z",
+    "dateUtc": "2019-10-18T12:00:00Z",
+    "day": "2019-10-18",
+    "description": "Databox • Cloze Metrics • Traffic Insights • Nerevu Group • Omni…",
+    "duration": 326,
+    "projectId": "c7f2aa8e-bf50-4359-8e3e-0721f5cd49bc",
+    "status": "ACTIVE",
+    "taskId": "832fa5b8-9b4d-4c8c-b5c5-c39f984eda5f",
+    "timeEntryId": "96c59832-7fe7-4b20-9890-09a8ef34be1e",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  },
+  {
+    "dateEnteredUtc": "2019-12-10T15:48:06.5960252Z",
+    "dateUtc": "2019-10-19T12:00:00Z",
+    "day": "2019-10-19",
+    "description": "Timely Hours • Databox • Timely • Time by User",
+    "duration": 159,
+    "projectId": "c7f2aa8e-bf50-4359-8e3e-0721f5cd49bc",
+    "status": "ACTIVE",
+    "taskId": "832fa5b8-9b4d-4c8c-b5c5-c39f984eda5f",
+    "timeEntryId": "7b7df074-b4a4-4fd8-b7b8-f47c69180efa",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  },
+  {
+    "dateEnteredUtc": "2019-12-10T15:48:08.0301476Z",
+    "dateUtc": "2019-10-20T12:00:00Z",
+    "day": "2019-10-20",
+    "description": "Databox • Timely Hours • Timely • Time by User • Cloze Metrics •…",
+    "duration": 636,
+    "projectId": "c7f2aa8e-bf50-4359-8e3e-0721f5cd49bc",
+    "status": "ACTIVE",
+    "taskId": "832fa5b8-9b4d-4c8c-b5c5-c39f984eda5f",
+    "timeEntryId": "a3b49c53-3561-472c-9e54-608401da404f",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  },
+  {
+    "dateEnteredUtc": "2019-12-10T15:48:08.2921687Z",
+    "dateUtc": "2019-10-23T12:00:00Z",
+    "day": "2019-10-23",
+    "description": "Fastmail • Databox",
+    "duration": 28,
+    "projectId": "c7f2aa8e-bf50-4359-8e3e-0721f5cd49bc",
+    "status": "ACTIVE",
+    "taskId": "832fa5b8-9b4d-4c8c-b5c5-c39f984eda5f",
+    "timeEntryId": "4e5126c9-72b0-410a-b9ba-468dff1ccf83",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  },
+  {
+    "dateEnteredUtc": "2019-12-10T15:48:23.3463396Z",
+    "dateUtc": "2019-10-25T12:00:00Z",
+    "day": "2019-10-25",
+    "description": "Getting Started | Grafana Documentation • Grafana • Home",
+    "duration": 16,
+    "projectId": "c7f2aa8e-bf50-4359-8e3e-0721f5cd49bc",
+    "status": "ACTIVE",
+    "taskId": "2216c229-d821-45bc-9a94-72921f4b0afc",
+    "timeEntryId": "e615d968-361d-4491-a904-7dd08a395475",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
   }
 ]

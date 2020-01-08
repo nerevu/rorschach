@@ -10,5 +10,41 @@
     "taskId": "3ec779e9-a3fa-45b8-ab09-b6d35ce97398",
     "timeEntryId": "0cbbb94d-d079-4f73-ac3e-730046ec88dd",
     "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  },
+  {
+    "dateEnteredUtc": "2019-12-20T15:23:29.9236583Z",
+    "dateUtc": "2019-12-17T12:00:00Z",
+    "day": "2019-12-17",
+    "description": "web application skills at DuckDuckGo • Skills Inventory • Skillc…",
+    "duration": 27,
+    "projectId": "6bee8c68-9266-40f2-9a4b-3bb03186d322",
+    "status": "ACTIVE",
+    "taskId": "3ec779e9-a3fa-45b8-ab09-b6d35ce97398",
+    "timeEntryId": "fae54a1f-f530-4d6c-8bcb-525d35ed3c75",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  },
+  {
+    "dateEnteredUtc": "2020-01-08T06:20:56.7437433Z",
+    "dateUtc": "2019-12-20T12:00:00Z",
+    "day": "2019-12-20",
+    "description": "Scope of Work.docx • Skills Inventory • Fastmail • Preview • mou…",
+    "duration": 64,
+    "projectId": "6bee8c68-9266-40f2-9a4b-3bb03186d322",
+    "status": "ACTIVE",
+    "taskId": "3ec779e9-a3fa-45b8-ab09-b6d35ce97398",
+    "timeEntryId": "e5d65562-4b60-42f0-8929-055a8a534b3a",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  },
+  {
+    "dateEnteredUtc": "2020-01-08T06:20:57.1132542Z",
+    "dateUtc": "2019-12-26T12:00:00Z",
+    "day": "2019-12-26",
+    "description": "Preview • Lifting Up - Nerevu Master Services Agreement.pages • …",
+    "duration": 43,
+    "projectId": "6bee8c68-9266-40f2-9a4b-3bb03186d322",
+    "status": "ACTIVE",
+    "taskId": "3ec779e9-a3fa-45b8-ab09-b6d35ce97398",
+    "timeEntryId": "72fe43fe-0576-4859-8b18-07f94b9ed2ee",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
   }
 ]

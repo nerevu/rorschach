@@ -84,6 +84,11 @@
     "projectId": "b1d797e3-e54b-4686-b83f-d8ea5a35f1c2",
     "status": "INPROGRESS"
   },
+  "bf46311b-de69-4480-a173-8a8ba7700db3": {
+    "name": "Incentives Dashboard",
+    "projectId": "bf46311b-de69-4480-a173-8a8ba7700db3",
+    "status": "INPROGRESS"
+  },
   "c74d4b92-4a5c-4301-80ac-a601593b41ba": {
     "name": "Hiring",
     "projectId": "c74d4b92-4a5c-4301-80ac-a601593b41ba",
@@ -102,6 +107,11 @@
   "d2812acb-40dc-4ed2-8e83-e105ef21b9ef": {
     "name": "Workforce Initiative Website",
     "projectId": "d2812acb-40dc-4ed2-8e83-e105ef21b9ef",
+    "status": "INPROGRESS"
+  },
+  "da71537a-8806-4b4b-b3a1-6b470f52dd7e": {
+    "name": "GDPR Policy",
+    "projectId": "da71537a-8806-4b4b-b3a1-6b470f52dd7e",
     "status": "INPROGRESS"
   },
   "f9d0e04b-f07c-423d-8975-418159180dab": {
