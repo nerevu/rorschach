@@ -845,7 +845,7 @@ def xero_status():
 
             logger.info(message)
         else:
-            message = "Failed to set Xero tenantId! "
+            message = "Failed to set Xero tenantId!"
             logger.error(message)
 
     # TODO: we are overwriting the result value from the Xero api by doing this (no harm done).
@@ -853,7 +853,7 @@ def xero_status():
     response["result"] = xero.token
 
     if message and response.get("message"):
-        response["message"] += message
+        response["message"] += f" {message}"
     elif message:
         response.update({"message": message})
 
