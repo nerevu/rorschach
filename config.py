@@ -113,7 +113,7 @@ class Config(object):
     XERO_TOKEN_URL_V1 = f"{XERO_API_BASE_URL}/oauth/AccessToken"
 
     # Change based on mode
-    TIMELY_REDIRECT_URI = "https://nerevu.ngrok.io/v1/timely-callback"
+    TIMELY_REDIRECT_URI = "urn:ietf:wg:oauth:2.0:oob"
     XERO_REDIRECT_URI = f"http://localhost:5000{API_URL_PREFIX}/xero-callback"
     CACHE_DEFAULT_TIMEOUT = get_seconds(hours=24)
     CHUNK_SIZE = 256
