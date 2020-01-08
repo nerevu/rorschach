@@ -1771,7 +1771,7 @@ class Time(APIBase):
     def create_client(self, client_data):
         client_data.update({"contacts": "true", "process": "true"})
         self.users_api.values = client_data
-        return self.users_api.post()
+        return self.users_api.post()['Contacts'][0]
 
     def patch(self):
         # url = 'http://localhost:5000/v1/timely-time'
