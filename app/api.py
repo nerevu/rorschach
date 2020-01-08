@@ -1555,13 +1555,11 @@ class Time(APIBase):
             message = f"Project {self.timely_project['name']} not found in mapping. "
 
             if projects is None:
-                message += "Do you want to search Xero for it?"
-                answer = fetch_bool(message)
-
-                if answer == "y":
-                    self.projects_api.values = {"dictify": "true", "process": "true"}
-                    projects = self.projects_api.get().json["result"]
-                    return self.update_project_map(projects)
+                message += "Searching Xero for it..."
+                print(message)
+                self.projects_api.values = {"dictify": "true", "process": "true"}
+                projects = self.projects_api.get().json["result"]
+                return self.update_project_map(projects)
             else:
                 message += "Do you want to create this project in Xero?"
                 answer = fetch_bool(message)
