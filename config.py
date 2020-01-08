@@ -92,7 +92,7 @@ class Config(object):
 
     # https://developer.xero.com/myapps/
     XERO_API_BASE_URL = "https://api.xero.com"
-    XERO_OAUTH_VERSION = 2
+    XERO_OAUTH_VERSION = 1
     XERO_USERNAME = getenv('XERO_USERNAME')
     XERO_PASSWORD = getenv('XERO_PASSWORD')
 
