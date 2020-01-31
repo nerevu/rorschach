@@ -1353,7 +1353,7 @@ class Time(APIBase):
         )
 
         if self.timely_project_id and not self.xero_project_id:
-            self.xero_project_id = self.project_mapping.get(self.timely_project_id)
+            self.xero_project_id = self.project_mapping.get(int(self.timely_project_id))
 
         if self.is_timely:
             self.params = {"since": start, "upto": end}
@@ -1484,7 +1484,8 @@ class Time(APIBase):
     @property
     def xero_event(self):
         if not self._xero_user_id:
-            self._xero_user_id = self.user_mapping.get(self.timely_event["user.id"])
+            user_id = self.timely_event["user.id"] or 0
+            self._xero_user_id = self.user_mapping.get(int(user_id))
 
         if not self._xero_task_id:
             task_mapping_args = (
@@ -1579,7 +1580,7 @@ class Time(APIBase):
 
         if project_id:
             self.xero_project_id = project_id
-            mapped_id = self.project_mapping.get(self.timely_project["id"])
+            mapped_id = self.project_mapping.get(int(self.timely_project["id"]))
 
             if mapped_id != self.xero_project_id:
                 project_entry = {
