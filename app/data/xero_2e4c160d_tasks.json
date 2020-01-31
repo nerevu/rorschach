@@ -40,5 +40,12 @@
     "rate.value": 68,
     "status": "ACTIVE",
     "taskId": "23163d8e-83b0-4b63-9977-e2dab9d2a321"
+  },
+  {
+    "name": "1 Hour R&D (Non-Billable)",
+    "projectId": "2e4c160d-a4bf-4eb4-b531-3cae6cfeb2fa",
+    "rate.value": 0,
+    "status": "ACTIVE",
+    "taskId": "1cf0794e-9d75-4280-b044-214e2ff76a43"
   }
 ]

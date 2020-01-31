@@ -1,0 +1,14 @@
+[
+  {
+    "dateEnteredUtc": "2020-02-10T22:28:05.638339Z",
+    "dateUtc": "2020-02-05T12:00:00Z",
+    "day": "2020-02-05",
+    "description": "Website transfer",
+    "duration": 29,
+    "projectId": "6af33309-b00b-4f9c-991f-25f0b4506582",
+    "status": "ACTIVE",
+    "taskId": "15e8fc89-3480-467d-8185-280849607b8a",
+    "timeEntryId": "6f69b260-3e0e-4eaa-940d-90de983143e6",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  }
+]
