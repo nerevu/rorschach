@@ -748,44 +748,49 @@ def headless_auth(redirect_url, prefix):
     # start a browser
     options = Options()
     options.headless = True
-    browser = webdriver.Chrome(executable_path=get_chromedriver_path(), chrome_options=options)
+    chrome_path = get_chromedriver_path()
 
-    # navigate to auth page
-    browser.get(redirect_url)
-    browser.implicitly_wait(3) # seconds waited for elements
+    try:
+        browser = webdriver.Chrome(executable_path=chrome_path, chrome_options=options)
+    except WebDriverException:
+        logger.error(f"chromedriver executable not found in {chrome_path}!")
+    else:
+        # navigate to auth page
+        browser.get(redirect_url)
+        browser.implicitly_wait(3) # seconds waited for elements
 
-    #######################################################
-    # TODO: Check to see if this is required when logging
-    # in without a headless browser (might remember creds).
+        #######################################################
+        # TODO: Check to see if this is required when logging
+        # in without a headless browser (might remember creds).
 
-    # add username
-    username = browser.find_element_by_css_selector(username_css)
-    username.clear()
-    username.send_keys(app.config[f"{prefix}_USERNAME"])
+        # add username
+        username = browser.find_element_by_css_selector(username_css)
+        username.clear()
+        username.send_keys(app.config[f"{prefix}_USERNAME"])
 
-    # add password
-    password = browser.find_element_by_css_selector(password_css)
-    password.clear()
-    password.send_keys(app.config[f"{prefix}_PASSWORD"])
+        # add password
+        password = browser.find_element_by_css_selector(password_css)
+        password.clear()
+        password.send_keys(app.config[f"{prefix}_PASSWORD"])
 
-    # Only set to True after the headless browser has closed (see below)
-    cache.set(f'{prefix}_restore_from_headless', False)
+        # Only set to True after the headless browser has closed (see below)
+        cache.set(f'{prefix}_restore_from_headless', False)
 
-    # click sign in
-    signIn = browser.find_element_by_css_selector(signin_css)
-    signIn.click()
+        # click sign in
+        signIn = browser.find_element_by_css_selector(signin_css)
+        signIn.click()
 
-    #######################################################
+        #######################################################
 
-    if prefix == 'XERO':
-        # TODO: should I catch the error I raise here or let it crash the system?
-        # click allow access button
-        find_element_loop(browser, 'button[value="yes"]').click()
-        # click connect button
-        find_element_loop(browser, 'button[value="true"]').click()
+        if prefix == 'XERO':
+            # TODO: should I catch the error I raise here or let it crash the system?
+            # click allow access button
+            find_element_loop(browser, 'button[value="yes"]').click()
+            # click connect button
+            find_element_loop(browser, 'button[value="true"]').click()
 
-    browser.close()
-    cache.set(f'{prefix}_restore_from_headless', True)
+        browser.close()
+        cache.set(f'{prefix}_restore_from_headless', True)
 
 
 ###########################################################################
