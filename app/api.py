@@ -714,10 +714,12 @@ def callback(prefix):
 def get_chromedriver_path():
     operating_system = platform.system().lower()
     driver_name = 'chromedriver'
+
     if operating_system is 'darwin':
         operating_system = 'mac'
     elif operating_system is 'windows':
         driver_name += '.exe'
+
     return Path(f"{operating_system}/{driver_name}")
 
 
