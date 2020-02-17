@@ -6,19 +6,36 @@
     Provides additional api endpoints
 """
 import base64
+import time
+
 from json.decoder import JSONDecodeError
 from json import load, dump, dumps
 from itertools import chain, islice, count
 from datetime import date, timedelta, datetime as dt
 from pathlib import Path
-import time
 from urllib.parse import urlencode, parse_qs
 from subprocess import call
 
-from flask import Blueprint, request, redirect, session, url_for, g, current_app as app
-from flask import after_this_request
+import pygogo as gogo
+import platform
+
+from flask import (
+    Blueprint, request, redirect, session, url_for, g,
+    current_app as app, after_this_request
+)
+
 from flask.views import MethodView
 from faker import Faker
+
+from requests_oauthlib import OAuth2Session, OAuth1Session, OAuth1
+from requests_oauthlib.oauth1_session import TokenRequestDenied
+from oauthlib.oauth2 import TokenExpiredError
+from riko.dotdict import DotDict
+
+from selenium import webdriver
+from selenium.common.exceptions import NoSuchElementException, WebDriverException
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.common.keys import Keys
 
 from config import Config, __APP_TITLE__ as APP_TITLE
 
@@ -34,20 +51,6 @@ from app.utils import (
 )
 
 from app.mappings import MAPPINGS_DIR, USERS, tasks_p, gen_task_mapping, reg_mapper
-
-from requests_oauthlib import OAuth2Session, OAuth1Session, OAuth1
-from requests_oauthlib.oauth1_session import TokenRequestDenied
-from oauthlib.oauth2 import TokenExpiredError
-from riko.dotdict import DotDict
-
-import pygogo as gogo
-
-import platform
-# Selenium
-from selenium import webdriver
-from selenium.common.exceptions import NoSuchElementException
-from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.common.keys import Keys
 
 logger = gogo.Gogo(__name__, monolog=True).logger
 blueprint = Blueprint("API", __name__)
@@ -1733,7 +1736,7 @@ class Time(APIBase):
                 json = response.json
 
                 if json["ok"]:
-                    matching_user = json["result"]
+                    matching_user = json["result"]["Contacts"][0]
                 else:
                     matching_user = {}
                     self.error_msg = json.get("message")
@@ -1770,7 +1773,7 @@ class Time(APIBase):
     def create_client(self, client_data):
         client_data.update({"contacts": "true", "process": "true"})
         self.users_api.values = client_data
-        return self.users_api.post()['Contacts'][0]
+        return self.users_api.post()
 
     def patch(self):
         # url = 'http://localhost:5000/v1/timely-time'
@@ -2060,7 +2063,7 @@ for name, _cls in method_views.items():
     for prefix in ["TIMELY", "XERO"]:
         route_name = f"{prefix}-{name}".lower()
         add_rule(
-            f"{PREFIX}/{route_name}", view_func=_cls.as_view(f"{route_name}", prefix)
+            f"{PREFIX}/{route_name}", view_func=_cls.as_view(route_name, prefix)
         )
 
 add_rule(memo_url, view_func=memo_view)
