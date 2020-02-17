@@ -791,6 +791,7 @@ def headless_auth(redirect_url, prefix):
 ###########################################################################
 # ROUTES
 ###########################################################################
+@blueprint.route("/")
 @blueprint.route(PREFIX)
 @cache_header(ROUTE_TIMEOUT, key_prefix=make_cache_key)
 def home():
