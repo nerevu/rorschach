@@ -638,8 +638,12 @@ def get_realtime_response(url, client, params=None, **kwargs):
                 logger.debug({name: result.request.headers.get(name, "")[:32]})
 
             body = result.request.body or ""
-            logger.debug({"body": body})
-            parsed = parse_qs(result.request.body or "")
+
+            try:
+                parsed = parse_qs(body)
+            except UnicodeEncodeError:
+                decoded = body.decode("utf-8")
+                parsed = parse_qs(decoded)
 
             if parsed:
                 logger.debug({k: v[0] for k, v in parsed.items()})
