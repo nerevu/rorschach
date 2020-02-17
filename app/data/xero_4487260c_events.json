@@ -1,0 +1,50 @@
+[
+  {
+    "dateEnteredUtc": "2020-02-17T22:33:44.4652052Z",
+    "dateUtc": "2020-02-14T12:00:00Z",
+    "day": "2020-02-14",
+    "description": "Fwd: Thanks for submitting Kazeeki (#71475) to BetaList • Betere…",
+    "duration": 136,
+    "projectId": "4487260c-7d80-486f-a18f-7e209301e06c",
+    "status": "ACTIVE",
+    "taskId": "439d822d-6e8b-485b-bf8c-241b999541a9",
+    "timeEntryId": "bb6c5b0f-48a1-44d7-a94f-21a000b66d1f",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  },
+  {
+    "dateEnteredUtc": "2020-02-17T22:33:44.7954462Z",
+    "dateUtc": "2020-02-14T12:00:00Z",
+    "day": "2020-02-14",
+    "description": "Campaign creator • Twitter Ads • Audiences • My Ad • What Are UT…",
+    "duration": 273,
+    "projectId": "4487260c-7d80-486f-a18f-7e209301e06c",
+    "status": "ACTIVE",
+    "taskId": "439d822d-6e8b-485b-bf8c-241b999541a9",
+    "timeEntryId": "aeaedde6-2741-4ba3-9673-f21616bae0b0",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  },
+  {
+    "dateEnteredUtc": "2020-02-17T22:33:45.0356952Z",
+    "dateUtc": "2020-02-14T12:00:00Z",
+    "day": "2020-02-14",
+    "description": "Hemingway Editor • Dictionary • Ad Performance Dashboard — Nerev…",
+    "duration": 120,
+    "projectId": "4487260c-7d80-486f-a18f-7e209301e06c",
+    "status": "ACTIVE",
+    "taskId": "439d822d-6e8b-485b-bf8c-241b999541a9",
+    "timeEntryId": "86ec2802-eebe-4c58-ac2b-d7a6ba563310",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  },
+  {
+    "dateEnteredUtc": "2020-02-17T22:33:45.2481952Z",
+    "dateUtc": "2020-02-15T12:00:00Z",
+    "day": "2020-02-15",
+    "description": "(1) Ads Manager • Edit • Google Ads • Manage Ads • Google Ads He…",
+    "duration": 598,
+    "projectId": "4487260c-7d80-486f-a18f-7e209301e06c",
+    "status": "ACTIVE",
+    "taskId": "439d822d-6e8b-485b-bf8c-241b999541a9",
+    "timeEntryId": "33070878-9c95-40d1-a02e-d8db2b94d478",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  }
+]

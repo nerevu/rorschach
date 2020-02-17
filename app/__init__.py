@@ -24,7 +24,7 @@ from flask_compress import Compress
 
 from mezmorize.utils import get_cache_config, get_cache_type
 
-__version__ = "0.18.0"
+__version__ = "0.19.0"
 __title__ = "Timero API"
 __package_name__ = "timero-api"
 __author__ = "Reuben Cummings"

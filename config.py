@@ -92,7 +92,7 @@ class Config(object):
 
     # https://developer.xero.com/myapps/
     XERO_API_BASE_URL = "https://api.xero.com"
-    XERO_OAUTH_VERSION = 1
+    XERO_OAUTH_VERSION = 2
     XERO_USERNAME = getenv('XERO_USERNAME')
     XERO_PASSWORD = getenv('XERO_PASSWORD')
 
@@ -191,7 +191,7 @@ class Development(Config):
 class Ngrok(Development):
     # Xero localhost callbacks work fine
     TIMELY_REDIRECT_URI = (
-        f"https://nerevu.ngrok.io{Config.API_URL_PREFIX}/timely-callback"
+        f"https://{__APP_NAME__}.ngrok.io{Config.API_URL_PREFIX}/timely-callback"
     )
 
 

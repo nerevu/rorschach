@@ -154,6 +154,28 @@
     }
   },
   {
+    "Code": "hosting-1m-L0",
+    "Description": "1 month of Nerevu Hosting on the Solo Dashboard Plan",
+    "ItemID": "3a4ab40b-8b2c-4a66-9591-f51c86fd6018",
+    "Name": "Nerevu Hosting Solo Dashboard Plan (1 month)",
+    "SalesDetails": {
+      "AccountCode": "4020",
+      "TaxType": "NONE",
+      "UnitPrice": 72
+    }
+  },
+  {
+    "Code": "hosting-1m-L1",
+    "Description": "Nerevu Hosting Solo Data Monitor Plan (1 month)",
+    "ItemID": "6d1d8418-5c2d-412a-b468-79bc620c40cf",
+    "Name": "Nerevu Hosting Solo Data Monitor Plan (1 month)",
+    "SalesDetails": {
+      "AccountCode": "4020",
+      "TaxType": "NONE",
+      "UnitPrice": 84
+    }
+  },
+  {
     "Code": "internal-1h-L0",
     "Description": "1 Hour Internal Work (Non-Billable)",
     "ItemID": "bfdee22e-9f2a-4600-95e0-c7a84221d3c7",
@@ -170,14 +192,13 @@
     "ItemID": "4a82b497-7b5b-4f30-a985-b7ca40617774",
     "Name": "1 Hour Client Work (Non-Billable)",
     "SalesDetails": {
-      "AccountCode": "6910",
       "TaxType": "AVALARA",
       "UnitPrice": 0
     }
   },
   {
     "Code": "research-1h-L0",
-    "Description": "1 hour of Research & Development",
+    "Description": "1 hour of Research, Development, and Maintenance services",
     "ItemID": "c3526551-d600-4730-ad80-1b8961b5f812",
     "Name": "1 Hour R&D (Non-Billable)",
     "SalesDetails": {

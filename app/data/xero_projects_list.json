@@ -12,7 +12,7 @@
   {
     "name": "Commission Dashboard",
     "projectId": "b1d797e3-e54b-4686-b83f-d8ea5a35f1c2",
-    "status": "INPROGRESS"
+    "status": "CLOSED"
   },
   {
     "name": "Data Automation",
@@ -42,16 +42,6 @@
   {
     "name": "GP Data Community",
     "projectId": "37b69d72-7168-47d4-8a9f-d225fccf8b38",
-    "status": "INPROGRESS"
-  },
-  {
-    "name": "Hiring",
-    "projectId": "c74d4b92-4a5c-4301-80ac-a601593b41ba",
-    "status": "INPROGRESS"
-  },
-  {
-    "name": "Onboarding",
-    "projectId": "c8b18830-fed0-4979-8c42-6619c4b6b67c",
     "status": "INPROGRESS"
   },
   {
@@ -85,23 +75,8 @@
     "status": "INPROGRESS"
   },
   {
-    "name": "Smart Airport",
-    "projectId": "13b73b2a-d949-4887-9fc4-fbf4b1c62491",
-    "status": "INPROGRESS"
-  },
-  {
     "name": "Company Metrics",
     "projectId": "c7f2aa8e-bf50-4359-8e3e-0721f5cd49bc",
-    "status": "INPROGRESS"
-  },
-  {
-    "name": "Website Audit",
-    "projectId": "0d4a1f7f-173f-47e5-98f2-6b37eb4974cf",
-    "status": "INPROGRESS"
-  },
-  {
-    "name": "WEI Case Management System",
-    "projectId": "6bee8c68-9266-40f2-9a4b-3bb03186d322",
     "status": "INPROGRESS"
   },
   {
@@ -115,8 +90,8 @@
     "status": "INPROGRESS"
   },
   {
-    "name": "GDPR Policy",
-    "projectId": "da71537a-8806-4b4b-b3a1-6b470f52dd7e",
+    "name": "Kazeeki",
+    "projectId": "4487260c-7d80-486f-a18f-7e209301e06c",
     "status": "INPROGRESS"
   }
 ]

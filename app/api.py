@@ -6,19 +6,36 @@
     Provides additional api endpoints
 """
 import base64
+import time
+
 from json.decoder import JSONDecodeError
 from json import load, dump, dumps
 from itertools import chain, islice, count
 from datetime import date, timedelta, datetime as dt
 from pathlib import Path
-import time
 from urllib.parse import urlencode, parse_qs
 from subprocess import call
 
-from flask import Blueprint, request, redirect, session, url_for, g, current_app as app
-from flask import after_this_request
+import pygogo as gogo
+import platform
+
+from flask import (
+    Blueprint, request, redirect, session, url_for, g,
+    current_app as app, after_this_request
+)
+
 from flask.views import MethodView
 from faker import Faker
+
+from requests_oauthlib import OAuth2Session, OAuth1Session, OAuth1
+from requests_oauthlib.oauth1_session import TokenRequestDenied
+from oauthlib.oauth2 import TokenExpiredError
+from riko.dotdict import DotDict
+
+from selenium import webdriver
+from selenium.common.exceptions import NoSuchElementException, WebDriverException
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.common.keys import Keys
 
 from config import Config, __APP_TITLE__ as APP_TITLE
 
@@ -34,20 +51,6 @@ from app.utils import (
 )
 
 from app.mappings import MAPPINGS_DIR, USERS, tasks_p, gen_task_mapping, reg_mapper
-
-from requests_oauthlib import OAuth2Session, OAuth1Session, OAuth1
-from requests_oauthlib.oauth1_session import TokenRequestDenied
-from oauthlib.oauth2 import TokenExpiredError
-from riko.dotdict import DotDict
-
-import pygogo as gogo
-
-import platform
-# Selenium
-from selenium import webdriver
-from selenium.common.exceptions import NoSuchElementException
-from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.common.keys import Keys
 
 logger = gogo.Gogo(__name__, monolog=True).logger
 blueprint = Blueprint("API", __name__)
@@ -635,8 +638,12 @@ def get_realtime_response(url, client, params=None, **kwargs):
                 logger.debug({name: result.request.headers.get(name, "")[:32]})
 
             body = result.request.body or ""
-            logger.debug({"body": body})
-            parsed = parse_qs(result.request.body or "")
+
+            try:
+                parsed = parse_qs(body)
+            except UnicodeEncodeError:
+                decoded = body.decode("utf-8")
+                parsed = parse_qs(decoded)
 
             if parsed:
                 logger.debug({k: v[0] for k, v in parsed.items()})
@@ -707,10 +714,12 @@ def callback(prefix):
 def get_chromedriver_path():
     operating_system = platform.system().lower()
     driver_name = 'chromedriver'
+
     if operating_system is 'darwin':
         operating_system = 'mac'
     elif operating_system is 'windows':
         driver_name += '.exe'
+
     return Path(f"{operating_system}/{driver_name}")
 
 
@@ -741,49 +750,55 @@ def headless_auth(redirect_url, prefix):
     # start a browser
     options = Options()
     options.headless = True
-    browser = webdriver.Chrome(executable_path=get_chromedriver_path(), chrome_options=options)
+    chrome_path = get_chromedriver_path()
 
-    # navigate to auth page
-    browser.get(redirect_url)
-    browser.implicitly_wait(3) # seconds waited for elements
+    try:
+        browser = webdriver.Chrome(executable_path=chrome_path, chrome_options=options)
+    except WebDriverException:
+        logger.error(f"chromedriver executable not found in {chrome_path}!")
+    else:
+        # navigate to auth page
+        browser.get(redirect_url)
+        browser.implicitly_wait(3) # seconds waited for elements
 
-    #######################################################
-    # TODO: Check to see if this is required when logging
-    # in without a headless browser (might remember creds).
+        #######################################################
+        # TODO: Check to see if this is required when logging
+        # in without a headless browser (might remember creds).
 
-    # add username
-    username = browser.find_element_by_css_selector(username_css)
-    username.clear()
-    username.send_keys(app.config[f"{prefix}_USERNAME"])
+        # add username
+        username = browser.find_element_by_css_selector(username_css)
+        username.clear()
+        username.send_keys(app.config[f"{prefix}_USERNAME"])
 
-    # add password
-    password = browser.find_element_by_css_selector(password_css)
-    password.clear()
-    password.send_keys(app.config[f"{prefix}_PASSWORD"])
+        # add password
+        password = browser.find_element_by_css_selector(password_css)
+        password.clear()
+        password.send_keys(app.config[f"{prefix}_PASSWORD"])
 
-    # Only set to True after the headless browser has closed (see below)
-    cache.set(f'{prefix}_restore_from_headless', False)
+        # Only set to True after the headless browser has closed (see below)
+        cache.set(f'{prefix}_restore_from_headless', False)
 
-    # click sign in
-    signIn = browser.find_element_by_css_selector(signin_css)
-    signIn.click()
+        # click sign in
+        signIn = browser.find_element_by_css_selector(signin_css)
+        signIn.click()
 
-    #######################################################
+        #######################################################
 
-    if prefix == 'XERO':
-        # TODO: should I catch the error I raise here or let it crash the system?
-        # click allow access button
-        find_element_loop(browser, 'button[value="yes"]').click()
-        # click connect button
-        find_element_loop(browser, 'button[value="true"]').click()
+        if prefix == 'XERO':
+            # TODO: should I catch the error I raise here or let it crash the system?
+            # click allow access button
+            find_element_loop(browser, 'button[value="yes"]').click()
+            # click connect button
+            find_element_loop(browser, 'button[value="true"]').click()
 
-    browser.close()
-    cache.set(f'{prefix}_restore_from_headless', True)
+        browser.close()
+        cache.set(f'{prefix}_restore_from_headless', True)
 
 
 ###########################################################################
 # ROUTES
 ###########################################################################
+@blueprint.route("/")
 @blueprint.route(PREFIX)
 @cache_header(ROUTE_TIMEOUT, key_prefix=make_cache_key)
 def home():
@@ -1353,7 +1368,7 @@ class Time(APIBase):
         )
 
         if self.timely_project_id and not self.xero_project_id:
-            self.xero_project_id = self.project_mapping.get(self.timely_project_id)
+            self.xero_project_id = self.project_mapping.get(int(self.timely_project_id))
 
         if self.is_timely:
             self.params = {"since": start, "upto": end}
@@ -1484,7 +1499,8 @@ class Time(APIBase):
     @property
     def xero_event(self):
         if not self._xero_user_id:
-            self._xero_user_id = self.user_mapping.get(self.timely_event["user.id"])
+            user_id = self.timely_event["user.id"] or 0
+            self._xero_user_id = self.user_mapping.get(int(user_id))
 
         if not self._xero_task_id:
             task_mapping_args = (
@@ -1579,7 +1595,7 @@ class Time(APIBase):
 
         if project_id:
             self.xero_project_id = project_id
-            mapped_id = self.project_mapping.get(self.timely_project["id"])
+            mapped_id = self.project_mapping.get(int(self.timely_project["id"]))
 
             if mapped_id != self.xero_project_id:
                 project_entry = {
@@ -1732,7 +1748,7 @@ class Time(APIBase):
                 json = response.json
 
                 if json["ok"]:
-                    matching_user = json["result"]
+                    matching_user = json["result"]["Contacts"][0]
                 else:
                     matching_user = {}
                     self.error_msg = json.get("message")
@@ -1769,7 +1785,7 @@ class Time(APIBase):
     def create_client(self, client_data):
         client_data.update({"contacts": "true", "process": "true"})
         self.users_api.values = client_data
-        return self.users_api.post()['Contacts'][0]
+        return self.users_api.post()
 
     def patch(self):
         # url = 'http://localhost:5000/v1/timely-time'
@@ -2059,7 +2075,7 @@ for name, _cls in method_views.items():
     for prefix in ["TIMELY", "XERO"]:
         route_name = f"{prefix}-{name}".lower()
         add_rule(
-            f"{PREFIX}/{route_name}", view_func=_cls.as_view(f"{route_name}", prefix)
+            f"{PREFIX}/{route_name}", view_func=_cls.as_view(route_name, prefix)
         )
 
 add_rule(memo_url, view_func=memo_view)

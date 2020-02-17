@@ -1,1 +1,146 @@
-[]
+[
+  {
+    "dateEnteredUtc": "2020-01-27T17:59:29.9730894Z",
+    "dateUtc": "2020-01-20T12:00:00Z",
+    "day": "2020-01-20",
+    "description": "Contractor meeting/prep",
+    "duration": 84,
+    "projectId": "d2812acb-40dc-4ed2-8e83-e105ef21b9ef",
+    "status": "ACTIVE",
+    "taskId": "1479b7f4-dcae-4e59-8e3c-0bc40cc635d2",
+    "timeEntryId": "3e3bc0b1-6c30-406d-9390-6018bcf95eff",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  },
+  {
+    "dateEnteredUtc": "2020-01-27T17:59:30.2540903Z",
+    "dateUtc": "2020-01-21T12:00:00Z",
+    "day": "2020-01-21",
+    "description": "Contractor meeting",
+    "duration": 30,
+    "projectId": "d2812acb-40dc-4ed2-8e83-e105ef21b9ef",
+    "status": "ACTIVE",
+    "taskId": "1479b7f4-dcae-4e59-8e3c-0bc40cc635d2",
+    "timeEntryId": "8206f7e6-889c-422c-84a6-80b373d14ca0",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  },
+  {
+    "dateEnteredUtc": "2020-01-27T17:59:30.5043281Z",
+    "dateUtc": "2020-01-23T12:00:00Z",
+    "day": "2020-01-23",
+    "description": "Proposal",
+    "duration": 226,
+    "projectId": "d2812acb-40dc-4ed2-8e83-e105ef21b9ef",
+    "status": "ACTIVE",
+    "taskId": "7419b30c-6c60-4744-bec2-e97d505cda25",
+    "timeEntryId": "83b73c72-e1fa-4e7d-92c9-d61f03daf47e",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  },
+  {
+    "dateEnteredUtc": "2020-01-27T17:59:30.8324571Z",
+    "dateUtc": "2020-01-24T12:00:00Z",
+    "day": "2020-01-24",
+    "description": "Proposal",
+    "duration": 61,
+    "projectId": "d2812acb-40dc-4ed2-8e83-e105ef21b9ef",
+    "status": "ACTIVE",
+    "taskId": "7419b30c-6c60-4744-bec2-e97d505cda25",
+    "timeEntryId": "f3c7878b-e62e-4737-9a05-10062e26161f",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  },
+  {
+    "dateEnteredUtc": "2020-02-04T21:32:26.1905128Z",
+    "dateUtc": "2020-01-29T12:00:00Z",
+    "day": "2020-01-29",
+    "description": "Proposal Meeting",
+    "duration": 119,
+    "projectId": "d2812acb-40dc-4ed2-8e83-e105ef21b9ef",
+    "status": "ACTIVE",
+    "taskId": "7419b30c-6c60-4744-bec2-e97d505cda25",
+    "timeEntryId": "2e1ba043-ba35-4479-b69a-b6d33f09332c",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  },
+  {
+    "dateEnteredUtc": "2020-02-04T21:32:26.6962299Z",
+    "dateUtc": "2020-01-29T12:00:00Z",
+    "day": "2020-01-29",
+    "description": "Designer Meeting",
+    "duration": 54,
+    "projectId": "d2812acb-40dc-4ed2-8e83-e105ef21b9ef",
+    "status": "ACTIVE",
+    "taskId": "7419b30c-6c60-4744-bec2-e97d505cda25",
+    "timeEntryId": "66dd0c50-5cda-40eb-b9ac-06bd303ae65a",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  },
+  {
+    "dateEnteredUtc": "2020-02-04T21:32:33.1791941Z",
+    "dateUtc": "2020-01-29T12:00:00Z",
+    "day": "2020-01-29",
+    "description": "strapi/strapi • Strapi open source Node.js Headless CMS Why we s…",
+    "duration": 13,
+    "projectId": "d2812acb-40dc-4ed2-8e83-e105ef21b9ef",
+    "status": "ACTIVE",
+    "taskId": "7419b30c-6c60-4744-bec2-e97d505cda25",
+    "timeEntryId": "34ac86a4-d8a2-4880-b18a-64524643d75e",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  },
+  {
+    "dateEnteredUtc": "2020-02-04T21:32:33.5931621Z",
+    "dateUtc": "2020-01-30T12:00:00Z",
+    "day": "2020-01-30",
+    "description": "WEI Website Proposal by Nerevu Group.pages • Open Source Publish…",
+    "duration": 297,
+    "projectId": "d2812acb-40dc-4ed2-8e83-e105ef21b9ef",
+    "status": "ACTIVE",
+    "taskId": "7419b30c-6c60-4744-bec2-e97d505cda25",
+    "timeEntryId": "11a70bf8-4898-4eb0-b0ec-3c530d15191b",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  },
+  {
+    "dateEnteredUtc": "2020-02-10T22:23:16.3077657Z",
+    "dateUtc": "2020-02-09T12:00:00Z",
+    "day": "2020-02-09",
+    "description": "Selecting designers",
+    "duration": 150,
+    "projectId": "d2812acb-40dc-4ed2-8e83-e105ef21b9ef",
+    "status": "ACTIVE",
+    "taskId": "7419b30c-6c60-4744-bec2-e97d505cda25",
+    "timeEntryId": "c7849d5b-9b15-4e2d-be21-f4ac7ffebe7f",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  },
+  {
+    "dateEnteredUtc": "2020-02-17T22:33:30.8200257Z",
+    "dateUtc": "2020-01-31T12:00:00Z",
+    "day": "2020-01-31",
+    "description": "strapi/strapi: 🚀 Open source Node.js Headless CMS to easily buil…",
+    "duration": 360,
+    "projectId": "d2812acb-40dc-4ed2-8e83-e105ef21b9ef",
+    "status": "ACTIVE",
+    "taskId": "7419b30c-6c60-4744-bec2-e97d505cda25",
+    "timeEntryId": "92572245-2d79-40aa-a6a4-bdb398d7847d",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  },
+  {
+    "dateEnteredUtc": "2020-02-17T22:33:31.1251215Z",
+    "dateUtc": "2020-02-05T12:00:00Z",
+    "day": "2020-02-05",
+    "description": "ICC_WEI_Web-Design_EST_1a-020320.docx • Fastmail • Preview",
+    "duration": 24,
+    "projectId": "d2812acb-40dc-4ed2-8e83-e105ef21b9ef",
+    "status": "ACTIVE",
+    "taskId": "7419b30c-6c60-4744-bec2-e97d505cda25",
+    "timeEntryId": "899f0d70-c6b4-4122-a7ee-21402741a99c",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  },
+  {
+    "dateEnteredUtc": "2020-02-17T22:33:31.3570014Z",
+    "dateUtc": "2020-02-13T12:00:00Z",
+    "day": "2020-02-13",
+    "description": "Invoicing",
+    "duration": 33,
+    "projectId": "d2812acb-40dc-4ed2-8e83-e105ef21b9ef",
+    "status": "ACTIVE",
+    "taskId": "7419b30c-6c60-4744-bec2-e97d505cda25",
+    "timeEntryId": "ce853e5a-7d0f-404b-acfa-3abd01d348a3",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  }
+]
