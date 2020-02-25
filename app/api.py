@@ -724,12 +724,12 @@ def get_chromedriver_path():
     operating_system = platform.system().lower()
     driver_name = 'chromedriver'
 
-    if operating_system is 'darwin':
+    if operating_system == 'darwin':
         operating_system = 'mac'
-    elif operating_system is 'windows':
+    elif operating_system == 'windows':
         driver_name += '.exe'
 
-    return Path(f"{operating_system}/{driver_name}")
+    return Path.cwd() / operating_system / driver_name
 
 
 def find_element_loop(browser, selector):
