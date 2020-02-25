@@ -45,6 +45,16 @@
     "status": "INPROGRESS"
   },
   {
+    "name": "Hiring",
+    "projectId": "c74d4b92-4a5c-4301-80ac-a601593b41ba",
+    "status": "INPROGRESS"
+  },
+  {
+    "name": "Onboarding",
+    "projectId": "c8b18830-fed0-4979-8c42-6619c4b6b67c",
+    "status": "INPROGRESS"
+  },
+  {
     "name": "Analytics Committee",
     "projectId": "4ae942e8-af62-4318-b569-7476df14cbef",
     "status": "INPROGRESS"
@@ -75,8 +85,23 @@
     "status": "INPROGRESS"
   },
   {
+    "name": "Smart Airport",
+    "projectId": "13b73b2a-d949-4887-9fc4-fbf4b1c62491",
+    "status": "INPROGRESS"
+  },
+  {
     "name": "Company Metrics",
     "projectId": "c7f2aa8e-bf50-4359-8e3e-0721f5cd49bc",
+    "status": "INPROGRESS"
+  },
+  {
+    "name": "Website Audit",
+    "projectId": "0d4a1f7f-173f-47e5-98f2-6b37eb4974cf",
+    "status": "INPROGRESS"
+  },
+  {
+    "name": "WEI CMS",
+    "projectId": "6bee8c68-9266-40f2-9a4b-3bb03186d322",
     "status": "INPROGRESS"
   },
   {
@@ -90,8 +115,33 @@
     "status": "INPROGRESS"
   },
   {
+    "name": "GDPR Policy",
+    "projectId": "da71537a-8806-4b4b-b3a1-6b470f52dd7e",
+    "status": "INPROGRESS"
+  },
+  {
+    "name": "Data Update Service",
+    "projectId": "13cec3b6-1cfd-4572-9f4d-3da85bc07a3b",
+    "status": "INPROGRESS"
+  },
+  {
+    "name": "Calendar Service",
+    "projectId": "ebf98c35-4d4b-41c6-b717-08afb9243b03",
+    "status": "INPROGRESS"
+  },
+  {
+    "name": "TCPUL Website",
+    "projectId": "6af33309-b00b-4f9c-991f-25f0b4506582",
+    "status": "INPROGRESS"
+  },
+  {
     "name": "Kazeeki",
     "projectId": "4487260c-7d80-486f-a18f-7e209301e06c",
+    "status": "INPROGRESS"
+  },
+  {
+    "name": "Sitation Dashboard",
+    "projectId": "ed071320-fbcb-465d-8066-324cae235718",
     "status": "INPROGRESS"
   }
 ]

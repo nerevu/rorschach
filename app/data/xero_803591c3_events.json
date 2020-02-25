@@ -1,86 +1,14 @@
 [
   {
-    "dateEnteredUtc": "2020-01-27T17:38:54.7931823Z",
-    "dateUtc": "2020-01-19T12:00:00Z",
-    "day": "2020-01-19",
-    "description": "Filtering & Sorting",
-    "duration": 74,
-    "projectId": "803591c3-72af-4475-888f-7c4c50044589",
-    "status": "INVOICED",
-    "taskId": "ef251547-9e8a-4304-8a4b-ac6b4bd631e4",
-    "timeEntryId": "f14cad70-d283-45cb-a28e-ebed415238d1",
-    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
-  },
-  {
-    "dateEnteredUtc": "2020-01-27T17:38:55.1455883Z",
-    "dateUtc": "2020-01-20T12:00:00Z",
-    "day": "2020-01-20",
-    "description": "Menu item filters",
+    "dateEnteredUtc": "2020-02-25T03:02:50.1536464Z",
+    "dateUtc": "2020-02-19T12:00:00Z",
+    "day": "2020-02-19",
+    "description": "DinerDiver updates",
     "duration": 270,
     "projectId": "803591c3-72af-4475-888f-7c4c50044589",
     "status": "INVOICED",
     "taskId": "ef251547-9e8a-4304-8a4b-ac6b4bd631e4",
-    "timeEntryId": "7dd3a4ef-ec80-433d-843f-4c9f29540229",
-    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
-  },
-  {
-    "dateEnteredUtc": "2020-01-27T17:38:55.4822406Z",
-    "dateUtc": "2020-01-21T12:00:00Z",
-    "day": "2020-01-21",
-    "description": "Menu item filters",
-    "duration": 64,
-    "projectId": "803591c3-72af-4475-888f-7c4c50044589",
-    "status": "INVOICED",
-    "taskId": "ef251547-9e8a-4304-8a4b-ac6b4bd631e4",
-    "timeEntryId": "43c16d8a-4ffe-49ba-a492-7e8d2b91b777",
-    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
-  },
-  {
-    "dateEnteredUtc": "2020-01-27T17:38:55.8190645Z",
-    "dateUtc": "2020-01-22T12:00:00Z",
-    "day": "2020-01-22",
-    "description": "Add filters",
-    "duration": 224,
-    "projectId": "803591c3-72af-4475-888f-7c4c50044589",
-    "status": "INVOICED",
-    "taskId": "ef251547-9e8a-4304-8a4b-ac6b4bd631e4",
-    "timeEntryId": "cf6b4a7b-6c15-4011-85c6-2e52b80af007",
-    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
-  },
-  {
-    "dateEnteredUtc": "2020-01-27T17:38:56.1213009Z",
-    "dateUtc": "2020-01-23T12:00:00Z",
-    "day": "2020-01-23",
-    "description": "Sorting and filtering",
-    "duration": 382,
-    "projectId": "803591c3-72af-4475-888f-7c4c50044589",
-    "status": "INVOICED",
-    "taskId": "ef251547-9e8a-4304-8a4b-ac6b4bd631e4",
-    "timeEntryId": "3b275515-aa05-43a3-a3f6-17e537d6292c",
-    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
-  },
-  {
-    "dateEnteredUtc": "2020-01-27T17:38:56.5483401Z",
-    "dateUtc": "2020-01-24T12:00:00Z",
-    "day": "2020-01-24",
-    "description": "Filtering and sorting",
-    "duration": 300,
-    "projectId": "803591c3-72af-4475-888f-7c4c50044589",
-    "status": "INVOICED",
-    "taskId": "ef251547-9e8a-4304-8a4b-ac6b4bd631e4",
-    "timeEntryId": "40ed6f17-9c00-48a0-8935-40fd3f1a7bac",
-    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
-  },
-  {
-    "dateEnteredUtc": "2020-02-10T21:50:53.8049055Z",
-    "dateUtc": "2020-02-03T12:00:00Z",
-    "day": "2020-02-03",
-    "description": "Client meeting",
-    "duration": 60,
-    "projectId": "803591c3-72af-4475-888f-7c4c50044589",
-    "status": "ACTIVE",
-    "taskId": "f73a0a0d-92ca-4981-8008-44e9bc3cda9b",
-    "timeEntryId": "4cc7c90d-2395-4a26-ac9e-e0a97afda0bd",
+    "timeEntryId": "b6e3c0a5-a698-4b3f-89e7-ddfa042f6bba",
     "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
   }
 ]

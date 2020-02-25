@@ -1,26 +1,26 @@
 [
   {
-    "dateEnteredUtc": "2020-01-27T17:52:00.0988959Z",
-    "dateUtc": "2020-01-22T12:00:00Z",
-    "day": "2020-01-22",
-    "description": "Board meeting",
-    "duration": 76,
+    "dateEnteredUtc": "2020-03-02T17:31:36.5398337Z",
+    "dateUtc": "2020-02-25T12:00:00Z",
+    "day": "2020-02-25",
+    "description": "LinkedIn • Google Sheets • Calendar",
+    "duration": 25,
     "projectId": "23be1505-900b-4504-b1fe-cf1b1c7e1d12",
     "status": "ACTIVE",
-    "taskId": "46a3b991-5cc6-4f5f-ba6a-96c43233d009",
-    "timeEntryId": "a290fe0e-1004-448d-bc9e-e340b1cf17d3",
+    "taskId": "d673b523-9c0d-4af9-a9d3-add77ac44f86",
+    "timeEntryId": "d788aa00-c630-45eb-9563-e3f5ef9a0fe6",
     "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
   },
   {
-    "dateEnteredUtc": "2020-02-04T21:36:54.8253443Z",
-    "dateUtc": "2020-01-28T12:00:00Z",
-    "day": "2020-01-28",
-    "description": "PIA Draft Professional Services Agreement (1).docx • Uniform Req…",
+    "dateEnteredUtc": "2020-03-02T17:31:36.8368466Z",
+    "dateUtc": "2020-02-26T12:00:00Z",
+    "day": "2020-02-26",
+    "description": "Board Meeting",
     "duration": 60,
     "projectId": "23be1505-900b-4504-b1fe-cf1b1c7e1d12",
     "status": "ACTIVE",
     "taskId": "d673b523-9c0d-4af9-a9d3-add77ac44f86",
-    "timeEntryId": "f7896ddf-732d-4cdd-a3cf-c7b3edf62ad4",
+    "timeEntryId": "19f7a867-7b3a-4bcf-9741-e280976e0823",
     "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
   }
 ]

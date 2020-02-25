@@ -1,1 +1,26 @@
-[]
+[
+  {
+    "dateEnteredUtc": "2020-02-25T03:04:29.2885439Z",
+    "dateUtc": "2020-02-19T12:00:00Z",
+    "day": "2020-02-19",
+    "description": "Databox • Google Sheets • Sales Summary • Admin Hours • Auto Sal…",
+    "duration": 144,
+    "projectId": "c7f2aa8e-bf50-4359-8e3e-0721f5cd49bc",
+    "status": "ACTIVE",
+    "taskId": "832fa5b8-9b4d-4c8c-b5c5-c39f984eda5f",
+    "timeEntryId": "0d2e5be5-58f8-46ee-b942-8129e626aafd",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  },
+  {
+    "dateEnteredUtc": "2020-02-25T03:04:29.5799623Z",
+    "dateUtc": "2020-02-22T12:00:00Z",
+    "day": "2020-02-22",
+    "description": "Databox",
+    "duration": 7,
+    "projectId": "c7f2aa8e-bf50-4359-8e3e-0721f5cd49bc",
+    "status": "ACTIVE",
+    "taskId": "832fa5b8-9b4d-4c8c-b5c5-c39f984eda5f",
+    "timeEntryId": "222256e3-c9d7-4ca9-b9d8-08df81a99bca",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  }
+]

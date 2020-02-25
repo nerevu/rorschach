@@ -1,17 +1,5 @@
 [
   {
-    "dateEnteredUtc": "2020-01-27T18:01:41.8045827Z",
-    "dateUtc": "2020-01-22T12:00:00Z",
-    "day": "2020-01-22",
-    "description": "Meeting",
-    "duration": 90,
-    "projectId": "3fe4d0ef-b45f-4812-8ca8-9c64f6bd679c",
-    "status": "ACTIVE",
-    "taskId": "02f654be-1198-4358-9820-229661bade49",
-    "timeEntryId": "da651fed-2cf4-4bef-832a-8031f8a203f6",
-    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
-  },
-  {
     "dateEnteredUtc": "2020-02-17T22:33:58.3922022Z",
     "dateUtc": "2020-02-10T12:00:00Z",
     "day": "2020-02-10",
@@ -21,6 +9,30 @@
     "status": "ACTIVE",
     "taskId": "02f654be-1198-4358-9820-229661bade49",
     "timeEntryId": "4235c9eb-e1f0-4858-b54c-c398ebc435b4",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  },
+  {
+    "dateEnteredUtc": "2020-02-25T03:04:49.4243514Z",
+    "dateUtc": "2020-02-20T12:00:00Z",
+    "day": "2020-02-20",
+    "description": "Meeting",
+    "duration": 44,
+    "projectId": "3fe4d0ef-b45f-4812-8ca8-9c64f6bd679c",
+    "status": "ACTIVE",
+    "taskId": "c1ab2dac-1ea2-4e8f-9d6d-f32d8d4f243f",
+    "timeEntryId": "99aefa64-c1fe-469b-8a4f-fecdc52701fa",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  },
+  {
+    "dateEnteredUtc": "2020-03-02T17:31:40.1327349Z",
+    "dateUtc": "2020-02-25T12:00:00Z",
+    "day": "2020-02-25",
+    "description": "Google Docs • alum.mit.edu • Fastmail • OmniFocus",
+    "duration": 60,
+    "projectId": "3fe4d0ef-b45f-4812-8ca8-9c64f6bd679c",
+    "status": "ACTIVE",
+    "taskId": "c1ab2dac-1ea2-4e8f-9d6d-f32d8d4f243f",
+    "timeEntryId": "99c59bda-1627-4a6d-beff-f393d531fdd2",
     "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
   }
 ]
