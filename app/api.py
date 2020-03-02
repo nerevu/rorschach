@@ -232,8 +232,13 @@ class MyAuth2Client(AuthClient):
                     headers=headers
                 )
             except Exception as e:
-                self.error = str(e)
-                logger.error(f"Failed to renew token: {self.error}", exc_info=True)
+                error = f"Failed to renew token: {str(e)} Please re-authenticate!"
+                logger.error(error)
+                self.error = error
+                self.oauth_token = None
+                self.access_token = None
+                cache.set(f"{self.prefix}_access_token", self.access_token)
+                cache.set(f"{self.prefix}_oauth_token", self.oauth_token)
             else:
                 if self.oauth_session.authorized:
                     logger.info("Successfully renewed token!")
@@ -571,6 +576,7 @@ def fetch_bool(message):
 
 def get_realtime_response(url, client, params=None, **kwargs):
     ok = False
+    unscoped = False
 
     if client.error:
         response = {"status_code": 500, "message": client.error}
@@ -586,6 +592,7 @@ def get_realtime_response(url, client, params=None, **kwargs):
         headers = kwargs.get("headers", HEADERS)
         verb = getattr(client.oauth_session, method)
         result = verb(url, params=params, data=data, json=json, headers=headers)
+        unscoped = result.headers.get("WWW-Authenticate") == "insufficient_scope"
         ok = result.ok
         logger.debug("%s %s", result.request.method, result.request.url)
 
@@ -658,7 +665,11 @@ def get_realtime_response(url, client, params=None, **kwargs):
             return response
 
     if status_code == 401 and not kwargs.get("renewed"):
-        # Token expired
+        if unscoped:
+            logger.debug(f"Insufficient scope: {client.scope}.")
+        else:
+            logger.debug("Token expired!")
+
         client.renew_token()
         response = get_realtime_response(
             url, client, params=params, renewed=True, **kwargs

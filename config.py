@@ -103,7 +103,11 @@ class Config(object):
     XERO_TOKEN_URL = "https://identity.xero.com/connect/token"
     XERO_REFRESH_URL = XERO_TOKEN_URL
     # XERO_AUTHENTICATE_REFRESH = False
-    XERO_SCOPES = ["projects", "offline_access"]
+    XERO_SCOPES = [
+        "projects", "offline_access", "accounting.transactions",
+        "accounting.settings", "accounting.contacts", "accounting.attachments",
+        "files", "assets"
+    ]
 
     # oauth1
     XERO_CONSUMER_KEY = getenv("XERO_CONSUMER_KEY")
