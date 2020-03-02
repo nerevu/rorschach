@@ -5,7 +5,6 @@
 
     Provides additional api endpoints
 """
-import base64
 import time
 
 from json.decoder import JSONDecodeError
@@ -15,6 +14,7 @@ from datetime import date, timedelta, datetime as dt
 from pathlib import Path
 from urllib.parse import urlencode, parse_qs
 from subprocess import call
+from base64 import b64encode
 
 import pygogo as gogo
 import platform
@@ -217,16 +217,15 @@ class MyAuth2Client(AuthClient):
         if self.refresh_token:
             try:
                 logger.info(f"Renewing token using {self.refresh_url}…")
-                #########################################################################
-                # Make renew for Xero work (always get invalid client)
+
                 if self.prefix is "XERO":
-                    # encode to prevent bytes-like error
-                    authorization = (self.client_id+':'+self.client_secret).encode('utf-8')
-                    # decode to prevent string-needed error
-                    headers = { 'Authorization': f"Basic {base64.b64encode(authorization).decode('utf-8')}" }
+                    # https://developer.xero.com/documentation/oauth2/auth-flow
+                    _authorization = f"{self.client_id}:{self.client_secret}".encode('utf-8')
+                    authorization = b64encode(_authorization).decode('utf-8')
+                    headers = { 'Authorization': f"Basic {authorization}" }
                 else:
                     headers = None
-                #########################################################################
+
                 token = self.oauth_session.refresh_token(
                     self.refresh_url,
                     self.refresh_token,
@@ -1251,9 +1250,8 @@ class Inventory(APIBase):
     def __init__(self, prefix):
         super().__init__(prefix, subkey="Items", domain="api")
 
-        if self.is_xero:
-            if not self.dry_run:
-                self.api_url = f"{self.api_base_url}/Items"
+        if self.is_xero and not self.dry_run:
+            self.api_url = f"{self.api_base_url}/Items"
 
     @property
     def fields(self):
