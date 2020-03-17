@@ -121,7 +121,7 @@ class MyAuth2Client(AuthClient):
             self.oauth_session = OAuth2Session(self.client_id, **self.oauth_kwargs)
         except TokenExpiredError:
             # this path shouldn't be reached…
-            logger.warning("Token expired. Attempting to renew…")
+            logger.warning(f"{self.prefix} token expired. Attempting to renew…")
             self.renew_token()
         except Exception as e:
             self.error = str(e)
@@ -130,7 +130,7 @@ class MyAuth2Client(AuthClient):
             if self.verified:
                 logger.info("Successfully authenticated!")
             else:
-                logger.warning("Not authorized. Attempting to renew...")
+                logger.warning(f"{self.prefix} access not authorized. Attempting to renew…")
                 self.renew_token()
 
     @property
@@ -247,7 +247,7 @@ class MyAuth2Client(AuthClient):
                 else:
                     logger.error("Failed to renew token!")
         elif app.config[f"{self.prefix}_USERNAME"] and app.config[f"{self.prefix}_PASSWORD"] and not cache.get(f"{self.prefix}_headless_auth"):
-            logger.info(f"Attempting to renew using headless browser")
+            logger.info(f"Renewing using headless browser…")
             headless_auth(self.authorization_url[0], self.prefix)
         else:
             error = "No refresh token present. Please re-authenticate!"
@@ -1630,7 +1630,7 @@ class Time(APIBase):
             message = f"Project {self.timely_project['name']} not found in mapping. "
 
             if projects is None:
-                message += "Searching Xero for it..."
+                message += "Searching Xero for it…"
                 print(message)
                 self.projects_api.values = {"dictify": "true", "process": "true"}
                 projects = self.projects_api.get().json["result"]
