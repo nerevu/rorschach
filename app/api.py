@@ -764,16 +764,20 @@ def get_chromedriver_path():
     return chromedriver_path
 
 
-def find_element_loop(browser, selector):
+def find_element_loop(browser, selector, max_retries=3):
     cnt = count()
-    while True:
+    elem = None
+
+    while not elem:
         try:
-            time.sleep(.5)
             elem = browser.find_element_by_css_selector(selector)
-            break
         except NoSuchElementException as err:
-            if next(cnt) % 10 is 0:
-                raise err
+            if next(cnt) > max_retries:
+                logger.error(err)
+                break
+        else:
+            time.sleep(.5)
+
     return elem
 
 
@@ -825,15 +829,27 @@ def headless_auth(redirect_url, prefix):
         # click sign in
         signIn = browser.find_element_by_css_selector(signin_css)
         signIn.click()
+        authenticated = True
 
         #######################################################
 
         if prefix == 'XERO':
-            # TODO: should I catch the error I raise here or let it crash the system?
-            # click allow access button
-            find_element_loop(browser, 'button[value="yes"]').click()
-            # click connect button
-            find_element_loop(browser, 'button[value="true"]').click()
+            # allow access button
+            access = find_element_loop(browser, 'button[value="yes"]')
+
+            if access:
+                access.click()
+
+                # connect button
+                connect = find_element_loop(browser, 'button[value="true"]')
+            else:
+                connect = None
+
+            if connect:
+                connect.click()
+                authenticated = True
+            else:
+                authenticated = False
 
         browser.close()
         cache.set(f'{prefix}_restore_from_headless', True)
