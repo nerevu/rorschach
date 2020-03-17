@@ -215,6 +215,10 @@ class MyAuth2Client(AuthClient):
         self.token = token
 
     def renew_token(self):
+        username = app.config[f"{self.prefix}_USERNAME"]
+        password = app.config[f"{self.prefix}_PASSWORD"]
+        failed = cache.get(f"{self.prefix}_headless_auth_failed")
+
         if self.refresh_token:
             try:
                 logger.info(f"Renewing token using {self.refresh_url}…")
@@ -246,7 +250,7 @@ class MyAuth2Client(AuthClient):
                     self.token = token
                 else:
                     logger.error("Failed to renew token!")
-        elif app.config[f"{self.prefix}_USERNAME"] and app.config[f"{self.prefix}_PASSWORD"] and not cache.get(f"{self.prefix}_headless_auth"):
+        elif username and password and not failed:
             logger.info(f"Renewing using headless browser…")
             headless_auth(self.authorization_url[0], self.prefix)
         else:
@@ -408,6 +412,7 @@ class MyAuth1Client(AuthClient):
 
 
 def get_auth_client(prefix, state=None, **kwargs):
+    cache.set(f'{prefix}_headless_auth_failed', False)
     auth_client_name = f"{prefix}_auth_client"
 
     if auth_client_name not in g:
@@ -448,11 +453,12 @@ def get_auth_client(prefix, state=None, **kwargs):
         }
 
         client = MyAuthClient(prefix, client_id, client_secret, **auth_kwargs)
-        if cache.get(f'{prefix}_restore_from_headless'):
+
+        if cache.get(f"{prefix}_restore_client"):
             client.restore()
             client.renew_token()
-            cache.set(f"{prefix}_headless_auth", True)
-            cache.set(f"{prefix}_restore_from_headless", False)
+            cache.set(f"{prefix}_restore_client", False)
+
         setattr(g, auth_client_name, client)
 
     return g.get(auth_client_name)
@@ -823,9 +829,6 @@ def headless_auth(redirect_url, prefix):
         password.clear()
         password.send_keys(app.config[f"{prefix}_PASSWORD"])
 
-        # Only set to True after the headless browser has closed (see below)
-        cache.set(f'{prefix}_restore_from_headless', False)
-
         # click sign in
         signIn = browser.find_element_by_css_selector(signin_css)
         signIn.click()
@@ -852,8 +855,8 @@ def headless_auth(redirect_url, prefix):
                 authenticated = False
 
         browser.close()
-        cache.set(f'{prefix}_restore_from_headless', True)
-
+        cache.set(f'{prefix}_restore_client', authenticated)
+        cache.set(f'{prefix}_headless_auth_failed', not authenticated)
 
 ###########################################################################
 # ROUTES
