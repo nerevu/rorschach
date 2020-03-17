@@ -247,7 +247,6 @@ class MyAuth2Client(AuthClient):
                     logger.error("Failed to renew token!")
         elif app.config[f"{self.prefix}_USERNAME"] and app.config[f"{self.prefix}_PASSWORD"] and not cache.get(f"{self.prefix}_headless_auth"):
             logger.info(f"Attempting to renew using headless browser")
-            cache.set(f"{self.prefix}_headless_auth", True)
             headless_auth(self.authorization_url[0], self.prefix)
         else:
             error = "No refresh token present. Please re-authenticate!"
@@ -451,6 +450,7 @@ def get_auth_client(prefix, state=None, **kwargs):
         if cache.get(f'{prefix}_restore_from_headless'):
             client.restore()
             client.renew_token()
+            cache.set(f"{prefix}_headless_auth", True)
             cache.set(f"{prefix}_restore_from_headless", False)
         setattr(g, auth_client_name, client)
 
