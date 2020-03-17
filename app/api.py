@@ -594,7 +594,6 @@ def get_realtime_response(url, client, params=None, **kwargs):
         result = verb(url, params=params, data=data, json=json, headers=headers)
         unscoped = result.headers.get("WWW-Authenticate") == "insufficient_scope"
         ok = result.ok
-        logger.debug("%s %s", result.request.method, result.request.url)
 
         try:
             json = result.json()
