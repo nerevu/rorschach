@@ -579,12 +579,12 @@ def get_realtime_response(url, client, params=None, **kwargs):
     ok = False
     unscoped = False
 
-    if client.error:
-        response = {"status_code": 500, "message": client.error}
+    if client.expired:
+        response = {"message": "Token Expired.", "status_code": 401}
     elif not client.verified:
         response = {"message": "Client not authorized.", "status_code": 401}
-    elif client.expired:
-        response = {"message": "Token Expired.", "status_code": 401}
+    elif client.error:
+        response = {"status_code": 500, "message": client.error}
     else:
         params = params or {}
         data = kwargs.get("data", {})
