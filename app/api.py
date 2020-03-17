@@ -5,7 +5,6 @@
 
     Provides additional api endpoints
 """
-import base64
 import time
 
 from json.decoder import JSONDecodeError
@@ -15,6 +14,7 @@ from datetime import date, timedelta, datetime as dt
 from pathlib import Path
 from urllib.parse import urlencode, parse_qs
 from subprocess import call
+from base64 import b64encode
 
 import pygogo as gogo
 import platform
@@ -217,24 +217,28 @@ class MyAuth2Client(AuthClient):
         if self.refresh_token:
             try:
                 logger.info(f"Renewing token using {self.refresh_url}…")
-                #########################################################################
-                # Make renew for Xero work (always get invalid client)
+
                 if self.prefix is "XERO":
-                    # encode to prevent bytes-like error
-                    authorization = (self.client_id+':'+self.client_secret).encode('utf-8')
-                    # decode to prevent string-needed error
-                    headers = { 'Authorization': f"Basic {base64.b64encode(authorization).decode('utf-8')}" }
+                    # https://developer.xero.com/documentation/oauth2/auth-flow
+                    _authorization = f"{self.client_id}:{self.client_secret}".encode('utf-8')
+                    authorization = b64encode(_authorization).decode('utf-8')
+                    headers = { 'Authorization': f"Basic {authorization}" }
                 else:
                     headers = None
-                #########################################################################
+
                 token = self.oauth_session.refresh_token(
                     self.refresh_url,
                     self.refresh_token,
                     headers=headers
                 )
             except Exception as e:
-                self.error = str(e)
-                logger.error(f"Failed to renew token: {self.error}", exc_info=True)
+                error = f"Failed to renew token: {str(e)} Please re-authenticate!"
+                logger.error(error)
+                self.error = error
+                self.oauth_token = None
+                self.access_token = None
+                cache.set(f"{self.prefix}_access_token", self.access_token)
+                cache.set(f"{self.prefix}_oauth_token", self.oauth_token)
             else:
                 if self.oauth_session.authorized:
                     logger.info("Successfully renewed token!")
@@ -243,7 +247,6 @@ class MyAuth2Client(AuthClient):
                     logger.error("Failed to renew token!")
         elif app.config[f"{self.prefix}_USERNAME"] and app.config[f"{self.prefix}_PASSWORD"] and not cache.get(f"{self.prefix}_headless_auth"):
             logger.info(f"Attempting to renew using headless browser")
-            cache.set(f"{self.prefix}_headless_auth", True)
             headless_auth(self.authorization_url[0], self.prefix)
         else:
             error = "No refresh token present. Please re-authenticate!"
@@ -447,6 +450,7 @@ def get_auth_client(prefix, state=None, **kwargs):
         if cache.get(f'{prefix}_restore_from_headless'):
             client.restore()
             client.renew_token()
+            cache.set(f"{prefix}_headless_auth", True)
             cache.set(f"{prefix}_restore_from_headless", False)
         setattr(g, auth_client_name, client)
 
@@ -572,6 +576,7 @@ def fetch_bool(message):
 
 def get_realtime_response(url, client, params=None, **kwargs):
     ok = False
+    unscoped = False
 
     if client.error:
         response = {"status_code": 500, "message": client.error}
@@ -587,8 +592,8 @@ def get_realtime_response(url, client, params=None, **kwargs):
         headers = kwargs.get("headers", HEADERS)
         verb = getattr(client.oauth_session, method)
         result = verb(url, params=params, data=data, json=json, headers=headers)
+        unscoped = result.headers.get("WWW-Authenticate") == "insufficient_scope"
         ok = result.ok
-        logger.debug("%s %s", result.request.method, result.request.url)
 
         try:
             json = result.json()
@@ -659,7 +664,11 @@ def get_realtime_response(url, client, params=None, **kwargs):
             return response
 
     if status_code == 401 and not kwargs.get("renewed"):
-        # Token expired
+        if unscoped:
+            logger.debug(f"Insufficient scope: {client.scope}.")
+        else:
+            logger.debug("Token expired!")
+
         client.renew_token()
         response = get_realtime_response(
             url, client, params=params, renewed=True, **kwargs
@@ -715,12 +724,12 @@ def get_chromedriver_path():
     operating_system = platform.system().lower()
     driver_name = 'chromedriver'
 
-    if operating_system is 'darwin':
+    if operating_system == 'darwin':
         operating_system = 'mac'
-    elif operating_system is 'windows':
+    elif operating_system == 'windows':
         driver_name += '.exe'
 
-    return Path(f"{operating_system}/{driver_name}")
+    return Path.cwd() / operating_system / driver_name
 
 
 def find_element_loop(browser, selector):
@@ -1251,9 +1260,8 @@ class Inventory(APIBase):
     def __init__(self, prefix):
         super().__init__(prefix, subkey="Items", domain="api")
 
-        if self.is_xero:
-            if not self.dry_run:
-                self.api_url = f"{self.api_base_url}/Items"
+        if self.is_xero and not self.dry_run:
+            self.api_url = f"{self.api_base_url}/Items"
 
     @property
     def fields(self):

@@ -155,9 +155,9 @@
   },
   {
     "Code": "hosting-1m-L0",
-    "Description": "1 month of Nerevu Hosting on the Solo Dashboard Plan",
+    "Description": "1 month of Nerevu Dashboard Hosting (Solo Plan)",
     "ItemID": "3a4ab40b-8b2c-4a66-9591-f51c86fd6018",
-    "Name": "Nerevu Hosting Solo Dashboard Plan (1 month)",
+    "Name": "1 month Nerevu Dashboard Hosting (Solo Plan)",
     "SalesDetails": {
       "AccountCode": "4020",
       "TaxType": "NONE",
@@ -166,9 +166,9 @@
   },
   {
     "Code": "hosting-1m-L1",
-    "Description": "Nerevu Hosting Solo Data Monitor Plan (1 month)",
+    "Description": "1 month of Nerevu Data Monitor Hosting (Solo Plan)",
     "ItemID": "6d1d8418-5c2d-412a-b468-79bc620c40cf",
-    "Name": "Nerevu Hosting Solo Data Monitor Plan (1 month)",
+    "Name": "1 month Nerevu Data Monitor Hosting (Solo Plan)",
     "SalesDetails": {
       "AccountCode": "4020",
       "TaxType": "NONE",
@@ -246,7 +246,7 @@
     "ItemID": "b4c0898c-7dcf-431d-bdc3-44c7e9040af1",
     "Name": "1 Week Retainer",
     "SalesDetails": {
-      "AccountCode": "4000",
+      "AccountCode": "4006",
       "TaxType": "NONE",
       "UnitPrice": 5000
     }
@@ -257,7 +257,7 @@
     "ItemID": "7abd425d-2267-4ef7-99ac-78eefacccd30",
     "Name": "20 Hour Retainer",
     "SalesDetails": {
-      "AccountCode": "4000",
+      "AccountCode": "4006",
       "TaxType": "NONE",
       "UnitPrice": 2500
     }

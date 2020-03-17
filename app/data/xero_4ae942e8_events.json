@@ -10,5 +10,17 @@
     "taskId": "c1b1fb50-94b4-4e65-bcd3-2c6bdcd24260",
     "timeEntryId": "f578150f-1652-4fd9-81df-ef0266c6b140",
     "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  },
+  {
+    "dateEnteredUtc": "2020-03-02T17:31:43.4818006Z",
+    "dateUtc": "2020-02-25T12:00:00Z",
+    "day": "2020-02-25",
+    "description": "Google Sheets • Traffic Insights • Fastmail • Databox",
+    "duration": 120,
+    "projectId": "4ae942e8-af62-4318-b569-7476df14cbef",
+    "status": "ACTIVE",
+    "taskId": "c1b1fb50-94b4-4e65-bcd3-2c6bdcd24260",
+    "timeEntryId": "320a07f3-a217-48b4-bbfc-f4219d589f05",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
   }
 ]

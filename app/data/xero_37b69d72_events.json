@@ -1,1 +1,26 @@
-[]
+[
+  {
+    "dateEnteredUtc": "2020-03-09T02:15:51.7770648Z",
+    "dateUtc": "2020-03-04T12:00:00Z",
+    "day": "2020-03-04",
+    "description": "Fastmail • Finder",
+    "duration": 11,
+    "projectId": "37b69d72-7168-47d4-8a9f-d225fccf8b38",
+    "status": "ACTIVE",
+    "taskId": "95b4ed85-dade-4d61-96f2-e247c4beb61c",
+    "timeEntryId": "6783ae45-06e6-4fd6-8912-c1f1a54a1356",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  },
+  {
+    "dateEnteredUtc": "2020-03-09T02:15:52.2330372Z",
+    "dateUtc": "2020-03-05T12:00:00Z",
+    "day": "2020-03-05",
+    "description": "Meetup • LinkedIn",
+    "duration": 7,
+    "projectId": "37b69d72-7168-47d4-8a9f-d225fccf8b38",
+    "status": "ACTIVE",
+    "taskId": "95b4ed85-dade-4d61-96f2-e247c4beb61c",
+    "timeEntryId": "655dad4d-efdc-4fa0-b353-1d896788a36b",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  }
+]

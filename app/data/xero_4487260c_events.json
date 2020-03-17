@@ -46,5 +46,29 @@
     "taskId": "439d822d-6e8b-485b-bf8c-241b999541a9",
     "timeEntryId": "33070878-9c95-40d1-a02e-d8db2b94d478",
     "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  },
+  {
+    "dateEnteredUtc": "2020-02-25T03:08:55.1168057Z",
+    "dateUtc": "2020-02-18T12:00:00Z",
+    "day": "2020-02-18",
+    "description": "Databox • Betafy • Edit Project",
+    "duration": 34,
+    "projectId": "4487260c-7d80-486f-a18f-7e209301e06c",
+    "status": "ACTIVE",
+    "taskId": "439d822d-6e8b-485b-bf8c-241b999541a9",
+    "timeEntryId": "ff1a1455-4707-423e-979b-4f864e82621a",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  },
+  {
+    "dateEnteredUtc": "2020-03-02T17:32:02.9906394Z",
+    "dateUtc": "2020-02-24T12:00:00Z",
+    "day": "2020-02-24",
+    "description": "Google Ads • Kazeeki Campaign Performance",
+    "duration": 6,
+    "projectId": "4487260c-7d80-486f-a18f-7e209301e06c",
+    "status": "ACTIVE",
+    "taskId": "02cebe25-451a-47c1-981b-8b6a350ae61a",
+    "timeEntryId": "2d459eff-bcd7-4437-8581-3679aedfaf42",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
   }
 ]

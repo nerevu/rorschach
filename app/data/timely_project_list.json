@@ -1,6 +1,188 @@
 [
   {
     "active": true,
+    "billable": true,
+    "budget": 5000,
+    "client": {
+      "active": true,
+      "external_id": null,
+      "id": 1173714,
+      "name": "Nerevu Group",
+      "updated_at": "2019-12-03T21:26:59-06:00"
+    },
+    "id": 3013676,
+    "name": "Timero"
+  },
+  {
+    "active": true,
+    "billable": true,
+    "budget": 5000,
+    "client": {
+      "active": true,
+      "external_id": null,
+      "id": 1350585,
+      "name": "Peoria Innovation Alliance",
+      "updated_at": "2019-06-04T14:49:08-05:00"
+    },
+    "id": 2906311,
+    "name": "Open Peoria"
+  },
+  {
+    "active": true,
+    "billable": true,
+    "budget": 1900,
+    "client": {
+      "active": true,
+      "external_id": null,
+      "id": 1350543,
+      "name": "Alegna",
+      "updated_at": "2019-06-04T12:41:25-05:00"
+    },
+    "id": 2906218,
+    "name": "Retainer"
+  },
+  {
+    "active": true,
+    "billable": false,
+    "budget": 0,
+    "client": {
+      "active": true,
+      "external_id": null,
+      "id": 1350585,
+      "name": "Peoria Innovation Alliance",
+      "updated_at": "2019-06-04T14:49:08-05:00"
+    },
+    "id": 2906312,
+    "name": "GP Data Community"
+  },
+  {
+    "active": true,
+    "billable": false,
+    "budget": 0,
+    "client": {
+      "active": true,
+      "external_id": null,
+      "id": 1350586,
+      "name": "GPEDC",
+      "updated_at": "2019-08-12T15:16:14-05:00"
+    },
+    "id": 3149135,
+    "name": "Data Update Service"
+  },
+  {
+    "active": true,
+    "billable": true,
+    "budget": 20000,
+    "client": {
+      "active": true,
+      "external_id": null,
+      "id": 1390597,
+      "name": "ICC",
+      "updated_at": "2019-12-06T15:33:33-06:00"
+    },
+    "id": 3078744,
+    "name": "WEI Website"
+  },
+  {
+    "active": true,
+    "billable": false,
+    "budget": 0,
+    "client": {
+      "active": true,
+      "external_id": null,
+      "id": 1173714,
+      "name": "Nerevu Group",
+      "updated_at": "2019-12-03T21:26:59-06:00"
+    },
+    "id": 2906240,
+    "name": "Internal"
+  },
+  {
+    "active": true,
+    "billable": true,
+    "budget": 1000,
+    "client": {
+      "active": true,
+      "external_id": null,
+      "id": 1173714,
+      "name": "Nerevu Group",
+      "updated_at": "2019-12-03T21:26:59-06:00"
+    },
+    "id": 2973485,
+    "name": "Invoice/Billing Service"
+  },
+  {
+    "active": true,
+    "billable": true,
+    "budget": 2500,
+    "client": {
+      "active": true,
+      "external_id": null,
+      "id": 1173714,
+      "name": "Nerevu Group",
+      "updated_at": "2019-12-03T21:26:59-06:00"
+    },
+    "id": 2906239,
+    "name": "Company Website"
+  },
+  {
+    "active": true,
+    "billable": false,
+    "budget": 0,
+    "client": {
+      "active": true,
+      "external_id": null,
+      "id": 1404385,
+      "name": "Urban League",
+      "updated_at": "2020-02-07T11:06:29-06:00"
+    },
+    "id": 3147199,
+    "name": "TCPUL Website"
+  },
+  {
+    "active": true,
+    "billable": false,
+    "budget": 0,
+    "client": {
+      "active": true,
+      "external_id": null,
+      "id": 1407389,
+      "name": "Sitation",
+      "updated_at": "2020-02-19T15:15:20-06:00"
+    },
+    "id": 3157138,
+    "name": "Sitation Dashboard"
+  },
+  {
+    "active": true,
+    "billable": false,
+    "budget": 0,
+    "client": {
+      "active": true,
+      "external_id": null,
+      "id": 1173714,
+      "name": "Nerevu Group",
+      "updated_at": "2019-12-03T21:26:59-06:00"
+    },
+    "id": 3154983,
+    "name": "Kazeeki"
+  },
+  {
+    "active": true,
+    "billable": false,
+    "budget": 0,
+    "client": {
+      "active": true,
+      "external_id": null,
+      "id": 1350585,
+      "name": "Peoria Innovation Alliance",
+      "updated_at": "2019-06-04T14:49:08-05:00"
+    },
+    "id": 2973418,
+    "name": "Analytics Committee"
+  },
+  {
+    "active": true,
     "billable": false,
     "budget": 0,
     "client": {
@@ -24,13 +206,27 @@
       "name": "Peoria Innovation Alliance",
       "updated_at": "2019-06-04T14:49:08-05:00"
     },
-    "id": 2973418,
-    "name": "Analytics Committee"
+    "id": 2973420,
+    "name": "BOD"
+  },
+  {
+    "active": true,
+    "billable": false,
+    "budget": 0,
+    "client": {
+      "active": true,
+      "external_id": null,
+      "id": 1173714,
+      "name": "Nerevu Group",
+      "updated_at": "2019-12-03T21:26:59-06:00"
+    },
+    "id": 3043187,
+    "name": "Company Metrics"
   },
   {
     "active": true,
     "billable": true,
-    "budget": 1900,
+    "budget": 5000,
     "client": {
       "active": true,
       "external_id": null,
@@ -38,8 +234,22 @@
       "name": "Alegna",
       "updated_at": "2019-06-04T12:41:25-05:00"
     },
-    "id": 2906218,
-    "name": "Retainer"
+    "id": 2954285,
+    "name": "Commission Dashboard"
+  },
+  {
+    "active": true,
+    "billable": true,
+    "budget": 30000,
+    "client": {
+      "active": true,
+      "external_id": null,
+      "id": 1350542,
+      "name": "Notionovus",
+      "updated_at": "2019-06-04T12:39:29-05:00"
+    },
+    "id": 2389295,
+    "name": "DinerDiver"
   },
   {
     "active": true,
@@ -62,110 +272,12 @@
     "client": {
       "active": true,
       "external_id": null,
-      "id": 1173714,
-      "name": "Nerevu Group",
-      "updated_at": "2019-12-03T21:26:59-06:00"
-    },
-    "id": 3154983,
-    "name": "Kazeeki"
-  },
-  {
-    "active": true,
-    "billable": true,
-    "budget": 1000,
-    "client": {
-      "active": true,
-      "external_id": null,
-      "id": 1173714,
-      "name": "Nerevu Group",
-      "updated_at": "2019-12-03T21:26:59-06:00"
-    },
-    "id": 2973485,
-    "name": "Invoice/Billing Service"
-  },
-  {
-    "active": true,
-    "billable": true,
-    "budget": 20000,
-    "client": {
-      "active": true,
-      "external_id": null,
-      "id": 1390597,
-      "name": "ICC",
-      "updated_at": "2019-12-06T15:33:33-06:00"
-    },
-    "id": 3078744,
-    "name": "WEI Website"
-  },
-  {
-    "active": true,
-    "billable": true,
-    "budget": 5000,
-    "client": {
-      "active": true,
-      "external_id": null,
-      "id": 1350585,
-      "name": "Peoria Innovation Alliance",
-      "updated_at": "2019-06-04T14:49:08-05:00"
-    },
-    "id": 2906311,
-    "name": "Open Peoria"
-  },
-  {
-    "active": true,
-    "billable": false,
-    "budget": 0,
-    "client": {
-      "active": true,
-      "external_id": null,
-      "id": 1173714,
-      "name": "Nerevu Group",
-      "updated_at": "2019-12-03T21:26:59-06:00"
-    },
-    "id": 2906240,
-    "name": "Internal"
-  },
-  {
-    "active": true,
-    "billable": false,
-    "budget": 0,
-    "client": {
-      "active": true,
-      "external_id": null,
-      "id": 1404385,
-      "name": "Urban League",
-      "updated_at": "2020-02-07T11:06:29-06:00"
-    },
-    "id": 3147199,
-    "name": "TCPUL Website"
-  },
-  {
-    "active": true,
-    "billable": false,
-    "budget": 0,
-    "client": {
-      "active": true,
-      "external_id": null,
       "id": 1404386,
       "name": "Arts Partners",
       "updated_at": "2020-02-07T11:15:56-06:00"
     },
     "id": 3147209,
     "name": "Calendar Service"
-  },
-  {
-    "active": true,
-    "billable": true,
-    "budget": 30000,
-    "client": {
-      "active": true,
-      "external_id": null,
-      "id": 1350542,
-      "name": "Notionovus",
-      "updated_at": "2019-06-04T12:39:29-05:00"
-    },
-    "id": 2389295,
-    "name": "DinerDiver"
   },
   {
     "active": true,
@@ -180,48 +292,6 @@
     },
     "id": 2960359,
     "name": "Data Automation"
-  },
-  {
-    "active": true,
-    "billable": false,
-    "budget": 0,
-    "client": {
-      "active": true,
-      "external_id": null,
-      "id": 1350586,
-      "name": "GPEDC",
-      "updated_at": "2019-08-12T15:16:14-05:00"
-    },
-    "id": 3149135,
-    "name": "Data Update Service"
-  },
-  {
-    "active": true,
-    "billable": true,
-    "budget": 5000,
-    "client": {
-      "active": true,
-      "external_id": null,
-      "id": 1350543,
-      "name": "Alegna",
-      "updated_at": "2019-06-04T12:41:25-05:00"
-    },
-    "id": 2954285,
-    "name": "Commission Dashboard"
-  },
-  {
-    "active": true,
-    "billable": false,
-    "budget": 0,
-    "client": {
-      "active": true,
-      "external_id": null,
-      "id": 1350585,
-      "name": "Peoria Innovation Alliance",
-      "updated_at": "2019-06-04T14:49:08-05:00"
-    },
-    "id": 2973420,
-    "name": "BOD"
   },
   {
     "active": true,
@@ -267,34 +337,6 @@
   },
   {
     "active": true,
-    "billable": true,
-    "budget": 2500,
-    "client": {
-      "active": true,
-      "external_id": null,
-      "id": 1173714,
-      "name": "Nerevu Group",
-      "updated_at": "2019-12-03T21:26:59-06:00"
-    },
-    "id": 2906239,
-    "name": "Company Website"
-  },
-  {
-    "active": true,
-    "billable": false,
-    "budget": 0,
-    "client": {
-      "active": true,
-      "external_id": null,
-      "id": 1350585,
-      "name": "Peoria Innovation Alliance",
-      "updated_at": "2019-06-04T14:49:08-05:00"
-    },
-    "id": 2906312,
-    "name": "GP Data Community"
-  },
-  {
-    "active": true,
     "billable": false,
     "budget": 0,
     "client": {
@@ -323,20 +365,6 @@
   },
   {
     "active": true,
-    "billable": true,
-    "budget": 5000,
-    "client": {
-      "active": true,
-      "external_id": null,
-      "id": 1173714,
-      "name": "Nerevu Group",
-      "updated_at": "2019-12-03T21:26:59-06:00"
-    },
-    "id": 3013676,
-    "name": "Timero"
-  },
-  {
-    "active": true,
     "billable": false,
     "budget": 0,
     "client": {
@@ -348,20 +376,6 @@
     },
     "id": 2954247,
     "name": "Onboarding"
-  },
-  {
-    "active": true,
-    "billable": false,
-    "budget": 0,
-    "client": {
-      "active": true,
-      "external_id": null,
-      "id": 1173714,
-      "name": "Nerevu Group",
-      "updated_at": "2019-12-03T21:26:59-06:00"
-    },
-    "id": 3043187,
-    "name": "Company Metrics"
   },
   {
     "active": true,

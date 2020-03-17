@@ -1,14 +1,26 @@
 [
   {
-    "dateEnteredUtc": "2020-02-10T21:32:38.2762117Z",
-    "dateUtc": "2020-02-04T12:00:00Z",
-    "day": "2020-02-04",
-    "description": "Terminal • Sublime Text • openpeoria/data-portal Wiki • GitX",
-    "duration": 90,
+    "dateEnteredUtc": "2020-03-09T02:16:01.4153844Z",
+    "dateUtc": "2020-03-03T12:00:00Z",
+    "day": "2020-03-03",
+    "description": "AWS setup",
+    "duration": 190,
     "projectId": "615c8090-938d-4ee7-8f4e-6ae945920507",
     "status": "ACTIVE",
     "taskId": "03c04504-ae82-4f6d-bb97-36b479299cd2",
-    "timeEntryId": "64100e05-d00f-4edc-980a-6b83dd99e669",
+    "timeEntryId": "766066d2-15f0-45d6-8e58-79dcf1ec5366",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  },
+  {
+    "dateEnteredUtc": "2020-03-09T02:16:01.7516822Z",
+    "dateUtc": "2020-03-04T12:00:00Z",
+    "day": "2020-03-04",
+    "description": "openpeoria/data-portal",
+    "duration": 13,
+    "projectId": "615c8090-938d-4ee7-8f4e-6ae945920507",
+    "status": "ACTIVE",
+    "taskId": "03c04504-ae82-4f6d-bb97-36b479299cd2",
+    "timeEntryId": "f2e67e6a-5e80-4742-9948-67d1601e2aa0",
     "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
   }
 ]

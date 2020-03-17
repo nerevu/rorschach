@@ -1,1 +1,14 @@
-[]
+[
+  {
+    "dateEnteredUtc": "2020-02-25T03:04:47.6396797Z",
+    "dateUtc": "2020-02-20T12:00:00Z",
+    "day": "2020-02-20",
+    "description": "Databox • Kazeeki Campaign Conversion",
+    "duration": 29,
+    "projectId": "7fe1e7c0-24e2-4c26-809f-654f1cbae1f1",
+    "status": "ACTIVE",
+    "taskId": "ce9eeb72-b6a4-45db-9dcd-3f7fb47047d9",
+    "timeEntryId": "3d20e897-5d69-4edb-8b3e-ee752573fbc0",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  }
+]

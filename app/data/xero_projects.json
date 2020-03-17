@@ -1,8 +1,23 @@
 {
+  "0d4a1f7f-173f-47e5-98f2-6b37eb4974cf": {
+    "name": "Website Audit",
+    "projectId": "0d4a1f7f-173f-47e5-98f2-6b37eb4974cf",
+    "status": "INPROGRESS"
+  },
   "132489d0-9094-4da6-a739-ced4d0a1f0c9": {
     "name": "IPA/AEA Site",
     "projectId": "132489d0-9094-4da6-a739-ced4d0a1f0c9",
     "status": "CLOSED"
+  },
+  "13b73b2a-d949-4887-9fc4-fbf4b1c62491": {
+    "name": "Smart Airport",
+    "projectId": "13b73b2a-d949-4887-9fc4-fbf4b1c62491",
+    "status": "INPROGRESS"
+  },
+  "13cec3b6-1cfd-4572-9f4d-3da85bc07a3b": {
+    "name": "Data Update Service",
+    "projectId": "13cec3b6-1cfd-4572-9f4d-3da85bc07a3b",
+    "status": "INPROGRESS"
   },
   "15ff819d-6d69-406c-98c5-ed9ab9163779": {
     "name": "Data Automation",
@@ -54,6 +69,16 @@
     "projectId": "69cb6ef7-7886-4172-8112-bbc70e949a9e",
     "status": "INPROGRESS"
   },
+  "6af33309-b00b-4f9c-991f-25f0b4506582": {
+    "name": "TCPUL Website",
+    "projectId": "6af33309-b00b-4f9c-991f-25f0b4506582",
+    "status": "INPROGRESS"
+  },
+  "6bee8c68-9266-40f2-9a4b-3bb03186d322": {
+    "name": "WEI CMS",
+    "projectId": "6bee8c68-9266-40f2-9a4b-3bb03186d322",
+    "status": "INPROGRESS"
+  },
   "79867896-5504-4215-9a1a-8f9ca45ac7ec": {
     "name": "Timero",
     "projectId": "79867896-5504-4215-9a1a-8f9ca45ac7ec",
@@ -79,14 +104,39 @@
     "projectId": "bf46311b-de69-4480-a173-8a8ba7700db3",
     "status": "INPROGRESS"
   },
+  "c74d4b92-4a5c-4301-80ac-a601593b41ba": {
+    "name": "Hiring",
+    "projectId": "c74d4b92-4a5c-4301-80ac-a601593b41ba",
+    "status": "INPROGRESS"
+  },
   "c7f2aa8e-bf50-4359-8e3e-0721f5cd49bc": {
     "name": "Company Metrics",
     "projectId": "c7f2aa8e-bf50-4359-8e3e-0721f5cd49bc",
     "status": "INPROGRESS"
   },
+  "c8b18830-fed0-4979-8c42-6619c4b6b67c": {
+    "name": "Onboarding",
+    "projectId": "c8b18830-fed0-4979-8c42-6619c4b6b67c",
+    "status": "INPROGRESS"
+  },
   "d2812acb-40dc-4ed2-8e83-e105ef21b9ef": {
     "name": "Workforce Initiative Website",
     "projectId": "d2812acb-40dc-4ed2-8e83-e105ef21b9ef",
+    "status": "INPROGRESS"
+  },
+  "da71537a-8806-4b4b-b3a1-6b470f52dd7e": {
+    "name": "GDPR Policy",
+    "projectId": "da71537a-8806-4b4b-b3a1-6b470f52dd7e",
+    "status": "INPROGRESS"
+  },
+  "ebf98c35-4d4b-41c6-b717-08afb9243b03": {
+    "name": "Calendar Service",
+    "projectId": "ebf98c35-4d4b-41c6-b717-08afb9243b03",
+    "status": "INPROGRESS"
+  },
+  "ed071320-fbcb-465d-8066-324cae235718": {
+    "name": "Sitation Dashboard",
+    "projectId": "ed071320-fbcb-465d-8066-324cae235718",
     "status": "INPROGRESS"
   },
   "f9d0e04b-f07c-423d-8975-418159180dab": {
