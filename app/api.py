@@ -13,7 +13,7 @@ from itertools import chain, islice, count
 from datetime import date, timedelta, datetime as dt
 from pathlib import Path
 from urllib.parse import urlencode, parse_qs
-from subprocess import call
+from subprocess import call, check_output, CalledProcessError
 from base64 import b64encode
 
 import pygogo as gogo
@@ -59,6 +59,7 @@ fake = Faker()
 ROUTE_TIMEOUT = Config.ROUTE_TIMEOUT
 SET_TIMEOUT = Config.SET_TIMEOUT
 PREFIX = Config.API_URL_PREFIX
+CHROME_DRIVER_VERSIONS = Config.CHROME_DRIVER_VERSIONS
 HEADERS = {"Accept": "application/json"}
 BILLABLE = 1344430
 NONBILLABLE = 1339635
@@ -719,17 +720,48 @@ def callback(prefix):
         return redirect(redirect_url)
 
 
+def get_def_chromedriver_path(version=None):
+    executable = f"chromedriver-{version}" if version else 'chromedriver'
+    command = f"which {executable}"
+
+    try:
+        _chromedriver_path = check_output(command, shell=True, encoding='utf-8')
+    except CalledProcessError:
+        chromedriver_path = ''
+    else:
+        chromedriver_path = _chromedriver_path.strip()
+
+    return chromedriver_path
+
+
 # get system specific chromedriver (currently version 78)
 def get_chromedriver_path():
     operating_system = platform.system().lower()
-    driver_name = 'chromedriver'
+    chromedriver_path = None
 
     if operating_system == 'darwin':
         operating_system = 'mac'
-    elif operating_system == 'windows':
-        driver_name += '.exe'
 
-    return Path.cwd() / operating_system / driver_name
+    unixlike = operating_system in {'mac', 'linux'}
+
+    if unixlike:
+        # TODO: make this check cross platform
+        for version in CHROME_DRIVER_VERSIONS:
+            _chromedriver_path = get_def_chromedriver_path(version)
+
+            if _chromedriver_path:
+                chromedriver_path = Path(_chromedriver_path)
+                break
+
+    if not chromedriver_path:
+        driver_name = 'chromedriver'
+
+        if operating_system == 'windows':
+            driver_name += '.exe'
+
+        chromedriver_path = Path.cwd() / operating_system / driver_name
+
+    return chromedriver_path
 
 
 def find_element_loop(browser, selector):
@@ -763,8 +795,11 @@ def headless_auth(redirect_url, prefix):
 
     try:
         browser = webdriver.Chrome(executable_path=chrome_path, chrome_options=options)
-    except WebDriverException:
-        logger.error(f"chromedriver executable not found in {chrome_path}!")
+    except WebDriverException as e:
+        if 'executable needs to be in PATH' in str(e):
+            logger.error(f"chromedriver executable not found in {chrome_path}!")
+        else:
+            logger.error(e)
     else:
         # navigate to auth page
         browser.get(redirect_url)
