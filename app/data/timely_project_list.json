@@ -2,16 +2,16 @@
   {
     "active": true,
     "billable": true,
-    "budget": 5000,
+    "budget": 1900,
     "client": {
       "active": true,
       "external_id": null,
-      "id": 1173714,
-      "name": "Nerevu Group",
-      "updated_at": "2019-12-03T21:26:59-06:00"
+      "id": 1350543,
+      "name": "Alegna",
+      "updated_at": "2019-06-04T12:41:25-05:00"
     },
-    "id": 3013676,
-    "name": "Timero"
+    "id": 2906218,
+    "name": "Retainer"
   },
   {
     "active": true,
@@ -29,45 +29,17 @@
   },
   {
     "active": true,
-    "billable": true,
-    "budget": 1900,
-    "client": {
-      "active": true,
-      "external_id": null,
-      "id": 1350543,
-      "name": "Alegna",
-      "updated_at": "2019-06-04T12:41:25-05:00"
-    },
-    "id": 2906218,
-    "name": "Retainer"
-  },
-  {
-    "active": true,
     "billable": false,
     "budget": 0,
     "client": {
       "active": true,
       "external_id": null,
-      "id": 1350585,
-      "name": "Peoria Innovation Alliance",
-      "updated_at": "2019-06-04T14:49:08-05:00"
+      "id": 1173714,
+      "name": "Nerevu Group",
+      "updated_at": "2019-12-03T21:26:59-06:00"
     },
-    "id": 2906312,
-    "name": "GP Data Community"
-  },
-  {
-    "active": true,
-    "billable": false,
-    "budget": 0,
-    "client": {
-      "active": true,
-      "external_id": null,
-      "id": 1350586,
-      "name": "GPEDC",
-      "updated_at": "2019-08-12T15:16:14-05:00"
-    },
-    "id": 3149135,
-    "name": "Data Update Service"
+    "id": 3180906,
+    "name": "COVID-19"
   },
   {
     "active": true,
@@ -96,6 +68,160 @@
     },
     "id": 2906240,
     "name": "Internal"
+  },
+  {
+    "active": true,
+    "billable": true,
+    "budget": 3000,
+    "client": {
+      "active": true,
+      "external_id": null,
+      "id": 1350586,
+      "name": "GPEDC",
+      "updated_at": "2019-08-12T15:16:14-05:00"
+    },
+    "id": 2960359,
+    "name": "Data Automation"
+  },
+  {
+    "active": true,
+    "billable": true,
+    "budget": 5000,
+    "client": {
+      "active": true,
+      "external_id": null,
+      "id": 1350543,
+      "name": "Alegna",
+      "updated_at": "2019-06-04T12:41:25-05:00"
+    },
+    "id": 2954285,
+    "name": "Commission Dashboard"
+  },
+  {
+    "active": true,
+    "billable": false,
+    "budget": 0,
+    "client": {
+      "active": true,
+      "external_id": null,
+      "id": 1173714,
+      "name": "Nerevu Group",
+      "updated_at": "2019-12-03T21:26:59-06:00"
+    },
+    "id": 2954247,
+    "name": "Onboarding"
+  },
+  {
+    "active": true,
+    "billable": true,
+    "budget": 5000,
+    "client": {
+      "active": true,
+      "external_id": null,
+      "id": 1173714,
+      "name": "Nerevu Group",
+      "updated_at": "2019-12-03T21:26:59-06:00"
+    },
+    "id": 3013676,
+    "name": "Timero"
+  },
+  {
+    "active": true,
+    "billable": false,
+    "budget": 0,
+    "client": {
+      "active": true,
+      "external_id": null,
+      "id": 1350585,
+      "name": "Peoria Innovation Alliance",
+      "updated_at": "2019-06-04T14:49:08-05:00"
+    },
+    "id": 2973420,
+    "name": "BOD"
+  },
+  {
+    "active": true,
+    "billable": false,
+    "budget": 0,
+    "client": {
+      "active": true,
+      "external_id": null,
+      "id": 1173714,
+      "name": "Nerevu Group",
+      "updated_at": "2019-12-03T21:26:59-06:00"
+    },
+    "id": 2980115,
+    "name": "Hiring"
+  },
+  {
+    "active": true,
+    "billable": false,
+    "budget": 0,
+    "client": {
+      "active": true,
+      "external_id": null,
+      "id": 1173714,
+      "name": "Nerevu Group",
+      "updated_at": "2019-12-03T21:26:59-06:00"
+    },
+    "id": 3043187,
+    "name": "Company Metrics"
+  },
+  {
+    "active": true,
+    "billable": true,
+    "budget": 30000,
+    "client": {
+      "active": true,
+      "external_id": null,
+      "id": 1350542,
+      "name": "Notionovus",
+      "updated_at": "2019-06-04T12:39:29-05:00"
+    },
+    "id": 2389295,
+    "name": "DinerDiver"
+  },
+  {
+    "active": true,
+    "billable": false,
+    "budget": 0,
+    "client": {
+      "active": true,
+      "external_id": null,
+      "id": 1350585,
+      "name": "Peoria Innovation Alliance",
+      "updated_at": "2019-06-04T14:49:08-05:00"
+    },
+    "id": 2973417,
+    "name": "NomCom"
+  },
+  {
+    "active": true,
+    "billable": false,
+    "budget": 0,
+    "client": {
+      "active": true,
+      "external_id": null,
+      "id": 1350585,
+      "name": "Peoria Innovation Alliance",
+      "updated_at": "2019-06-04T14:49:08-05:00"
+    },
+    "id": 2906312,
+    "name": "GP Data Community"
+  },
+  {
+    "active": true,
+    "billable": false,
+    "budget": 0,
+    "client": {
+      "active": true,
+      "external_id": null,
+      "id": 1350586,
+      "name": "GPEDC",
+      "updated_at": "2019-08-12T15:16:14-05:00"
+    },
+    "id": 3149135,
+    "name": "Data Update Service"
   },
   {
     "active": true,
@@ -188,79 +314,9 @@
     "client": {
       "active": true,
       "external_id": null,
-      "id": 1350585,
-      "name": "Peoria Innovation Alliance",
-      "updated_at": "2019-06-04T14:49:08-05:00"
-    },
-    "id": 2973417,
-    "name": "NomCom"
-  },
-  {
-    "active": true,
-    "billable": false,
-    "budget": 0,
-    "client": {
-      "active": true,
-      "external_id": null,
-      "id": 1350585,
-      "name": "Peoria Innovation Alliance",
-      "updated_at": "2019-06-04T14:49:08-05:00"
-    },
-    "id": 2973420,
-    "name": "BOD"
-  },
-  {
-    "active": true,
-    "billable": false,
-    "budget": 0,
-    "client": {
-      "active": true,
-      "external_id": null,
-      "id": 1173714,
-      "name": "Nerevu Group",
-      "updated_at": "2019-12-03T21:26:59-06:00"
-    },
-    "id": 3043187,
-    "name": "Company Metrics"
-  },
-  {
-    "active": true,
-    "billable": true,
-    "budget": 5000,
-    "client": {
-      "active": true,
-      "external_id": null,
-      "id": 1350543,
-      "name": "Alegna",
-      "updated_at": "2019-06-04T12:41:25-05:00"
-    },
-    "id": 2954285,
-    "name": "Commission Dashboard"
-  },
-  {
-    "active": true,
-    "billable": true,
-    "budget": 30000,
-    "client": {
-      "active": true,
-      "external_id": null,
-      "id": 1350542,
-      "name": "Notionovus",
-      "updated_at": "2019-06-04T12:39:29-05:00"
-    },
-    "id": 2389295,
-    "name": "DinerDiver"
-  },
-  {
-    "active": true,
-    "billable": false,
-    "budget": 0,
-    "client": {
-      "active": true,
-      "external_id": null,
       "id": 1396702,
       "name": "City of Peoria",
-      "updated_at": "2020-01-07T21:44:51-07:00"
+      "updated_at": "2020-01-07T22:44:51-06:00"
     },
     "id": 3120653,
     "name": "Incentives Dashboard"
@@ -278,20 +334,6 @@
     },
     "id": 3147209,
     "name": "Calendar Service"
-  },
-  {
-    "active": true,
-    "billable": true,
-    "budget": 3000,
-    "client": {
-      "active": true,
-      "external_id": null,
-      "id": 1350586,
-      "name": "GPEDC",
-      "updated_at": "2019-08-12T15:16:14-05:00"
-    },
-    "id": 2960359,
-    "name": "Data Automation"
   },
   {
     "active": true,
@@ -330,7 +372,7 @@
       "external_id": null,
       "id": 1376902,
       "name": "Web Professionals",
-      "updated_at": "2019-10-03T15:46:54-06:00"
+      "updated_at": "2019-10-03T16:46:54-05:00"
     },
     "id": 3028598,
     "name": "Website Audit"
@@ -342,40 +384,12 @@
     "client": {
       "active": true,
       "external_id": null,
-      "id": 1173714,
-      "name": "Nerevu Group",
-      "updated_at": "2019-12-03T21:26:59-06:00"
-    },
-    "id": 2980115,
-    "name": "Hiring"
-  },
-  {
-    "active": true,
-    "billable": false,
-    "budget": 0,
-    "client": {
-      "active": true,
-      "external_id": null,
       "id": 1396703,
       "name": "Solomo",
-      "updated_at": "2020-01-07T21:48:10-07:00"
+      "updated_at": "2020-01-07T22:48:10-06:00"
     },
     "id": 3120654,
     "name": "GDPR Policy"
-  },
-  {
-    "active": true,
-    "billable": false,
-    "budget": 0,
-    "client": {
-      "active": true,
-      "external_id": null,
-      "id": 1173714,
-      "name": "Nerevu Group",
-      "updated_at": "2019-12-03T21:26:59-06:00"
-    },
-    "id": 2954247,
-    "name": "Onboarding"
   },
   {
     "active": true,

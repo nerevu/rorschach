@@ -1,14 +1,1 @@
-[
-  {
-    "dateEnteredUtc": "2020-02-25T03:02:50.1536464Z",
-    "dateUtc": "2020-02-19T12:00:00Z",
-    "day": "2020-02-19",
-    "description": "DinerDiver updates",
-    "duration": 270,
-    "projectId": "803591c3-72af-4475-888f-7c4c50044589",
-    "status": "INVOICED",
-    "taskId": "ef251547-9e8a-4304-8a4b-ac6b4bd631e4",
-    "timeEntryId": "b6e3c0a5-a698-4b3f-89e7-ddfa042f6bba",
-    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
-  }
-]
+[]
