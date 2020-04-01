@@ -196,7 +196,7 @@ class Development(Config):
 class Ngrok(Development):
     # Xero localhost callbacks work fine
     TIMELY_REDIRECT_URI = (
-        f"https://{__APP_NAME__}.ngrok.io{Config.API_URL_PREFIX}/timely-callback"
+        f"https://nerevu-api.ngrok.io{Config.API_URL_PREFIX}/timely-callback"
     )
 
 
