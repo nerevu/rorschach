@@ -15,7 +15,7 @@ from sys import exit
 
 import pygogo as gogo
 
-from flask import current_app as app, url_for
+from flask import current_app as app
 from flask_script import Server, Manager
 from requests.exceptions import ConnectionError
 

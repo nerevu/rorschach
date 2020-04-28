@@ -78,6 +78,7 @@ class Config(object):
     EMPTY_TIMEOUT = ROUTE_TIMEOUT * 10
     API_URL_PREFIX = "/v1"
     SECRET_KEY = getenv("TIMERO_SECRET_KEY", urandom(24))
+    CHROME_DRIVER_VERSIONS = [None] + list(range(81, 77, -1))
 
     # https://app.timelyapp.com/777870/oauth_applications
     TIMELY_ACCOUNT_ID = "777870"
@@ -195,7 +196,7 @@ class Development(Config):
 class Ngrok(Development):
     # Xero localhost callbacks work fine
     TIMELY_REDIRECT_URI = (
-        f"https://{__APP_NAME__}.ngrok.io{Config.API_URL_PREFIX}/timely-callback"
+        f"https://nerevu-api.ngrok.io{Config.API_URL_PREFIX}/timely-callback"
     )
 
 

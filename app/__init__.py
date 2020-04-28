@@ -17,6 +17,7 @@
 import config
 
 from os import getenv, path
+
 from flask import Flask, redirect, request
 from flask_cors import CORS
 from flask_caching import Cache
@@ -24,7 +25,7 @@ from flask_compress import Compress
 
 from mezmorize.utils import get_cache_config, get_cache_type
 
-__version__ = "0.20.0"
+__version__ = "0.21.0"
 __title__ = "Timero API"
 __package_name__ = "timero-api"
 __author__ = "Reuben Cummings"

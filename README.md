@@ -76,3 +76,14 @@ You can read more about symlinks [here](https://www.maketecheasier.com/create-sy
     ```bash
     ln -s /{path_to_nerevu_dropbox}/Security/{username}/timero-env /{path_to_project}/.env
     ```
+
+## Chrome driver
+
+`Macports`
+
+`sudo port install chromedriver-{version}`
+
+`Download`
+
+[chromium.org](https://sites.google.com/a/chromium.org/chromedriver/downloads)
+

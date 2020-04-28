@@ -1,50 +1,38 @@
 [
   {
-    "dateEnteredUtc": "2020-03-02T17:32:25.965552Z",
-    "dateUtc": "2020-02-17T12:00:00Z",
-    "day": "2020-02-17",
-    "description": "Sublime Text • selenium.common.exceptions.WebDriverException: Me…",
+    "dateEnteredUtc": "2020-04-01T22:07:36.3228357Z",
+    "dateUtc": "2020-03-16T12:00:00Z",
+    "day": "2020-03-16",
+    "description": "Fork • Terminal • nerevu/timero • Xero Accounting Software",
+    "duration": 17,
+    "projectId": "79867896-5504-4215-9a1a-8f9ca45ac7ec",
+    "status": "ACTIVE",
+    "taskId": "3b674ca9-5b3d-4685-a6c3-818f62ff7219",
+    "timeEntryId": "c52107d3-2a58-4a78-b6bf-2b9b5c10a0d2",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  },
+  {
+    "dateEnteredUtc": "2020-04-01T22:07:36.8028763Z",
+    "dateUtc": "2020-03-17T12:00:00Z",
+    "day": "2020-03-17",
+    "description": "Sublime Text • Terminal • WebDriver for Chrome • Dash • Fork • l…",
+    "duration": 154,
+    "projectId": "79867896-5504-4215-9a1a-8f9ca45ac7ec",
+    "status": "ACTIVE",
+    "taskId": "3b674ca9-5b3d-4685-a6c3-818f62ff7219",
+    "timeEntryId": "9db4d657-17d6-4ff9-9190-54048d83306f",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  },
+  {
+    "dateEnteredUtc": "2020-04-01T22:07:37.3728767Z",
+    "dateUtc": "2020-03-17T12:00:00Z",
+    "day": "2020-03-17",
+    "description": "reubano/mithril-pathname-bug • MithrilJS/mithril.js • nerevu/tim…",
     "duration": 30,
     "projectId": "79867896-5504-4215-9a1a-8f9ca45ac7ec",
     "status": "ACTIVE",
     "taskId": "3b674ca9-5b3d-4685-a6c3-818f62ff7219",
-    "timeEntryId": "b7a20e60-01df-488b-b00f-fcf3a1219fc0",
-    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
-  },
-  {
-    "dateEnteredUtc": "2020-03-02T17:32:31.0362443Z",
-    "dateUtc": "2020-02-24T12:00:00Z",
-    "day": "2020-02-24",
-    "description": "Trying to get headless auth to find the chromedriver...not sure …",
-    "duration": 82,
-    "projectId": "79867896-5504-4215-9a1a-8f9ca45ac7ec",
-    "status": "ACTIVE",
-    "taskId": "3b674ca9-5b3d-4685-a6c3-818f62ff7219",
-    "timeEntryId": "ef0c822a-27e8-457c-84ad-303e6074a99d",
-    "userId": "3f7626f2-5064-4499-a96c-e73653e5aa01"
-  },
-  {
-    "dateEnteredUtc": "2020-03-02T17:32:31.3132613Z",
-    "dateUtc": "2020-02-25T12:00:00Z",
-    "day": "2020-02-25",
-    "description": "Try to fix bug #6",
-    "duration": 40,
-    "projectId": "79867896-5504-4215-9a1a-8f9ca45ac7ec",
-    "status": "ACTIVE",
-    "taskId": "3b674ca9-5b3d-4685-a6c3-818f62ff7219",
-    "timeEntryId": "05137017-6154-4599-9122-29e5f8d3e640",
-    "userId": "3f7626f2-5064-4499-a96c-e73653e5aa01"
-  },
-  {
-    "dateEnteredUtc": "2020-03-09T02:16:13.6123012Z",
-    "dateUtc": "2020-03-02T12:00:00Z",
-    "day": "2020-03-02",
-    "description": "Terminal • Xero Developer • GitX • Sublime Text • Previewer • Fa…",
-    "duration": 179,
-    "projectId": "79867896-5504-4215-9a1a-8f9ca45ac7ec",
-    "status": "ACTIVE",
-    "taskId": "3b674ca9-5b3d-4685-a6c3-818f62ff7219",
-    "timeEntryId": "23e70f34-46c6-45e4-9ee5-2ca63a77d4f7",
+    "timeEntryId": "70f2836f-fff0-4a27-9f7f-2dbd8c459feb",
     "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
   }
 ]

@@ -13,7 +13,7 @@ from itertools import chain, islice, count
 from datetime import date, timedelta, datetime as dt
 from pathlib import Path
 from urllib.parse import urlencode, parse_qs
-from subprocess import call
+from subprocess import call, check_output, CalledProcessError
 from base64 import b64encode
 
 import pygogo as gogo
@@ -59,6 +59,7 @@ fake = Faker()
 ROUTE_TIMEOUT = Config.ROUTE_TIMEOUT
 SET_TIMEOUT = Config.SET_TIMEOUT
 PREFIX = Config.API_URL_PREFIX
+CHROME_DRIVER_VERSIONS = Config.CHROME_DRIVER_VERSIONS
 HEADERS = {"Accept": "application/json"}
 BILLABLE = 1344430
 NONBILLABLE = 1339635
@@ -120,7 +121,7 @@ class MyAuth2Client(AuthClient):
             self.oauth_session = OAuth2Session(self.client_id, **self.oauth_kwargs)
         except TokenExpiredError:
             # this path shouldn't be reached…
-            logger.warning("Token expired. Attempting to renew…")
+            logger.warning(f"{self.prefix} token expired. Attempting to renew…")
             self.renew_token()
         except Exception as e:
             self.error = str(e)
@@ -129,7 +130,7 @@ class MyAuth2Client(AuthClient):
             if self.verified:
                 logger.info("Successfully authenticated!")
             else:
-                logger.warning("Not authorized. Attempting to renew...")
+                logger.warning(f"{self.prefix} access not authorized. Attempting to renew…")
                 self.renew_token()
 
     @property
@@ -214,6 +215,10 @@ class MyAuth2Client(AuthClient):
         self.token = token
 
     def renew_token(self):
+        username = app.config[f"{self.prefix}_USERNAME"]
+        password = app.config[f"{self.prefix}_PASSWORD"]
+        failed = cache.get(f"{self.prefix}_headless_auth_failed")
+
         if self.refresh_token:
             try:
                 logger.info(f"Renewing token using {self.refresh_url}…")
@@ -245,8 +250,8 @@ class MyAuth2Client(AuthClient):
                     self.token = token
                 else:
                     logger.error("Failed to renew token!")
-        elif app.config[f"{self.prefix}_USERNAME"] and app.config[f"{self.prefix}_PASSWORD"] and not cache.get(f"{self.prefix}_headless_auth"):
-            logger.info(f"Attempting to renew using headless browser")
+        elif username and password and not failed:
+            logger.info(f"Renewing using headless browser…")
             headless_auth(self.authorization_url[0], self.prefix)
         else:
             error = "No refresh token present. Please re-authenticate!"
@@ -407,6 +412,7 @@ class MyAuth1Client(AuthClient):
 
 
 def get_auth_client(prefix, state=None, **kwargs):
+    cache.set(f'{prefix}_headless_auth_failed', False)
     auth_client_name = f"{prefix}_auth_client"
 
     if auth_client_name not in g:
@@ -447,11 +453,12 @@ def get_auth_client(prefix, state=None, **kwargs):
         }
 
         client = MyAuthClient(prefix, client_id, client_secret, **auth_kwargs)
-        if cache.get(f'{prefix}_restore_from_headless'):
+
+        if cache.get(f"{prefix}_restore_client"):
             client.restore()
             client.renew_token()
-            cache.set(f"{prefix}_headless_auth", True)
-            cache.set(f"{prefix}_restore_from_headless", False)
+            cache.set(f"{prefix}_restore_client", False)
+
         setattr(g, auth_client_name, client)
 
     return g.get(auth_client_name)
@@ -578,12 +585,12 @@ def get_realtime_response(url, client, params=None, **kwargs):
     ok = False
     unscoped = False
 
-    if client.error:
-        response = {"status_code": 500, "message": client.error}
+    if client.expired:
+        response = {"message": "Token Expired.", "status_code": 401}
     elif not client.verified:
         response = {"message": "Client not authorized.", "status_code": 401}
-    elif client.expired:
-        response = {"message": "Token Expired.", "status_code": 401}
+    elif client.error:
+        response = {"status_code": 500, "message": client.error}
     else:
         params = params or {}
         data = kwargs.get("data", {})
@@ -719,29 +726,64 @@ def callback(prefix):
         return redirect(redirect_url)
 
 
+def get_def_chromedriver_path(version=None):
+    executable = f"chromedriver-{version}" if version else 'chromedriver'
+    command = f"which {executable}"
+
+    try:
+        _chromedriver_path = check_output(command, shell=True, encoding='utf-8')
+    except CalledProcessError:
+        chromedriver_path = ''
+    else:
+        chromedriver_path = _chromedriver_path.strip()
+
+    return chromedriver_path
+
+
 # get system specific chromedriver (currently version 78)
 def get_chromedriver_path():
     operating_system = platform.system().lower()
-    driver_name = 'chromedriver'
+    chromedriver_path = None
 
     if operating_system == 'darwin':
         operating_system = 'mac'
-    elif operating_system == 'windows':
-        driver_name += '.exe'
 
-    return Path.cwd() / operating_system / driver_name
+    unixlike = operating_system in {'mac', 'linux'}
+
+    if unixlike:
+        # TODO: make this check cross platform
+        for version in CHROME_DRIVER_VERSIONS:
+            _chromedriver_path = get_def_chromedriver_path(version)
+
+            if _chromedriver_path:
+                chromedriver_path = Path(_chromedriver_path)
+                break
+
+    if not chromedriver_path:
+        driver_name = 'chromedriver'
+
+        if operating_system == 'windows':
+            driver_name += '.exe'
+
+        chromedriver_path = Path.cwd() / operating_system / driver_name
+
+    return chromedriver_path
 
 
-def find_element_loop(browser, selector):
+def find_element_loop(browser, selector, max_retries=3):
     cnt = count()
-    while True:
+    elem = None
+
+    while not elem:
         try:
-            time.sleep(.5)
             elem = browser.find_element_by_css_selector(selector)
-            break
         except NoSuchElementException as err:
-            if next(cnt) % 10 is 0:
-                raise err
+            if next(cnt) > max_retries:
+                logger.error(err)
+                break
+        else:
+            time.sleep(.5)
+
     return elem
 
 
@@ -763,8 +805,11 @@ def headless_auth(redirect_url, prefix):
 
     try:
         browser = webdriver.Chrome(executable_path=chrome_path, chrome_options=options)
-    except WebDriverException:
-        logger.error(f"chromedriver executable not found in {chrome_path}!")
+    except WebDriverException as e:
+        if 'executable needs to be in PATH' in str(e):
+            logger.error(f"chromedriver executable not found in {chrome_path}!")
+        else:
+            logger.error(e)
     else:
         # navigate to auth page
         browser.get(redirect_url)
@@ -784,24 +829,36 @@ def headless_auth(redirect_url, prefix):
         password.clear()
         password.send_keys(app.config[f"{prefix}_PASSWORD"])
 
-        # Only set to True after the headless browser has closed (see below)
-        cache.set(f'{prefix}_restore_from_headless', False)
-
         # click sign in
         signIn = browser.find_element_by_css_selector(signin_css)
+
+        # TODO: why does it stall here for timero??
         signIn.click()
+        authenticated = True
 
         #######################################################
 
         if prefix == 'XERO':
-            # TODO: should I catch the error I raise here or let it crash the system?
-            # click allow access button
-            find_element_loop(browser, 'button[value="yes"]').click()
-            # click connect button
-            find_element_loop(browser, 'button[value="true"]').click()
+            # allow access button
+            access = find_element_loop(browser, 'button[value="yes"]')
+
+            if access:
+                access.click()
+
+                # connect button
+                connect = find_element_loop(browser, 'button[value="true"]')
+            else:
+                connect = None
+
+            if connect:
+                connect.click()
+                authenticated = True
+            else:
+                authenticated = False
 
         browser.close()
-        cache.set(f'{prefix}_restore_from_headless', True)
+        cache.set(f'{prefix}_restore_client', authenticated)
+        cache.set(f'{prefix}_headless_auth_failed', not authenticated)
 
 
 ###########################################################################
@@ -1579,7 +1636,7 @@ class Time(APIBase):
             message = f"Project {self.timely_project['name']} not found in mapping. "
 
             if projects is None:
-                message += "Searching Xero for it..."
+                message += "Searching Xero for it…"
                 print(message)
                 self.projects_api.values = {"dictify": "true", "process": "true"}
                 projects = self.projects_api.get().json["result"]

@@ -129,6 +129,11 @@
     "projectId": "da71537a-8806-4b4b-b3a1-6b470f52dd7e",
     "status": "INPROGRESS"
   },
+  "e72ce041-023c-4abf-80e8-c4af054b38ed": {
+    "name": "COVID-19",
+    "projectId": "e72ce041-023c-4abf-80e8-c4af054b38ed",
+    "status": "INPROGRESS"
+  },
   "ebf98c35-4d4b-41c6-b717-08afb9243b03": {
     "name": "Calendar Service",
     "projectId": "ebf98c35-4d4b-41c6-b717-08afb9243b03",

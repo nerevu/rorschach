@@ -143,5 +143,10 @@
     "name": "Sitation Dashboard",
     "projectId": "ed071320-fbcb-465d-8066-324cae235718",
     "status": "INPROGRESS"
+  },
+  {
+    "name": "COVID-19",
+    "projectId": "e72ce041-023c-4abf-80e8-c4af054b38ed",
+    "status": "INPROGRESS"
   }
 ]

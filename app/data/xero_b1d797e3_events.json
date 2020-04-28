@@ -1,14 +1,1 @@
-[
-  {
-    "dateEnteredUtc": "2020-02-25T03:02:52.4415112Z",
-    "dateUtc": "2020-02-24T12:00:00Z",
-    "day": "2020-02-24",
-    "description": "Bugfixes",
-    "duration": 95,
-    "projectId": "b1d797e3-e54b-4686-b83f-d8ea5a35f1c2",
-    "status": "ACTIVE",
-    "taskId": "8f0882ba-fbfa-42d9-86f5-c86c8e5a71b4",
-    "timeEntryId": "056e6eac-a7b3-4c2e-ba15-ef5a6bea659a",
-    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
-  }
-]
+[]
