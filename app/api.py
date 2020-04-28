@@ -831,6 +831,8 @@ def headless_auth(redirect_url, prefix):
 
         # click sign in
         signIn = browser.find_element_by_css_selector(signin_css)
+
+        # TODO: why does it stall here for timero??
         signIn.click()
         authenticated = True
 
