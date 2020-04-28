@@ -17,6 +17,7 @@
 import config
 
 from os import getenv, path
+
 from flask import Flask, redirect, request
 from flask_cors import CORS
 from flask_caching import Cache

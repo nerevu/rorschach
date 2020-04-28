@@ -858,6 +858,7 @@ def headless_auth(redirect_url, prefix):
         cache.set(f'{prefix}_restore_client', authenticated)
         cache.set(f'{prefix}_headless_auth_failed', not authenticated)
 
+
 ###########################################################################
 # ROUTES
 ###########################################################################
