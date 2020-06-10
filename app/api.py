@@ -13,7 +13,6 @@ from itertools import chain, islice
 from datetime import date, timedelta, datetime as dt
 from pathlib import Path
 from urllib.parse import urlencode, parse_qs
-from subprocess import call, check_output, CalledProcessError
 from base64 import b64encode
 
 import pygogo as gogo
@@ -27,15 +26,7 @@ from flask import (
 from flask.views import MethodView
 from faker import Faker
 
-from requests_oauthlib import OAuth2Session, OAuth1Session, OAuth1
-from requests_oauthlib.oauth1_session import TokenRequestDenied
-from oauthlib.oauth2 import TokenExpiredError
 from riko.dotdict import DotDict
-
-from selenium import webdriver
-from selenium.common.exceptions import NoSuchElementException, WebDriverException
-from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.common.keys import Keys
 
 from config import Config, __APP_TITLE__ as APP_TITLE
 
@@ -51,6 +42,7 @@ from app.utils import (
     get_links,
 )
 
+from app.routes import auth
 from app.mappings import MAPPINGS_DIR, USERS, tasks_p, gen_task_mapping, reg_mapper
 
 logger = gogo.Gogo(__name__, monolog=True).logger
@@ -58,14 +50,11 @@ blueprint = Blueprint("API", __name__)
 fake = Faker()
 
 ROUTE_TIMEOUT = Config.ROUTE_TIMEOUT
-SET_TIMEOUT = Config.SET_TIMEOUT
 PREFIX = Config.API_URL_PREFIX
 CHROME_DRIVER_VERSIONS = Config.CHROME_DRIVER_VERSIONS
 HEADERS = {"Accept": "application/json"}
 BILLABLE = 1344430
 NONBILLABLE = 1339635
-OAUTH_EXPIRY_SECONDS = 3600
-EXPIRATION_BUFFER = 30
 DATA_DIR = Path("app/data")
 
 timely_events_p = DATA_DIR.joinpath("timely_events.json")
@@ -81,462 +70,6 @@ position_users_p = MAPPINGS_DIR.joinpath("position-users.json")
 projects_p = MAPPINGS_DIR.joinpath("projects.json")
 users_p = MAPPINGS_DIR.joinpath("users.json")
 task_names_p = MAPPINGS_DIR.joinpath("task-names.json")
-
-
-class AuthClient(object):
-    def __init__(self, prefix, client_id, client_secret, **kwargs):
-        self.prefix = prefix
-        self.client_id = client_id
-        self.client_secret = client_secret
-        self.access_token = None
-        self.refresh_token = None
-        self.oauth1 = kwargs["oauth_version"] == 1
-        self.oauth2 = kwargs["oauth_version"] == 2
-        self.authorization_base_url = kwargs.get("authorization_base_url")
-        self.redirect_uri = kwargs.get("redirect_uri")
-        self.api_base_url = kwargs.get("api_base_url")
-        self.api_subkey = kwargs.get("api_subkey")
-        self.token_url = kwargs.get("token_url")
-        self.account_id = kwargs.get("account_id")
-        self.state = kwargs.get("state")
-        self.headers = kwargs.get("headers", {})
-        self.auth_params = kwargs.get("auth_params", {})
-        self.created_at = None
-        self.error = ""
-
-    @property
-    def expired(self):
-        return self.expires_at <= dt.now() + timedelta(seconds=EXPIRATION_BUFFER)
-
-
-class MyAuth2Client(AuthClient):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.refresh_url = kwargs["refresh_url"]
-        self.revoke_url = kwargs["revoke_url"]
-        self.scope = kwargs.get("scope", "")
-        self.tenant_id = kwargs.get("tenant_id", "")
-        self.realm_id = kwargs.get("realm_id")
-        self.extra = {"client_id": self.client_id, "client_secret": self.client_secret}
-        self.expires_at = dt.now()
-        self.expires_in = 0
-        self.oauth_session = None
-        self.restore()
-        self._init_credentials()
-
-    def _init_credentials(self):
-        # TODO: check to make sure the token gets renewed on realtime_data call
-        # See how it works
-        try:
-            self.oauth_session = OAuth2Session(self.client_id, **self.oauth_kwargs)
-        except TokenExpiredError:
-            # this path shouldn't be reached...
-            logger.warning(f"{self.prefix} token expired. Attempting to renew...")
-            self.renew_token()
-        except Exception as e:
-            self.error = str(e)
-            logger.error(f"{self.prefix} error authenticating: {self.error}", exc_info=True)
-        else:
-            if self.verified:
-                logger.info(f"{self.prefix} successfully authenticated!")
-            else:
-                logger.warning(f"{self.prefix} not authorized. Attempting to renew...")
-                self.renew_token()
-
-    @property
-    def oauth_kwargs(self):
-        if self.state and self.access_token:
-            token_fields = ["access_token", "refresh_token", "token_type", "expires_in"]
-            token = {field: self.token[field] for field in token_fields}
-            oauth_kwargs = {
-                "redirect_uri": self.redirect_uri,
-                "scope": self.scope,
-                "token": token,
-                "state": self.state,
-                "auto_refresh_kwargs": self.extra,
-                "auto_refresh_url": self.refresh_url,
-                "token_updater": self.update_token,
-            }
-        elif self.state:
-            oauth_kwargs = {
-                "redirect_uri": self.redirect_uri,
-                "scope": self.scope,
-                "state": self.state,
-            }
-        else:
-            oauth_kwargs = {"redirect_uri": self.redirect_uri, "scope": self.scope}
-
-        return oauth_kwargs
-
-    @property
-    def token(self):
-        return {
-            "access_token": self.access_token,
-            "refresh_token": self.refresh_token,
-            "token_type": "Bearer",
-            "expires_in": self.expires_in,
-            "expires_at": self.expires_at,
-            "expired": self.expired,
-            "verified": self.verified,
-            "created_at": self.created_at,
-        }
-
-    @token.setter
-    def token(self, value):
-        self.access_token = value["access_token"]
-        self.refresh_token = value["refresh_token"]
-        self.token_type = value["token_type"]
-        self.created_at = value.get("created_at", dt.now())
-        self.expires_in = value.get("expires_in", SET_TIMEOUT)
-        self.expires_at = dt.now() + timedelta(seconds=self.expires_in)
-
-        self.save()
-        logger.debug(self.token)
-
-    @property
-    def verified(self):
-        return self.oauth_session.authorized if self.oauth_session else False
-
-    @property
-    def authorization_url(self):
-        return self.oauth_session.authorization_url(self.authorization_base_url)
-
-    def fetch_token(self):
-        kwargs = {"client_secret": self.client_secret}
-
-        if request.args.get("code"):
-            kwargs["code"] = request.args["code"]
-        else:
-            kwargs["authorization_response"] = request.url
-
-        try:
-            token = self.oauth_session.fetch_token(self.token_url, **kwargs)
-        except Exception as e:
-            self.error = str(e)
-            logger.error(f"Failed to fetch token: {self.error}", exc_info=True)
-            token = {}
-        else:
-            self.error = ""
-
-        self.token = token
-
-        return token
-
-    def update_token(self, token):
-        self.token = token
-
-    def renew_token(self):
-        failed = cache.get(f"{self.prefix}_headless_auth_failed")
-        has_username = app.config[f"{self.prefix}_USERNAME"]
-        has_password = app.config[f"{self.prefix}_PASSWORD"]
-        has_performed_headless_auth = cache.get(f"{self.prefix}_headless_auth")
-
-        if self.refresh_token:
-            try:
-                logger.info(f"Renewing token using {self.refresh_url}…")
-
-                if self.prefix is "XERO":
-                    # https://developer.xero.com/documentation/oauth2/auth-flow
-                    _authorization = f"{self.client_id}:{self.client_secret}".encode('utf-8')
-                    authorization = b64encode(_authorization).decode('utf-8')
-                    headers = { 'Authorization': f"Basic {authorization}" }
-                else:
-                    headers = None
-
-                token = self.oauth_session.refresh_token(
-                    self.refresh_url,
-                    self.refresh_token,
-                    headers=headers
-                )
-            except Exception as e:
-                self.error = f"Failed to renew token: {str(e)} Please re-authenticate!"
-                logger.error(self.error)
-                self.oauth_token = None
-                self.access_token = None
-                cache.set(f"{self.prefix}_access_token", self.access_token)
-                cache.set(f"{self.prefix}_oauth_token", self.oauth_token)
-                # logger.debug("", exc_info=True)
-            else:
-                if self.oauth_session.authorized:
-                    logger.info("Successfully renewed token!")
-                    self.token = token
-                else:
-                    self.error = "Failed to renew token!"
-                    logger.error(self.error)
-        elif has_username and has_password and not (failed or has_performed_headless_auth):
-            logger.info(f"Attempting to renew using headless browser")
-            cache.set(f"{self.prefix}_headless_auth", True)
-            headless_auth(self.authorization_url[0], self.prefix)
-        else:
-            error = "No refresh token present. Please re-authenticate!"
-            logger.error(error)
-            self.error = error
-
-        return self
-
-    def revoke_token(self):
-        # TODO: this used to be AuthClientError. What will it be now?
-        # https://developer.intuit.com/app/developer/qbo/docs/develop/authentication-and-authorization/oauth-2.0#revoke-token-disconnect
-        try:
-            response = {
-                "status_code": 500,
-                "message": "This endpoint doesn't work currently.",
-            }
-        except Exception:
-            message = "Can't revoke authentication rights because the app is"
-            message += " not currently authenticated."
-            response = {"status_code": 400, "message": message}
-
-        return response
-
-    def save(self):
-        self.state = session.get(f"{self.prefix}_state") or self.state
-        cache.set(f"{self.prefix}_state", self.state)
-        cache.set(f"{self.prefix}_access_token", self.access_token)
-        cache.set(f"{self.prefix}_refresh_token", self.refresh_token)
-        cache.set(f"{self.prefix}_created_at", self.created_at)
-        cache.set(f"{self.prefix}_expires_at", self.expires_at)
-        cache.set(f"{self.prefix}_tenant_id", self.tenant_id)
-        cache.set(f"{self.prefix}_realm_id", self.realm_id)
-
-    def restore(self):
-        self.state = cache.get(f"{self.prefix}_state") or session.get(
-            f"{self.prefix}_state"
-        )
-        self.access_token = cache.get(f"{self.prefix}_access_token")
-        self.refresh_token = cache.get(f"{self.prefix}_refresh_token")
-        self.created_at = cache.get(f"{self.prefix}_created_at")
-        self.expires_at = cache.get(f"{self.prefix}_expires_at") or dt.now()
-        self.expires_in = (self.expires_at - dt.now()).total_seconds()
-        self.tenant_id = cache.get(f"{self.prefix}_tenant_id")
-        self.realm_id = cache.get(f"{self.prefix}_realm_id")
-
-
-class MyAuth1Client(AuthClient):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.request_url = kwargs["request_url"]
-        self.verified = False
-        self.oauth_token = None
-        self.oauth_token_secret = None
-        self.oauth_expires_at = None
-        self.oauth_authorization_expires_at = None
-
-        self.restore()
-        self._init_credentials()
-
-    def _init_credentials(self):
-        if not (self.oauth_token and self.oauth_token_secret):
-            try:
-                self.token = self.oauth_session.fetch_request_token(self.request_url)
-            except TokenRequestDenied as e:
-                self.error = str(e)
-                logger.error(f"Error authenticating: {self.error}", exc_info=True)
-
-    @property
-    def resource_owner_kwargs(self):
-        return {
-            "resource_owner_key": self.oauth_token,
-            "resource_owner_secret": self.oauth_token_secret,
-        }
-
-    @property
-    def oauth_kwargs(self):
-        oauth_kwargs = {"client_secret": self.client_secret}
-
-        if self.oauth_token and self.oauth_token_secret:
-            oauth_kwargs.update(self.resource_owner_kwargs)
-        else:
-            oauth_kwargs["callback_uri"] = self.redirect_uri
-
-        return oauth_kwargs
-
-    @property
-    def oauth_session(self):
-        return OAuth1Session(self.client_id, **self.oauth_kwargs)
-
-    @property
-    def token(self):
-        return {
-            "oauth_token": self.oauth_token,
-            "oauth_token_secret": self.oauth_token_secret,
-            "expires_in": self.oauth_expires_in,
-            "expires_at": self.oauth_expires_at,
-            "expired": self.expired,
-            "verified": self.verified,
-            "created_at": self.created_at,
-        }
-
-    @token.setter
-    def token(self, token):
-        self.oauth_token = token["oauth_token"]
-        self.oauth_token_secret = token["oauth_token_secret"]
-
-        oauth_expires_in = token.get("oauth_expires_in", OAUTH_EXPIRY_SECONDS)
-        oauth_authorisation_expires_in = token.get(
-            "oauth_authorization_expires_in", OAUTH_EXPIRY_SECONDS
-        )
-
-        self.created_at = token.get("created_at", dt.now())
-        self.oauth_expires_at = dt.now() + timedelta(seconds=int(oauth_expires_in))
-
-        seconds = timedelta(seconds=int(oauth_authorisation_expires_in))
-        self.oauth_authorization_expires_at = dt.now() + seconds
-
-        self.save()
-        logger.debug(self.token)
-
-    @property
-    def expires_at(self):
-        return self.oauth_expires_at
-
-    @property
-    def expires_in(self):
-        return self.oauth_expires_in
-
-    @property
-    def authorization_url(self):
-        query_string = {"oauth_token": self.oauth_token}
-        authorization_url = f"{self.authorization_base_url}?{urlencode(query_string)}"
-        return (authorization_url, False)
-
-    def fetch_token(self):
-        kwargs = {"verifier": request.args["oauth_verifier"]}
-
-        try:
-            token = self.oauth_session.fetch_access_token(self.token_url, **kwargs)
-        except TokenRequestDenied as e:
-            self.error = str(e)
-            logger.error(f"Error authenticating: {self.error}", exc_info=True)
-        else:
-            self.verified = True
-            self.token = token
-
-    def save(self):
-        cache.set(f"{self.prefix}_oauth_token", self.oauth_token)
-        cache.set(f"{self.prefix}_oauth_token_secret", self.oauth_token_secret)
-        cache.set(f"{self.prefix}_created_at", self.created_at)
-        cache.set(f"{self.prefix}_oauth_expires_at", self.oauth_expires_at)
-        cache.set(
-            f"{self.prefix}_oauth_authorization_expires_at",
-            self.oauth_authorization_expires_at,
-        )
-        cache.set(f"{self.prefix}_verified", self.verified)
-
-    def restore(self):
-        self.oauth_token = cache.get(f"{self.prefix}_oauth_token")
-        self.oauth_token_secret = cache.get(f"{self.prefix}_oauth_token_secret")
-        self.created_at = cache.get(f"{self.prefix}_created_at")
-        self.oauth_expires_at = cache.get(f"{self.prefix}_oauth_expires_at") or dt.now()
-        self.oauth_expires_in = (self.oauth_expires_at - dt.now()).total_seconds()
-
-        cached_expires_at = cache.get(f"{self.prefix}_oauth_authorization_expires_at")
-        expires_at = cached_expires_at or dt.now()
-        self.oauth_authorization_expires_at = expires_at
-        self.oauth_authorization_expires_in = (expires_at - dt.now()).total_seconds()
-
-        self.verified = cache.get(f"{self.prefix}_verified")
-
-    def renew_token(self):
-        self.oauth_token = None
-        self.oauth_token_secret = None
-        self.verified = False
-        self._init_credentials()
-
-
-class MyHeaderAuthClient(AuthClient):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-    @property
-    def expired(self):
-        return False
-
-
-class MyServiceAuthClient(AuthClient):
-    def __init__(self, *args, keyfile_path=None, **kwargs):
-        super().__init__(*args, **kwargs)
-        p = keyfile_path
-        credentials = ServiceAccountCredentials.from_json_keyfile_name(p, self.scope)
-        self.gc = gspread.authorize(credentials)
-
-    @property
-    def expired(self):
-        return False
-
-
-def get_auth_client(prefix, state=None, **kwargs):
-    cache.set(f'{prefix}_headless_auth_failed', False)
-    auth_client_name = f"{prefix}_auth_client"
-
-    if auth_client_name not in g:
-        oauth_version = kwargs.get(f"{prefix}_OAUTH_VERSION", 2)
-        keyfile_path = kwargs.get(f"{prefix}_KEYFILE_PATH")
-
-        if oauth_version == 0:
-            MyAuthClient = MyHeaderAuthClient
-            client_id = ""
-            client_secret = ""
-            _auth_kwargs = {}
-        elif oauth_version == 1:
-            MyAuthClient = MyAuth1Client
-            client_id = kwargs[f"{prefix}_CONSUMER_KEY"]
-            client_secret = kwargs[f"{prefix}_CONSUMER_SECRET"]
-
-            _auth_kwargs = {
-                "request_url": kwargs.get(f"{prefix}_REQUEST_URL"),
-                "authorization_base_url": kwargs.get(
-                    f"{prefix}_AUTHORIZATION_BASE_URL_V1"
-                ),
-                "token_url": kwargs.get(f"{prefix}_TOKEN_URL_V1"),
-            }
-        elif keyfile_path:
-            MyAuthClient = MyServiceAuthClient
-            client_id = ""
-            client_secret = ""
-            _auth_kwargs = {"keyfile_path": keyfile_path}
-        else:
-            MyAuthClient = MyAuth2Client
-            client_id = kwargs[f"{prefix}_CLIENT_ID"]
-            client_secret = kwargs[f"{prefix}_SECRET"]
-
-            _auth_kwargs = {
-                "authorization_base_url": kwargs[f"{prefix}_AUTHORIZATION_BASE_URL"],
-                "token_url": kwargs[f"{prefix}_TOKEN_URL"],
-                "refresh_url": kwargs[f"{prefix}_REFRESH_URL"],
-                "revoke_url": kwargs[f"{prefix}_REVOKE_URL"],
-                "scope": kwargs.get(f"{prefix}_SCOPES"),
-                "tenant_id": kwargs.get("tenant_id") or "",
-                "realm_id": kwargs.get("realm_id") or "",
-                "state": state,
-            }
-
-        auth_kwargs = {
-            **_auth_kwargs,
-            "oauth_version": oauth_version,
-            "api_base_url": kwargs[f"{prefix}_API_BASE_URL"],
-            "api_subkey": kwargs.get(f"{prefix}_API_SUBKEY"),
-            "auth_params": kwargs.get(f"{prefix}_AUTH_PARAMS"),
-            "redirect_uri": kwargs.get(f"{prefix}_REDIRECT_URI"),
-            "account_id": kwargs.get(f"{prefix}_ACCOUNT_ID"),
-            "headers": kwargs.get(f"{prefix}_HEADERS"),
-        }
-
-        client = MyAuthClient(prefix, client_id, client_secret, **auth_kwargs)
-
-        if cache.get(f'{prefix}_restore_from_headless'):
-            client.restore()
-            client.renew_token()
-            cache.set(f"{prefix}_restore_from_headless", False)
-
-        setattr(g, auth_client_name, client)
-
-    client = g.get(auth_client_name)
-
-    if client.expires_in < RENEW_TIME:
-        client.renew_token()
-
-    return g.get(auth_client_name)
 
 
 def get_request_base():
@@ -622,351 +155,6 @@ def fetch_bool(message):
             logger.error(f"Invalid selection: {answer}.")
 
     return answer
-
-
-def get_response(url, client, params=None, result_fields=None, **kwargs):
-    result_fields = result_fields or []
-    ok = False
-    unscoped = False
-
-    if client.error:
-        logger.debug('client.error')
-        response = {"message": client.error, "status_code": 500}
-    elif not client.verified:
-        logger.debug('not client.verified')
-        response = {"message": "Client not authorized.", "status_code": 401}
-    elif client.expired:
-        logger.debug('client.expired')
-        response = {"message": "Token Expired.", "status_code": 401}
-    else:
-        logger.debug('client.ok')
-        params = params or {}
-        data = kwargs.get("data", {})
-        json = kwargs.get("json", {})
-        method = kwargs.get("method", "get")
-        headers = kwargs.get("headers", HEADERS)
-        verb = getattr(client.oauth_session, method)
-        result = verb(url, params=params, data=data, json=json, headers=headers)
-        unscoped = result.headers.get("WWW-Authenticate") == "insufficient_scope"
-        ok = result.ok
-
-        try:
-            json = result.json()
-        except JSONDecodeError:
-            logger.debug('JSONDecodeError')
-            status_code = 500 if result.status_code == 200 else result.status_code
-
-            if "<!DOCTYPE html>" in result.text:
-                message = "Got HTML response."
-            elif "oauth_problem_advice" in result.text:
-                message = parse_qs(result.text)["oauth_problem_advice"][0]
-            else:
-                message = result.text
-
-            response = {"message": message, "status_code": status_code}
-        else:
-            if json.get("errorcode") or json.get("error"):
-                ok = False
-
-            if json.get("fault"):
-                # QuickBooks
-                ok = False
-                fault = json["fault"]
-
-                if fault.get("type") == "AUTHENTICATION":
-                    response = {"message": "Client not authorized.", "status_code": 401}
-                elif fault.get("error"):
-                    error = fault["error"][0]
-                    detail = error.get("detail", "")
-
-                    if detail.startswith("Token expired"):
-                        response = {"message": "Token Expired.", "status_code": 401}
-
-                    err_message = error["message"]
-                    _response = dict(pair.split("=") for pair in err_message.split("; "))
-                    _message = _response["message"]
-                    message = f"{_message}: {detail}" if detail else _message
-                    response = {"message": message, "status_code": int(_response["statusCode"])}
-                else:
-                    logger.debug(fault)
-                    response = {"message": fault.get("type"), "status_code": 500}
-            elif ok:
-                result = json
-
-                if result_fields:
-                    # TODO: use timero's extract_fields
-                    for field in result_fields:
-                        result = result.get(field, {})
-                else:
-                    try:
-                        # https://developer.xero.com/documentation/oauth2/auth-flow
-                        result = json[0]
-                    except KeyError:
-                        pass
-
-                response = {"result": result}
-            else:
-                message_keys = ["message", "Message", "detail", "error"]
-
-                try:
-                    message = next(json[key] for key in message_keys if json.get(key))
-                except StopIteration:
-                    logger.debug('message_keys not found')
-                    logger.debug(json)
-                    message = ""
-
-                if json.get("modelState"):
-                    logger.debug('modelState found')
-                    items = json["modelState"].items()
-                    message += " "
-                    message += ". ".join(f"{k}: {', '.join(v)}" for k, v in items)
-                elif json.get("Elements"):
-                    logger.debug('Elements found')
-                    items = chain.from_iterable(e.items() for e in json["Elements"])
-                    message += " "
-                    message += ". ".join(
-                        f"{k}: {', '.join(e['Message'] for e in v)}" for k, v in items
-                    )
-
-                status_code = 500 if r.status_code == 200 else result.status_code
-                response = {"message": message, "status_code": status_code}
-
-        if not ok:
-            header_names = ["Authorization", "Accept", "Content-Type"]
-
-            if client.oauth2:
-                header_names.append("Xero-tenant-id")
-
-            for name in header_names:
-                logger.debug({name: result.request.headers.get(name, "")[:32]})
-
-            body = result.request.body or ""
-
-            try:
-                parsed = parse_qs(body)
-            except UnicodeEncodeError:
-                decoded = body.decode("utf-8")
-                parsed = parse_qs(decoded)
-
-            if parsed:
-                logger.debug({k: v[0] for k, v in parsed.items()})
-
-    status_code = response.get("status_code", 200)
-    response["ok"] = ok
-
-    if not ok:
-        @after_this_request
-        def clear_cache(response):
-            _clear_cache()
-            response = uncache_header(response)
-            return response
-
-    if status_code == 401 and not kwargs.get("renewed"):
-        if unscoped:
-            logger.debug(f"Insufficient scope: {client.scope}.")
-        else:
-            logger.debug("Token expired!")
-
-        client.renew_token()
-        response = get_response(
-            url, client, params=params, renewed=True, **kwargs
-        )
-    else:
-        response["links"] = get_links(app.url_map.iter_rules())
-
-    if not ok:
-        message = response.get("message", "")
-        logger.error(f"Error requesting {url}")
-        logger.error(f"Server returned {status_code}: {message}")
-
-    return response
-
-
-def get_redirect_url(prefix):
-    """ Step 3: Retrieving an access token.
-
-    The user has been redirected back from the provider to your registered
-    callback URL. With this redirection comes an authorization code included
-    in the redirect URL. We will use that to obtain an access token.
-    """
-    query = urlparse(request.url).query
-    response = dict(parse_qsl(query), **request.args)
-    state = response.get("state") or session.get(f"{prefix}_state")
-    realm_id = response.get("realm_id") or session.get(f"{prefix}_realm_id")
-    valid = all(map(response.get, ["oauth_token", "oauth_verifier", "org"]))
-    client = get_auth_client(prefix, state=state, realm_id=realm_id, **app.config)
-
-    if state or valid:
-        session[f"{prefix}_state"] = client.state
-        session[f"{prefix}_realm_id"] = client.realm_id
-        client.fetch_token()
-
-    redirect_url = cache.get(f"{prefix}_callback_url")
-
-    if redirect_url:
-        cache.delete(f"{prefix}_callback_url")
-    else:
-        redirect_url = url_for(f".{prefix}_auth".lower())
-
-    if prefix == "XERO" and client.oauth2:
-        api_url = f"{client.api_base_url}/connections"
-        response = get_response(api_url, client, **app.config)
-        tenant_id = response["result"].get("tenant_id")
-
-        if tenant_id:
-            client.tenant_id = tenant_id
-            client.save()
-            logger.debug(f"Set Xero tenantId to {client.tenant_id}.")
-        else:
-            client.error = "No tenantId found."
-
-    return redirect_url, client
-
-
-def callback(prefix):
-    redirect_url, client = get_redirect_url(prefix)
-
-    if client.error:
-        response = {
-            "message": client.error,
-            "status_code": 401,
-            "links": get_links(app.url_map.iter_rules()),
-        }
-        return jsonify(**response)
-    else:
-        return redirect(redirect_url)
-
-
-def get_def_chromedriver_path(version=None):
-    executable = f"chromedriver-{version}" if version else 'chromedriver'
-    command = f"which {executable}"
-
-    try:
-        _chromedriver_path = check_output(command, shell=True, encoding='utf-8')
-    except CalledProcessError:
-        chromedriver_path = ''
-    else:
-        chromedriver_path = _chromedriver_path.strip()
-
-    return chromedriver_path
-
-
-# get system specific chromedriver (currently version 78)
-def get_chromedriver_path():
-    operating_system = platform.system().lower()
-    chromedriver_path = None
-
-    if operating_system == 'darwin':
-        operating_system = 'mac'
-
-    unixlike = operating_system in {'mac', 'linux'}
-
-    if unixlike:
-        # TODO: make this check cross platform
-        for version in CHROME_DRIVER_VERSIONS:
-            _chromedriver_path = get_def_chromedriver_path(version)
-
-            if _chromedriver_path:
-                chromedriver_path = Path(_chromedriver_path)
-                break
-
-    if not chromedriver_path:
-        driver_name = 'chromedriver'
-
-        if operating_system == 'windows':
-            driver_name += '.exe'
-
-        chromedriver_path = Path.cwd() / operating_system / driver_name
-
-    return chromedriver_path
-
-
-def find_element_loop(browser, selector, count=1, max_retries=3):
-    try:
-        elem = browser.find_element_by_css_selector(selector)
-    except NoSuchElementException as e:
-        if count < max_retries:
-            time.sleep(.5)
-            kwargs = {"count": count + 1, "max_retries": max_retries}
-            elem = find_element_loop(browser, selector, **kwargs)
-        else:
-            elem = None
-
-    return elem
-
-
-def headless_auth(redirect_url, prefix):
-    # selectors
-    if prefix == 'TIMELY':
-        username_css = 'input#email'
-        password_css = 'input#password'
-        signin_css = '[type="submit"]'
-    elif prefix == 'XERO':
-        username_css = 'input[type="email"]'
-        password_css = 'input[type="password"]'
-        signin_css = 'button[name="button"]'
-
-    # start a browser
-    options = Options()
-    options.headless = True
-    chrome_path = get_chromedriver_path()
-
-    try:
-        browser = webdriver.Chrome(executable_path=chrome_path, chrome_options=options)
-    except WebDriverException as e:
-        if 'executable needs to be in PATH' in str(e):
-            logger.error(f"chromedriver executable not found in {chrome_path}!")
-        else:
-            logger.error(e)
-    else:
-        # navigate to auth page
-        browser.get(redirect_url)
-        browser.implicitly_wait(3) # seconds waited for elements
-
-        #######################################################
-        # TODO: Check to see if this is required when logging
-        # in without a headless browser (might remember creds).
-
-        # add username
-        username = browser.find_element_by_css_selector(username_css)
-        username.clear()
-        username.send_keys(app.config[f"{prefix}_USERNAME"])
-
-        # add password
-        password = browser.find_element_by_css_selector(password_css)
-        password.clear()
-        password.send_keys(app.config[f"{prefix}_PASSWORD"])
-
-        # click sign in
-        signIn = browser.find_element_by_css_selector(signin_css)
-
-        # TODO: why does it stall here for timero??
-        signIn.click()
-        authenticated = True
-
-        #######################################################
-
-        if prefix == 'XERO':
-            # allow access button
-            access = find_element_loop(browser, 'button[value="yes"]')
-
-            if access:
-                access.click()
-
-                # connect button
-                connect = find_element_loop(browser, 'button[value="true"]')
-            else:
-                connect = None
-
-            if connect:
-                connect.click()
-                authenticated = True
-            else:
-                authenticated = False
-
-        browser.close()
-        cache.set(f'{prefix}_restore_client', authenticated)
-        cache.set(f'{prefix}_headless_auth_failed', not authenticated)
 
 
 ###########################################################################
@@ -2232,6 +1420,9 @@ class Time(APIBase):
 
 
 class Memoization(MethodView):
+    def __init__(self):
+        self.kwargs = parse_kwargs(app)
+
     def get(self):
         base_url = get_request_base()
 
@@ -2256,14 +1447,17 @@ class Memoization(MethodView):
         return jsonify(**response)
 
 
-memo_view = Memoization.as_view("memoization")
-memo_url = f"{PREFIX}/memoization"
-memo_path_url = f"{memo_url}/<string:path>"
-
 add_rule = blueprint.add_url_rule
 
 method_views = {
-    "auth": Auth,
+    "memoization": {
+        "view": Memoization,
+        "param": "string:path",
+        "methods": ["GET", "DELETE"],
+    },
+    "callback": {"view": auth.Callback},
+    "auth": {"view": auth.Auth},
+    "resource": {"view": auth.Resource}
     "projects": Projects,
     "users": Users,
     "tasks": Tasks,
@@ -2271,12 +1465,24 @@ method_views = {
     "inventory": Inventory,
 }
 
-for name, _cls in method_views.items():
-    for prefix in ["TIMELY", "XERO"]:
-        route_name = f"{prefix}-{name}".lower()
-        add_rule(
-            f"{PREFIX}/{route_name}", view_func=_cls.as_view(route_name, prefix)
-        )
+for name, options in method_views.items():
+    if options.get("add_prefixes"):
+        prefixes = Config.API_PREFIXES
+    else:
+        prefixes = [None]
 
-add_rule(memo_url, view_func=memo_view)
-add_rule(memo_path_url, view_func=memo_view, methods=["DELETE"])
+    for prefix in prefixes:
+        if prefix:
+            route_name = f"{prefix}-{name}".lower()
+        else:
+            route_name = name
+
+        view_func = options["view"].as_view(route_name)
+        methods = options.get("methods")
+        url = f"{PREFIX}/{route_name}"
+
+        if options.get("param"):
+            param = options["param"]
+            url += f"/<{param}>"
+
+        add_rule(url, view_func=view_func, methods=methods)
