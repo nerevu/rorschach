@@ -9,7 +9,7 @@ import time
 
 from json.decoder import JSONDecodeError
 from json import load, dump, dumps
-from itertools import chain, islice, count
+from itertools import chain, islice
 from datetime import date, timedelta, datetime as dt
 from pathlib import Path
 from urllib.parse import urlencode, parse_qs
@@ -48,6 +48,7 @@ from app.utils import (
     make_cache_key,
     uncache_header,
     load_path,
+    get_links,
 )
 
 from app.mappings import MAPPINGS_DIR, USERS, tasks_p, gen_task_mapping, reg_mapper
@@ -87,14 +88,19 @@ class AuthClient(object):
         self.prefix = prefix
         self.client_id = client_id
         self.client_secret = client_secret
+        self.access_token = None
+        self.refresh_token = None
         self.oauth1 = kwargs["oauth_version"] == 1
         self.oauth2 = kwargs["oauth_version"] == 2
-        self.authorization_base_url = kwargs["authorization_base_url"]
-        self.redirect_uri = kwargs["redirect_uri"]
-        self.api_base_url = kwargs["api_base_url"]
-        self.token_url = kwargs["token_url"]
-        self.account_id = kwargs["account_id"]
+        self.authorization_base_url = kwargs.get("authorization_base_url")
+        self.redirect_uri = kwargs.get("redirect_uri")
+        self.api_base_url = kwargs.get("api_base_url")
+        self.api_subkey = kwargs.get("api_subkey")
+        self.token_url = kwargs.get("token_url")
+        self.account_id = kwargs.get("account_id")
         self.state = kwargs.get("state")
+        self.headers = kwargs.get("headers", {})
+        self.auth_params = kwargs.get("auth_params", {})
         self.created_at = None
         self.error = ""
 
@@ -104,11 +110,13 @@ class AuthClient(object):
 
 
 class MyAuth2Client(AuthClient):
-    def __init__(self, prefix, client_id, client_secret, **kwargs):
-        super().__init__(prefix, client_id, client_secret, **kwargs)
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
         self.refresh_url = kwargs["refresh_url"]
+        self.revoke_url = kwargs["revoke_url"]
         self.scope = kwargs.get("scope", "")
         self.tenant_id = kwargs.get("tenant_id", "")
+        self.realm_id = kwargs.get("realm_id")
         self.extra = {"client_id": self.client_id, "client_secret": self.client_secret}
         self.expires_at = dt.now()
         self.expires_in = 0
@@ -117,20 +125,22 @@ class MyAuth2Client(AuthClient):
         self._init_credentials()
 
     def _init_credentials(self):
+        # TODO: check to make sure the token gets renewed on realtime_data call
+        # See how it works
         try:
             self.oauth_session = OAuth2Session(self.client_id, **self.oauth_kwargs)
         except TokenExpiredError:
-            # this path shouldn't be reached…
-            logger.warning(f"{self.prefix} token expired. Attempting to renew…")
+            # this path shouldn't be reached...
+            logger.warning(f"{self.prefix} token expired. Attempting to renew...")
             self.renew_token()
         except Exception as e:
             self.error = str(e)
-            logger.error(f"Error authenticating: {self.error}", exc_info=True)
+            logger.error(f"{self.prefix} error authenticating: {self.error}", exc_info=True)
         else:
             if self.verified:
-                logger.info("Successfully authenticated!")
+                logger.info(f"{self.prefix} successfully authenticated!")
             else:
-                logger.warning(f"{self.prefix} access not authorized. Attempting to renew…")
+                logger.warning(f"{self.prefix} not authorized. Attempting to renew...")
                 self.renew_token()
 
     @property
@@ -181,6 +191,7 @@ class MyAuth2Client(AuthClient):
         self.expires_at = dt.now() + timedelta(seconds=self.expires_in)
 
         self.save()
+        logger.debug(self.token)
 
     @property
     def verified(self):
@@ -215,9 +226,10 @@ class MyAuth2Client(AuthClient):
         self.token = token
 
     def renew_token(self):
-        username = app.config[f"{self.prefix}_USERNAME"]
-        password = app.config[f"{self.prefix}_PASSWORD"]
         failed = cache.get(f"{self.prefix}_headless_auth_failed")
+        has_username = app.config[f"{self.prefix}_USERNAME"]
+        has_password = app.config[f"{self.prefix}_PASSWORD"]
+        has_performed_headless_auth = cache.get(f"{self.prefix}_headless_auth")
 
         if self.refresh_token:
             try:
@@ -237,26 +249,45 @@ class MyAuth2Client(AuthClient):
                     headers=headers
                 )
             except Exception as e:
-                error = f"Failed to renew token: {str(e)} Please re-authenticate!"
-                logger.error(error)
-                self.error = error
+                self.error = f"Failed to renew token: {str(e)} Please re-authenticate!"
+                logger.error(self.error)
                 self.oauth_token = None
                 self.access_token = None
                 cache.set(f"{self.prefix}_access_token", self.access_token)
                 cache.set(f"{self.prefix}_oauth_token", self.oauth_token)
+                # logger.debug("", exc_info=True)
             else:
                 if self.oauth_session.authorized:
                     logger.info("Successfully renewed token!")
                     self.token = token
                 else:
-                    logger.error("Failed to renew token!")
-        elif username and password and not failed:
-            logger.info(f"Renewing using headless browser…")
+                    self.error = "Failed to renew token!"
+                    logger.error(self.error)
+        elif has_username and has_password and not (failed or has_performed_headless_auth):
+            logger.info(f"Attempting to renew using headless browser")
+            cache.set(f"{self.prefix}_headless_auth", True)
             headless_auth(self.authorization_url[0], self.prefix)
         else:
             error = "No refresh token present. Please re-authenticate!"
             logger.error(error)
             self.error = error
+
+        return self
+
+    def revoke_token(self):
+        # TODO: this used to be AuthClientError. What will it be now?
+        # https://developer.intuit.com/app/developer/qbo/docs/develop/authentication-and-authorization/oauth-2.0#revoke-token-disconnect
+        try:
+            response = {
+                "status_code": 500,
+                "message": "This endpoint doesn't work currently.",
+            }
+        except Exception:
+            message = "Can't revoke authentication rights because the app is"
+            message += " not currently authenticated."
+            response = {"status_code": 400, "message": message}
+
+        return response
 
     def save(self):
         self.state = session.get(f"{self.prefix}_state") or self.state
@@ -266,6 +297,7 @@ class MyAuth2Client(AuthClient):
         cache.set(f"{self.prefix}_created_at", self.created_at)
         cache.set(f"{self.prefix}_expires_at", self.expires_at)
         cache.set(f"{self.prefix}_tenant_id", self.tenant_id)
+        cache.set(f"{self.prefix}_realm_id", self.realm_id)
 
     def restore(self):
         self.state = cache.get(f"{self.prefix}_state") or session.get(
@@ -277,11 +309,12 @@ class MyAuth2Client(AuthClient):
         self.expires_at = cache.get(f"{self.prefix}_expires_at") or dt.now()
         self.expires_in = (self.expires_at - dt.now()).total_seconds()
         self.tenant_id = cache.get(f"{self.prefix}_tenant_id")
+        self.realm_id = cache.get(f"{self.prefix}_realm_id")
 
 
 class MyAuth1Client(AuthClient):
-    def __init__(self, prefix, client_id, client_secret, **kwargs):
-        super().__init__(prefix, client_id, client_secret, **kwargs)
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
         self.request_url = kwargs["request_url"]
         self.verified = False
         self.oauth_token = None
@@ -411,14 +444,41 @@ class MyAuth1Client(AuthClient):
         self._init_credentials()
 
 
+class MyHeaderAuthClient(AuthClient):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    @property
+    def expired(self):
+        return False
+
+
+class MyServiceAuthClient(AuthClient):
+    def __init__(self, *args, keyfile_path=None, **kwargs):
+        super().__init__(*args, **kwargs)
+        p = keyfile_path
+        credentials = ServiceAccountCredentials.from_json_keyfile_name(p, self.scope)
+        self.gc = gspread.authorize(credentials)
+
+    @property
+    def expired(self):
+        return False
+
+
 def get_auth_client(prefix, state=None, **kwargs):
     cache.set(f'{prefix}_headless_auth_failed', False)
     auth_client_name = f"{prefix}_auth_client"
 
     if auth_client_name not in g:
         oauth_version = kwargs.get(f"{prefix}_OAUTH_VERSION", 2)
+        keyfile_path = kwargs.get(f"{prefix}_KEYFILE_PATH")
 
-        if oauth_version == 1:
+        if oauth_version == 0:
+            MyAuthClient = MyHeaderAuthClient
+            client_id = ""
+            client_secret = ""
+            _auth_kwargs = {}
+        elif oauth_version == 1:
             MyAuthClient = MyAuth1Client
             client_id = kwargs[f"{prefix}_CONSUMER_KEY"]
             client_secret = kwargs[f"{prefix}_CONSUMER_SECRET"]
@@ -430,6 +490,11 @@ def get_auth_client(prefix, state=None, **kwargs):
                 ),
                 "token_url": kwargs.get(f"{prefix}_TOKEN_URL_V1"),
             }
+        elif keyfile_path:
+            MyAuthClient = MyServiceAuthClient
+            client_id = ""
+            client_secret = ""
+            _auth_kwargs = {"keyfile_path": keyfile_path}
         else:
             MyAuthClient = MyAuth2Client
             client_id = kwargs[f"{prefix}_CLIENT_ID"]
@@ -439,8 +504,10 @@ def get_auth_client(prefix, state=None, **kwargs):
                 "authorization_base_url": kwargs[f"{prefix}_AUTHORIZATION_BASE_URL"],
                 "token_url": kwargs[f"{prefix}_TOKEN_URL"],
                 "refresh_url": kwargs[f"{prefix}_REFRESH_URL"],
+                "revoke_url": kwargs[f"{prefix}_REVOKE_URL"],
                 "scope": kwargs.get(f"{prefix}_SCOPES"),
-                "tenant_id": kwargs.get("tenant_id"),
+                "tenant_id": kwargs.get("tenant_id") or "",
+                "realm_id": kwargs.get("realm_id") or "",
                 "state": state,
             }
 
@@ -448,56 +515,32 @@ def get_auth_client(prefix, state=None, **kwargs):
             **_auth_kwargs,
             "oauth_version": oauth_version,
             "api_base_url": kwargs[f"{prefix}_API_BASE_URL"],
+            "api_subkey": kwargs.get(f"{prefix}_API_SUBKEY"),
+            "auth_params": kwargs.get(f"{prefix}_AUTH_PARAMS"),
             "redirect_uri": kwargs.get(f"{prefix}_REDIRECT_URI"),
             "account_id": kwargs.get(f"{prefix}_ACCOUNT_ID"),
+            "headers": kwargs.get(f"{prefix}_HEADERS"),
         }
 
         client = MyAuthClient(prefix, client_id, client_secret, **auth_kwargs)
 
-        if cache.get(f"{prefix}_restore_client"):
+        if cache.get(f'{prefix}_restore_from_headless'):
             client.restore()
             client.renew_token()
-            cache.set(f"{prefix}_restore_client", False)
+            cache.set(f"{prefix}_restore_from_headless", False)
 
         setattr(g, auth_client_name, client)
+
+    client = g.get(auth_client_name)
+
+    if client.expires_in < RENEW_TIME:
+        client.renew_token()
 
     return g.get(auth_client_name)
 
 
 def get_request_base():
     return request.base_url.split("/")[-1].split("?")[0]
-
-
-def gen_links(**kwargs):
-    url_root = request.url_root.rstrip("/")
-    prefixed = f"{url_root}{PREFIX}"
-    self_link = request.url
-
-    links = [
-        {"rel": "home", "href": prefixed, "method": "GET"},
-        {"rel": "events", "href": f"{prefixed}/events", "method": "GET"},
-        {"rel": "cached events", "href": f"{prefixed}/cached_events", "method": "GET"},
-        {
-            "rel": "authenticate timely",
-            "href": f"{prefixed}/timely-auth",
-            "method": "GET",
-        },
-        {"rel": "authenticate xero", "href": f"{prefixed}/xero-auth", "method": "GET"},
-        {"rel": "refresh timely", "href": f"{prefixed}/timely-auth", "method": "PATCH"},
-        {"rel": "refresh xero", "href": f"{prefixed}/xero-auth", "method": "PATCH"},
-        {"rel": "timely status", "href": f"{prefixed}/timely-status", "method": "GET"},
-        {"rel": "xero status", "href": f"{prefixed}/xero-status", "method": "GET"},
-        {"rel": "accounts", "href": f"{prefixed}/accounts", "method": "GET"},
-        {"rel": "ipsum", "href": f"{prefixed}/ipsum", "method": "GET"},
-        {"rel": "memoize", "href": f"{prefixed}/memoization", "method": "GET"},
-        {"rel": "reset", "href": f"{prefixed}/memoization", "method": "DELETE"},
-    ]
-
-    for link in links:
-        if link["href"] == self_link and link["method"] == request.method:
-            link["rel"] = "self"
-
-        yield link
 
 
 def extract_fields(record, fields, **kwargs):
@@ -581,17 +624,22 @@ def fetch_bool(message):
     return answer
 
 
-def get_realtime_response(url, client, params=None, **kwargs):
+def get_response(url, client, params=None, result_fields=None, **kwargs):
+    result_fields = result_fields or []
     ok = False
     unscoped = False
 
-    if client.expired:
-        response = {"message": "Token Expired.", "status_code": 401}
+    if client.error:
+        logger.debug('client.error')
+        response = {"message": client.error, "status_code": 500}
     elif not client.verified:
+        logger.debug('not client.verified')
         response = {"message": "Client not authorized.", "status_code": 401}
-    elif client.error:
-        response = {"status_code": 500, "message": client.error}
+    elif client.expired:
+        logger.debug('client.expired')
+        response = {"message": "Token Expired.", "status_code": 401}
     else:
+        logger.debug('client.ok')
         params = params or {}
         data = kwargs.get("data", {})
         json = kwargs.get("json", {})
@@ -605,6 +653,7 @@ def get_realtime_response(url, client, params=None, **kwargs):
         try:
             json = result.json()
         except JSONDecodeError:
+            logger.debug('JSONDecodeError')
             status_code = 500 if result.status_code == 200 else result.status_code
 
             if "<!DOCTYPE html>" in result.text:
@@ -616,29 +665,71 @@ def get_realtime_response(url, client, params=None, **kwargs):
 
             response = {"message": message, "status_code": status_code}
         else:
-            if ok:
-                response = {"result": json}
+            if json.get("errorcode") or json.get("error"):
+                ok = False
+
+            if json.get("fault"):
+                # QuickBooks
+                ok = False
+                fault = json["fault"]
+
+                if fault.get("type") == "AUTHENTICATION":
+                    response = {"message": "Client not authorized.", "status_code": 401}
+                elif fault.get("error"):
+                    error = fault["error"][0]
+                    detail = error.get("detail", "")
+
+                    if detail.startswith("Token expired"):
+                        response = {"message": "Token Expired.", "status_code": 401}
+
+                    err_message = error["message"]
+                    _response = dict(pair.split("=") for pair in err_message.split("; "))
+                    _message = _response["message"]
+                    message = f"{_message}: {detail}" if detail else _message
+                    response = {"message": message, "status_code": int(_response["statusCode"])}
+                else:
+                    logger.debug(fault)
+                    response = {"message": fault.get("type"), "status_code": 500}
+            elif ok:
+                result = json
+
+                if result_fields:
+                    # TODO: use timero's extract_fields
+                    for field in result_fields:
+                        result = result.get(field, {})
+                else:
+                    try:
+                        # https://developer.xero.com/documentation/oauth2/auth-flow
+                        result = json[0]
+                    except KeyError:
+                        pass
+
+                response = {"result": result}
             else:
                 message_keys = ["message", "Message", "detail", "error"]
 
                 try:
                     message = next(json[key] for key in message_keys if json.get(key))
                 except StopIteration:
+                    logger.debug('message_keys not found')
                     logger.debug(json)
                     message = ""
 
                 if json.get("modelState"):
+                    logger.debug('modelState found')
                     items = json["modelState"].items()
                     message += " "
                     message += ". ".join(f"{k}: {', '.join(v)}" for k, v in items)
                 elif json.get("Elements"):
+                    logger.debug('Elements found')
                     items = chain.from_iterable(e.items() for e in json["Elements"])
                     message += " "
                     message += ". ".join(
                         f"{k}: {', '.join(e['Message'] for e in v)}" for k, v in items
                     )
 
-                response = {"status_code": result.status_code, "message": message}
+                status_code = 500 if r.status_code == 200 else result.status_code
+                response = {"message": message, "status_code": status_code}
 
         if not ok:
             header_names = ["Authorization", "Accept", "Content-Type"]
@@ -664,9 +755,9 @@ def get_realtime_response(url, client, params=None, **kwargs):
     response["ok"] = ok
 
     if not ok:
-
         @after_this_request
         def clear_cache(response):
+            _clear_cache()
             response = uncache_header(response)
             return response
 
@@ -677,14 +768,15 @@ def get_realtime_response(url, client, params=None, **kwargs):
             logger.debug("Token expired!")
 
         client.renew_token()
-        response = get_realtime_response(
+        response = get_response(
             url, client, params=params, renewed=True, **kwargs
         )
     else:
-        response["links"] = list(gen_links())
+        response["links"] = get_links(app.url_map.iter_rules())
 
     if not ok:
         message = response.get("message", "")
+        logger.error(f"Error requesting {url}")
         logger.error(f"Server returned {status_code}: {message}")
 
     return response
@@ -697,17 +789,36 @@ def get_redirect_url(prefix):
     callback URL. With this redirection comes an authorization code included
     in the redirect URL. We will use that to obtain an access token.
     """
-    oauth_response = request.args
-
-    state = oauth_response.get("state") or session.get(f"{prefix}_state")
-    valid = all(map(oauth_response.get, ["oauth_token", "oauth_verifier", "org"]))
-    client = get_auth_client(prefix, **app.config)
+    query = urlparse(request.url).query
+    response = dict(parse_qsl(query), **request.args)
+    state = response.get("state") or session.get(f"{prefix}_state")
+    realm_id = response.get("realm_id") or session.get(f"{prefix}_realm_id")
+    valid = all(map(response.get, ["oauth_token", "oauth_verifier", "org"]))
+    client = get_auth_client(prefix, state=state, realm_id=realm_id, **app.config)
 
     if state or valid:
+        session[f"{prefix}_state"] = client.state
+        session[f"{prefix}_realm_id"] = client.realm_id
         client.fetch_token()
-        redirect_url = url_for(f".{prefix}_status".lower())
+
+    redirect_url = cache.get(f"{prefix}_callback_url")
+
+    if redirect_url:
+        cache.delete(f"{prefix}_callback_url")
     else:
         redirect_url = url_for(f".{prefix}_auth".lower())
+
+    if prefix == "XERO" and client.oauth2:
+        api_url = f"{client.api_base_url}/connections"
+        response = get_response(api_url, client, **app.config)
+        tenant_id = response["result"].get("tenant_id")
+
+        if tenant_id:
+            client.tenant_id = tenant_id
+            client.save()
+            logger.debug(f"Set Xero tenantId to {client.tenant_id}.")
+        else:
+            client.error = "No tenantId found."
 
     return redirect_url, client
 
@@ -719,7 +830,7 @@ def callback(prefix):
         response = {
             "message": client.error,
             "status_code": 401,
-            "links": list(gen_links()),
+            "links": get_links(app.url_map.iter_rules()),
         }
         return jsonify(**response)
     else:
@@ -770,19 +881,16 @@ def get_chromedriver_path():
     return chromedriver_path
 
 
-def find_element_loop(browser, selector, max_retries=3):
-    cnt = count()
-    elem = None
-
-    while not elem:
-        try:
-            elem = browser.find_element_by_css_selector(selector)
-        except NoSuchElementException as err:
-            if next(cnt) > max_retries:
-                logger.error(err)
-                break
-        else:
+def find_element_loop(browser, selector, count=1, max_retries=3):
+    try:
+        elem = browser.find_element_by_css_selector(selector)
+    except NoSuchElementException as e:
+        if count < max_retries:
             time.sleep(.5)
+            kwargs = {"count": count + 1, "max_retries": max_retries}
+            elem = find_element_loop(browser, selector, **kwargs)
+        else:
+            elem = None
 
     return elem
 
@@ -871,7 +979,7 @@ def home():
     response = {
         "description": "Returns API documentation",
         "message": f"Welcome to the {APP_TITLE}!",
-        "links": list(gen_links()),
+        "links": get_links(app.url_map.iter_rules()),
     }
 
     return jsonify(**response)
@@ -896,7 +1004,7 @@ def timely_status():
     # making this work a little smoother.
     timely = get_auth_client("TIMELY", **app.config)
     api_url = f"{timely.api_base_url}/accounts"
-    response = get_realtime_response(api_url, timely, **app.config)
+    response = get_response(api_url, timely, **app.config)
     response["result"] = timely.token
     return jsonify(**response)
 
@@ -911,7 +1019,7 @@ def xero_status():
     else:
         api_url = f"{xero.api_base_url}/connections"
 
-    response = get_realtime_response(api_url, xero, **app.config)
+    response = get_response(api_url, xero, **app.config)
 
     if xero.oauth2:
         if response["ok"]:
@@ -945,7 +1053,7 @@ def xero_status():
 def connections():
     xero = get_auth_client("XERO", **app.config)
     api_url = f"{xero.api_base_url}/connections"
-    response = get_realtime_response(api_url, xero, **app.config)
+    response = get_response(api_url, xero, **app.config)
     return jsonify(**response)
 
 
@@ -953,7 +1061,7 @@ def connections():
 def accounts():
     timely = get_auth_client("TIMELY", **app.config)
     api_url = f"{timely.api_base_url}/accounts"
-    response = get_realtime_response(api_url, timely, **app.config)
+    response = get_response(api_url, timely, **app.config)
     return jsonify(**response)
 
 
@@ -962,7 +1070,7 @@ def accounts():
 def ipsum():
     response = {
         "description": "Displays a random sentence",
-        "links": list(gen_links()),
+        "links": get_links(app.url_map.iter_rules()),
         "result": fake.sentence(),
     }
 
@@ -974,7 +1082,18 @@ def ipsum():
 ###########################################################################
 class Auth(MethodView):
     def __init__(self, prefix):
-        self.prefix = prefix
+        super().__init__(prefix)
+
+        self.status_urls = {
+            # TODO: Timely Headless Auth returns an error message
+            # saying "invalid_grant", but it also returns the valid
+            # credentials with the error message. Authentication is
+            # working fine I guess, but we should really look into
+            # making this work a little smoother.
+            "TIMELY": f"{self.client.api_base_url}/accounts"
+            "XERO": f"{self.client.api_base_url}/projects.xro/2.0/projectsusers"
+            "QB": f"{self.client.api_base_url}/company/{self.client.realm_id}/companyinfo/{self.client.realm_id}"
+        }
 
     def get(self):
         """Step 1: User Authorization.
@@ -982,33 +1101,49 @@ class Auth(MethodView):
         Redirect the user/resource owner to the OAuth provider (i.e. Github)
         using an URL with a few key OAuth parameters.
         """
-        client = get_auth_client(self.prefix, **app.config)
+        cache.set(f"{self.prefix}_callback_url") = request.args.get("callback_url")
 
         # https://gist.github.com/ib-lundgren/6507798#gistcomment-1006218
         # State is used to prevent CSRF, keep this for later.
-        authorization_url, state = client.authorization_url
-        client.state = session[f"{self.prefix}_state"] = state
-        client.save()
+        authorization_url, state = self.client.authorization_url
+        self.client.state = session[f"{self.prefix}_state"] = state
+        self.client.save()
 
         # Step 2: User authorization, this happens on the provider.
-        if client.verified and not client.expired:
-            redirect_url = url_for(f".{self.prefix}_status".lower())
+        if self.client.verified and not self.client.expired:
+            status_url = self.status_urls[self.prefix]
+            response = get_response(status_url, self.client, **app.config)
+            response.update(
+                {
+                    "token": self.client.token,
+                    "state": self.client.state,
+                    "realm_id": self.client.realm_id,
+                    "tenant_id": self.client.tenant_id,
+                }
+            )
+
+            result = jsonify(**response)
         else:
-            if client.oauth1:
+            if self.client.oauth1:
                 # clear previously cached token
-                client.renew_token()
-                authorization_url = client.authorization_url[0]
+                self.client.renew_token()
+                authorization_url = self.client.authorization_url[0]
 
             redirect_url = authorization_url
+            logger.info("redirecting to %s", redirect_url)
+            result = redirect(redirect_url)
 
-        logger.info("redirecting to %s", redirect_url)
-
-        return redirect(redirect_url)
+        return result
 
     def patch(self):
-        client = get_auth_client(self.prefix, **app.config)
-        client.renew_token()
-        return redirect(url_for(f".{self.prefix}_status".lower()))
+        self.client.renew_token()
+        return redirect(url_for(f".{self.prefix}_auth".lower()))
+
+
+    def delete(self, base=None):
+        # TODO: find out where this was implemented
+        response = {"status_code": 200, "message": self.client.revoke_token()}
+        return jsonify(**response)
 
 
 class APIBase(MethodView):
@@ -1146,7 +1281,7 @@ class APIBase(MethodView):
         if self.dry_run:
             response = {"result": []}
         else:
-            response = get_realtime_response(
+            response = get_response(
                 self.api_url,
                 self.client,
                 headers=self.headers,
@@ -1220,7 +1355,7 @@ class APIBase(MethodView):
                 else:
                     kwargs["data"] = values
 
-                response = get_realtime_response(self.api_url, self.client, **kwargs)
+                response = get_response(self.api_url, self.client, **kwargs)
         else:
             base_url = get_request_base()
             self.error_msg = (
@@ -1228,7 +1363,7 @@ class APIBase(MethodView):
             )
             response = {"status_code": 404}
 
-        response["links"] = list(gen_links())
+        response["links"] = get_links(app.url_map.iter_rules())
 
         if self.error_msg:
             response["message"] = self.error_msg
@@ -1383,7 +1518,7 @@ class Tasks(APIBase):
                     "json": {"label": self.values},
                 }
 
-                response = get_realtime_response(self.api_url, self.client, **kwargs)
+                response = get_response(self.api_url, self.client, **kwargs)
         else:
             if self.dry_run:
                 response = {"result": {}}
@@ -1395,9 +1530,9 @@ class Tasks(APIBase):
                     "json": self.values,
                 }
 
-                response = get_realtime_response(self.api_url, self.client, **kwargs)
+                response = get_response(self.api_url, self.client, **kwargs)
 
-        response["links"] = list(gen_links())
+        response["links"] = get_links(app.url_map.iter_rules())
 
         if self.error_msg:
             response["message"] = self.error_msg
@@ -1892,7 +2027,7 @@ class Time(APIBase):
                             "method": "put",
                             "json": {"event": data},
                         }
-                        response = get_realtime_response(
+                        response = get_response(
                             self.api_url, self.client, **kwargs
                         )
             else:
@@ -1906,7 +2041,7 @@ class Time(APIBase):
 
         response.update(
             {
-                "links": list(gen_links()),
+                "links": get_links(app.url_map.iter_rules()),
                 "message": self.error_msg,
                 "event_id": self.event_id,
             }
@@ -2068,7 +2203,7 @@ class Time(APIBase):
                     }
 
                     url = f"{self.api_base_url}/projects/{self.xero_project_id}/time"
-                    response = get_realtime_response(url, self.client, **kwargs)
+                    response = get_response(url, self.client, **kwargs)
             else:
                 response = {"result": data, "status_code": 400}
 
@@ -2084,7 +2219,7 @@ class Time(APIBase):
 
         response.update(
             {
-                "links": list(gen_links()),
+                "links": get_links(app.url_map.iter_rules()),
                 "eof": self.eof,
                 "event_id": self.timely_event["id"],
             }
@@ -2102,7 +2237,7 @@ class Memoization(MethodView):
 
         response = {
             "description": "Deletes a cache url",
-            "links": list(gen_links()),
+            "links": get_links(app.url_map.iter_rules()),
             "message": f"The {request.method}:{base_url} route is not yet complete.",
         }
 
@@ -2117,7 +2252,7 @@ class Memoization(MethodView):
             cache.clear()
             message = "Caches cleared!"
 
-        response = {"links": list(gen_links()), "message": message}
+        response = {"links": get_links(app.url_map.iter_rules()), "message": message}
         return jsonify(**response)
 
 
