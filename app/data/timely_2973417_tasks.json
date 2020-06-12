@@ -1,22 +1,22 @@
 [
   {
-    "id": 1339639,
-    "name": "Admin (meetings, time tracking, email, calendar, organizing, paperwork, etc.)",
-    "projectId": 2973417
-  },
-  {
     "id": 1340560,
     "name": "Instructing (explaining, wiki documentation, reviewing, etc.)",
     "projectId": 2973417
   },
   {
-    "id": 1344445,
-    "name": "Consulting (strategizing, client meetings, presentations, demos, etc.)",
+    "id": 1339639,
+    "name": "Admin (meetings, time tracking, email, calendar, organizing, paperwork, etc.)",
     "projectId": 2973417
   },
   {
     "id": 1344449,
     "name": "Research (specific: via blogs, documentation, company sites, etc.)",
+    "projectId": 2973417
+  },
+  {
+    "id": 1344445,
+    "name": "Consulting (strategizing, client meetings, presentations, demos, etc.)",
     "projectId": 2973417
   }
 ]

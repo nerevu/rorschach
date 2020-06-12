@@ -1,0 +1,122 @@
+[
+  {
+    "dateEnteredUtc": "2020-04-06T18:08:12.2367496Z",
+    "dateUtc": "2020-04-02T12:00:00Z",
+    "day": "2020-04-02",
+    "description": "Data Portal • EC2 Management Console • Meetup",
+    "duration": 13,
+    "projectId": "615c8090-938d-4ee7-8f4e-6ae945920507",
+    "status": "ACTIVE",
+    "taskId": "03c04504-ae82-4f6d-bb97-36b479299cd2",
+    "timeEntryId": "1109911b-76e7-44d9-b196-2b006f3fd710",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  },
+  {
+    "dateEnteredUtc": "2020-04-06T18:08:12.5734159Z",
+    "dateUtc": "2020-04-03T12:00:00Z",
+    "day": "2020-04-03",
+    "description": "AWS Marketplace: CKAN 2.8 delivered by Link Digital • EC2 Manage…",
+    "duration": 247,
+    "projectId": "615c8090-938d-4ee7-8f4e-6ae945920507",
+    "status": "ACTIVE",
+    "taskId": "03c04504-ae82-4f6d-bb97-36b479299cd2",
+    "timeEntryId": "a3a1fe38-cffe-43a8-977e-14d3fc0e96e2",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  },
+  {
+    "dateEnteredUtc": "2020-04-16T03:42:08.8548775Z",
+    "dateUtc": "2020-04-07T12:00:00Z",
+    "day": "2020-04-07",
+    "description": "Amazon Elastic Compute Cloud • Data Portal • UberConference • Op…",
+    "duration": 97,
+    "projectId": "615c8090-938d-4ee7-8f4e-6ae945920507",
+    "status": "ACTIVE",
+    "taskId": "03c04504-ae82-4f6d-bb97-36b479299cd2",
+    "timeEntryId": "a0bd67c3-efab-4c93-83fb-17518dd0db40",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  },
+  {
+    "dateEnteredUtc": "2020-06-22T21:21:46.7609171Z",
+    "dateUtc": "2020-04-22T12:00:00Z",
+    "day": "2020-04-22",
+    "description": "troubleshooting dataset addition ",
+    "duration": 144,
+    "projectId": "615c8090-938d-4ee7-8f4e-6ae945920507",
+    "status": "ACTIVE",
+    "taskId": "03c04504-ae82-4f6d-bb97-36b479299cd2",
+    "timeEntryId": "d8347cd2-9f73-43be-9821-bb06a134cb22",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  },
+  {
+    "dateEnteredUtc": "2020-06-23T01:39:21.7546908Z",
+    "dateUtc": "2020-04-27T12:00:00Z",
+    "day": "2020-04-27",
+    "description": "Issue organization and user setup",
+    "duration": 65,
+    "projectId": "615c8090-938d-4ee7-8f4e-6ae945920507",
+    "status": "ACTIVE",
+    "taskId": "892fa5f6-00a4-4b4e-987c-9f80b07e2293",
+    "timeEntryId": "e3c7d331-d847-48e5-9c00-572ba89b05bf",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  },
+  {
+    "dateEnteredUtc": "2020-06-23T04:31:18.0600095Z",
+    "dateUtc": "2020-04-28T12:00:00Z",
+    "day": "2020-04-28",
+    "description": "openpeoria/AWS-CKAN • EC2 Management Console • Amazon Elastic Co…",
+    "duration": 17,
+    "projectId": "615c8090-938d-4ee7-8f4e-6ae945920507",
+    "status": "ACTIVE",
+    "taskId": "03c04504-ae82-4f6d-bb97-36b479299cd2",
+    "timeEntryId": "24f2fafe-10c5-435b-b73a-434a64e34d28",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  },
+  {
+    "dateEnteredUtc": "2020-06-23T04:34:56.7820028Z",
+    "dateUtc": "2020-04-29T12:00:00Z",
+    "day": "2020-04-29",
+    "description": "AWS debugging",
+    "duration": 43,
+    "projectId": "615c8090-938d-4ee7-8f4e-6ae945920507",
+    "status": "ACTIVE",
+    "taskId": "03c04504-ae82-4f6d-bb97-36b479299cd2",
+    "timeEntryId": "7704223e-7641-45fc-85b3-bf982a6f70af",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  },
+  {
+    "dateEnteredUtc": "2020-06-23T04:35:57.100997Z",
+    "dateUtc": "2020-04-30T12:00:00Z",
+    "day": "2020-04-30",
+    "description": "AWS debugging",
+    "duration": 40,
+    "projectId": "615c8090-938d-4ee7-8f4e-6ae945920507",
+    "status": "ACTIVE",
+    "taskId": "03c04504-ae82-4f6d-bb97-36b479299cd2",
+    "timeEntryId": "91a206c1-242a-4950-953d-cc47e8b55038",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  },
+  {
+    "dateEnteredUtc": "2020-06-23T04:35:58.2637966Z",
+    "dateUtc": "2020-05-11T12:00:00Z",
+    "day": "2020-05-11",
+    "description": "Mitchell 1-on-1",
+    "duration": 71,
+    "projectId": "615c8090-938d-4ee7-8f4e-6ae945920507",
+    "status": "ACTIVE",
+    "taskId": "892fa5f6-00a4-4b4e-987c-9f80b07e2293",
+    "timeEntryId": "c3c020d3-e471-4829-8c91-030ede0310dc",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  },
+  {
+    "dateEnteredUtc": "2020-06-23T04:35:59.4987312Z",
+    "dateUtc": "2020-05-09T12:00:00Z",
+    "day": "2020-05-09",
+    "description": "Data portal setup",
+    "duration": 167,
+    "projectId": "615c8090-938d-4ee7-8f4e-6ae945920507",
+    "status": "ACTIVE",
+    "taskId": "03c04504-ae82-4f6d-bb97-36b479299cd2",
+    "timeEntryId": "dfba7727-f6e3-4d32-bf7d-aa1e1f1e3c89",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  }
+]

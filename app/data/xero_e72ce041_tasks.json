@@ -2,15 +2,22 @@
   {
     "name": "1 Hour Development (Pro-Bono)",
     "projectId": "e72ce041-023c-4abf-80e8-c4af054b38ed",
-    "rate.value": 0,
+    "rate.value": 0.0,
     "status": "ACTIVE",
     "taskId": "34ea16e1-e0fa-403f-a69f-57c331f5c063"
   },
   {
     "name": "1 Hour Internal Work (Non-Billable)",
     "projectId": "e72ce041-023c-4abf-80e8-c4af054b38ed",
-    "rate.value": 0,
+    "rate.value": 0.0,
     "status": "ACTIVE",
     "taskId": "1c15817e-97fe-4621-9668-99bed0bdec99"
+  },
+  {
+    "name": "1 Hour R&D (Non-Billable)",
+    "projectId": "e72ce041-023c-4abf-80e8-c4af054b38ed",
+    "rate.value": 0.0,
+    "status": "ACTIVE",
+    "taskId": "5a216fab-362c-48c4-9506-3b5bd67d7a37"
   }
 ]

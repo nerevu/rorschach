@@ -5,18 +5,8 @@
     "projectId": 2906239
   },
   {
-    "id": 1344431,
-    "name": "Development (setup, programming, debugging, testing, documentation etc.)",
-    "projectId": 2906239
-  },
-  {
-    "id": 1344432,
-    "name": "Maintenance (server upgrades, bug fixes, etc.)",
-    "projectId": 2906239
-  },
-  {
-    "id": 1344444,
-    "name": "Design (web, database, spec, etc.)",
+    "id": 1344464,
+    "name": "Learning (general: via articles, books, tutorials, courses, etc.)",
     "projectId": 2906239
   },
   {
@@ -25,8 +15,18 @@
     "projectId": 2906239
   },
   {
-    "id": 1344464,
-    "name": "Learning (general: via articles, books, tutorials, courses, etc.)",
+    "id": 1344444,
+    "name": "Design (web, database, spec, etc.)",
+    "projectId": 2906239
+  },
+  {
+    "id": 1344432,
+    "name": "Maintenance (server upgrades, bug fixes, etc.)",
+    "projectId": 2906239
+  },
+  {
+    "id": 1344431,
+    "name": "Development (setup, programming, debugging, testing, documentation etc.)",
     "projectId": 2906239
   }
 ]

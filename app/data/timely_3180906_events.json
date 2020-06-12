@@ -1,1 +1,122 @@
-[]
+[
+  {
+    "billed": true,
+    "day": "2020-03-31",
+    "duration.total_minutes": 22,
+    "id": 170075366,
+    "label_id": 1344464,
+    "note": "Fastmail • IDPH • How open data and civic participation helped Taiwan slow Covid",
+    "project.id": 3180906,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-02",
+    "duration.total_minutes": 5,
+    "id": 170153897,
+    "label_id": 1344449,
+    "note": "COVID-19",
+    "project.id": 3180906,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-05",
+    "duration.total_minutes": 196,
+    "id": 170154150,
+    "label_id": 1344431,
+    "note": "Sublime Text • Downloading Files — Boto 3 Docs 1.12.36 documentation • S3 Management Console • https://www.dph.illinois.gov/sitefiles/COVIDHistoricalTestResults.json?nocache=1 • Terminal • Stack Overflow • IDPH • Find in page    https://www.dph.illinois.gov/sitefiles/COVIDHistoricalTestResults.js...",
+    "project.id": 3180906,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-05",
+    "duration.total_minutes": 42,
+    "id": 170207012,
+    "label_id": 1344464,
+    "note": "datasets • Google Sheets • 👑🦠 Coronavirus Tracker: Charts, graphs, and maps of COVID-19 infections, recoveries, and deaths. • Google Keep • COVID-19 response • Fastmail • Google Docs",
+    "project.id": 3180906,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-06",
+    "duration.total_minutes": 117,
+    "id": 170229182,
+    "label_id": 1344431,
+    "note": "Status endpoint",
+    "project.id": 3180906,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-07",
+    "duration.total_minutes": 207,
+    "id": 170229599,
+    "label_id": 1344431,
+    "note": "status endpoint",
+    "project.id": 3180906,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-07",
+    "duration.total_minutes": 35,
+    "id": 170229760,
+    "label_id": 1339639,
+    "note": "Google Sheets • 80,000 Hours",
+    "project.id": 3180906,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-08",
+    "duration.total_minutes": 325,
+    "id": 170367390,
+    "label_id": 1344431,
+    "note": "Sublime Text • miguelgrinberg.com • Dash • Fork • Flask-Migrate — Flask-Migrate documentation • Stack Overflow • Finder • faker.providers.lorem — Faker 4.0.2 documentation • Welcome to Faker’s documentation! — Faker 4.0.2 documentation • Terminal",
+    "project.id": 3180906,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-17",
+    "duration.total_minutes": 56,
+    "id": 170490566,
+    "label_id": 1344449,
+    "note": "TechCrunch • Google Sheets • Datasets • OmniFocus",
+    "project.id": 3180906,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-18",
+    "duration.total_minutes": 14,
+    "id": 170490711,
+    "label_id": 1344449,
+    "note": "IBM Developer • Sign up for the 2020 Call for Code Global Challenge • Google Sheets",
+    "project.id": 3180906,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-22",
+    "duration.total_minutes": 270,
+    "id": 170540142,
+    "label_id": 1344431,
+    "note": "Add new data collectors",
+    "project.id": 3180906,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-05-05",
+    "duration.total_minutes": 36,
+    "id": 170886410,
+    "label_id": 1339639,
+    "note": "nerevu/handbook • Data Portal",
+    "project.id": 3180906,
+    "user.id": 933370
+  }
+]

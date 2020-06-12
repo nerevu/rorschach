@@ -1,27 +1,17 @@
 [
   {
-    "id": 1340560,
-    "name": "Instructing (explaining, wiki documentation, reviewing, etc.)",
-    "projectId": 2906308
-  },
-  {
     "id": 1344431,
     "name": "Development (setup, programming, debugging, testing, documentation etc.)",
     "projectId": 2906308
   },
   {
-    "id": 1344432,
-    "name": "Maintenance (server upgrades, bug fixes, etc.)",
+    "id": 1340560,
+    "name": "Instructing (explaining, wiki documentation, reviewing, etc.)",
     "projectId": 2906308
   },
   {
-    "id": 1344444,
-    "name": "Design (web, database, spec, etc.)",
-    "projectId": 2906308
-  },
-  {
-    "id": 1344445,
-    "name": "Consulting (strategizing, client meetings, presentations, demos, etc.)",
+    "id": 1344449,
+    "name": "Research (specific: via blogs, documentation, company sites, etc.)",
     "projectId": 2906308
   },
   {
@@ -30,8 +20,18 @@
     "projectId": 2906308
   },
   {
-    "id": 1344449,
-    "name": "Research (specific: via blogs, documentation, company sites, etc.)",
+    "id": 1344445,
+    "name": "Consulting (strategizing, client meetings, presentations, demos, etc.)",
+    "projectId": 2906308
+  },
+  {
+    "id": 1344444,
+    "name": "Design (web, database, spec, etc.)",
+    "projectId": 2906308
+  },
+  {
+    "id": 1344432,
+    "name": "Maintenance (server upgrades, bug fixes, etc.)",
     "projectId": 2906308
   }
 ]

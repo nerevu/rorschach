@@ -2,49 +2,49 @@
   {
     "name": "1 Hour Research (Partner)",
     "projectId": "2e4c160d-a4bf-4eb4-b531-3cae6cfeb2fa",
-    "rate.value": 95,
+    "rate.value": 95.0,
     "status": "ACTIVE",
     "taskId": "6177f871-1cd9-4cbd-a732-2cf231ecc7d8"
   },
   {
     "name": "1 Hour Development (Technical Director)",
     "projectId": "2e4c160d-a4bf-4eb4-b531-3cae6cfeb2fa",
-    "rate.value": 95,
+    "rate.value": 95.0,
     "status": "ACTIVE",
     "taskId": "db0e6752-7c1b-48a2-a411-f22b357ba78c"
   },
   {
     "name": "1 Hour Consulting (Partner)",
     "projectId": "2e4c160d-a4bf-4eb4-b531-3cae6cfeb2fa",
-    "rate.value": 95,
+    "rate.value": 95.0,
     "status": "ACTIVE",
     "taskId": "37033e43-1e77-4431-839e-7535da6f5f42"
   },
   {
     "name": "1 Hour Development (Developer)",
     "projectId": "2e4c160d-a4bf-4eb4-b531-3cae6cfeb2fa",
-    "rate.value": 68,
+    "rate.value": 68.0,
     "status": "ACTIVE",
     "taskId": "51caaa33-d74c-490d-a8f7-cb61eb2d2b4b"
   },
   {
     "name": "1 Hour Internal Work (Non-Billable)",
     "projectId": "2e4c160d-a4bf-4eb4-b531-3cae6cfeb2fa",
-    "rate.value": 0,
+    "rate.value": 0.0,
     "status": "ACTIVE",
     "taskId": "31f1eb88-adba-4db9-9aab-79cab22b805e"
   },
   {
     "name": "1 Hour Research (Consultant)",
     "projectId": "2e4c160d-a4bf-4eb4-b531-3cae6cfeb2fa",
-    "rate.value": 68,
+    "rate.value": 68.0,
     "status": "ACTIVE",
     "taskId": "23163d8e-83b0-4b63-9977-e2dab9d2a321"
   },
   {
     "name": "1 Hour R&D (Non-Billable)",
     "projectId": "2e4c160d-a4bf-4eb4-b531-3cae6cfeb2fa",
-    "rate.value": 0,
+    "rate.value": 0.0,
     "status": "ACTIVE",
     "taskId": "1cf0794e-9d75-4280-b044-214e2ff76a43"
   }

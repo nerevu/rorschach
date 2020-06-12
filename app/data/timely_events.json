@@ -1,1 +1,2672 @@
-{}
+[
+  {
+    "billed": true,
+    "day": "2020-03-29",
+    "duration.total_minutes": 420,
+    "id": 170075156,
+    "label_id": 1339636,
+    "note": "gauge chart",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-03-30",
+    "duration.total_minutes": 164,
+    "id": 170075197,
+    "label_id": 1339636,
+    "note": "gauge chart",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-03-30",
+    "duration.total_minutes": 566,
+    "id": 170075205,
+    "label_id": 1339636,
+    "note": "bar chart",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-03-30",
+    "duration.total_minutes": 32,
+    "id": 170075210,
+    "label_id": 1339639,
+    "note": "Fastmail",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-03-31",
+    "duration.total_minutes": 135,
+    "id": 170075222,
+    "label_id": 1339636,
+    "note": "bar chart",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-03-31",
+    "duration.total_minutes": 363,
+    "id": 170075303,
+    "label_id": 1344452,
+    "note": "Ad creation",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-03-31",
+    "duration.total_minutes": 11,
+    "id": 170075315,
+    "label_id": 1339636,
+    "note": "teralytics/Leaflet.D3SvgOverlay: Leaflet Plugin: D3 SVG Overlay • D3 + Leaflet • bl.ocks.org • Site Title",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-03-31",
+    "duration.total_minutes": 11,
+    "id": 170075321,
+    "label_id": 1339640,
+    "note": "State of IL Central Management Services (CMS)",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-03-31",
+    "duration.total_minutes": 18,
+    "id": 170075327,
+    "label_id": 1344671,
+    "note": "Nerevu • OmniFocus",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-03-31",
+    "duration.total_minutes": 11,
+    "id": 170075388,
+    "label_id": 1339639,
+    "note": "OmniFocus • Fastmail",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-03-31",
+    "duration.total_minutes": 22,
+    "id": 170075366,
+    "label_id": 1344464,
+    "note": "Fastmail • IDPH • How open data and civic participation helped Taiwan slow Covid",
+    "project.id": 3180906,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-01",
+    "duration.total_minutes": 31,
+    "id": 170075418,
+    "label_id": 1344452,
+    "note": "Manage Ads",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-01",
+    "duration.total_minutes": 32,
+    "id": 170075483,
+    "label_id": 1344671,
+    "note": "Disaster Loan Assistance • Local Initiatives Support Corporation • Verizon-LISC  Small Business Recovery Grant Application Survey",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-01",
+    "duration.total_minutes": 22,
+    "id": 170075505,
+    "label_id": 1344671,
+    "note": "Payments • TurboTax 2019 • OmniFocus",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-01",
+    "duration.total_minutes": 239,
+    "id": 170075545,
+    "label_id": 1339639,
+    "note": "Fastmail • Timely • LinkedIn • Calendar • OmniFocus • Paymo • ICC-WEI-Wireframes-V3 • Meetup • PaymoPlus",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-01",
+    "duration.total_minutes": 34,
+    "id": 170100665,
+    "label_id": 1339639,
+    "note": "Terminal • Paymo • Timely • Finder • Workforce Initiative Website • Fork • Nerevu",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-01",
+    "duration.total_minutes": 78,
+    "id": 170100692,
+    "label_id": 1339640,
+    "note": "Downstate Small Business Stabilization Grant Guidebook.docx • Cloze • Paycheck Protection Program (PPP) • Community Infrastructure • Fastmail • OmniFocus • LinkedIn • Disaster Loan Applications",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-01",
+    "duration.total_minutes": 18,
+    "id": 170100723,
+    "label_id": 1344671,
+    "note": "Personal • Nerevu > Edit Template • Nerevu",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-01",
+    "duration.total_minutes": 30,
+    "id": 170100729,
+    "label_id": 1339639,
+    "note": "OmniFocus • Fastmail",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-01",
+    "duration.total_minutes": 60,
+    "id": 170075458,
+    "label_id": 1339639,
+    "note": "Board meeting",
+    "project.id": 2973420,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-02",
+    "duration.total_minutes": 232,
+    "id": 170138402,
+    "label_id": 1339639,
+    "note": "OmniFocus • Fastmail • Calendar • PaymoPlus • Paymo • Timely • Event details • Twitter • Week of March 29, 2020",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-02",
+    "duration.total_minutes": 17,
+    "id": 170153882,
+    "label_id": 1344452,
+    "note": "Manage Ads",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-02",
+    "duration.total_minutes": 6,
+    "id": 170153909,
+    "label_id": 1339640,
+    "note": "Hacker News",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-02",
+    "duration.total_minutes": 63,
+    "id": 170153960,
+    "label_id": 1339640,
+    "note": "Fastmail • Google Drive • Cloze • Week of March 29, 2020 • LinkedIn",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-02",
+    "duration.total_minutes": 15,
+    "id": 170154003,
+    "label_id": 1344604,
+    "note": "Finder • Databox",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-02",
+    "duration.total_minutes": 13,
+    "id": 170138385,
+    "label_id": 1344431,
+    "note": "Data Portal • EC2 Management Console • Meetup",
+    "project.id": 2906311,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-02",
+    "duration.total_minutes": 113,
+    "id": 170138374,
+    "label_id": 1344431,
+    "note": "Integrate sector data",
+    "project.id": 3078744,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-02",
+    "duration.total_minutes": 5,
+    "id": 170153897,
+    "label_id": 1344449,
+    "note": "COVID-19",
+    "project.id": 3180906,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-03",
+    "duration.total_minutes": 220,
+    "id": 170154034,
+    "label_id": 1344452,
+    "note": "Hassle-free ad performance monitoring — Nerevu Group • ThemeForest • 2020's Best Selling Landing Pages & Templates • kubwa • https://try.nerevu.com/ad-performance-monitoring/ • Unbounce: The Landing Page and Conversion Platform • Local Development — Squarespace Developers • Unbounce Landing Pages...",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-03",
+    "duration.total_minutes": 136,
+    "id": 170154046,
+    "label_id": 1339639,
+    "note": "Vice President, Engineering and Development • Chicago Healthcare Jobs • OmniFocus • Cloze • PaymoPlus • Fastmail • Calendar • TweetDeck • VICE • The Citizen Lab • Inc.com",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-03",
+    "duration.total_minutes": 26,
+    "id": 170154057,
+    "label_id": 1344604,
+    "note": "BusinessIntelligence • stored procedures yay or nay? : BusinessIntelligence • First Mid Bank & Trust • Cisco Webex Meetings • Authentication required • Amazon Registration",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-03",
+    "duration.total_minutes": 247,
+    "id": 170154021,
+    "label_id": 1344431,
+    "note": "AWS Marketplace: CKAN 2.8 delivered by Link Digital • EC2 Management Console • Amazon Elastic Compute Cloud • AWS CodeDeploy • EC2 Instance Connect • CodePipeline • AWS Developer Tools • IAM Management Console • openpeoria/AWS-CKAN • AWS CodeCommit • Fork • VPC Management Console • Link Digital H...",
+    "project.id": 2906311,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-04",
+    "duration.total_minutes": 106,
+    "id": 170154081,
+    "label_id": 1339640,
+    "note": "QuickTime Player • OmniFocus • Registration • nerevu_group_llc_paycheck_protection_program_report.pdf • Portal • ICQ • Accounts • Gusto",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-04",
+    "duration.total_minutes": 111,
+    "id": 170154089,
+    "label_id": 1344671,
+    "note": "Nerevu • Bank Services • Finder • OmniFocus",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-04",
+    "duration.total_minutes": 157,
+    "id": 170154100,
+    "label_id": 1344464,
+    "note": "Cases by ZIP Code in NYC, Daily Counts, Rates by Borough, Age, Sex, and more at the bottom. : COVID19 • authority • Python • COVID19 • datasets • COVID-19 response • 👑🦠 Coronavirus Tracker: Charts, graphs, and maps of COVID-19 infections, recoveries, and deaths. • SirSharpest/NarrowEscapeSimulator",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-04",
+    "duration.total_minutes": 87,
+    "id": 170154103,
+    "label_id": 1339639,
+    "note": "KeePassXC • OmniFocus • Timely • PaymoPlus • LinkedIn",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-05",
+    "duration.total_minutes": 103,
+    "id": 170154112,
+    "label_id": 1344464,
+    "note": "Coronavirus • datasets • White House advisor Anthony Fauci's wife on his hectic schedule • iiSM.org • Preview • Twitter • Foundr • Datasets • Analysis of Twitter users reubano follows on Twitter • OmniFocus • ActiveConclusion/COVID19_mobility: Scraper of Google COVID-19 Community Mobility Reports",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-05",
+    "duration.total_minutes": 19,
+    "id": 170154131,
+    "label_id": 1339640,
+    "note": "D-U-N-S® Manager Dun & Bradstreet • System for Award Management • Fastmail • OmniFocus",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-05",
+    "duration.total_minutes": 150,
+    "id": 170154143,
+    "label_id": 1344452,
+    "note": "Buffer Publish • Add to Buffer • C3.ai Digital Transformation Institute • Data Collaboratives • MIT - Solve • Funding & tenders • Twitter • TweetDeck • COVID-19 response • UCA • LinkedIn • Zapier",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-05",
+    "duration.total_minutes": 81,
+    "id": 170206941,
+    "label_id": 1339639,
+    "note": "Timely • Fastmail • OmniFocus",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-05",
+    "duration.total_minutes": 196,
+    "id": 170154150,
+    "label_id": 1344431,
+    "note": "Sublime Text • Downloading Files — Boto 3 Docs 1.12.36 documentation • S3 Management Console • https://www.dph.illinois.gov/sitefiles/COVIDHistoricalTestResults.json?nocache=1 • Terminal • Stack Overflow • IDPH • Find in page    https://www.dph.illinois.gov/sitefiles/COVIDHistoricalTestResults.js...",
+    "project.id": 3180906,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-05",
+    "duration.total_minutes": 42,
+    "id": 170207012,
+    "label_id": 1344464,
+    "note": "datasets • Google Sheets • 👑🦠 Coronavirus Tracker: Charts, graphs, and maps of COVID-19 infections, recoveries, and deaths. • Google Keep • COVID-19 response • Fastmail • Google Docs",
+    "project.id": 3180906,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-06",
+    "duration.total_minutes": 9,
+    "id": 170229344,
+    "label_id": 1340560,
+    "note": "Investigating clozecart update",
+    "project.id": 2906218,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-06",
+    "duration.total_minutes": 67,
+    "id": 170229222,
+    "label_id": 1339640,
+    "note": "PPP app and state registration",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-06",
+    "duration.total_minutes": 94,
+    "id": 170229256,
+    "label_id": 1344521,
+    "note": "PPP reports",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-06",
+    "duration.total_minutes": 113,
+    "id": 170229298,
+    "label_id": 1339639,
+    "note": "Fastmail • OmniFocus • Terminal • Sublime Text • Fork",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-06",
+    "duration.total_minutes": 117,
+    "id": 170229182,
+    "label_id": 1344431,
+    "note": "Status endpoint",
+    "project.id": 3180906,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-07",
+    "duration.total_minutes": 137,
+    "id": 170229420,
+    "label_id": 1339640,
+    "note": "Illinois Procurement Gateway • BidBuy • BEREP • Preview • Finder • payroll_report.xlsx • Fastmail",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-07",
+    "duration.total_minutes": 11,
+    "id": 170229664,
+    "label_id": 1339639,
+    "note": "Timely • PaymoPlus",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-07",
+    "duration.total_minutes": 12,
+    "id": 170230278,
+    "label_id": 1344604,
+    "note": "LinkedIn • OmniFocus • Site Title",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-07",
+    "duration.total_minutes": 97,
+    "id": 170229494,
+    "label_id": 1344431,
+    "note": "Amazon Elastic Compute Cloud • Data Portal • UberConference • Open Peoria Data Portal • EC2 Management Console • CKAN Extensions • CKAN • openpeoria/AWS-CKAN • ckan/ckanext-harvest: Remote harvesting extension for CKAN • Site Title • Terminal",
+    "project.id": 2906311,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-07",
+    "duration.total_minutes": 73,
+    "id": 170229651,
+    "label_id": 1344431,
+    "note": "API integration",
+    "project.id": 3078744,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-07",
+    "duration.total_minutes": 15,
+    "id": 170230250,
+    "label_id": 1339639,
+    "note": "Dropbox • Fastmail",
+    "project.id": 3078744,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-07",
+    "duration.total_minutes": 207,
+    "id": 170229599,
+    "label_id": 1344431,
+    "note": "status endpoint",
+    "project.id": 3180906,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-07",
+    "duration.total_minutes": 35,
+    "id": 170229760,
+    "label_id": 1339639,
+    "note": "Google Sheets • 80,000 Hours",
+    "project.id": 3180906,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-08",
+    "duration.total_minutes": 81,
+    "id": 170367353,
+    "label_id": 1339639,
+    "note": "Timely • Fastmail",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-08",
+    "duration.total_minutes": 80,
+    "id": 170367409,
+    "label_id": 1339636,
+    "note": "cookiecutter-flask",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-08",
+    "duration.total_minutes": 34,
+    "id": 170367454,
+    "label_id": 1339640,
+    "note": "TweetDeck • Cloze • LinkedIn",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-08",
+    "duration.total_minutes": 91,
+    "id": 170367424,
+    "label_id": 1344431,
+    "note": "wei-api",
+    "project.id": 3078744,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-08",
+    "duration.total_minutes": 325,
+    "id": 170367390,
+    "label_id": 1344431,
+    "note": "Sublime Text • miguelgrinberg.com • Dash • Fork • Flask-Migrate — Flask-Migrate documentation • Stack Overflow • Finder • faker.providers.lorem — Faker 4.0.2 documentation • Welcome to Faker’s documentation! — Faker 4.0.2 documentation • Terminal",
+    "project.id": 3180906,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-09",
+    "duration.total_minutes": 58,
+    "id": 170367478,
+    "label_id": 1339640,
+    "note": "BidBuy • Meeting is in progress... • State of IL Central Management Services (CMS) • KeePassXC • Fastmail",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-09",
+    "duration.total_minutes": 148,
+    "id": 170367529,
+    "label_id": 1339636,
+    "note": "mezmorize",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-09",
+    "duration.total_minutes": 56,
+    "id": 170367532,
+    "label_id": 1344452,
+    "note": "Sublime Text • Terminal • Stack Overflow",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-09",
+    "duration.total_minutes": 66,
+    "id": 170367547,
+    "label_id": 1339636,
+    "note": "cookiecutter-flask",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-09",
+    "duration.total_minutes": 37,
+    "id": 170367565,
+    "label_id": 1339639,
+    "note": "Fastmail • Calendar • LinkedIn",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-09",
+    "duration.total_minutes": 288,
+    "id": 170367519,
+    "label_id": 1344431,
+    "note": "wei-api",
+    "project.id": 3078744,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-10",
+    "duration.total_minutes": 52,
+    "id": 170367633,
+    "label_id": 1344521,
+    "note": "Mitchell Sotto Internship Agreement - Nerevu.pages • Austin Dial Internship Offer - Nerevu Data Analyst & Backend Development Intern.pages • Mitchell Sotto Internship Offer - Nerevu Data Analyst & Backend Development Intern.pages • Gusto • nerevu/handbook Wiki • Fastmail",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-10",
+    "duration.total_minutes": 117,
+    "id": 170367682,
+    "label_id": 1339636,
+    "note": "Flask Admin",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-10",
+    "duration.total_minutes": 27,
+    "id": 170367693,
+    "label_id": 1339640,
+    "note": "Fastmail • Finder • TurboTax 2019 • Illinois Procurement Gateway • - Pathway To Procurement",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-10",
+    "duration.total_minutes": 37,
+    "id": 170367706,
+    "label_id": 1339639,
+    "note": "Fastmail",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-10",
+    "duration.total_minutes": 219,
+    "id": 170367667,
+    "label_id": 1344431,
+    "note": "WEI API",
+    "project.id": 3078744,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-11",
+    "duration.total_minutes": 21,
+    "id": 170367724,
+    "label_id": 1339639,
+    "note": "Fastmail • Gusto",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-11",
+    "duration.total_minutes": 244,
+    "id": 170367721,
+    "label_id": 1344431,
+    "note": "wei-api",
+    "project.id": 3078744,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-12",
+    "duration.total_minutes": 457,
+    "id": 170367737,
+    "label_id": 1344431,
+    "note": "WEI API",
+    "project.id": 3078744,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-13",
+    "duration.total_minutes": 457,
+    "id": 170367758,
+    "label_id": 1344431,
+    "note": "wei-api",
+    "project.id": 3078744,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-14",
+    "duration.total_minutes": 102,
+    "id": 170367812,
+    "label_id": 1344452,
+    "note": "SEO consultation",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-14",
+    "duration.total_minutes": 10,
+    "id": 170367838,
+    "label_id": 1344671,
+    "note": "Disaster assistance • smallbusiness • both ppp and economic loan at DuckDuckGo • LendingTree",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-14",
+    "duration.total_minutes": 486,
+    "id": 170367808,
+    "label_id": 1344431,
+    "note": "wei-app",
+    "project.id": 3078744,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-14",
+    "duration.total_minutes": 86,
+    "id": 170367828,
+    "label_id": 1339639,
+    "note": "Client meeting",
+    "project.id": 3078744,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-15",
+    "duration.total_minutes": 45,
+    "id": 170367854,
+    "label_id": 1344671,
+    "note": "PPP FAQs (4.14.20) • Lob • Preview • Finder • Fastmail • Dropbox",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-15",
+    "duration.total_minutes": 150,
+    "id": 170466216,
+    "label_id": 1339639,
+    "note": "Timero, OF, email",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-15",
+    "duration.total_minutes": 27,
+    "id": 170466225,
+    "label_id": 1344671,
+    "note": "Xero & PPP",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-15",
+    "duration.total_minutes": 18,
+    "id": 170466235,
+    "label_id": 1344521,
+    "note": "Gusto",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-15",
+    "duration.total_minutes": 26,
+    "id": 170466241,
+    "label_id": 1339640,
+    "note": "SAM",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-15",
+    "duration.total_minutes": 287,
+    "id": 170466184,
+    "label_id": 1344431,
+    "note": "Sublime Text • Terminal • Stack Overflow",
+    "project.id": 3078744,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-15",
+    "duration.total_minutes": 17,
+    "id": 170466198,
+    "label_id": 1339639,
+    "note": "Google Sheets • Fastmail",
+    "project.id": 3078744,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-15",
+    "duration.total_minutes": 20,
+    "id": 170466205,
+    "label_id": 1344449,
+    "note": "sqlalchemy mixins",
+    "project.id": 3078744,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-16",
+    "duration.total_minutes": 68,
+    "id": 170466341,
+    "label_id": 1344671,
+    "note": "Nerevu • Account Transactions • | Nerevu • Calendar",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-16",
+    "duration.total_minutes": 60,
+    "id": 170466439,
+    "label_id": 1339639,
+    "note": "Prepare GitHub account for teams",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-16",
+    "duration.total_minutes": 70,
+    "id": 170483105,
+    "label_id": 1339640,
+    "note": "System for Award Management • USAGov • Search • OmniFocus • beta.SAM.gov • Illinois.gov",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-16",
+    "duration.total_minutes": 98,
+    "id": 170483264,
+    "label_id": 1339639,
+    "note": "Fastmail • Timely • Calendar • Google Sheets • OmniFocus • Cloze",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-16",
+    "duration.total_minutes": 6,
+    "id": 170483335,
+    "label_id": 1344452,
+    "note": "PageSpeed Insights • Google Sheets",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-16",
+    "duration.total_minutes": 82,
+    "id": 170466382,
+    "label_id": 1339639,
+    "note": "Google Docs • UberConference • Calendar • Google Forms • Fastmail • Google Drive • LinkedIn",
+    "project.id": 2973417,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-16",
+    "duration.total_minutes": 5,
+    "id": 170483212,
+    "label_id": 1344431,
+    "note": "Sublime Text • https://wei-api.nerevu.com/v1/college",
+    "project.id": 3078744,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-16",
+    "duration.total_minutes": 11,
+    "id": 170483288,
+    "label_id": 1344431,
+    "note": "Fastmail • Finder • Fork • Preview",
+    "project.id": 3147199,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-17",
+    "duration.total_minutes": 83,
+    "id": 170483421,
+    "label_id": 1339640,
+    "note": "Open Bids • Bid Solicitation • System for Award Management • Diversity411 • amazon supplier diversity program at DuckDuckGo • Diversity 411 • B-12849 Forms A .docx [Compatibility Mode] • EIN Application: Correcting Filed Information On IRS Form SS-4 • Fastmail • Untitled.pages • Lob • Preview • F...",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-17",
+    "duration.total_minutes": 124,
+    "id": 170483484,
+    "label_id": 1339639,
+    "note": "Meet w Austin",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-17",
+    "duration.total_minutes": 87,
+    "id": 170483518,
+    "label_id": 1344464,
+    "note": "Contact tracing research",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-17",
+    "duration.total_minutes": 15,
+    "id": 170489542,
+    "label_id": 1344521,
+    "note": "Fastmail • Gusto",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-17",
+    "duration.total_minutes": 88,
+    "id": 170490516,
+    "label_id": 1339639,
+    "note": "Fastmail • LinkedIn",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-17",
+    "duration.total_minutes": 11,
+    "id": 170490582,
+    "label_id": 1344452,
+    "note": "Google Sheets • AgencyAnalytics • Databox",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-17",
+    "duration.total_minutes": 43,
+    "id": 170489563,
+    "label_id": 1344431,
+    "note": "Sublime Text",
+    "project.id": 3078744,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-17",
+    "duration.total_minutes": 32,
+    "id": 170490495,
+    "label_id": 1339639,
+    "note": "Google Sheets • nerevu/handbook Wiki • Skype • WEBSITE TEXT FOR INITIAL PAGES.docx • Sublime Text • Fastmail",
+    "project.id": 3078744,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-17",
+    "duration.total_minutes": 56,
+    "id": 170490566,
+    "label_id": 1344449,
+    "note": "TechCrunch • Google Sheets • Datasets • OmniFocus",
+    "project.id": 3180906,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-18",
+    "duration.total_minutes": 163,
+    "id": 170490647,
+    "label_id": 1339636,
+    "note": "Mithril cookiecutter and landing page template",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-18",
+    "duration.total_minutes": 20,
+    "id": 170490713,
+    "label_id": 1339639,
+    "note": "OmniFocus • Finder",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-18",
+    "duration.total_minutes": 60,
+    "id": 170490686,
+    "label_id": 1344445,
+    "note": "Google Docs • PIA Nomination Form • Google Forms • alum.mit.edu",
+    "project.id": 2973417,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-18",
+    "duration.total_minutes": 24,
+    "id": 170490691,
+    "label_id": 1339639,
+    "note": "Fastmail • Traffic Insights",
+    "project.id": 2973420,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-18",
+    "duration.total_minutes": 142,
+    "id": 170490668,
+    "label_id": 1344431,
+    "note": "New data model",
+    "project.id": 3078744,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-18",
+    "duration.total_minutes": 14,
+    "id": 170490711,
+    "label_id": 1344449,
+    "note": "IBM Developer • Sign up for the 2020 Call for Code Global Challenge • Google Sheets",
+    "project.id": 3180906,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-20",
+    "duration.total_minutes": 17,
+    "id": 170490844,
+    "label_id": 1339640,
+    "note": "Live Assistance • LinkedIn ProFinder",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-20",
+    "duration.total_minutes": 179,
+    "id": 170490895,
+    "label_id": 1339639,
+    "note": "Fastmail • LinkedIn • OmniFocus • Timely • PaymoPlus",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-20",
+    "duration.total_minutes": 61,
+    "id": 170490740,
+    "label_id": 1339639,
+    "note": "Interview",
+    "project.id": 2973417,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-20",
+    "duration.total_minutes": 90,
+    "id": 170490790,
+    "label_id": 1344444,
+    "note": "logo rework",
+    "project.id": 3078744,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-21",
+    "duration.total_minutes": 104,
+    "id": 170490921,
+    "label_id": 1339639,
+    "note": "SCORE meeting",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-21",
+    "duration.total_minutes": 64,
+    "id": 170490936,
+    "label_id": 1344671,
+    "note": "Nerevu • Income Statement • Databox • Nerevu Group, LLC - Income Statement(283).xls  [Compatibility Mode]",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-21",
+    "duration.total_minutes": 79,
+    "id": 170539743,
+    "label_id": 1339639,
+    "note": "Timely • OmniFocus • Fastmail",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-21",
+    "duration.total_minutes": 87,
+    "id": 170539785,
+    "label_id": 1339640,
+    "note": "CAGE verification",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-21",
+    "duration.total_minutes": 77,
+    "id": 170539819,
+    "label_id": 1344521,
+    "note": "Employee hours entry form",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-21",
+    "duration.total_minutes": 20,
+    "id": 170539872,
+    "label_id": 1344452,
+    "note": "LinkedIn",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-21",
+    "duration.total_minutes": 55,
+    "id": 170539691,
+    "label_id": 1344449,
+    "note": "GraphComment Support • Hyvor Talk • GraphComment, The web social comments system • Graphcomment backoffice • how do hackernews comments at DuckDuckGo • Sublime Text • Hacker News",
+    "project.id": 3078744,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-21",
+    "duration.total_minutes": 61,
+    "id": 170539724,
+    "label_id": 1344431,
+    "note": "Calendar settings for WEI • Events — Peoria Innovation Alliance • Peoria Innovation Alliance • How To Make An Embedded Google Calendar Responsive • Calendar • Sublime Text • Fork • OmniFocus",
+    "project.id": 3078744,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-22",
+    "duration.total_minutes": 45,
+    "id": 170540049,
+    "label_id": 1339640,
+    "note": "CAGE verification",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-22",
+    "duration.total_minutes": 17,
+    "id": 170540180,
+    "label_id": 1339640,
+    "note": "certify.SBA.gov • Dynamic Small Business Search • Open Bids • Bid Solicitation",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-22",
+    "duration.total_minutes": 60,
+    "id": 170540223,
+    "label_id": 1339639,
+    "note": "Fastmail • OmniFocus • KeePassXC",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-22",
+    "duration.total_minutes": 10,
+    "id": 170540228,
+    "label_id": 1344521,
+    "note": "Google Sheets • Gusto",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-22",
+    "duration.total_minutes": 144,
+    "id": 170539956,
+    "label_id": 1344431,
+    "note": "troubleshooting dataset addition ",
+    "project.id": 2906311,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-22",
+    "duration.total_minutes": 69,
+    "id": 170540027,
+    "label_id": 1339639,
+    "note": "Handshake • OmniFocus • VirtualAssistant • MIT Career Advising & Professional Development • KeePassXC",
+    "project.id": 2980115,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-22",
+    "duration.total_minutes": 20,
+    "id": 170540083,
+    "label_id": 1344431,
+    "note": "Flask Admin BasicAuth",
+    "project.id": 3078744,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-22",
+    "duration.total_minutes": 7,
+    "id": 170540199,
+    "label_id": 1344449,
+    "note": "Algolia Documentation • Dashboard",
+    "project.id": 3078744,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-22",
+    "duration.total_minutes": 270,
+    "id": 170540142,
+    "label_id": 1344431,
+    "note": "Add new data collectors",
+    "project.id": 3180906,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-23",
+    "duration.total_minutes": 34,
+    "id": 170615582,
+    "label_id": 1339640,
+    "note": "What’s in USDA’s New Coronavirus Food Assistance Program? • USDA • Illinois Farm Bureau • Fastmail",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-23",
+    "duration.total_minutes": 57,
+    "id": 170615591,
+    "label_id": 1339639,
+    "note": "Timely • OmniFocus",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-23",
+    "duration.total_minutes": 43,
+    "id": 170615651,
+    "label_id": 1344452,
+    "note": "Nerevu Call (30m) with Lance Zaerr",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-23",
+    "duration.total_minutes": 8,
+    "id": 170615772,
+    "label_id": 1344452,
+    "note": "TweetDeck",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-23",
+    "duration.total_minutes": 29,
+    "id": 170615779,
+    "label_id": 1339636,
+    "note": "Sublime Text • Finder • Fastmail",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-23",
+    "duration.total_minutes": 160,
+    "id": 170615633,
+    "label_id": 1344521,
+    "note": "Eric Woodson Employment Agreement - Nerevu.pages • Eric Woodson Employment Offer - Nerevu Data Analyst & Backend Development Intern.pages • Glassdoor • Salary Survey, Salaries, Wages, Compensation Information and Analysis • Google Sheets • Fastmail • Finder • Gusto • Cloze • Mitchell Sotto <> Ner...",
+    "project.id": 2980115,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-23",
+    "duration.total_minutes": 138,
+    "id": 170615671,
+    "label_id": 1344431,
+    "note": "olivernn/lunr.js: A bit like Solr, but much smaller and not as bright • olivernn/lunr.js • JSDoc: Home • Sublime Text • Dash • Lunr",
+    "project.id": 3078744,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-23",
+    "duration.total_minutes": 235,
+    "id": 170615716,
+    "label_id": 1344431,
+    "note": "Tooltips and calendar embedding",
+    "project.id": 3078744,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-24",
+    "duration.total_minutes": 19,
+    "id": 170622396,
+    "label_id": 1339639,
+    "note": "Fastmail • Finder • Dropbox",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-24",
+    "duration.total_minutes": 34,
+    "id": 170622405,
+    "label_id": 1339636,
+    "note": "Terminal windows",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-24",
+    "duration.total_minutes": 401,
+    "id": 170622335,
+    "label_id": 1340560,
+    "note": "Welcome to Nerevu Handbook’s documentation! — Nerevu Handbook 1.0.0 documentation • prkumar/sphinx-reload: Live preview your Sphinx documentation • Alabaster: a Sphinx theme — Alabaster documentation • Getting Started — Nerevu Handbook 1.0.0 documentation • Read the Docs features — Read the Docs ...",
+    "project.id": 2954247,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-24",
+    "duration.total_minutes": 202,
+    "id": 170622383,
+    "label_id": 1344432,
+    "note": "Sublime Text • Fork • Terminal • https://nerevu-api.ngrok.io/v1/realtime_data • https://nerevu-api.ngrok.io/v1/status • Heroku • OmniFocus • Dash • 127.0.0.1:5000/v1 • QuickBooks App Store",
+    "project.id": 2954285,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-25",
+    "duration.total_minutes": 178,
+    "id": 170622434,
+    "label_id": 1340560,
+    "note": "Welcome to the Nerevu Employee Handbook! — Nerevu Handbook 1.0.0 documentation • Git and Github — Nerevu Handbook 1.0.0 documentation • Getting Setup — Nerevu Handbook 1.0.0 documentation • 1. Restructured Text (reST) and Sphinx CheatSheet — Sphinx and RST syntax guide (0.9.3) • Nerevu Coding Sty...",
+    "project.id": 2954247,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-26",
+    "duration.total_minutes": 141,
+    "id": 170622468,
+    "label_id": 1344452,
+    "note": "Miranda Nahmias & Co. • best lead generation quizzes at DuckDuckGo • quiz survey assessment to generate leads at DuckDuckGo • 9 Lead Capture Quiz & Survey Strategies That Work in 2020 • Beyond Buzzfeed: How I used quizzes to get 10,000+ leads (2018) • Typeform Templates • Quizzes Aren't Just For ...",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-26",
+    "duration.total_minutes": 39,
+    "id": 170622490,
+    "label_id": 1339636,
+    "note": "Multi-Steps forms",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-26",
+    "duration.total_minutes": 18,
+    "id": 170622610,
+    "label_id": 1339639,
+    "note": "Fastmail • secure introspectable tunnels to localhost • OmniFocus",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-26",
+    "duration.total_minutes": 116,
+    "id": 170622510,
+    "label_id": 1339639,
+    "note": "Dropbox • Finder • Dropbox Business • Fork",
+    "project.id": 2954247,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-27",
+    "duration.total_minutes": 132,
+    "id": 170622711,
+    "label_id": 1339639,
+    "note": "UberConference • Privacy error • Mithril.js • GitHub • Your Projects",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-27",
+    "duration.total_minutes": 21,
+    "id": 170622736,
+    "label_id": 1344452,
+    "note": "Beyond Buzzfeed: How I used quizzes to get 10,000+ leads (2018) • The only list you'll need. • OmniFocus",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-27",
+    "duration.total_minutes": 100,
+    "id": 170622777,
+    "label_id": 1339640,
+    "note": "B2Gnow • State of IL Central Management Services (CMS) • Gnucash • Finder • Preview • Nerevu • Fastmail • Account Transactions",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-27",
+    "duration.total_minutes": 67,
+    "id": 170622914,
+    "label_id": 1339639,
+    "note": "Fastmail • Calendar • Timely • OmniFocus",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-27",
+    "duration.total_minutes": 65,
+    "id": 170622893,
+    "label_id": 1339639,
+    "note": "Issue organization and user setup",
+    "project.id": 2906311,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-27",
+    "duration.total_minutes": 6,
+    "id": 170622951,
+    "label_id": 1344431,
+    "note": "Issue organization",
+    "project.id": 3013676,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-27",
+    "duration.total_minutes": 288,
+    "id": 170622849,
+    "label_id": 1344431,
+    "note": "Production cleanup",
+    "project.id": 3078744,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-28",
+    "duration.total_minutes": 49,
+    "id": 170725976,
+    "label_id": 1344452,
+    "note": "Looking for pics",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-28",
+    "duration.total_minutes": 10,
+    "id": 170725984,
+    "label_id": 1339640,
+    "note": "State of IL Central Management Services (CMS) • Finder",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-28",
+    "duration.total_minutes": 114,
+    "id": 170726899,
+    "label_id": 1339639,
+    "note": "Timely • OmniFocus • Owners Equity • nerevu/timero",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-28",
+    "duration.total_minutes": 17,
+    "id": 170726966,
+    "label_id": 1344431,
+    "note": "openpeoria/AWS-CKAN • EC2 Management Console • Amazon Elastic Compute Cloud • Finder",
+    "project.id": 2906311,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-28",
+    "duration.total_minutes": 242,
+    "id": 170725953,
+    "label_id": 1344431,
+    "note": "ReplyBox • GraphComment troubleshooting",
+    "project.id": 3078744,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-28",
+    "duration.total_minutes": 31,
+    "id": 170727044,
+    "label_id": 1344431,
+    "note": "nerevu/wei-api • nerevu/wei-app",
+    "project.id": 3078744,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-29",
+    "duration.total_minutes": 11,
+    "id": 170727240,
+    "label_id": 1339640,
+    "note": "State of IL Central Management Services (CMS) • Fastmail",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-29",
+    "duration.total_minutes": 25,
+    "id": 170727291,
+    "label_id": 1344521,
+    "note": "Google Sheets • Gusto",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-29",
+    "duration.total_minutes": 8,
+    "id": 170727296,
+    "label_id": 1339639,
+    "note": "Fastmail • OmniFocus",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-29",
+    "duration.total_minutes": 43,
+    "id": 170727197,
+    "label_id": 1344431,
+    "note": "AWS debugging",
+    "project.id": 2906311,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-29",
+    "duration.total_minutes": 13,
+    "id": 170727286,
+    "label_id": 1344445,
+    "note": "Google Docs • Google Drive",
+    "project.id": 2973417,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-29",
+    "duration.total_minutes": 330,
+    "id": 170727129,
+    "label_id": 1344431,
+    "note": "Contact form and email sending",
+    "project.id": 3078744,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-30",
+    "duration.total_minutes": 30,
+    "id": 170727451,
+    "label_id": 1339639,
+    "note": "Fastmail • OmniFocus",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-30",
+    "duration.total_minutes": 40,
+    "id": 170727407,
+    "label_id": 1344432,
+    "note": "AWS debugging",
+    "project.id": 2906311,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-30",
+    "duration.total_minutes": 27,
+    "id": 170727443,
+    "label_id": 1344445,
+    "note": "Motion preparation",
+    "project.id": 2973417,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-30",
+    "duration.total_minutes": 145,
+    "id": 170727327,
+    "label_id": 1344449,
+    "note": "Contact from email sending",
+    "project.id": 3078744,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-30",
+    "duration.total_minutes": 57,
+    "id": 170727373,
+    "label_id": 1339639,
+    "note": "Client Meeting",
+    "project.id": 3078744,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-30",
+    "duration.total_minutes": 21,
+    "id": 170727458,
+    "label_id": 1339639,
+    "note": "Communication",
+    "project.id": 3078744,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-30",
+    "duration.total_minutes": 301,
+    "id": 170727359,
+    "label_id": 1344432,
+    "note": "Updating",
+    "project.id": 3154983,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-05-01",
+    "duration.total_minutes": 66,
+    "id": 170884816,
+    "label_id": 1339640,
+    "note": "System for Award Management • Supplies & Services Edition • Illinois Procurement Gateway • Public Higher Education Bulletin • Procurement Bulletin • Finder • OmniFocus • Search • DRAW_RFI_6_Mar_19.doc [Compatibility Mode] • beta.SAM.gov • Fastmail",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-05-01",
+    "duration.total_minutes": 63,
+    "id": 170884972,
+    "label_id": 1344452,
+    "note": "AWeber Email Marketing • UberConference • Hacker News • OmniFocus",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-05-01",
+    "duration.total_minutes": 69,
+    "id": 170884992,
+    "label_id": 1339639,
+    "note": "Timely • OmniFocus • Finder • Fastmail • Calendar • Welcome! • Nerevu Group",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-05-01",
+    "duration.total_minutes": 159,
+    "id": 170884862,
+    "label_id": 1344431,
+    "note": "Template conversion",
+    "project.id": 3078744,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-05-01",
+    "duration.total_minutes": 32,
+    "id": 170885020,
+    "label_id": 1340560,
+    "note": "Meet with Austin",
+    "project.id": 3078744,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-05-01",
+    "duration.total_minutes": 50,
+    "id": 170884890,
+    "label_id": 1344431,
+    "note": "Spring cleaning",
+    "project.id": 3154983,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-05-01",
+    "duration.total_minutes": 128,
+    "id": 170884961,
+    "label_id": 1344431,
+    "note": "Updates",
+    "project.id": 3154983,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-05-02",
+    "duration.total_minutes": 210,
+    "id": 170885121,
+    "label_id": 1344431,
+    "note": "Font debugging",
+    "project.id": 3078744,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-05-03",
+    "duration.total_minutes": 120,
+    "id": 170885176,
+    "label_id": 1339636,
+    "note": "Sublime Text • reubano/pygogo • Terminal • psf/black • Fork • Travis CI",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-05-03",
+    "duration.total_minutes": 76,
+    "id": 170885864,
+    "label_id": 1339639,
+    "note": "Fastmail",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-05-03",
+    "duration.total_minutes": 18,
+    "id": 170885860,
+    "label_id": 1340560,
+    "note": "nerevu/handbook",
+    "project.id": 2980115,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-05-03",
+    "duration.total_minutes": 96,
+    "id": 170885840,
+    "label_id": 1344449,
+    "note": "Image optimization",
+    "project.id": 3078744,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-05-03",
+    "duration.total_minutes": 60,
+    "id": 170885854,
+    "label_id": 1344604,
+    "note": "nerevu/wei-api • Workforce Equity Initiative",
+    "project.id": 3078744,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-05-04",
+    "duration.total_minutes": 33,
+    "id": 170885890,
+    "label_id": 1339639,
+    "note": "Fastmail • Calendar",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-05-04",
+    "duration.total_minutes": 411,
+    "id": 170885889,
+    "label_id": 1344431,
+    "note": "Template conversion",
+    "project.id": 3078744,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-05-05",
+    "duration.total_minutes": 60,
+    "id": 170885940,
+    "label_id": 1339640,
+    "note": "Work Order Scheduling & Dispatching for QuickBooks • Cave Creek Software :: Software for Service Industries • Intuit Field Service Management for QuickBooks • UberConference",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-05-05",
+    "duration.total_minutes": 26,
+    "id": 170886260,
+    "label_id": 1344671,
+    "note": "Account Transactions",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-05-05",
+    "duration.total_minutes": 49,
+    "id": 170886402,
+    "label_id": 1339639,
+    "note": "Calendar • Fastmail",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-05-05",
+    "duration.total_minutes": 147,
+    "id": 170886087,
+    "label_id": 1344431,
+    "note": "Template conversion",
+    "project.id": 3078744,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-05-05",
+    "duration.total_minutes": 105,
+    "id": 170886245,
+    "label_id": 1340560,
+    "note": "API instruction",
+    "project.id": 3078744,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-05-05",
+    "duration.total_minutes": 36,
+    "id": 170886410,
+    "label_id": 1339639,
+    "note": "nerevu/handbook • Data Portal",
+    "project.id": 3180906,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-05-06",
+    "duration.total_minutes": 10,
+    "id": 170886549,
+    "label_id": 1339640,
+    "note": "Intuit Field Service Management for QuickBooks",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-05-06",
+    "duration.total_minutes": 100,
+    "id": 170886546,
+    "label_id": 1344432,
+    "note": "Fixing authentication errors",
+    "project.id": 2954285,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-05-06",
+    "duration.total_minutes": 380,
+    "id": 170886483,
+    "label_id": 1344431,
+    "note": "Template conversion",
+    "project.id": 3078744,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-05-06",
+    "duration.total_minutes": 38,
+    "id": 170886530,
+    "label_id": 1340560,
+    "note": "API instruction",
+    "project.id": 3078744,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-05-07",
+    "duration.total_minutes": 363,
+    "id": 170886581,
+    "label_id": 1344431,
+    "note": "Homepage viz",
+    "project.id": 3078744,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-05-08",
+    "duration.total_minutes": 174,
+    "id": 171418518,
+    "label_id": 1339639,
+    "note": "Fastmail • OmniFocus • Timely",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-05-08",
+    "duration.total_minutes": 58,
+    "id": 171423100,
+    "label_id": 1339640,
+    "note": "System for Award Management • certify.SBA.gov • Open Bids • About DCEO • RFP Template V.19.1 • Calendar",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-05-08",
+    "duration.total_minutes": 97,
+    "id": 171423112,
+    "label_id": 1344671,
+    "note": "Zapier • Stripe • Nerevu > Edit Template • Nerevu • Fastmail • Introducing Code Steps for Zaps: Calculate, Convert, Manipulate Data and More",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-05-08",
+    "duration.total_minutes": 59,
+    "id": 171423123,
+    "label_id": 1339639,
+    "note": "Fastmail • OmniFocus",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-05-08",
+    "duration.total_minutes": 19,
+    "id": 171423139,
+    "label_id": 1344604,
+    "note": "nerevu/handbook • Rippln Lead Magnet Template",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-05-09",
+    "duration.total_minutes": 15,
+    "id": 171423059,
+    "label_id": 1339640,
+    "note": "Bid Solicitation • Diversity 411",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-05-09",
+    "duration.total_minutes": 25,
+    "id": 171423064,
+    "label_id": 1344671,
+    "note": "Nerevu • First Mid Small Business Online Banking",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-05-09",
+    "duration.total_minutes": 51,
+    "id": 171423074,
+    "label_id": 1339639,
+    "note": "Calendar • Fastmail • OmniFocus • Cloze",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-05-09",
+    "duration.total_minutes": 167,
+    "id": 171423032,
+    "label_id": 1344431,
+    "note": "Data portal setup",
+    "project.id": 2906311,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-05-09",
+    "duration.total_minutes": 43,
+    "id": 171423077,
+    "label_id": 1344452,
+    "note": "landing page",
+    "project.id": 3154983,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-05-10",
+    "duration.total_minutes": 186,
+    "id": 171422996,
+    "label_id": 1344452,
+    "note": "landing page",
+    "project.id": 3154983,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-05-11",
+    "duration.total_minutes": 73,
+    "id": 171422988,
+    "label_id": 1339639,
+    "note": "Calendar • Fastmail",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-05-11",
+    "duration.total_minutes": 71,
+    "id": 171422972,
+    "label_id": 1339639,
+    "note": "Mitchell 1-on-1",
+    "project.id": 2906311,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-05-11",
+    "duration.total_minutes": 62,
+    "id": 171422982,
+    "label_id": 1339639,
+    "note": "Austin 1-on-1",
+    "project.id": 3078744,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-05-11",
+    "duration.total_minutes": 356,
+    "id": 171422933,
+    "label_id": 1344452,
+    "note": "Nerevu Ad Performance Dashboard Service • Dash",
+    "project.id": 3154983,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-05-12",
+    "duration.total_minutes": 32,
+    "id": 171422914,
+    "label_id": 1339639,
+    "note": "Fastmail",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-05-12",
+    "duration.total_minutes": 644,
+    "id": 171422911,
+    "label_id": 1344452,
+    "note": "email subscriptions",
+    "project.id": 3154983,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-05-13",
+    "duration.total_minutes": 732,
+    "id": 171422859,
+    "label_id": 1344431,
+    "note": "site updates",
+    "project.id": 3078744,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-05-13",
+    "duration.total_minutes": 139,
+    "id": 171422868,
+    "label_id": 1344452,
+    "note": "Thanks • Signup • 'kubwa' • unDraw • Nerevu • Sublime Text • Nerevu Ad Performance Dashboard Service",
+    "project.id": 3216781,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-05-14",
+    "duration.total_minutes": 17,
+    "id": 171422830,
+    "label_id": 1344521,
+    "note": "Google Sheets • First Mid Small Business Online Banking • Gusto",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-05-14",
+    "duration.total_minutes": 10,
+    "id": 171422831,
+    "label_id": 1339639,
+    "note": "Fastmail",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-05-14",
+    "duration.total_minutes": 645,
+    "id": 171422826,
+    "label_id": 1344431,
+    "note": "site updates",
+    "project.id": 3078744,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-05-15",
+    "duration.total_minutes": 56,
+    "id": 171422815,
+    "label_id": 1339640,
+    "note": "LISC Small Business Relief Grant Application • Business For All • nerevu_group_llc_paycheck_protection_program_report.pdf • State of IL Central Management Services (CMS) • Preview • Member Page – Black Business Alliance – Peoria Chapter • MacDown",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-05-15",
+    "duration.total_minutes": 71,
+    "id": 171422817,
+    "label_id": 1339639,
+    "note": "Fastmail",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-05-15",
+    "duration.total_minutes": 337,
+    "id": 171422808,
+    "label_id": 1344431,
+    "note": "site updates",
+    "project.id": 3078744,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-05-16",
+    "duration.total_minutes": 39,
+    "id": 171422800,
+    "label_id": 1339640,
+    "note": "System for Award Management • Illinois Procurement Gateway • - General Services • BusinessIntelligence • OmniFocus • KeePassXC",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-05-16",
+    "duration.total_minutes": 279,
+    "id": 171422795,
+    "label_id": 1344431,
+    "note": "site updates",
+    "project.id": 3078744,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-05-17",
+    "duration.total_minutes": 8,
+    "id": 171422791,
+    "label_id": 1339640,
+    "note": "View Notice: Illinois Procurement Bulletin/ Public Institutions of Higher Education • Register for a My Bulletin Account: Public Higher Education Bulletin • Public Higher Education Bulletin",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-05-17",
+    "duration.total_minutes": 201,
+    "id": 171422782,
+    "label_id": 1344431,
+    "note": "site updates",
+    "project.id": 3078744,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-05-17",
+    "duration.total_minutes": 56,
+    "id": 171422785,
+    "label_id": 1344431,
+    "note": "email subscriptions",
+    "project.id": 3154983,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-05-18",
+    "duration.total_minutes": 432,
+    "id": 171422759,
+    "label_id": 1344431,
+    "note": "site updates",
+    "project.id": 3078744,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-05-18",
+    "duration.total_minutes": 63,
+    "id": 171422774,
+    "label_id": 1339639,
+    "note": "Austin & Dawn",
+    "project.id": 3078744,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-05-18",
+    "duration.total_minutes": 104,
+    "id": 171422763,
+    "label_id": 1339639,
+    "note": "Mitchell 1-on-1",
+    "project.id": 3154983,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-05-19",
+    "duration.total_minutes": 46,
+    "id": 171420003,
+    "label_id": 1339639,
+    "note": "Fastmail",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-05-19",
+    "duration.total_minutes": 31,
+    "id": 171420036,
+    "label_id": 1340560,
+    "note": "nerevu/handbook • Nerevu Onboarding • Project settings • R&D • Nerevu Group • GitHub Help • nerevu/riko",
+    "project.id": 2954247,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-05-19",
+    "duration.total_minutes": 449,
+    "id": 171419750,
+    "label_id": 1344431,
+    "note": "site updates",
+    "project.id": 3078744,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-05-19",
+    "duration.total_minutes": 36,
+    "id": 171420015,
+    "label_id": 1339639,
+    "note": "Austin 1-on-1",
+    "project.id": 3078744,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-05-20",
+    "duration.total_minutes": 11,
+    "id": 171419685,
+    "label_id": 1340560,
+    "note": "Fullstory script installation support",
+    "project.id": 2906218,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-05-20",
+    "duration.total_minutes": 511,
+    "id": 171419554,
+    "label_id": 1344431,
+    "note": "site updates",
+    "project.id": 3078744,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-05-20",
+    "duration.total_minutes": 30,
+    "id": 171419696,
+    "label_id": 1344449,
+    "note": "nerevu/riko • UberConference • nerevu/riko: A Python stream processing engine modeled after Yahoo! Pipes",
+    "project.id": 3154983,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-05-21",
+    "duration.total_minutes": 609,
+    "id": 171419480,
+    "label_id": 1344431,
+    "note": "site updates",
+    "project.id": 3078744,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-05-22",
+    "duration.total_minutes": 7,
+    "id": 171419182,
+    "label_id": 1339639,
+    "note": "Activity Monitor • Finder",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-05-22",
+    "duration.total_minutes": 578,
+    "id": 171419167,
+    "label_id": 1344431,
+    "note": "site updates",
+    "project.id": 3078744,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-05-22",
+    "duration.total_minutes": 44,
+    "id": 171419175,
+    "label_id": 1339639,
+    "note": "Austin 1-on-1",
+    "project.id": 3078744,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-05-23",
+    "duration.total_minutes": 576,
+    "id": 171419145,
+    "label_id": 1344431,
+    "note": "site updates",
+    "project.id": 3078744,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-05-24",
+    "duration.total_minutes": 10,
+    "id": 171419132,
+    "label_id": 1339639,
+    "note": "Calendar • Fastmail",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-05-24",
+    "duration.total_minutes": 127,
+    "id": 171419128,
+    "label_id": 1344431,
+    "note": "site updates",
+    "project.id": 3078744,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-05-25",
+    "duration.total_minutes": 37,
+    "id": 171419094,
+    "label_id": 1339639,
+    "note": "Fastmail",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-05-25",
+    "duration.total_minutes": 30,
+    "id": 171419120,
+    "label_id": 1344452,
+    "note": "LinkedIn • Cloze",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-05-25",
+    "duration.total_minutes": 335,
+    "id": 171419080,
+    "label_id": 1344431,
+    "note": "site updates",
+    "project.id": 3078744,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-05-26",
+    "duration.total_minutes": 88,
+    "id": 171418998,
+    "label_id": 1339636,
+    "note": "express gzip ",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-05-26",
+    "duration.total_minutes": 45,
+    "id": 171419055,
+    "label_id": 1339639,
+    "note": "OmniFocus • Fastmail • Calendar",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-05-26",
+    "duration.total_minutes": 631,
+    "id": 171418985,
+    "label_id": 1344431,
+    "note": "site updates",
+    "project.id": 3078744,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-05-26",
+    "duration.total_minutes": 69,
+    "id": 171419013,
+    "label_id": 1340560,
+    "note": "Austin 1-on-1",
+    "project.id": 3078744,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-05-26",
+    "duration.total_minutes": 63,
+    "id": 171419037,
+    "label_id": 1340560,
+    "note": "Mitchell 1-on-1",
+    "project.id": 3154983,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-05-27",
+    "duration.total_minutes": 53,
+    "id": 171418876,
+    "label_id": 1339639,
+    "note": "UberConference • Fastmail",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-05-27",
+    "duration.total_minutes": 625,
+    "id": 171418830,
+    "label_id": 1344431,
+    "note": "Site updates",
+    "project.id": 3078744,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-05-28",
+    "duration.total_minutes": 94,
+    "id": 171418786,
+    "label_id": 1344451,
+    "note": "SCORE meeting",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-05-28",
+    "duration.total_minutes": 226,
+    "id": 171418769,
+    "label_id": 1344431,
+    "note": "Site updates",
+    "project.id": 3078744,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-05-28",
+    "duration.total_minutes": 21,
+    "id": 171418810,
+    "label_id": 1340560,
+    "note": "nerevu/kazeeki-api • Google Hangouts • nerevu/riko",
+    "project.id": 3154983,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-05-29",
+    "duration.total_minutes": 695,
+    "id": 171418730,
+    "label_id": 1344431,
+    "note": "Site updates",
+    "project.id": 3078744,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-05-29",
+    "duration.total_minutes": 51,
+    "id": 171418741,
+    "label_id": 1339639,
+    "note": "Austin 1-on-1",
+    "project.id": 3078744,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-05-30",
+    "duration.total_minutes": 181,
+    "id": 171418696,
+    "label_id": 1344431,
+    "note": "Site updates",
+    "project.id": 3078744,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-05-31",
+    "duration.total_minutes": 25,
+    "id": 171418685,
+    "label_id": 1344604,
+    "note": "General Services • Passwords • KeePassXC",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-05-31",
+    "duration.total_minutes": 196,
+    "id": 171418680,
+    "label_id": 1344431,
+    "note": "Site updates",
+    "project.id": 3078744,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-06-01",
+    "duration.total_minutes": 370,
+    "id": 171418641,
+    "label_id": 1344431,
+    "note": "Site updates",
+    "project.id": 3078744,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-06-01",
+    "duration.total_minutes": 90,
+    "id": 171418656,
+    "label_id": 1340560,
+    "note": "Mitchell 1-on-1",
+    "project.id": 3154983,
+    "user.id": 933370
+  }
+]
