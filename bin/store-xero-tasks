@@ -1,8 +1,6 @@
 #!/usr/bin/env bash -uo pipefail
 
-# curl 'http://localhost:5000/v1/xero-tasks?process=true&all=true&dictify=true' | jq '.result' > app/data/xero_tasks.json
-
 for PROJECT in $(jq -r 'to_entries[] | .key' app/data/xero_projects.json); do
     SHORT=`echo $PROJECT | cut -d'-' -f1`
-    curl "http://localhost:5000/v1/xero-tasks?process=true&id=${PROJECT}" | jq '.result' > "app/data/xero_${SHORT}_tasks.json"
+    curl "http://localhost:5000/v1/xero-projecttasks?id=${PROJECT}" | jq '.result' > "app/data/xero_${SHORT}_tasks.json"
 done
