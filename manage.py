@@ -3,23 +3,29 @@
 # vim: sw=4:ts=4:expandtab
 
 """ A script to manage development tasks """
-from os import path as p
+from os import path as p, getenv, environ
 from subprocess import call, check_call, CalledProcessError
-from urllib.parse import urlsplit, urlencode, parse_qs, urlparse
-from datetime import datetime as dt, timedelta
+from urllib.parse import urlparse
 from itertools import count, chain
 from json import load, dump
 from json.decoder import JSONDecodeError
-from pathlib import Path
 from sys import exit
 
 import pygogo as gogo
+import click
 
 from flask import current_app as app
-from flask_script import Server, Manager
-from requests.exceptions import ConnectionError
+from click import Choice
+from flask.cli import FlaskGroup, pass_script_info
+from flask.config import Config
 
-from app import create_app, cache, services
+from config import __APP_NAME__, __AUTHOR_EMAIL__
+
+from app import create_app, services
+from app.helpers import configure
+from app.authclient import get_auth_client, get_response
+from app.routes.auth import store as _store
+
 from app.api import (
     sync_results_p,
     timely_users_p,
@@ -39,12 +45,50 @@ from app.api import (
 from app.utils import load_path
 
 BASEDIR = p.dirname(__file__)
-DEF_PORT = 5000
+DEF_WHERE = ["app", "manage.py", "config.py"]
 
-manager = Manager(create_app)
-manager.add_option("-m", "--cfgmode", dest="config_mode", default="Development")
-manager.add_option("-f", "--cfgfile", dest="config_file", type=p.abspath)
-manager.main = manager.run  # Needed to do `manage <command>` from the cli
+hdlr_kwargs = {
+    "subject": f"{__APP_NAME__} notification",
+    "recipients": [__AUTHOR_EMAIL__],
+}
+
+if getenv("MAILGUN_SMTP_PASSWORD"):
+    # NOTE: Sandbox domains are restricted to authorized recipients only.
+    # https://help.mailgun.com/hc/en-us/articles/217531258
+    def_username = f"postmaster@{getenv('MAILGUN_DOMAIN')}"
+    mailgun_kwargs = {
+        "host": getenv("MAILGUN_SMTP_SERVER", "smtp.mailgun.org"),
+        "port": getenv("MAILGUN_SMTP_PORT", 587),
+        "sender": f"notifications@{getenv('MAILGUN_DOMAIN')}",
+        "username": getenv("MAILGUN_SMTP_LOGIN", def_username),
+        "password": getenv("MAILGUN_SMTP_PASSWORD"),
+    }
+
+    hdlr_kwargs.update(mailgun_kwargs)
+
+high_hdlr = gogo.handlers.email_hdlr(**hdlr_kwargs)
+logger = gogo.Gogo(__name__, high_hdlr=high_hdlr).logger
+
+
+def log(message=None, ok=True, r=None, **kwargs):
+    if r is not None:
+        ok = r.ok
+
+        try:
+            message = r.json().get("message")
+        except JSONDecodeError:
+            message = r.text
+
+    if message and ok:
+        logger.info(message)
+    elif message:
+        try:
+            logger.error(message)
+        except ConnectionRefusedError:
+            logger.info("Connect refused. Make sure an SMTP server is running.")
+            logger.info("Try running `sudo postfix start`.")
+            logger.info(message)
+
 
 # data
 timely_users = load_path(timely_users_p, {})
@@ -75,65 +119,43 @@ PRUNINGS = {
     "tasks": {"mapping": tasks, "save": tasks_p},
 }
 
-logger = gogo.Gogo(__name__, monolog=True).logger
-get_logger = lambda ok: logger.info if ok else logger.error
+
+@click.group(cls=FlaskGroup, create_app=create_app)
+@click.option("-m", "--config-mode", default="Development")
+@click.option("-f", "--config-file", type=p.abspath)
+@click.option("-e", "--config-envvar")
+@pass_script_info
+def manager(script_info, **kwargs):
+    flask_config = Config(BASEDIR)
+    configure(flask_config, **kwargs)
+    script_info.flask_config = flask_config
+
+    if flask_config.get("ENV"):
+        environ["FLASK_ENV"] = flask_config["ENV"]
+
+    if flask_config.get("DEBUG"):
+        environ["FLASK_DEBUG"] = str(flask_config["DEBUG"]).lower()
 
 
-def log_resp(r, prefix):
-    msg = r.json().get("message")
-    message = "{}{}".format(prefix, msg) if prefix else msg
-
-    if message:
-        get_logger(r.ok)(message)
-
-
-def notify_or_log(ok, message):
-    get_logger(ok)(message)
+@manager.command()
+@click.pass_context
+def serve(ctx):
+    """Check staged changes for lint errors"""
+    print("Deprecated. Use `manage run` instead.")
+    # manager.get_command(ctx, 'run')()
 
 
-@manager.option("-h", "--host", help="The server host")
-@manager.option("-p", "--port", help="The server port")
-@manager.option("-t", "--threaded", help="Run multiple threads", action="store_true")
-def runserver(**kwargs):
-    # Overriding the built-in `runserver` behavior
-    """Runs the flask development server"""
-    with app.app_context():
-        kwargs["threaded"] = app.config["PARALLEL"]
-
-        if app.config.get("SERVER"):
-            parsed = urlsplit(app.config["SERVER"])
-            host, port = parsed.netloc, parsed.port or DEF_PORT
-        else:
-            host, port = app.config["HOST"], DEF_PORT
-
-        kwargs.setdefault("host", host)
-        kwargs.setdefault("port", port)
-
-        server = Server(**kwargs)
-        args = [
-            app,
-            server.host,
-            server.port,
-            server.use_debugger,
-            server.use_reloader,
-            server.threaded,
-            server.processes,
-            server.passthrough_errors,
-        ]
-
-        server(*args)
+@manager.command()
+@click.pass_context
+def help(ctx):
+    """Check staged changes for lint errors"""
+    commands = ", ".join(manager.list_commands(ctx))
+    print(f"Usage: manage <command> [OPTIONS]")
+    print(f"commands: {commands}")
 
 
-@manager.option("-h", "--host", help="The server host")
-@manager.option("-p", "--port", help="The server port")
-@manager.option("-t", "--threaded", help="Run multiple threads", action="store_true")
-def serve(**kwargs):
-    # Alias for `runserver`
-    """Runs the flask development server"""
-    runserver(**kwargs)
-
-
-@manager.option("-f", "--file", help="The mapping file to prune", default="users")
+@manager.command()
+@click.option("-f", "--file", help="The mapping file to prune", default="users")
 def prune(**kwargs):
     """Remove duplicated and outdated mapping entries"""
     item_names = ["xero", "timely"]
@@ -185,9 +207,10 @@ def prune(**kwargs):
     dump(results, pruning["save"].open(mode="w"), indent=2)
 
 
-@manager.option("-m", "--method", help="The HTTP method", default="get")
-@manager.option("-r", "--resource", help="The API Resource", default="time")
-def test(method=None, resource=None, **kwargs):
+@manager.command()
+@click.option("-m", "--method", help="The HTTP method", default="get")
+@click.option("-r", "--resource", help="The API Resource", default="time")
+def test_oauth(method=None, resource=None, **kwargs):
     project_id = "f9d0e04b-f07c-423d-8975-418159180dab"
 
     time_data = {
@@ -264,7 +287,7 @@ def test(method=None, resource=None, **kwargs):
     if method == "post":
         kwargs[PAYLOAD[key]] = data
 
-    response = get_realtime_response(url, xero, **kwargs)
+    response = get_response(url, xero, **kwargs)
 
     if response.get("message"):
         print(response["message"])
@@ -273,12 +296,13 @@ def test(method=None, resource=None, **kwargs):
         print(response["result"])
 
 
-@manager.option("-p", "--project-id", help="The Timely Project ID", default=2389295)
-@manager.option(
+@manager.command()
+@click.option("-p", "--project-id", help="The Timely Project ID", default=2389295)
+@click.option(
     "-s", "--start", help="The Timely event start position", type=int, default=0
 )
-@manager.option("-e", "--end", help="The Timely event end position", type=int)
-@manager.option("-d", "--dry-run", help="Perform a dry run", action="store_true")
+@click.option("-e", "--end", help="The Timely event end position", type=int)
+@click.option("-d", "--dry-run/--no-dry-run", help="Perform a dry run", default=False)
 def sync(**kwargs):
     """Sync Timely events with Xero time entries"""
     sync_results = load(sync_results_p.open())
@@ -370,17 +394,25 @@ def sync(**kwargs):
     exit(len(skipped_events) + len(unpatched_events))
 
 
-@manager.command
+@manager.command()
 def check():
     """Check staged changes for lint errors"""
     exit(call(p.join(BASEDIR, "helpers", "check-stage")))
 
 
-@manager.option("-w", "--where", help="Modules to check")
+@manager.command()
+@click.option("-w", "--where", help="Requirement file", default=None)
+def test(where):
+    """Run nose tests"""
+    cmd = "nosetests -xvw %s" % where if where else "nosetests -xv"
+    return call(cmd, shell=True)
+
+
+@manager.command()
+@click.option("-w", "--where", help="Modules to check")
 def prettify(where):
     """Prettify code with black"""
-    def_where = ["app", "manage.py", "config.py"]
-    extra = where.split(" ") if where else def_where
+    extra = where.split(" ") if where else DEF_WHERE
 
     try:
         check_call(["black"] + extra)
@@ -388,12 +420,12 @@ def prettify(where):
         exit(e.returncode)
 
 
-@manager.option("-w", "--where", help="Modules to check")
-@manager.option("-s", "--strict", help="Check with pylint", action="store_true")
+@manager.command()
+@click.option("-w", "--where", help="Modules to check")
+@click.option("-s", "--strict/--no-strict", help="Check with pylint", default=False)
 def lint(where, strict):
     """Check style with linters"""
-    def_where = ["app", "tests", "manage.py", "config.py"]
-    extra = where.split(" ") if where else def_where
+    extra = where.split(" ") if where else DEF_WHERE
 
     args = ["pylint", "--rcfile=tests/standard.rc", "-rn", "-fparseable", "app"]
 
@@ -404,14 +436,16 @@ def lint(where, strict):
         exit(e.returncode)
 
 
-@manager.option("-r", "--remote", help="the heroku branch", default="staging")
+@manager.command()
+@click.option("-r", "--remote", help="the heroku branch", default="staging")
 def add_keys(remote):
     """Deploy staging app"""
     cmd = "heroku keys:add ~/.ssh/id_rsa.pub --remote {}"
     check_call(cmd.format(remote).split(" "))
 
 
-@manager.option("-r", "--remote", help="the heroku branch", default="staging")
+@manager.command()
+@click.option("-r", "--remote", help="the heroku branch", default="staging")
 def deploy(remote):
     """Deploy staging app"""
     branch = "master" if remote == "production" else "features"
@@ -419,7 +453,7 @@ def deploy(remote):
     check_call(cmd.format(branch).split(" "))
 
 
-@manager.command
+@manager.command()
 def require():
     """Create requirements.txt"""
     cmd = "pip freeze -l | grep -vxFf dev-requirements.txt "

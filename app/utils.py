@@ -8,20 +8,20 @@
 import re
 import hmac
 
-from json import loads, dumps
+from json import load, loads, dumps
 from ast import literal_eval
 from base64 import b64encode
 from datetime import datetime as dt, date, timedelta
-from time import monotonic, gmtime
+from time import gmtime
 from functools import wraps, partial
 from hashlib import md5
 from http.client import responses
+from json.decoder import JSONDecodeError
 
 import pygogo as gogo
 
 from flask import make_response, request
 from dateutil.relativedelta import relativedelta
-from urllib.error import URLError
 
 from meza import fntools as ft, convert as cv
 from config import Config
@@ -133,7 +133,9 @@ def make_cache_key(*args, **kwargs):
         (obj): Flask request url
     """
     mimetype = get_mimetype(request)
-    return f"{request.method}:{request.full_path}"
+    cache_key = f"{mimetype}:{request.full_path}"
+    logger.debug(cache_key)
+    return cache_key
 
 
 def fmt_elapsed(elapsed):
@@ -173,15 +175,12 @@ def cache_header(max_age, **ckwargs):
 
     If max_age is 0, caching will be disabled.
     Otherwise, caching headers are set to expire in now + max_age seconds
-    If round_to_minute is True, then it will always expire at the start of a
-    minute (seconds = 0)
 
-    Example usage:
-
-    @app.route('/map')
-    @cache_header(60)
-    def index():
-        return render_template('index.html')
+    Examples:
+    >>> @app.route('/map')
+    >>> @cache_header(60)
+    >>> def index():
+    ...     return render_template('index.html')
 
     """
 
@@ -239,14 +238,13 @@ def get_mimetype(request):
     return mimetype
 
 
+def _title_case(word):
+    return f"{word[0].upper()}{word[1:].lower()}"
+
+
 def title_case(text):
     text_words = text.split(" ")
-    return " ".join(
-        [
-            (lambda word: f"{word[0].upper()}{word[1:].lower()}")(word)
-            for word in text_words
-        ]
-    )
+    return " ".join(map(_title_case, text_words))
 
 
 def get_common_rel(resourceName, method):
@@ -283,7 +281,7 @@ def get_params(rule):
 
     Examples:
         >>> rule = '/v1/random_resource/<string:path>/<status_type>'
-        >>> get_params(rule)
+        >>> list(get_params(rule))
         ['path', 'status_type']
     """
     # param regexes
@@ -292,18 +290,20 @@ def get_params(rule):
     either_param = param_with_colon + r"|" + param_no_colon
 
     parameter_matches = re.findall(either_param, rule)
-    return ["".join(match_tuple) for match_tuple in parameter_matches]
+    return map("".join, parameter_matches)
 
 
 def get_rel(href, method, rule):
     """ Returns the `rel` of an endpoint (see `Returns` below).
 
-    If the rule is a common rule as specified in the utils.py file, then that rel is returned.
+    If the rule is a common rule as specified in the utils.py file, then that rel is
+    returned.
 
-    If the current url is the same as the href for the current route, `self` is returned.
+    If the current url is the same as the href for the current route, `self` is
+    returned.
 
     Args:
-        href (str): the full url of the endpoint (e.g. https://alegna-api.nerevu.com/v1/data)
+        href (str): the full endpoint url (e.g. https://alegna-api.nerevu.com/v1/data)
         method (str): an HTTP method (e.g. 'GET' or 'DELETE')
         rule (str): the endpoint path (e.g. '/v1/data/<int:id>')
 
@@ -337,13 +337,15 @@ def get_rel(href, method, rule):
         # add the method if not common or GET
         if not rel:
             rel = resourceName
+
             if method != "GET":
                 rel = f"{rel}_{method.lower()}"
 
         # get params and add to rel
         params = get_params(rule)
-        if params:
-            joined_params = "_".join(params)
+        joined_params = "_".join(params)
+
+        if joined_params:
             rel = f"{rel}_{joined_params}"
 
     return rel
@@ -361,8 +363,11 @@ def gen_links(rules):
     """ Makes a generator of all endpoints, their methods,
     and their rels (strings representing purpose of the endpoint)
 
-    Yields:
-        (dict): Example - {"rel": "data", "href": f"https://alegna-api.nerevu.com/v1/data", "method": "GET"}
+    Yields: (dict)
+
+    Examples:
+    >>> gen_links(rules)
+    {"rel": "data", "href": f"https://alegna-api.nerevu.com/v1/data", "method": "GET"}
     """
     url_root = get_url_root()
 
@@ -392,10 +397,17 @@ def parse_kwargs(app):
     return kwargs
 
 
+def parse_request():
+    values = request.values or {}
+    json = request.json or {}
+    kwargs = {**values, **json}
+    return {k: parse(v) for k, v in kwargs.items()}
+
+
 # https://github.com/bloomberg/python-github-webhook
 # https://github.com/carlos-jenkins/python-github-webhooks
 # https://github.com/nickfrostatx/flask-hookserver
-def check_signature(digestmod="sha256", signature_header="", webhook_secret="", **kwargs):
+def check_signature(digest="sha256", signature_header="", webhook_secret="", **kwargs):
     if signature_header and webhook_secret:
         signature = request.headers.get(signature_header).encode("utf-8")
 
@@ -416,3 +428,14 @@ def check_signature(digestmod="sha256", signature_header="", webhook_secret="", 
         is_valid = False
 
     return is_valid
+
+
+def load_path(path, default=None):
+    default = default or {}
+
+    try:
+        contents = load(path.open())
+    except (JSONDecodeError, FileNotFoundError):
+        contents = default
+
+    return contents
