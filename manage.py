@@ -28,21 +28,23 @@ from app.routes.auth import store as _store
 
 from app.api import (
     sync_results_p,
-    timely_users_p,
-    timely_events_p,
-    timely_projects_p,
-    timely_tasks_p,
-    xero_users_p,
-    xero_projects_p,
-    projects_p,
-    users_p,
-    tasks_p,
-    HEADERS,
-    get_auth_client,
-    get_realtime_response,
+    Contacts,
+    Inventory,
+    Projects,
+    ProjectTasks,
+    ProjectTime,
+    Tasks,
+    Time,
+    Users,
 )
 
-from app.utils import load_path
+_timely_users = Users("TIMELY", dictify=True, dry_run=True)
+_timely_events = Time("TIMELY", dictify=True, dry_run=True)
+_timely_projects = Projects("TIMELY", dictify=True, dry_run=True)
+_timely_tasks = Tasks("TIMELY", dictify=True, dry_run=True)
+_xero_users = Users("XERO", dictify=True, dry_run=True)
+_xero_projects = Projects("XERO", dictify=True, dry_run=True)
+_xero_project_tasks = ProjectTasks("XERO", dictify=True, dry_run=True)
 
 BASEDIR = p.dirname(__file__)
 DEF_WHERE = ["app", "manage.py", "config.py"]
@@ -91,17 +93,20 @@ def log(message=None, ok=True, r=None, **kwargs):
 
 
 # data
-timely_users = load_path(timely_users_p, {})
-timely_events = load_path(timely_events_p, {})
-timely_projects = load_path(timely_projects_p, {})
-timely_tasks = load_path(timely_tasks_p, {})
-xero_users = load_path(xero_users_p, {})
-xero_projects = load_path(xero_projects_p, {})
+timely_users = _timely_users.data
+timely_events = _timely_events.data
+timely_projects = _timely_projects.data
+timely_tasks = _timely_tasks.data
+xero_users = _xero_users.data
+xero_projects = _xero_projects.data
 
 # mappings
-projects = load(projects_p.open())
-users = load(users_p.open())
-tasks = load(tasks_p.open())
+projects = _xero_projects.mappings
+projects_p = _xero_projects.mappings_p
+users = _xero_users.mappings
+users_p = _xero_users.mappings_p
+tasks = _xero_project_tasks.mappings
+tasks_p = _xero_project_tasks.mappings_p
 
 PRUNINGS = {
     "users": {
@@ -171,10 +176,10 @@ def prune(**kwargs):
             if is_tasks:
                 timely_project_id = str(item["timely"]["project"])
                 timely_task_id = str(item["timely"]["task"])
-                timely_proj_tasks_p = Path(
-                    f"app/data/timely_{timely_project_id}_tasks.json"
+                _timely_project_tasks = ProjectTasks(
+                    "TIMELY", dictify=True, dry_run=True, rid=timely_project_id
                 )
-                timely_proj_tasks = load_path(timely_proj_tasks_p, [])
+                timely_proj_tasks = _timely_project_tasks.data
                 timely_task_ids = {str(t["id"]) for t in timely_proj_tasks}
                 has_timely_task = timely_task_id in timely_task_ids
 
@@ -182,10 +187,11 @@ def prune(**kwargs):
                     continue
 
                 xero_project_id = item["xero"]["project"]
-                trunc_id = xero_project_id.split("-")[0]
                 xero_task_id = item["xero"]["task"]
-                xero_proj_tasks_p = Path(f"app/data/xero_{trunc_id}_tasks.json")
-                xero_proj_tasks = load_path(xero_proj_tasks_p, [])
+                _xero_project_tasks = ProjectTasks(
+                    "XERO", dictify=True, dry_run=True, rid=xero_project_id
+                )
+                xero_proj_tasks = _xero_project_tasks.data
                 xero_task_ids = {t["taskId"] for t in xero_proj_tasks}
                 valid = xero_task_id in xero_task_ids
             else:
@@ -323,15 +329,19 @@ def sync(**kwargs):
     for pos in _range:
         result = services.add_xero_time(position=pos, **kwargs)
 
-        if result["eof"]:
-            break
-        elif result["ok"] or result["conflict"]:
+        if result["ok"] or result["conflict"]:
             added_events.add(str(result["event_id"]))
             message = result["message"] or f"Added event {result['event_id']}"
             logger.info(f"- {message}")
-        elif result.get("event_id"):
-            skipped_events.add(result["event_id"])
+        else:
             message = result["message"] or "Unknown error!"
+
+            if result["eof"]:
+                logger.info(f"- {message}")
+                break
+            elif result.get("event_id"):
+                skipped_events.add(result["event_id"])
+
             logger.info(f"- {message}")
 
     num_added_events = len(added_events)
@@ -351,23 +361,23 @@ def sync(**kwargs):
             if result["message"]:
                 logger.info(f"- {result['message']}")
             elif event:
-                user_name = timely_users.get(str(event["user.id"]), {}).get(
-                    "name", "Unknown"
-                )
-                project_name = timely_projects.get(str(event["project.id"]), {}).get(
+                user_id = str(event["user.id"])
+                project_id = str(event["project.id"])
+                user_name = timely_users.get(user_id, {}).get("name", "Unknown")
+                project_name = timely_projects.get(project_id, {}).get(
                     "name", "Unknown"
                 )
                 task = timely_tasks.get(str(event["label_ids[0]"]), {})
                 task_name = task.get("name", "Unknown").split(" ")[0]
                 event_time = event["duration.total_minutes"]
                 event_day = event["day"]
-                logger.debug(
-                    f"- {user_name} did {event_time}m of {task_name} on {event_day} for {project_name}"
-                )
+                msg = f"- {user_name} did {event_time}m of {task_name} on {event_day} "
+                msg += f"for {project_name}"
+                logger.debug(msg)
             else:
-                logger.info(
-                    f"- Event {event_id} patched, but not found in {timely_events_p}."
-                )
+                msg = f"- Event {event_id} patched, but not found in "
+                msg += f"{timely_events.data_p}."
+                logger.info(msg)
         else:
             unpatched_events.add(event_id)
             message = result["message"] or "Unknown error!"
@@ -386,9 +396,9 @@ def sync(**kwargs):
             }
 
     logger.info("------------------------------------")
-    logger.info(
-        f"Of {num_total_events} events: {num_added_events} added and {num_patched_events} patched"
-    )
+    msg = f"Of {num_total_events} events: {num_added_events} added and "
+    msg += f"{num_patched_events} patched"
+    logger.info(msg)
     logger.info("------------------------------------")
     dump(sync_results, sync_results_p.open(mode="w"), indent=2)
     exit(len(skipped_events) + len(unpatched_events))
@@ -398,6 +408,39 @@ def sync(**kwargs):
 def check():
     """Check staged changes for lint errors"""
     exit(call(p.join(BASEDIR, "helpers", "check-stage")))
+
+
+collection_map = {
+    "users": Users,
+    "tasks": Tasks,
+    "contacts": Contacts,
+    "inventory": Inventory,
+    "time": Time,
+    "projects": Projects,
+    "projecttasks": ProjectTasks,
+    "projecttime": ProjectTime,
+}
+
+
+@manager.command()
+@click.option(
+    "-p",
+    "--prefix",
+    type=Choice(["timely", "xero"], case_sensitive=False),
+    default="xero",
+)
+@click.option(
+    "-c",
+    "--collection",
+    type=Choice(collection_map, case_sensitive=False),
+    default="users",
+)
+@click.option("-i", "--rid", help="resource ID")
+@click.option("-d", "--dictify/--no-dictify", default=False)
+def store(prefix, collection, **kwargs):
+    """Save user info to cache"""
+    Collection = collection_map[collection.lower()]
+    _store(prefix.upper(), Collection, **kwargs)
 
 
 @manager.command()

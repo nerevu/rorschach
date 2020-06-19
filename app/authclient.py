@@ -6,12 +6,23 @@
     Provides OAuth authentication functionality
 """
 from datetime import timedelta, datetime as dt
-from urllib.parse import urlencode
+from urllib.parse import urlencode, urlparse, parse_qs, parse_qsl
+from itertools import chain
+from json import JSONDecodeError
+from base64 import b64encode
 
 import pygogo as gogo
 import gspread
 
-from flask import request, session, g
+from flask import (
+    request,
+    session,
+    redirect,
+    g,
+    current_app as app,
+    after_this_request,
+    url_for,
+)
 from oauthlib.oauth2 import TokenExpiredError
 from oauth2client.service_account import ServiceAccountCredentials
 from requests_oauthlib import OAuth1Session, OAuth2Session
@@ -19,7 +30,8 @@ from requests_oauthlib.oauth1_session import TokenRequestDenied
 
 from config import Config
 from app import cache
-from app.utils import uncache_header
+from app.utils import uncache_header, make_cache_key, jsonify, get_links, HEADERS
+from app.headless import headless_auth
 
 logger = gogo.Gogo(__name__, monolog=True).logger
 
@@ -27,6 +39,11 @@ SET_TIMEOUT = Config.SET_TIMEOUT
 OAUTH_EXPIRY_SECONDS = 3600
 EXPIRATION_BUFFER = 30
 RENEW_TIME = 60
+
+
+def _clear_cache():
+    cache.delete(make_cache_key())
+
 
 class AuthClient(object):
     def __init__(self, prefix, client_id, client_secret, **kwargs):
@@ -40,7 +57,7 @@ class AuthClient(object):
         self.authorization_base_url = kwargs.get("authorization_base_url")
         self.redirect_uri = kwargs.get("redirect_uri")
         self.api_base_url = kwargs.get("api_base_url")
-        self.api_subkey = kwargs.get("api_subkey")
+        self.domain = kwargs.get("domain")
         self.token_url = kwargs.get("token_url")
         self.account_id = kwargs.get("account_id")
         self.state = kwargs.get("state")
@@ -58,7 +75,7 @@ class MyAuth2Client(AuthClient):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.refresh_url = kwargs["refresh_url"]
-        self.revoke_url = kwargs["revoke_url"]
+        self.revoke_url = kwargs.get("revoke_url")
         self.scope = kwargs.get("scope", "")
         self.tenant_id = kwargs.get("tenant_id", "")
         self.realm_id = kwargs.get("realm_id")
@@ -77,16 +94,18 @@ class MyAuth2Client(AuthClient):
         except TokenExpiredError:
             # this path shouldn't be reached...
             logger.warning(f"{self.prefix} token expired. Attempting to renew...")
-            self.renew_token()
+            self.renew_token("TokenExpiredError")
         except Exception as e:
             self.error = str(e)
-            logger.error(f"{self.prefix} error authenticating: {self.error}", exc_info=True)
+            logger.error(
+                f"{self.prefix} error authenticating: {self.error}", exc_info=True
+            )
         else:
             if self.verified:
                 logger.info(f"{self.prefix} successfully authenticated!")
             else:
                 logger.warning(f"{self.prefix} not authorized. Attempting to renew...")
-                self.renew_token()
+                self.renew_token("init")
 
     @property
     def oauth_kwargs(self):
@@ -128,9 +147,9 @@ class MyAuth2Client(AuthClient):
 
     @token.setter
     def token(self, value):
-        self.access_token = value["access_token"]
-        self.refresh_token = value["refresh_token"]
-        self.token_type = value["token_type"]
+        self.access_token = value.get("access_token")
+        self.refresh_token = value.get("refresh_token")
+        self.token_type = value.get("token_type")
         self.created_at = value.get("created_at", dt.now())
         self.expires_in = value.get("expires_in", SET_TIMEOUT)
         self.expires_at = dt.now() + timedelta(seconds=self.expires_in)
@@ -170,28 +189,28 @@ class MyAuth2Client(AuthClient):
     def update_token(self, token):
         self.token = token
 
-    def renew_token(self):
+    def renew_token(self, source):
+        logger.debug(f"renew_token from {source}")
         failed = cache.get(f"{self.prefix}_headless_auth_failed")
         has_username = app.config[f"{self.prefix}_USERNAME"]
         has_password = app.config[f"{self.prefix}_PASSWORD"]
         has_performed_headless_auth = cache.get(f"{self.prefix}_headless_auth")
+        failed_or_tried = failed or has_performed_headless_auth
 
         if self.refresh_token:
             try:
                 logger.info(f"Renewing token using {self.refresh_url}…")
 
-                if self.prefix is "XERO":
+                if self.prefix == "XERO":
                     # https://developer.xero.com/documentation/oauth2/auth-flow
-                    _authorization = f"{self.client_id}:{self.client_secret}".encode('utf-8')
-                    authorization = b64encode(_authorization).decode('utf-8')
-                    headers = { 'Authorization': f"Basic {authorization}" }
+                    authorization = f"{self.client_id}:{self.client_secret}"
+                    encoded = b64encode(authorization.encode("utf-8")).decode("utf-8")
+                    headers = {"Authorization": f"Basic {encoded}"}
                 else:
-                    headers = None
+                    headers = {}
 
                 token = self.oauth_session.refresh_token(
-                    self.refresh_url,
-                    self.refresh_token,
-                    headers=headers
+                    self.refresh_url, self.refresh_token, headers=headers
                 )
             except Exception as e:
                 self.error = f"Failed to renew token: {str(e)} Please re-authenticate!"
@@ -208,12 +227,12 @@ class MyAuth2Client(AuthClient):
                 else:
                     self.error = "Failed to renew token!"
                     logger.error(self.error)
-        elif has_username and has_password and not (failed or has_performed_headless_auth):
+        elif has_username and has_password and not failed_or_tried:
             logger.info(f"Attempting to renew using headless browser")
             cache.set(f"{self.prefix}_headless_auth", True)
             headless_auth(self.authorization_url[0], self.prefix)
         else:
-            error = "No refresh token present. Please re-authenticate!"
+            error = f"No {self.prefix} refresh token present. Please re-authenticate!"
             logger.error(error)
             self.error = error
 
@@ -224,8 +243,8 @@ class MyAuth2Client(AuthClient):
         # https://developer.intuit.com/app/developer/qbo/docs/develop/authentication-and-authorization/oauth-2.0#revoke-token-disconnect
         try:
             response = {
-                "status_code": 500,
-                "message": "This endpoint doesn't work currently.",
+                "status_code": 404,
+                "message": "This endpoint is not yet implemented.",
             }
         except Exception:
             message = "Can't revoke authentication rights because the app is"
@@ -235,7 +254,11 @@ class MyAuth2Client(AuthClient):
         return response
 
     def save(self):
-        self.state = session.get(f"{self.prefix}_state") or self.state
+        try:
+            self.state = session.get(f"{self.prefix}_state") or self.state
+        except RuntimeError:
+            pass
+
         cache.set(f"{self.prefix}_state", self.state)
         cache.set(f"{self.prefix}_access_token", self.access_token)
         cache.set(f"{self.prefix}_refresh_token", self.refresh_token)
@@ -245,9 +268,12 @@ class MyAuth2Client(AuthClient):
         cache.set(f"{self.prefix}_realm_id", self.realm_id)
 
     def restore(self):
-        self.state = cache.get(f"{self.prefix}_state") or session.get(
-            f"{self.prefix}_state"
-        )
+        try:
+            def_state = session.get(f"{self.prefix}_state")
+        except RuntimeError:
+            def_state = None
+
+        self.state = cache.get(f"{self.prefix}_state") or def_state
         self.access_token = cache.get(f"{self.prefix}_access_token")
         self.refresh_token = cache.get(f"{self.prefix}_refresh_token")
         self.created_at = cache.get(f"{self.prefix}_created_at")
@@ -382,7 +408,8 @@ class MyAuth1Client(AuthClient):
 
         self.verified = cache.get(f"{self.prefix}_verified")
 
-    def renew_token(self):
+    def renew_token(self, source):
+        logger.debug(f"renew_token from {source}")
         self.oauth_token = None
         self.oauth_token_secret = None
         self.verified = False
@@ -411,7 +438,7 @@ class MyServiceAuthClient(AuthClient):
 
 
 def get_auth_client(prefix, state=None, **kwargs):
-    cache.set(f'{prefix}_headless_auth_failed', False)
+    cache.set(f"{prefix}_headless_auth_failed", False)
     auth_client_name = f"{prefix}_auth_client"
 
     if auth_client_name not in g:
@@ -449,7 +476,7 @@ def get_auth_client(prefix, state=None, **kwargs):
                 "authorization_base_url": kwargs[f"{prefix}_AUTHORIZATION_BASE_URL"],
                 "token_url": kwargs[f"{prefix}_TOKEN_URL"],
                 "refresh_url": kwargs[f"{prefix}_REFRESH_URL"],
-                "revoke_url": kwargs[f"{prefix}_REVOKE_URL"],
+                "revoke_url": kwargs.get(f"{prefix}_REVOKE_URL"),
                 "scope": kwargs.get(f"{prefix}_SCOPES"),
                 "tenant_id": kwargs.get("tenant_id") or "",
                 "realm_id": kwargs.get("realm_id") or "",
@@ -460,46 +487,45 @@ def get_auth_client(prefix, state=None, **kwargs):
             **_auth_kwargs,
             "oauth_version": oauth_version,
             "api_base_url": kwargs[f"{prefix}_API_BASE_URL"],
-            "api_subkey": kwargs.get(f"{prefix}_API_SUBKEY"),
-            "auth_params": kwargs.get(f"{prefix}_AUTH_PARAMS"),
             "redirect_uri": kwargs.get(f"{prefix}_REDIRECT_URI"),
+            "domain": kwargs.get(f"{prefix}_API_DOMAIN"),
             "account_id": kwargs.get(f"{prefix}_ACCOUNT_ID"),
-            "headers": kwargs.get(f"{prefix}_HEADERS"),
+            "auth_params": kwargs.get(f"{prefix}_AUTH_PARAMS", {}),
+            "headers": kwargs.get(f"{prefix}_HEADERS", {}),
         }
 
         client = MyAuthClient(prefix, client_id, client_secret, **auth_kwargs)
 
-        if cache.get(f'{prefix}_restore_from_headless'):
-            client.restore()
-            client.renew_token()
-            cache.set(f"{prefix}_restore_from_headless", False)
+        # if cache.get(f"{prefix}_restore_from_headless"):
+        #     client.restore()
+        #     client.renew_token()
+        #     cache.set(f"{prefix}_restore_from_headless", False)
 
         setattr(g, auth_client_name, client)
 
     client = g.get(auth_client_name)
 
     if client.expires_in < RENEW_TIME:
-        client.renew_token()
+        client.renew_token("expired")
 
     return g.get(auth_client_name)
 
 
-def get_response(url, client, params=None, result_fields=None, **kwargs):
-    result_fields = result_fields or []
+def get_response(url, client, params=None, **kwargs):
     ok = False
     unscoped = False
 
-    if client.error:
-        logger.debug('client.error')
-        response = {"message": client.error, "status_code": 500}
-    elif not client.verified:
-        logger.debug('not client.verified')
-        response = {"message": "Client not authorized.", "status_code": 401}
-    elif client.expired:
-        logger.debug('client.expired')
+    if client.expired:
+        logger.debug("client.expired")
         response = {"message": "Token Expired.", "status_code": 401}
+    elif not client.verified:
+        logger.debug("not client.verified")
+        response = {"message": "Client not authorized.", "status_code": 401}
+    elif client.error:
+        logger.debug("client.error")
+        response = {"message": client.error, "status_code": 500}
     else:
-        logger.debug('client.ok')
+        logger.debug("client.ok")
         params = params or {}
         data = kwargs.get("data", {})
         json = kwargs.get("json", {})
@@ -513,11 +539,12 @@ def get_response(url, client, params=None, result_fields=None, **kwargs):
         try:
             json = result.json()
         except JSONDecodeError:
-            logger.debug('JSONDecodeError')
+            logger.debug("JSONDecodeError")
             status_code = 500 if result.status_code == 200 else result.status_code
 
             if "<!DOCTYPE html>" in result.text:
                 message = "Got HTML response."
+                logger.debug(result)
             elif "oauth_problem_advice" in result.text:
                 message = parse_qs(result.text)["oauth_problem_advice"][0]
             else:
@@ -525,13 +552,21 @@ def get_response(url, client, params=None, result_fields=None, **kwargs):
 
             response = {"message": message, "status_code": status_code}
         else:
-            if json.get("errorcode") or json.get("error"):
+            try:
+                # in case the json result is list
+                item = json[0]
+            except (AttributeError, KeyError):
+                item = json
+            except IndexError:
+                item = {}
+
+            if item.get("errorcode") or item.get("error"):
                 ok = False
 
-            if json.get("fault"):
+            if item.get("fault"):
                 # QuickBooks
                 ok = False
-                fault = json["fault"]
+                fault = item["fault"]
 
                 if fault.get("type") == "AUTHENTICATION":
                     response = {"message": "Client not authorized.", "status_code": 401}
@@ -543,58 +578,50 @@ def get_response(url, client, params=None, result_fields=None, **kwargs):
                         response = {"message": "Token Expired.", "status_code": 401}
 
                     err_message = error["message"]
-                    _response = dict(pair.split("=") for pair in err_message.split("; "))
+                    _response = dict(
+                        pair.split("=") for pair in err_message.split("; ")
+                    )
                     _message = _response["message"]
                     message = f"{_message}: {detail}" if detail else _message
-                    response = {"message": message, "status_code": int(_response["statusCode"])}
+                    response = {
+                        "message": message,
+                        "status_code": int(_response["statusCode"]),
+                    }
                 else:
                     logger.debug(fault)
                     response = {"message": fault.get("type"), "status_code": 500}
             elif ok:
-                result = json
-
-                if result_fields:
-                    # TODO: use timero's extract_fields
-                    for field in result_fields:
-                        result = result.get(field, {})
-                else:
-                    try:
-                        # https://developer.xero.com/documentation/oauth2/auth-flow
-                        result = json[0]
-                    except KeyError:
-                        pass
-
-                response = {"result": result}
+                response = {"result": json}
             else:
                 message_keys = ["message", "Message", "detail", "error"]
 
                 try:
-                    message = next(json[key] for key in message_keys if json.get(key))
+                    message = next(item[key] for key in message_keys if item.get(key))
                 except StopIteration:
-                    logger.debug('message_keys not found')
-                    logger.debug(json)
+                    # logger.debug("message_keys not found")
+                    logger.debug(item)
                     message = ""
 
-                if json.get("modelState"):
-                    logger.debug('modelState found')
-                    items = json["modelState"].items()
+                if item.get("modelState"):
+                    logger.debug("modelState found")
+                    items = item["modelState"].items()
                     message += " "
                     message += ". ".join(f"{k}: {', '.join(v)}" for k, v in items)
-                elif json.get("Elements"):
-                    logger.debug('Elements found')
-                    items = chain.from_iterable(e.items() for e in json["Elements"])
+                elif item.get("Elements"):
+                    logger.debug("Elements found")
+                    items = chain.from_iterable(e.items() for e in item["Elements"])
                     message += " "
                     message += ". ".join(
                         f"{k}: {', '.join(e['Message'] for e in v)}" for k, v in items
                     )
 
-                status_code = 500 if r.status_code == 200 else result.status_code
+                status_code = 500 if result.status_code == 200 else result.status_code
                 response = {"message": message, "status_code": status_code}
 
         if not ok:
             header_names = ["Authorization", "Accept", "Content-Type"]
 
-            if client.oauth2:
+            if client.prefix == "XERO" and client.oauth2:
                 header_names.append("Xero-tenant-id")
 
             for name in header_names:
@@ -615,11 +642,16 @@ def get_response(url, client, params=None, result_fields=None, **kwargs):
     response["ok"] = ok
 
     if not ok:
-        @after_this_request
-        def clear_cache(response):
-            _clear_cache()
-            response = uncache_header(response)
-            return response
+        try:
+
+            @after_this_request
+            def clear_cache(response):
+                _clear_cache()
+                response = uncache_header(response)
+                return response
+
+        except AttributeError:
+            pass
 
     if status_code == 401 and not kwargs.get("renewed"):
         if unscoped:
@@ -627,12 +659,13 @@ def get_response(url, client, params=None, result_fields=None, **kwargs):
         else:
             logger.debug("Token expired!")
 
-        client.renew_token()
-        response = get_response(
-            url, client, params=params, renewed=True, **kwargs
-        )
+        client.renew_token(401)
+        response = get_response(url, client, params=params, renewed=True, **kwargs)
     else:
-        response["links"] = get_links(app.url_map.iter_rules())
+        try:
+            response["links"] = get_links(app.url_map.iter_rules())
+        except RuntimeError:
+            pass
 
     if not ok:
         message = response.get("message", "")
@@ -666,19 +699,21 @@ def get_redirect_url(prefix):
     if redirect_url:
         cache.delete(f"{prefix}_callback_url")
     else:
-        redirect_url = url_for(f".{prefix}_auth".lower())
+        redirect_url = url_for(f".{prefix}-auth".lower())
 
     if prefix == "XERO" and client.oauth2:
         api_url = f"{client.api_base_url}/connections"
         response = get_response(api_url, client, **app.config)
-        tenant_id = response["result"].get("tenant_id")
+        # https://developer.xero.com/documentation/oauth2/auth-flow
+        result = response.get("result")
+        tenant_id = result[0].get("tenantId") if result else None
 
         if tenant_id:
             client.tenant_id = tenant_id
             client.save()
             logger.debug(f"Set Xero tenantId to {client.tenant_id}.")
         else:
-            client.error = "No tenantId found."
+            client.error = response.get("message", "No tenantId found.")
 
     return redirect_url, client
 

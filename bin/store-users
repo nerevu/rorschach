@@ -1,5 +1,5 @@
 #!/usr/bin/env bash -uo pipefail
 
-curl 'http://localhost:5000/v1/timely-users?dictify=true' | jq '.result' > app/data/timely_users.json
-curl 'http://localhost:5000/v1/xero-users?dictify=true' | jq '.result' > app/data/xero_projectsusers.json
-curl 'http://localhost:5000/v1/xero-contacts?dictify=true' | jq '.result' > app/data/xero_contacts.json
+manage store -p timely -c users --dictify
+manage store -p xero -c users --dictify
+manage store -p xero -c contacts --dictify

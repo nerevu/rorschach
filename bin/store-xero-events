@@ -2,5 +2,5 @@
 
 for PROJECT in $(jq -r 'to_entries[] | .key' app/data/xero_projects.json); do
     SHORT=`echo $PROJECT | cut -d'-' -f1`
-    curl "http://localhost:5000/v1/xero-projecttime?id=${PROJECT}" | jq '.result' > "app/data/xero_${SHORT}_events.json"
+    manage store -p xero -c projecttime --rid="${PROJECT}"
 done

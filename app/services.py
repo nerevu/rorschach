@@ -5,42 +5,32 @@
 
     Provides misc syncing services
 """
-import requests
-
 import pygogo as gogo
+
+from app.api import ProjectTime
 
 logger = gogo.Gogo(__name__, monolog=True).logger
 
 
 def add_xero_time(project_id=None, position=None, dry_run=False, **kwargs):
-    url = "http://localhost:5000/v1/xero-time"
-    data = {"timelyProjectId": project_id, "eventPos": position}
-
-    if dry_run:
-        data["dryRun"] = "true"
-
-    r = requests.post(url, data=data)
-    json = r.json()
-
-    return {
-        "event_id": json.get("event_id"),
-        "ok": r.ok,
-        "conflict": r.status_code == 409,
-        "eof": json.get("eof"),
-        "message": json.get("message"),
-    }
+    xero_time = ProjectTime(
+        "XERO",
+        dictify=True,
+        dry_run=dry_run,
+        event_pos=position,
+        timely_project_id=project_id,
+    )
+    response = xero_time.post()
+    json = response.json
+    json["conflict"] = response.status_code == 409
+    return json
 
 
-def mark_billed(event_id, dry_run=False, **kwargs):
-    url = "http://localhost:5000/v1/timely-time"
-    data = {"eventId": event_id}
-
-    if dry_run:
-        data["dryRun"] = "true"
-
-    r = requests.patch(url, data=data)
-    return {
-        "ok": r.ok,
-        "conflict": r.status_code == 409,
-        "message": r.json()["message"],
-    }
+def mark_billed(event_id=None, dry_run=False, **kwargs):
+    timely_time = ProjectTime(
+        "TIMELY", dictify=True, dry_run=dry_run, event_id=event_id
+    )
+    response = timely_time.patch()
+    json = response.json
+    json["conflict"] = response.status_code == 409
+    return json

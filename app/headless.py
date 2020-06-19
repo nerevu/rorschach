@@ -6,22 +6,39 @@
     Provides Chrome headless browser login functionality
 """
 from pathlib import Path
-from subprocess import call, check_output, CalledProcessError
+from subprocess import check_output, CalledProcessError
+from datetime import time
+from sys import platform
 
-from selenium import webdriver
-from selenium.common.exceptions import NoSuchElementException, WebDriverException
-from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.common.keys import Keys
+import pygogo as gogo
+
+from flask import current_app as app
+from app import cache
+from config import Config
+
+try:
+    from selenium import webdriver
+except ModuleNotFoundError:
+    webdriver = None
+    NoSuchElementException = WebDriverException = None
+    Options = None
+else:
+    from selenium.common.exceptions import NoSuchElementException, WebDriverException
+    from selenium.webdriver.chrome.options import Options
+
+CHROME_DRIVER_VERSIONS = Config.CHROME_DRIVER_VERSIONS
+
+logger = gogo.Gogo(__name__, monolog=True).logger
 
 
 def get_def_chromedriver_path(version=None):
-    executable = f"chromedriver-{version}" if version else 'chromedriver'
+    executable = f"chromedriver-{version}" if version else "chromedriver"
     command = f"which {executable}"
 
     try:
-        _chromedriver_path = check_output(command, shell=True, encoding='utf-8')
+        _chromedriver_path = check_output(command, shell=True, encoding="utf-8")
     except CalledProcessError:
-        chromedriver_path = ''
+        chromedriver_path = ""
     else:
         chromedriver_path = _chromedriver_path.strip()
 
@@ -30,13 +47,22 @@ def get_def_chromedriver_path(version=None):
 
 # get system specific chromedriver (currently version 78)
 def get_chromedriver_path():
-    operating_system = platform.system().lower()
     chromedriver_path = None
 
-    if operating_system == 'darwin':
-        operating_system = 'mac'
+    if platform.startswith("freebsd"):
+        operating_system = "freebsd"
+    elif platform.startswith("linux"):
+        operating_system = "linux"
+    elif platform.startswith("aix"):
+        operating_system = "aix"
+    elif platform.startswith("win32"):
+        operating_system = "windows"
+    elif platform.startswith("cygwin"):
+        operating_system = "cygwin"
+    elif platform.startswith("darwin"):
+        operating_system = "mac"
 
-    unixlike = operating_system in {'mac', 'linux'}
+    unixlike = operating_system in {"mac", "linux"}
 
     if unixlike:
         # TODO: make this check cross platform
@@ -48,10 +74,10 @@ def get_chromedriver_path():
                 break
 
     if not chromedriver_path:
-        driver_name = 'chromedriver'
+        driver_name = "chromedriver"
 
-        if operating_system == 'windows':
-            driver_name += '.exe'
+        if operating_system == "windows":
+            driver_name += ".exe"
 
         chromedriver_path = Path.cwd() / operating_system / driver_name
 
@@ -61,9 +87,9 @@ def get_chromedriver_path():
 def find_element_loop(browser, selector, count=1, max_retries=3):
     try:
         elem = browser.find_element_by_css_selector(selector)
-    except NoSuchElementException as e:
+    except NoSuchElementException:
         if count < max_retries:
-            time.sleep(.5)
+            time.sleep(0.5)
             kwargs = {"count": count + 1, "max_retries": max_retries}
             elem = find_element_loop(browser, selector, **kwargs)
         else:
@@ -74,31 +100,38 @@ def find_element_loop(browser, selector, count=1, max_retries=3):
 
 def headless_auth(redirect_url, prefix):
     # selectors
-    if prefix == 'TIMELY':
-        username_css = 'input#email'
-        password_css = 'input#password'
+    if prefix == "TIMELY":
+        username_css = "input#email"
+        password_css = "input#password"
         signin_css = '[type="submit"]'
-    elif prefix == 'XERO':
+    elif prefix == "XERO":
         username_css = 'input[type="email"]'
         password_css = 'input[type="password"]'
         signin_css = 'button[name="button"]'
 
     # start a browser
-    options = Options()
-    options.headless = True
+    try:
+        options = Options()
+    except TypeError:
+        options = None
+    else:
+        options.headless = True
+
     chrome_path = get_chromedriver_path()
 
     try:
         browser = webdriver.Chrome(executable_path=chrome_path, chrome_options=options)
+    except AttributeError:
+        logger.error("selenium not installed!")
     except WebDriverException as e:
-        if 'executable needs to be in PATH' in str(e):
+        if "executable needs to be in PATH" in str(e):
             logger.error(f"chromedriver executable not found in {chrome_path}!")
         else:
             logger.error(e)
     else:
         # navigate to auth page
         browser.get(redirect_url)
-        browser.implicitly_wait(3) # seconds waited for elements
+        browser.implicitly_wait(3)  # seconds waited for elements
 
         #######################################################
         # TODO: Check to see if this is required when logging
@@ -123,7 +156,7 @@ def headless_auth(redirect_url, prefix):
 
         #######################################################
 
-        if prefix == 'XERO':
+        if prefix == "XERO":
             # allow access button
             access = find_element_loop(browser, 'button[value="yes"]')
 
@@ -142,5 +175,5 @@ def headless_auth(redirect_url, prefix):
                 authenticated = False
 
         browser.close()
-        cache.set(f'{prefix}_restore_client', authenticated)
-        cache.set(f'{prefix}_headless_auth_failed', not authenticated)
+        cache.set(f"{prefix}_restore_client", authenticated)
+        cache.set(f"{prefix}_headless_auth_failed", not authenticated)
