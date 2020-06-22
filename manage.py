@@ -38,6 +38,7 @@ from app.api import (
     Users,
 )
 
+# collections
 _timely_users = Users("TIMELY", dictify=True, dry_run=True)
 _timely_events = Time("TIMELY", dictify=True, dry_run=True)
 _timely_projects = Projects("TIMELY", dictify=True, dry_run=True)
@@ -47,8 +48,26 @@ _xero_users = Users("XERO", dictify=True, dry_run=True)
 _xero_projects = Projects("XERO", dictify=True, dry_run=True)
 _xero_project_tasks = ProjectTasks("XERO", dictify=True, dry_run=True)
 
+# data
+timely_users = _timely_users.data
+timely_events = _timely_events.data
+timely_projects = _timely_projects.data
+timely_tasks = _timely_tasks.data
+xero_users = _xero_users.data
+xero_projects = _xero_projects.data
+
 BASEDIR = p.dirname(__file__)
 DEF_WHERE = ["app", "manage.py", "config.py"]
+COLLECTIONS = {
+    "users": Users,
+    "tasks": Tasks,
+    "contacts": Contacts,
+    "inventory": Inventory,
+    "time": Time,
+    "projects": Projects,
+    "projecttasks": ProjectTasks,
+    "projecttime": ProjectTime,
+}
 
 hdlr_kwargs = {
     "subject": f"{__APP_NAME__} notification",
@@ -93,20 +112,6 @@ def log(message=None, ok=True, r=None, **kwargs):
             logger.info(message)
 
 
-# data
-timely_users = _timely_users.data
-timely_events = _timely_events.data
-timely_projects = _timely_projects.data
-timely_tasks = _timely_tasks.data
-xero_users = _xero_users.data
-xero_projects = _xero_projects.data
-
-# mappings
-projects = _xero_projects.mappings
-users = _xero_users.mappings
-tasks = _xero_project_tasks.mappings
-
-
 @click.group(cls=FlaskGroup, create_app=create_app)
 @click.option("-m", "--config-mode", default="Development")
 @click.option("-f", "--config-file", type=p.abspath)
@@ -141,18 +146,6 @@ def help(ctx):
     print(f"commands: {commands}")
 
 
-COLLECTIONS = {
-    "users": Users,
-    "tasks": Tasks,
-    "contacts": Contacts,
-    "inventory": Inventory,
-    "time": Time,
-    "projects": Projects,
-    "projecttasks": ProjectTasks,
-    "projecttime": ProjectTime,
-}
-
-
 @manager.command()
 @click.option(
     "-c",
@@ -164,7 +157,7 @@ def prune(collection, **kwargs):
     """Remove duplicated and outdated mappings entries"""
     added_names = set()
     item_names = ["XERO", "TIMELY"]
-    is_tasks = collection == "tasks"
+    is_tasks = collection == "projecttasks"
     Collection = COLLECTIONS[collection.lower()]
     mappings = Collection("XERO", dictify=True, dry_run=True).mappings
 
@@ -182,15 +175,14 @@ def prune(collection, **kwargs):
                     continue
 
                 xero_project_id = item["xero"]["project"]
-                xero_task_id = item["xero"]["task"]
                 _xero_project_tasks.rid = xero_project_id
                 xero_proj_tasks = _xero_project_tasks.data
                 xero_task_ids = {t["taskId"] for t in xero_proj_tasks}
-                valid = xero_task_id in xero_task_ids
+                valid = item["xero"]["task"] in xero_task_ids
             else:
                 for name in item_names:
                     data = Collection(name, dictify=True, dry_run=True).data
-                    valid = str(item[name]) in data
+                    valid = str(item[name.lower()]) in data
 
                     if not valid:
                         continue

@@ -252,8 +252,13 @@ class Resource(BaseView):
         name = f"{self.lowered}-{self.lowered_resource}"
 
         if self.subresource:
-            trunc_rid = str(self.rid).split("-")[0]
-            name += f"[id:{trunc_rid}]-{self.lowered_subresource}"
+            if self.rid:
+                trunc_rid = str(self.rid).split("-")[0]
+                prefix = f"[id:{trunc_rid}]"
+            else:
+                prefix = f"[pos:{self.pos}]" if self.use_default else "[id:None]"
+
+            name += f"{prefix}-{self.lowered_subresource}"
 
         if self.id:
             trunc_id = str(self.id).split("-")[0]
@@ -485,12 +490,6 @@ class Resource(BaseView):
             # else:
             #     logger.debug(f"{self.data_p} found!")
 
-            # remove me
-            try:
-                _data = list(_data.values())
-            except AttributeError:
-                pass
-
             if _data and self.dictify:
                 data = dict((item.get(self.id_field), item) for item in _data)
             else:
@@ -672,8 +671,7 @@ class Resource(BaseView):
             entry[self.lowered] = self.id
 
         if entry:
-            self._mappings.append(entry)
-            self.mappings = self._mappings
+            self.mappings = self.mappings + [entry]
 
     def map_rid(self, mapped_rid, name=None):
         rid = self.mapper.get(mapped_rid)
@@ -788,8 +786,7 @@ class Resource(BaseView):
                 result = [result]
 
             pkwargs = {"black_list": self.black_list, "filterer": self.filterer}
-            result = self.processor(result, self.fields, **pkwargs)
-            result = list(result)
+            result = list(self.processor(result, self.fields, **pkwargs))
 
             if result is not None and update_cache and not self.id:
                 self.data = result

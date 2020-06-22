@@ -374,14 +374,14 @@ def timely_user_to_xero_user(xero_users, timely_user):
     return xero_user
 
 
-def extract_model(collection, rid=None, strict=False, *args, **kwargs):
+def extract_model(collection, rid=None, pos=None, strict=False, *args, **kwargs):
     response = collection.get(rid, *args, **kwargs)
     json = response.json
     result = json["result"]
 
     try:
-        model = result[0]
-    except IndexError:
+        model = result[pos or 0]
+    except (IndexError, TypeError):
         model = {}
 
     if json["ok"]:
@@ -573,8 +573,7 @@ class ProjectTasks(Resource):
         )
 
     def hook(self):
-        if prefix == "TIMELY" and self.id:
-            print("timely hook")
+        if self.prefix == "TIMELY" and self.id:
             timely_tasks = Tasks("TIMELY", dictify=True)
             timely_tasks.get(update_cache=True)
             self.processor = partial(
@@ -582,7 +581,8 @@ class ProjectTasks(Resource):
                 timely_tasks=timely_tasks,
                 timely_project_tasks=self,
             )
-        elif prefix == "XERO" and self.rid:
+
+        elif self.prefix == "XERO" and self.rid:
             xero_users = Users("XERO", dry_run=self.dry_run)
             xero_contacts = Contacts("XERO", dry_run=self.dry_run)
             timely_tasks = Tasks("TIMELY", dry_run=self.dry_run)
@@ -591,8 +591,8 @@ class ProjectTasks(Resource):
                 timely_projects, update_cache=True, strict=True
             )
 
-            xero_projects = Projects("XERO", dry_run=self.dry_run)
-            xero_project = extract_model(xero_projects, self.rid, update_cache=True)
+            xero_projects = Projects("XERO", dry_run=True)
+            xero_project = extract_model(xero_projects, self.rid, strict=True)
 
             gkwargs = {
                 "xero_project": xero_project,
@@ -665,39 +665,34 @@ class ProjectTime(Resource):
             "TIMELY", rid=self.timely_project_id, dry_run=self.dry_run
         )
         timely_tasks = Tasks("TIMELY", dry_run=self.dry_run)
-        timely_project_events.get(update_cache=True)
+        self.timely_event = extract_model(timely_project_events, pos=self.event_pos, update_cache=True)
 
-        try:
-            self.timely_event = timely_project_events[self.event_pos]
-        except IndexError:
-            self.timely_event = {}
+        if not self.timely_event:
             self.eof = True
-
-        error = (f"{timely_project_events}[pos:{self.event_pos}] doesn't exist!", 404)
-        assert self.timely_event, error
+            error = (f"{timely_project_events} doesn't exist!", 404)
+            assert self.timely_event, error
 
         self.event_id = self.timely_event["id"]
-        timely_proj_event_msg = f"{timely_project_events}[id:{self.event_id}]"
 
         added = self.results.get(self.event_id, {}).get("added")
-        assert not added, (f"{timely_proj_event_msg} already added!", 409)
+        assert not added, (f"{timely_project_events} already added!", 409)
 
         try:
             label_id = int(self.timely_event.get("label_ids[0]", 0))
         except TypeError:
             label_id = 0
 
-        assert label_id, (f"{timely_proj_event_msg} missing label!", 500)
+        assert label_id, (f"{timely_project_events} missing label!", 500)
         self.timely_event["label_id"] = label_id
 
         unbilled = self.timely_event["id"] and not self.timely_event["billed"]
-        assert unbilled, (f"{timely_proj_event_msg} is already billed!", 409)
+        assert unbilled, (f"{timely_project_events} is already billed!", 409)
 
         self.day = self.timely_event["day"]
-        assert self.day, (f"{timely_proj_event_msg} has no day!", 500)
+        assert self.day, (f"{timely_project_events} has no day!", 500)
 
         self.duration = self.timely_event["duration.total_minutes"]
-        assert self.duration, (f"{timely_proj_event_msg} has no duration!", 500)
+        assert self.duration, (f"{timely_project_events} has no duration!", 500)
 
         xero_projects = Projects("XERO", dry_run=self.dry_run)
         xero_contacts = Contacts("XERO", dry_run=self.dry_run)
@@ -706,10 +701,8 @@ class ProjectTime(Resource):
         xero_project = timely_project_to_xero_project(
             xero_projects, timely_project, xero_contact=xero_contact
         )
-        self.rid = xero_project_id = xero_project["projectId"]
-        xero_project_tasks = ProjectTasks(
-            "XERO", rid=xero_project_id, dry_run=self.dry_run
-        )
+        self.rid = xero_project["projectId"]
+        xero_project_tasks = ProjectTasks("XERO", rid=self.rid, dry_run=self.dry_run)
 
         timely_task = extract_model(
             timely_tasks, label_id, update_cache=True, strict=True

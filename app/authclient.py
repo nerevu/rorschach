@@ -516,16 +516,12 @@ def get_response(url, client, params=None, **kwargs):
     unscoped = False
 
     if client.expired:
-        logger.debug("client.expired")
         response = {"message": "Token Expired.", "status_code": 401}
     elif not client.verified:
-        logger.debug("not client.verified")
         response = {"message": "Client not authorized.", "status_code": 401}
     elif client.error:
-        logger.debug("client.error")
         response = {"message": client.error, "status_code": 500}
     else:
-        logger.debug("client.ok")
         params = params or {}
         data = kwargs.get("data", {})
         json = kwargs.get("json", {})
@@ -598,17 +594,14 @@ def get_response(url, client, params=None, **kwargs):
                 try:
                     message = next(item[key] for key in message_keys if item.get(key))
                 except StopIteration:
-                    # logger.debug("message_keys not found")
                     logger.debug(item)
                     message = ""
 
                 if item.get("modelState"):
-                    logger.debug("modelState found")
                     items = item["modelState"].items()
                     message += " "
                     message += ". ".join(f"{k}: {', '.join(v)}" for k, v in items)
                 elif item.get("Elements"):
-                    logger.debug("Elements found")
                     items = chain.from_iterable(e.items() for e in item["Elements"])
                     message += " "
                     message += ". ".join(
