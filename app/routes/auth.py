@@ -79,8 +79,10 @@ def remove_fields(record, black_list):
 
 
 def process_result(result, fields=None, black_list=None, **kwargs):
-    if kwargs.pop("filterer", None):
-        result = filter(kwargs["filterer"], result)
+    filterer = kwargs.pop("filterer", None)
+
+    if filterer:
+        result = filter(filterer, result)
 
     if black_list:
         result = (dict(remove_fields(item, black_list)) for item in result)
@@ -263,8 +265,8 @@ class Resource(BaseView):
         if self.id:
             trunc_id = str(self.id).split("-")[0]
             name += f"[id:{trunc_id}]"
-        elif self.use_default:
-            name += f"[pos:{self.pos}]"
+        else:
+            name += f"[pos:{self.pos}]" if self.use_default else "[id:None]"
 
         return name
 
@@ -407,7 +409,8 @@ class Resource(BaseView):
 
     @property
     def id(self):
-        return self.subresource_id if self.subresource else self.rid
+        def_id = self.subresource_id if self.subresource else self.rid
+        return self.values.get("id", def_id)
 
     @id.setter
     def id(self, value):
@@ -674,14 +677,7 @@ class Resource(BaseView):
             self.mappings = self.mappings + [entry]
 
     def map_rid(self, mapped_rid, name=None):
-        rid = self.mapper.get(mapped_rid)
-
-        if not rid:
-            value = f"name {name}" if name else f"{mapped_rid}"
-            message = f"No {self} found mapping to {self.counterpart} {value}!"
-            # logger.debug(message)
-
-        return rid
+        return self.mapper.get(mapped_rid)
 
     def get(self, rid=None, mapped_rid=None, mapped_name=None, update_cache=False):
         """ Get an API Resource.
@@ -768,19 +764,12 @@ class Resource(BaseView):
                     pass
 
             if self.use_default and not self.id:
-                msg = f"{self}[{self.pos}]"
-
                 try:
                     result = result[self.pos]
                 except (IndexError, TypeError):
                     self.eof = True
-                    logger.error(f"{msg} not found in response!")
-
-                    if not result:
-                        logger.error("No response data available!")
                 else:
                     self.id = result.get(self.id_field)
-                    logger.debug(f"{msg} found in response!")
 
             if hasattr(result, "get"):
                 result = [result]
@@ -801,7 +790,6 @@ class Resource(BaseView):
             response["message"] = self.error_msg
 
         response["result"] = result
-
         return jsonify(**response)
 
     def post(self, **kwargs):
@@ -847,7 +835,10 @@ class Resource(BaseView):
             response["message"] = self.error_msg
 
         if not self.dry_run:
-            response["links"] = get_links(app.url_map.iter_rules())
+            try:
+                response["links"] = get_links(app.url_map.iter_rules())
+            except RuntimeError:
+                pass
 
         return jsonify(**response)
 
@@ -880,11 +871,9 @@ class Resource(BaseView):
             self.error_msg = f"No {self} ID given!"
             response = {"status_code": 404}
         elif self.is_timely:
-            data_key = "json"
             rkwargs["method"] = "put"
-
-            if self.resource == "tasks":
-                data = {"event": data}
+            data_key = "json"
+            data = {singularize(self.resource): data}
 
         if self.dry_run:
             response = {
@@ -894,14 +883,17 @@ class Resource(BaseView):
             }
 
         if not response:
-            self.api_url = f"{self.api_url}/{self.id}"
+            url = f"{self.api_url}/{self.id}"
             rkwargs[data_key] = data
-            response = get_response(self.api_url, self.client, **rkwargs)
+            response = get_response(url, self.client, **rkwargs)
 
         response["id"] = self.id
 
         if not self.dry_run:
-            response["links"] = get_links(app.url_map.iter_rules())
+            try:
+                response["links"] = get_links(app.url_map.iter_rules())
+            except RuntimeError:
+                pass
 
         if self.error_msg:
             logger.error(self.error_msg)

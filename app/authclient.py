@@ -535,12 +535,13 @@ def get_response(url, client, params=None, **kwargs):
         try:
             json = result.json()
         except JSONDecodeError:
-            logger.debug("JSONDecodeError")
             status_code = 500 if result.status_code == 200 else result.status_code
 
-            if "<!DOCTYPE html>" in result.text:
+            if "404 Not Found" in result.text:
+                status_code = 404
+                message = f"Endpoint {url} not found!"
+            elif "<!DOCTYPE html>" in result.text:
                 message = "Got HTML response."
-                logger.debug(result)
             elif "oauth_problem_advice" in result.text:
                 message = parse_qs(result.text)["oauth_problem_advice"][0]
             else:
@@ -584,7 +585,6 @@ def get_response(url, client, params=None, **kwargs):
                         "status_code": int(_response["statusCode"]),
                     }
                 else:
-                    logger.debug(fault)
                     response = {"message": fault.get("type"), "status_code": 500}
             elif ok:
                 response = {"result": json}
@@ -660,10 +660,6 @@ def get_response(url, client, params=None, **kwargs):
         except RuntimeError:
             pass
 
-    if not ok:
-        message = response.get("message", "")
-        logger.error(f"Error requesting {url}")
-        logger.error(f"Server returned {status_code}: {message}")
 
     return response
 

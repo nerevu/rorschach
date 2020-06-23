@@ -44,8 +44,6 @@ _timely_events = Time("TIMELY", dictify=True, dry_run=True)
 _timely_projects = Projects("TIMELY", dictify=True, dry_run=True)
 _timely_tasks = Tasks("TIMELY", dictify=True, dry_run=True)
 _timely_project_tasks = ProjectTasks("TIMELY", dictify=True, dry_run=True)
-_xero_users = Users("XERO", dictify=True, dry_run=True)
-_xero_projects = Projects("XERO", dictify=True, dry_run=True)
 _xero_project_tasks = ProjectTasks("XERO", dictify=True, dry_run=True)
 
 # data
@@ -53,8 +51,6 @@ timely_users = _timely_users.data
 timely_events = _timely_events.data
 timely_projects = _timely_projects.data
 timely_tasks = _timely_tasks.data
-xero_users = _xero_users.data
-xero_projects = _xero_projects.data
 
 BASEDIR = p.dirname(__file__)
 DEF_WHERE = ["app", "manage.py", "config.py"]
@@ -336,19 +332,19 @@ def sync(**kwargs):
     logger.info("Adding events…")
     for pos in _range:
         result = services.add_xero_time(position=pos, **kwargs)
+        event_id = result.get("event_id")
 
         if result["ok"] or result["conflict"]:
-            added_events.add(str(result["event_id"]))
-            message = result["message"] or f"Added event {result['event_id']}"
+            added_events.add(str(event_id))
+            message = result.get("message") or f"Added Xero event {event_id}"
             logger.info(f"- {message}")
         else:
-            message = result["message"] or "Unknown error!"
+            message = result.get("message") or "Unknown error!"
 
             if result["eof"]:
-                logger.info(f"- {message}")
                 break
-            elif result.get("event_id"):
-                skipped_events.add(result["event_id"])
+            elif event_id:
+                skipped_events.add(event_id)
 
             logger.info(f"- {message}")
 
@@ -361,13 +357,14 @@ def sync(**kwargs):
 
     for event_id in added_events:
         result = services.mark_billed(event_id, **kwargs)
+        message = result.get("message")
 
         if result["ok"] or result["conflict"]:
             patched_events.add(event_id)
             event = timely_events.get(event_id)
 
-            if result["message"]:
-                logger.info(f"- {result['message']}")
+            if message:
+                logger.info(f"- {message}")
             elif event:
                 user_id = str(event["user.id"])
                 project_id = str(event["project.id"])
@@ -384,12 +381,11 @@ def sync(**kwargs):
                 logger.debug(msg)
             else:
                 msg = f"- Event {event_id} patched, but not found in "
-                msg += f"{timely_events.data_p}."
+                msg += f"{_timely_events.data_p}."
                 logger.info(msg)
         else:
             unpatched_events.add(event_id)
-            message = result["message"] or "Unknown error!"
-            logger.info(f"- {message}")
+            logger.info(f"- {message or 'Unknown error!'}")
 
     num_patched_events = len(patched_events)
     all_events = set(

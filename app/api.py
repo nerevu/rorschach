@@ -114,19 +114,16 @@ def fetch_bool(message):
     return answer
 
 
-def get_task_entry(rid, mapped_rid, **kwargs):
-    timely_tasks = kwargs["timely_tasks"]
-    timely_project = kwargs["timely_project"]
-    xero_project = kwargs["xero_project"]
-    timely_task = timely_tasks.data.get(mapped_rid)
+def get_task_entry(rid, mapped_rid, xero_project_id=None):
+    (timely_project_id, timely_user_id, label_id) = mapped_rid
 
     return {
         "timely": {
-            "task": mapped_rid,
-            "project": timely_project["id"],
-            "users": USERS[timely_task["user.id"]],
+            "task": label_id,
+            "project": timely_project_id,
+            "users": USERS[timely_user_id],
         },
-        "xero": {"task": rid, "project": xero_project["id"]},
+        "xero": {"task": rid, "project": xero_project_id},
     }
 
 
@@ -141,32 +138,6 @@ def get_position_user_ids(timely_task, field="name"):
         user_ids = []
 
     return user_ids
-
-
-def get_timely_task_patch_data(timely_tasks, **kwargs):
-    # data = get_timely_task_patch_data(timely_tasks)
-    # timely_tasks.patch(**data)
-    data = {}
-
-    if sync_results.get(timely_tasks.rid, {}).get("patched"):
-        logger.error(f"Event {timely_tasks.rid} already patched!")
-        # response = {"status_code": 409}
-    elif kwargs.get("billed"):
-        logger.error(f"Event {timely_tasks.rid} already billed!")
-        # response = {"status_code": 409}
-    else:
-        total_minutes = kwargs["duration.total_minutes"]
-
-        data = {
-            "id": timely_tasks.rid,
-            "day": kwargs["day"],
-            "hours": total_minutes // 60,
-            "minutes": total_minutes % 60,
-            "billed": True,
-            "user_id": kwargs["user.id"],
-        }
-
-    return data
 
 
 def get_xero_project_data(timely_project, xero_contact):
@@ -255,35 +226,36 @@ def convertor(rid_field="id", name_field="name"):
     def decorator(after_create):
         @wraps(after_create)
         def wrapper(dest_resource, mapped_item, mapped_rid=None, **kwargs):
-            error_msg = ""
-            name = mapped_item[name_field]
+            if dest_resource.subresource:
+                assert dest_resource.rid, (f"No rid entered for {dest_resource}.", 404)
+
+            dry_run, dest_resource.dry_run = dest_resource.dry_run, True
+            mapped_name = name = mapped_item[name_field]
 
             if mapped_rid:
-                name += f" ({mapped_rid})"
+                name += f" {mapped_rid}"
+                mapped_name = None
             else:
                 mapped_rid = mapped_item[rid_field]
 
-            dry_run, dest_resource.dry_run = dest_resource.dry_run, True
-
-            dest_item = extract_model(
-                dest_resource, mapped_rid=mapped_rid, mapped_name=name
-            )
+            ekwargs = {"mapped_rid": mapped_rid, "mapped_name": mapped_name}
+            dest_item = extract_model(dest_resource, **ekwargs)
             dest_resource.dry_run = dry_run
 
-            if not (dest_item or dest_resource.rid):
-                error_msg = f"No ID found for project {name}. "
-            else:
-                message = f"Project {name} not found in {dest_resource} cache. "
+            if not dest_item:
+                message = f"{name} not found in {dest_resource} cache. "
 
                 if dry_run:
                     message += "Not searching online because 'dry_run' mode is on."
                 else:
                     message += "Searching online for it…"
-                    logger.debug(message)
                     dest_item = extract_model(dest_resource, update_cache=True)
 
                     if dest_item:
+                        dest_resource.id = dest_item[dest_resource.id_field]
                         dest_resource.update_mappings(mapped_rid)
+
+                logger.debug(message)
 
             if not (dest_item or dry_run):
                 message = f"Project {name} not found in {dest_resource}. "
@@ -292,9 +264,6 @@ def convertor(rid_field="id", name_field="name"):
 
                 if answer == "y":
                     dest_item = after_create(mapped_item, dest_resource, name)
-
-            if error_msg:
-                logger.error(error_msg)
 
             if dry_run:
                 error_msg = f"Disable dry_run mode to create {dest_resource} mapping."
@@ -307,6 +276,29 @@ def convertor(rid_field="id", name_field="name"):
         return wrapper
 
     return decorator
+
+
+def extract_model(collection, rid=None, strict=False, *args, **kwargs):
+    response = collection.get(rid, *args, **kwargs)
+    json = response.json
+    result = [] if collection.eof else json["result"]
+
+    try:
+        model = result[0]
+    except (IndexError, TypeError):
+        model = {}
+
+    if json["ok"]:
+        error = (f"{collection} doesn't exist!", 404)
+    else:
+        message = json.get("message") or json["status"]
+        error = (message, response.status_code)
+
+    if strict:
+        assert model, error
+        assert model.get(collection.id_field), (f"{collection} has no ID!", 500)
+
+    return model
 
 
 @convertor()
@@ -372,29 +364,6 @@ def timely_user_to_xero_user(xero_users, timely_user):
         xero_user = {}
 
     return xero_user
-
-
-def extract_model(collection, rid=None, pos=None, strict=False, *args, **kwargs):
-    response = collection.get(rid, *args, **kwargs)
-    json = response.json
-    result = json["result"]
-
-    try:
-        model = result[pos or 0]
-    except (IndexError, TypeError):
-        model = {}
-
-    if json["ok"]:
-        error = (f"{collection} doesn't exist!", 404)
-    else:
-        message = json.get("message") or json["status"]
-        error = (message, response.status_code)
-
-    if strict:
-        assert model, error
-        assert model.get(collection.id_field), (f"{collection} has no ID!", 500)
-
-    return model
 
 
 ###########################################################################
@@ -476,10 +445,18 @@ class Tasks(Resource):
             fields = ["id", "name"]
             resource = "labels"
             kwargs.update(
-                {"processor": timely_tasks_processor, "filterer": timely_tasks_filterer}
+                {
+                    "processor": timely_tasks_processor,
+                    "filterer": timely_tasks_filterer,
+                    "rid_hook": self.hook,
+                }
             )
 
         super().__init__(prefix, resource, fields=fields, **kwargs)
+
+    def hook(self):
+        if self.prefix == "TIMELY" and self.rid:
+            self.processor = process_result
 
 
 class Time(Resource):
@@ -500,7 +477,7 @@ class Time(Resource):
 
         super().__init__(prefix, "events", fields=fields, **kwargs)
 
-    def _patch(self):
+    def _get_patch_data(self):
         assert self.prefix == "TIMELY", (
             f"PATCH is not yet configured for {self.prefix}",
             404,
@@ -508,20 +485,20 @@ class Time(Resource):
         assert self.rid, ("No 'rid' given!", 500)
 
         patched = self.results.get(self.rid, {}).get("patched")
-        assert not patched, (f"{self} already added!", 409)
+        assert not patched, (f"{self} already patched!", 409)
 
         self.timely_event = extract_model(self, update_cache=True, strict=True)
         assert not self.timely_event["billed"], (f"{self} already billed!", 409)
 
-    def patch(self):
+    def get_patch_data(self):
         # url = 'http://localhost:5000/v1/timely-time'
         # r = requests.patch(url, data={"rid": 165829339, "dryRun": True})
         if self.prefix == "TIMELY":
             try:
-                self._patch()
+                self._get_patch_data()
             except AssertionError as err:
-                self.error_msg, status_code = err.args[0]
-                response = {"status_code": status_code, "ok": False}
+                self.error_msg, self.status_code = err.args[0]
+                data = {}
             else:
                 total_minutes = self.timely_event["duration.total_minutes"]
 
@@ -534,17 +511,7 @@ class Time(Resource):
                     "user_id": self.timely_event["user.id"],
                 }
 
-                _response = super().patch(**data)
-                response = _response.json
-
-            response.update(
-                {"eof": False, "event_id": self.rid, "event_pos": self.event_pos,}
-            )
-
-            if self.error_msg:
-                response["message"] = self.error_msg
-
-        return jsonify(**response)
+        return data
 
 
 class ProjectTasks(Resource):
@@ -584,24 +551,9 @@ class ProjectTasks(Resource):
 
         elif self.prefix == "XERO" and self.rid:
             xero_users = Users("XERO", dry_run=self.dry_run)
-            xero_contacts = Contacts("XERO", dry_run=self.dry_run)
-            timely_tasks = Tasks("TIMELY", dry_run=self.dry_run)
-            timely_projects = Projects("TIMELY", use_default=True, dry_run=self.dry_run)
-            timely_project = extract_model(
-                timely_projects, update_cache=True, strict=True
-            )
-
             xero_projects = Projects("XERO", dry_run=True)
-            xero_project = extract_model(xero_projects, self.rid, strict=True)
 
-            gkwargs = {
-                "xero_project": xero_project,
-                "timely_tasks": timely_tasks,
-                "xero_contacts": xero_contacts,
-                "timely_project": timely_project,
-            }
-
-            self.entry_factory = partial(get_task_entry, **gkwargs)
+            self.entry_factory = partial(get_task_entry, xero_project_id=self.rid)
             self.map_factory = partial(
                 gen_task_mapping,
                 user_mappings=xero_users.mappings,
@@ -641,7 +593,7 @@ class ProjectTime(Resource):
 
         super().__init__(prefix, "projects", fields=fields, **kwargs)
 
-    def _post(self):
+    def _get_post_data(self):
         assert self.prefix == "XERO", (
             f"POST is not yet configured for {self.prefix}",
             404,
@@ -662,18 +614,17 @@ class ProjectTime(Resource):
         self.timely_project_id = timely_project["id"]
 
         timely_project_events = ProjectTime(
-            "TIMELY", rid=self.timely_project_id, dry_run=self.dry_run
+            "TIMELY",
+            use_default=True,
+            rid=self.timely_project_id,
+            pos=self.event_pos,
+            dry_run=self.dry_run,
         )
-        timely_tasks = Tasks("TIMELY", dry_run=self.dry_run)
-        self.timely_event = extract_model(timely_project_events, pos=self.event_pos, update_cache=True)
-
-        if not self.timely_event:
-            self.eof = True
-            error = (f"{timely_project_events} doesn't exist!", 404)
-            assert self.timely_event, error
+        self.timely_event = extract_model(timely_project_events, update_cache=True)
+        self.eof = timely_project_events.eof
+        assert self.timely_event, (f"{timely_project_events} doesn't exist!", 404)
 
         self.event_id = self.timely_event["id"]
-
         added = self.results.get(self.event_id, {}).get("added")
         assert not added, (f"{timely_project_events} already added!", 409)
 
@@ -685,7 +636,7 @@ class ProjectTime(Resource):
         assert label_id, (f"{timely_project_events} missing label!", 500)
         self.timely_event["label_id"] = label_id
 
-        unbilled = self.timely_event["id"] and not self.timely_event["billed"]
+        unbilled = not self.timely_event["billed"]
         assert unbilled, (f"{timely_project_events} is already billed!", 409)
 
         self.day = self.timely_event["day"]
@@ -704,6 +655,7 @@ class ProjectTime(Resource):
         self.rid = xero_project["projectId"]
         xero_project_tasks = ProjectTasks("XERO", rid=self.rid, dry_run=self.dry_run)
 
+        timely_tasks = Tasks("TIMELY", dry_run=self.dry_run)
         timely_task = extract_model(
             timely_tasks, label_id, update_cache=True, strict=True
         )
@@ -744,15 +696,15 @@ class ProjectTime(Resource):
         error = (f"Xero time entry {truncated_key} already exists!", 409)
         assert key not in event_keys, error
 
-    def post(self):
+    def get_post_data(self):
         # url = 'http://localhost:5000/v1/xero-time'
         # r = requests.post(url, data={"timelyProjectId": 2389295, "dryRun": True})
         if self.prefix == "XERO":
             try:
-                self._post()
+                self._get_post_data()
             except AssertionError as err:
-                self.error_msg, status_code = err.args[0]
-                response = {"status_code": status_code, "ok": False}
+                self.error_msg, self.status_code = err.args[0]
+                data = {}
             else:
                 date_utc = f"{self.day}T12:00:00Z"
                 note = self.timely_event["note"]
@@ -766,21 +718,7 @@ class ProjectTime(Resource):
                     "description": description,
                 }
 
-                _response = super().post(**data)
-                response = _response.json
-
-            response.update(
-                {
-                    "eof": self.eof,
-                    "event_id": self.event_id,
-                    "event_pos": self.event_pos,
-                }
-            )
-
-            if self.error_msg:
-                response["message"] = self.error_msg
-
-        return jsonify(**response)
+        return data
 
 
 class Memoization(MethodView):

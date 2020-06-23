@@ -20,15 +20,53 @@ def add_xero_time(project_id=None, position=None, dry_run=False, **kwargs):
         event_pos=position,
         timely_project_id=project_id,
     )
-    response = xero_time.post()
-    json = response.json
-    json["conflict"] = response.status_code == 409
+
+    data = xero_time.get_post_data()
+
+    if data:
+        response = xero_time.post(**data)
+        json = response.json
+        conflict = response.status_code == 409
+    else:
+        json = {"status_code": xero_time.status_code, "ok": False}
+        conflict = xero_time.status_code == 409
+
+    json.update(
+        {
+            "conflict": conflict,
+            "eof": xero_time.eof,
+            "event_id": xero_time.event_id,
+            "event_pos": xero_time.event_pos,
+        }
+    )
+
+    if xero_time.error_msg:
+        json["message"] = xero_time.error_msg
+
     return json
 
 
 def mark_billed(rid, dry_run=False, **kwargs):
     timely_time = Time("TIMELY", dictify=True, dry_run=dry_run, rid=rid)
-    response = timely_time.patch()
-    json = response.json
-    json["conflict"] = response.status_code == 409
+    data = timely_time.get_patch_data()
+
+    if data:
+        response = timely_time.patch(**data)
+        json = response.json
+    else:
+        json = {"status_code": timely_time.status_code, "ok": False}
+        conflict = timely_time.status_code == 409
+
+    json.update(
+        {
+            "conflict": conflict,
+            "eof": False,
+            "event_id": timely_time.rid,
+            "event_pos": timely_time.event_pos,
+        }
+    )
+
+    if timely_time.error_msg:
+        json["message"] = timely_time.error_msg
+
     return json
