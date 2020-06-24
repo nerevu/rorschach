@@ -335,6 +335,7 @@ class Resource(BaseView):
         self._pos = kwargs.get("pos", 0)
         self._data = None
         self._mappings = None
+        self._results = None
         self._values = None
         self._kwargs = None
         self._mapper = None
@@ -344,9 +345,8 @@ class Resource(BaseView):
         self.start_param = self.START_PARMS.get(self.prefix, "start")
         self.end_param = self.END_PARMS.get(self.prefix, "end")
 
-        results_filename = kwargs.get("results_filename", "results.json")
-        results_p = DATA_DIR.joinpath(results_filename)
-        self.results = load_path(results_p, {})
+        results_filename = kwargs.get("results_filename", "sync_results.json")
+        self.results_p = DATA_DIR.joinpath(results_filename)
 
         if self.id and self.id_hook:
             self.id_hook()
@@ -359,6 +359,32 @@ class Resource(BaseView):
 
     def __getitem__(self, key):
         return self.data[key]
+
+    @property
+    def results(self):
+        if self._results is None:
+            results_content = self.results_p.read_text()
+
+            try:
+                results = loads(results_content)
+            except JSONDecodeError as e:
+                results = {}
+                self.error_msg = f"{self.results_p} {e}!"
+
+            if self.error_msg:
+                logger.error(self.error_msg)
+
+            self._results = results
+
+        return self._results
+
+    @results.setter
+    def results(self, value):
+        if value:
+            with self.results_p.open(mode="w+", encoding="utf8") as results_f:
+                dump(value, results_f, indent=2, sort_keys=True, ensure_ascii=False)
+                results_f.write("\n")
+                self._results = None
 
     @property
     def mappings(self):

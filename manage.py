@@ -27,7 +27,6 @@ from app.authclient import get_auth_client, get_response
 from app.routes.auth import store as _store
 
 from app.api import (
-    sync_results_p,
     Contacts,
     Inventory,
     Projects,
@@ -45,6 +44,7 @@ _timely_projects = Projects("TIMELY", dictify=True, dry_run=True)
 _timely_tasks = Tasks("TIMELY", dictify=True, dry_run=True)
 _timely_project_tasks = ProjectTasks("TIMELY", dictify=True, dry_run=True)
 _xero_project_tasks = ProjectTasks("XERO", dictify=True, dry_run=True)
+_xero_project_time = ProjectTime("XERO", dictify=True, dry_run=True)
 
 # data
 timely_users = _timely_users.data
@@ -315,7 +315,7 @@ def test_oauth(method=None, resource=None, **kwargs):
 @click.option("-d", "--dry-run/--no-dry-run", help="Perform a dry run", default=False)
 def sync(**kwargs):
     """Sync Timely events with Xero time entries"""
-    sync_results = load(sync_results_p.open())
+    sync_results = _xero_project_time.results
     added_events = set()
     skipped_events = set()
     patched_events = set()
@@ -404,8 +404,9 @@ def sync(**kwargs):
     msg += f"{num_patched_events} patched"
     logger.info(msg)
     logger.info("------------------------------------")
-    dump(sync_results, sync_results_p.open(mode="w"), indent=2)
-    exit(len(skipped_events) + len(unpatched_events))
+    _xero_project_time.results = sync_results
+    num_errors = len(skipped_events) + len(unpatched_events)
+    exit(num_errors)
 
 
 @manager.command()

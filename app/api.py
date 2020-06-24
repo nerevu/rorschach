@@ -41,8 +41,6 @@ PREFIX = Config.API_URL_PREFIX
 BILLABLE = 1344430
 NONBILLABLE = 1339635
 
-sync_results_p = DATA_DIR.joinpath("sync_results.json")
-sync_results = load(sync_results_p.open())
 timely_tasks_filterer = lambda item: not (item.get("billed") or item.get("deleted"))
 
 
