@@ -580,6 +580,9 @@ class Resource(BaseView):
         if self.dry_run:
             url = ""
 
+        if self.resource == "status":
+            url = Auth(self.prefix).status_url
+
         return url
 
     @property

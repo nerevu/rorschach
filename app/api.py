@@ -403,6 +403,11 @@ def ipsum():
 ###########################################################################
 # METHODVIEW ROUTES
 ###########################################################################
+class Status(Resource):
+    def __init__(self, prefix, **kwargs):
+        super().__init__(prefix, "status", **kwargs)
+
+
 class Projects(Resource):
     def __init__(self, prefix, **kwargs):
         if prefix == "TIMELY":
@@ -768,6 +773,7 @@ method_views = {
     },
     "callback": {"view": auth.Callback, "add_prefixes": True},
     "auth": {"view": auth.Auth, "add_prefixes": True},
+    "status": {"view": Status, "add_prefixes": True,"methods": ["GET"]},
     "projects": {"view": Projects, "add_prefixes": True},
     "contacts": {"view": Contacts, "add_prefixes": True},
     "users": {"view": Users, "add_prefixes": True},
