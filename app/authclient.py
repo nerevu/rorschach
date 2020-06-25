@@ -543,6 +543,8 @@ def get_response(url, client, params=None, **kwargs):
             if "404 Not Found" in result.text:
                 status_code = 404
                 message = f"Endpoint {url} not found!"
+            elif "Bad Request" in result.text:
+                message = "Bad Request."
             elif "<!DOCTYPE html>" in result.text:
                 message = "Got HTML response."
             elif "oauth_problem_advice" in result.text:
@@ -614,7 +616,7 @@ def get_response(url, client, params=None, **kwargs):
                 status_code = 500 if result.status_code == 200 else result.status_code
                 response = {"message": message, "status_code": status_code}
 
-        if not ok:
+        if not ok and kwargs.get("debug"):
             header_names = ["Authorization", "Accept", "Content-Type"]
 
             if client.prefix == "XERO" and client.oauth2:
@@ -663,6 +665,10 @@ def get_response(url, client, params=None, **kwargs):
         except RuntimeError:
             pass
 
+    if not ok and kwargs.get("debug"):
+        message = response.get("message", "")
+        logger.error(f"Error requesting {url}")
+        logger.error(f"Server returned {status_code}: {message}")
 
     return response
 
