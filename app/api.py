@@ -709,7 +709,7 @@ class ProjectTime(Resource):
         error = (f"Xero time entry {truncated_key} already exists!", 409)
         assert key not in event_keys, error
 
-    def get_post_data(self):
+    def get_post_data(self, *args):
         # url = 'http://localhost:5000/v1/xero-time'
         # r = requests.post(url, data={"timelyProjectId": 2389295, "dryRun": True})
         if self.prefix == "XERO":

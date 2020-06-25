@@ -439,7 +439,7 @@ class Resource(BaseView):
         if self.subresource:
             self.subresource_id = value
         else:
-            self._rid = value
+            self.rid = value
 
         if self.id_hook:
             self.id_hook()
@@ -704,7 +704,7 @@ class Resource(BaseView):
     def map_rid(self, mapped_rid, name=None):
         return self.mapper.get(mapped_rid)
 
-    def get(self, rid=None, mapped_rid=None, mapped_name=None, update_cache=False):
+    def get(self, id=None, mapped_rid=None, mapped_name=None, update_cache=False):
         """ Get an API Resource.
         Kwargs:
             rid (str): The API resource_id.
@@ -722,7 +722,7 @@ class Resource(BaseView):
             >>> qb_transactions = Resource("QB", "TransactionList", **kwargs)
             >>> qb_transactions.get()
         """
-        self.rid = self.values.pop("id", rid) or self.rid
+        self.id = self.values.pop("id", id) or self.id
 
         if self.data and not self.id and mapped_name is not None:
             try:
@@ -867,7 +867,7 @@ class Resource(BaseView):
 
         return jsonify(**response)
 
-    def patch(self, rid=None, **kwargs):
+    def patch(self, id=None, **kwargs):
         """ Upate an API Resource.
         Kwargs:
             rid (str): The API resource_id.
@@ -885,7 +885,7 @@ class Resource(BaseView):
             >>> url = 'http://localhost:5000/v1/timely-time'
             >>> requests.patch(url, data={"rid": 165829339, "dryRun": True})
         """
-        self.rid = self.values.pop("id", rid) or self.rid
+        self.id = self.values.pop("id", id) or self.id
         rkwargs = {**app.config, "headers": self.headers, "method": "post"}
         data_key = "data"
         data = {**self.values, **kwargs}
