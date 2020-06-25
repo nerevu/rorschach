@@ -7,7 +7,6 @@ from os import path as p, getenv, environ
 from subprocess import call, check_call, CalledProcessError
 from urllib.parse import urlparse
 from itertools import count, chain
-from json import load, dump
 from json.decoder import JSONDecodeError
 from sys import exit
 
@@ -38,19 +37,15 @@ from app.api import (
 )
 
 # collections
-_timely_users = Users("TIMELY", dictify=True, dry_run=True)
-_timely_events = Time("TIMELY", dictify=True, dry_run=True)
-_timely_projects = Projects("TIMELY", dictify=True, dry_run=True)
-_timely_tasks = Tasks("TIMELY", dictify=True, dry_run=True)
-_timely_project_tasks = ProjectTasks("TIMELY", dictify=True, dry_run=True)
-_xero_project_tasks = ProjectTasks("XERO", dictify=True, dry_run=True)
-_xero_project_time = ProjectTime("XERO", dictify=True, dry_run=True)
+timely_users = Users("TIMELY", dictify=True, dry_run=True)
+timely_events = Time("TIMELY", dictify=True, dry_run=True)
+timely_projects = Projects("TIMELY", dictify=True, dry_run=True)
+timely_tasks = Tasks("TIMELY", dictify=True, dry_run=True)
+timely_project_tasks = ProjectTasks("TIMELY", dictify=True, dry_run=True)
+xero_project_tasks = ProjectTasks("XERO", dictify=True, dry_run=True)
+xero_project_time = ProjectTime("XERO", dictify=True, dry_run=True)
 
 # data
-timely_users = _timely_users.data
-timely_events = _timely_events.data
-timely_projects = _timely_projects.data
-timely_tasks = _timely_tasks.data
 
 BASEDIR = p.dirname(__file__)
 DEF_WHERE = ["app", "manage.py", "config.py"]
@@ -163,17 +158,15 @@ def prune(collection, **kwargs):
             if is_tasks:
                 timely_project_id = str(item["timely"]["project"])
                 timely_task_id = int(item["timely"]["task"])
-                _timely_project_tasks.rid = timely_project_id
-                timely_proj_tasks = _timely_project_tasks.data
-                has_timely_task = timely_task_id in timely_proj_tasks.keys()
+                timely_project_tasks.rid = timely_project_id
+                has_timely_task = timely_task_id in timely_project_tasks.data
 
                 if not has_timely_task:
                     continue
 
                 xero_project_id = item["xero"]["project"]
-                _xero_project_tasks.rid = xero_project_id
-                xero_proj_tasks = _xero_project_tasks.data
-                xero_task_ids = {t["taskId"] for t in xero_proj_tasks}
+                xero_project_tasks.rid = xero_project_id
+                xero_task_ids = {t["taskId"] for t in xero_project_tasks}
                 valid = item["xero"]["task"] in xero_task_ids
             else:
                 for name in item_names:
@@ -315,13 +308,13 @@ def test_oauth(method=None, resource=None, **kwargs):
 @click.option("-d", "--dry-run/--no-dry-run", help="Perform a dry run", default=False)
 def sync(**kwargs):
     """Sync Timely events with Xero time entries"""
-    sync_results = _xero_project_time.results
+    sync_results = xero_project_time.results
     added_events = set()
     skipped_events = set()
     patched_events = set()
     unpatched_events = set()
 
-    logger.info(f"Project ID {kwargs['project_id']}")
+    logger.info(f"\nProject ID {kwargs['project_id']}")
     logger.info("——————————————————")
 
     if kwargs["end"]:
@@ -336,7 +329,7 @@ def sync(**kwargs):
 
         if result["ok"] or result["conflict"]:
             added_events.add(str(event_id))
-            message = result.get("message") or f"Added Xero event {event_id}"
+            message = result.get("message") or f"Added Timely event {event_id}"
             logger.info(f"- {message}")
         else:
             message = result.get("message") or "Unknown error!"
@@ -361,27 +354,28 @@ def sync(**kwargs):
 
         if result["ok"] or result["conflict"]:
             patched_events.add(event_id)
-            event = timely_events.get(event_id)
+            event = timely_events.extract_model(int(event_id))
 
             if message:
                 logger.info(f"- {message}")
             elif event:
-                user_id = str(event["user.id"])
-                project_id = str(event["project.id"])
-                user_name = timely_users.get(user_id, {}).get("name", "Unknown")
-                project_name = timely_projects.get(project_id, {}).get(
+                user_id = int(event["user.id"])
+                project_id = int(event["project.id"])
+                label_id = int(event["label_id"])
+                task = timely_tasks.extract_model(label_id)
+                user_name = timely_users.extract_model(user_id).get("name", "Unknown")
+                event_time = event["duration.total_minutes"]
+                task_name = task.get("name", "Unknown").split(" ")[0]
+                event_day = event["day"]
+                project_name = timely_projects.extract_model(project_id).get(
                     "name", "Unknown"
                 )
-                task = timely_tasks.get(str(event["label_ids[0]"]), {})
-                task_name = task.get("name", "Unknown").split(" ")[0]
-                event_time = event["duration.total_minutes"]
-                event_day = event["day"]
                 msg = f"- {user_name} did {event_time}m of {task_name} on {event_day} "
                 msg += f"for {project_name}"
                 logger.debug(msg)
             else:
                 msg = f"- Event {event_id} patched, but not found in "
-                msg += f"{_timely_events.data_p}."
+                msg += f"{timely_events.data_p}."
                 logger.info(msg)
         else:
             unpatched_events.add(event_id)
@@ -394,7 +388,7 @@ def sync(**kwargs):
 
     if not kwargs["dry_run"]:
         for event in all_events:
-            sync_results[event] = {
+            sync_results[str(event)] = {
                 "added": event in added_events,
                 "patched": event in patched_events,
             }
@@ -404,7 +398,7 @@ def sync(**kwargs):
     msg += f"{num_patched_events} patched"
     logger.info(msg)
     logger.info("------------------------------------")
-    _xero_project_time.results = sync_results
+    xero_project_time.results = sync_results
     num_errors = len(skipped_events) + len(unpatched_events)
     exit(num_errors)
 

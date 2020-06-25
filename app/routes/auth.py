@@ -29,10 +29,10 @@ from app.authclient import get_auth_client, get_response, callback
 from app.utils import (
     HEADERS,
     jsonify,
-    load_path,
     get_links,
     parse_request,
     parse_kwargs,
+    fetch_bool,
 )
 from app.mappings import reg_mapper
 from app.helpers import singularize
@@ -398,8 +398,6 @@ class Resource(BaseView):
             except JSONDecodeError as e:
                 mappings = []
                 self.error_msg = f"{self.mappings_p} {e}!"
-            # else:
-            #     logger.debug(f"{self.mappings_p} found!")
 
             if self.error_msg:
                 logger.error(self.error_msg)
@@ -464,7 +462,6 @@ class Resource(BaseView):
                     logger.error(f"No {name} cached data available!")
             else:
                 self._rid = item.get(self.id_field)
-                # logger.debug(f"{msg} found in cache with id {self._rid}!")
 
         return self._rid
 
@@ -512,8 +509,6 @@ class Resource(BaseView):
                 _data = loads(self.data_content)
             except (JSONDecodeError, TypeError):
                 _data = None
-            # else:
-            #     logger.debug(f"{self.data_p} found!")
 
             if _data and self.dictify:
                 data = dict((item.get(self.id_field), item) for item in _data)
@@ -527,7 +522,6 @@ class Resource(BaseView):
     @data.setter
     def data(self, value):
         if value:
-            # logger.debug(f"Updating {self.data_p}…")
             with self.data_p.open(mode="w+", encoding="utf8") as data_f:
                 dump(value, data_f, indent=2, sort_keys=True, ensure_ascii=False)
                 data_f.write("\n")
@@ -650,6 +644,15 @@ class Resource(BaseView):
         self._values["subkey"] = value
 
     @property
+    def result_key(self):
+        _result_key = "result"
+
+        if self.subkey:
+            _result_key += f".{self.subkey}"
+
+        return _result_key
+
+    @property
     def pos(self):
         return int(self.values.get("pos", self._pos))
 
@@ -673,6 +676,56 @@ class Resource(BaseView):
     def end(self, value):
         self._values["end"] = value
 
+    def get_post_data(self, source_item, source_name, source_rid):
+        data = {}
+        data[self.name_field] = source_name
+        return data
+
+    def create_model(self, data):
+        model = {}
+
+        if data:
+            response = self.post(**data)
+            json = response.json
+
+            if json["ok"]:
+                result = DotDict(json).get(self.result_key)
+
+                try:
+                    model = result[0]
+                except (IndexError, TypeError):
+                    model = {}
+                except KeyError:
+                    model = result
+            else:
+                logger.error(json.get("message"))
+
+        return model
+
+    def extract_model(self, id=None, strict=False, *args, **kwargs):
+        response = self.get(id, *args, **kwargs)
+        json = response.json
+        result = [] if self.eof else json["result"]
+
+        try:
+            model = result[0]
+        except (IndexError, TypeError):
+            model = {}
+        except KeyError:
+            model = result
+
+        if json["ok"]:
+            error = (f"{self} doesn't exist!", 404)
+        else:
+            message = json.get("message") or json["status"]
+            error = (message, response.status_code)
+
+        if strict:
+            assert model, error
+            assert model.get(self.id_field), (f"{self} has no ID!", 500)
+
+        return model
+
     def refresh_values(self):
         """
         HACK: Not sure if this is pythonic, but this is in case there is a new matching
@@ -689,22 +742,85 @@ class Resource(BaseView):
         self._kwargs = None
         self.kwargs
 
-    def update_mappings(self, mapped_rid):
+    def update_mappings(self, source_rid):
         entry = {}
 
         if self.entry_factory:
-            entry = self.entry_factory(self.id, mapped_rid)
-        elif mapped_rid:
-            entry[self.counterpart] = mapped_rid
+            entry = self.entry_factory(self.id, source_rid)
+        elif source_rid:
+            entry[self.counterpart] = source_rid
             entry[self.lowered] = self.id
 
         if entry:
             self.mappings = self.mappings + [entry]
 
-    def map_rid(self, mapped_rid, name=None):
-        return self.mapper.get(mapped_rid)
+    def map_rid(self, rid, name=None):
+        return self.mapper.get(rid)
 
-    def get(self, id=None, mapped_rid=None, mapped_name=None, update_cache=False):
+    def convert(self, source):
+        if self.subresource:
+            assert self.rid, (f"No rid entered for {self}.", 404)
+
+        try:
+            has_id_func = self.id_func
+        except AttributeError:
+            has_id_func = False
+
+        def converter(source_item, source_rid=None):
+            dry_run, self.dry_run = self.dry_run, True
+            source_name = name = source_item[source.name_field]
+
+            if source_rid:
+                name += f" {source_rid}"
+                ekwargs = {"source_rid": source_rid}
+            else:
+                source_rid = source_item[source.id_field]
+                ekwargs = {"source_rid": source_rid, "source_name": source_name}
+
+            dest_item = self.extract_model(**ekwargs)
+            update_mappings = not dest_item
+
+            if has_id_func and update_mappings:
+                logger.info(f"{name} not found in {self} cache. Select a mapping.")
+                dest_id = self.id_func(source_item, source_name, source_rid)
+
+                if dest_id:
+                    dest_item = self.extract_model(id=dest_id, update_cache=True)
+
+            self.dry_run = dry_run
+
+            if not (dest_item or dry_run):
+                message = f"Project {name} not found in {self}. "
+                message += f"Do you want to create it?"
+                answer = fetch_bool(message)
+
+                if answer == "y":
+                    data = self.get_post_data(source_item, source_name, source_rid)
+                    dest_item = self.create_model(data)
+
+            if dry_run:
+                error_msg = f"Disable dry_run mode to create {self} mapping."
+            else:
+                error_msg = f"Manually add {name} to {self}."
+
+            assert dest_item, (error_msg, 404)
+
+            if update_mappings:
+                self.id = dest_item[self.id_field]
+                self.update_mappings(source_rid)
+
+            return dest_item
+
+        return converter
+
+    @classmethod
+    def xero_from_timely(cls, source_item, dry_run=True, source_rid=None, **kwargs):
+        dest = cls("XERO", dry_run=dry_run, **kwargs)
+        source = cls("TIMELY", dry_run=dry_run)
+        converter = dest.convert(source)
+        return converter(source_item, source_rid=source_rid)
+
+    def get(self, id=None, source_rid=None, source_name=None, update_cache=False):
         """ Get an API Resource.
         Kwargs:
             rid (str): The API resource_id.
@@ -724,16 +840,16 @@ class Resource(BaseView):
         """
         self.id = self.values.pop("id", id) or self.id
 
-        if self.data and not self.id and mapped_name is not None:
+        if self.data and not self.id and source_name is not None:
             try:
-                result = next(x for x in self if mapped_name == x[self.name_field])
+                result = next(x for x in self if source_name == x[self.name_field])
             except StopIteration:
                 pass
             else:
                 self.id = result[self.id_field]
 
-        if not self.id and mapped_rid:
-            self.id = self.map_rid(mapped_rid)
+        if not self.id and source_rid:
+            self.id = self.map_rid(source_rid)
 
         if self.dry_run:
             if self.id and self.dictify:
@@ -748,7 +864,7 @@ class Resource(BaseView):
                     )
                 except StopIteration:
                     result = {}
-            elif mapped_name or mapped_rid:
+            elif source_name or source_rid:
                 result = {}
             else:
                 result = self.data
@@ -759,7 +875,7 @@ class Resource(BaseView):
         else:
             if self.id:
                 url = f"{self.api_url}/{self.id}"
-            elif mapped_name or mapped_rid:
+            elif source_name or source_rid:
                 url = None
             else:
                 try:
@@ -799,7 +915,11 @@ class Resource(BaseView):
             if hasattr(result, "get"):
                 result = [result]
 
-            pkwargs = {"black_list": self.black_list, "filterer": self.filterer}
+            pkwargs = {"black_list": self.black_list}
+
+            if not self.id:
+                pkwargs["filterer"] = self.filterer
+
             result = list(self.processor(result, self.fields, **pkwargs))
 
             if result is not None and update_cache and not self.id:

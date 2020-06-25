@@ -17,6 +17,7 @@ from functools import wraps, partial
 from hashlib import md5
 from http.client import responses
 from json.decoder import JSONDecodeError
+from subprocess import call
 
 import pygogo as gogo
 
@@ -439,3 +440,33 @@ def load_path(path, default=None):
         contents = default
 
     return contents
+
+
+def fetch_choice(choices):
+    call(["say", "enter a value"])
+    pos = None
+
+    while pos is None:
+        answer = input(f"{choices}: ")
+
+        try:
+            pos = int(answer or "0")
+        except ValueError:
+            logger.error(f"Invalid selection: {answer}.")
+
+    return pos
+
+
+def fetch_bool(message):
+    call(["say", "enter a value"])
+    invalid = True
+
+    while invalid:
+        answer = input(f"{message} [y/n]: ")
+
+        if answer in {"y", "n"}:
+            invalid = False
+        else:
+            logger.error(f"Invalid selection: {answer}.")
+
+    return answer
