@@ -255,9 +255,12 @@ class MyAuth2Client(AuthClient):
 
     def save(self):
         try:
-            self.state = session.get(f"{self.prefix}_state") or self.state
+            def_state = session.get(f"{self.prefix}_state")
         except RuntimeError:
-            pass
+            def_state = None
+
+        if not self.state:
+            self.state = def_state or cache.get(f"{self.prefix}_state")
 
         cache.set(f"{self.prefix}_state", self.state)
         cache.set(f"{self.prefix}_access_token", self.access_token)
@@ -273,7 +276,7 @@ class MyAuth2Client(AuthClient):
         except RuntimeError:
             def_state = None
 
-        self.state = cache.get(f"{self.prefix}_state") or def_state
+        self.state = def_state or cache.get(f"{self.prefix}_state")
         self.access_token = cache.get(f"{self.prefix}_access_token")
         self.refresh_token = cache.get(f"{self.prefix}_refresh_token")
         self.created_at = cache.get(f"{self.prefix}_created_at")
