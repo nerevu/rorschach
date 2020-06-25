@@ -131,17 +131,21 @@ def create_app(script_info=None, **kwargs):
         parent_dir = Path(p.dirname(BASEDIR))
         cache_dir = parent_dir.joinpath(".cache", f"v{DEFAULT_PROTOCOL}")
 
-    logger.debug(f"Set cache type to {cache_type}")
+    message = f"Set cache type to {cache_type}"
+
+    if cache_type == "filesystem":
+        message += f" in {cache_dir}"
+
+    logger.debug(message)
 
     cache_config = get_cache_config(cache_type, cache_dir=cache_dir, **app.config)
     cache.init_app(app, config=cache_config)
 
     # TODO: keep until https://github.com/sh4nks/flask-caching/issues/113 is
     # solved
-    if "memcache" in cache_type:
-        DEF_TIMEOUT = app.config.get("CACHE_DEFAULT_TIMEOUT")
-        timeout = app.config.get("SET_TIMEOUT", DEF_TIMEOUT)
-        cache.set = partial(cache.set, timeout=timeout)
+    DEF_TIMEOUT = app.config.get("CACHE_DEFAULT_TIMEOUT")
+    timeout = app.config.get("SET_TIMEOUT", DEF_TIMEOUT)
+    cache.set = partial(cache.set, timeout=timeout)
 
     app.json_encoder = CustomEncoder
     return app
