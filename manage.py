@@ -42,6 +42,7 @@ _timely_users = Users("TIMELY", dictify=True, dry_run=True)
 _timely_events = Time("TIMELY", dictify=True, dry_run=True)
 _timely_projects = Projects("TIMELY", dictify=True, dry_run=True)
 _timely_tasks = Tasks("TIMELY", dictify=True, dry_run=True)
+_timely_project_tasks = ProjectTasks("TIMELY", dictify=True, dry_run=True)
 _xero_users = Users("XERO", dictify=True, dry_run=True)
 _xero_projects = Projects("XERO", dictify=True, dry_run=True)
 _xero_project_tasks = ProjectTasks("XERO", dictify=True, dry_run=True)
@@ -102,27 +103,8 @@ xero_projects = _xero_projects.data
 
 # mappings
 projects = _xero_projects.mappings
-projects_p = _xero_projects.mappings_p
 users = _xero_users.mappings
-users_p = _xero_users.mappings_p
 tasks = _xero_project_tasks.mappings
-tasks_p = _xero_project_tasks.mappings_p
-
-PRUNINGS = {
-    "users": {
-        "mapping": users,
-        "save": users_p,
-        "timely": timely_users,
-        "xero": xero_users,
-    },
-    "projects": {
-        "mapping": projects,
-        "save": projects_p,
-        "timely": timely_projects,
-        "xero": xero_projects,
-    },
-    "tasks": {"mapping": tasks, "save": tasks_p},
-}
 
 
 @click.group(cls=FlaskGroup, create_app=create_app)
@@ -159,48 +141,62 @@ def help(ctx):
     print(f"commands: {commands}")
 
 
+COLLECTIONS = {
+    "users": Users,
+    "tasks": Tasks,
+    "contacts": Contacts,
+    "inventory": Inventory,
+    "time": Time,
+    "projects": Projects,
+    "projecttasks": ProjectTasks,
+    "projecttime": ProjectTime,
+}
+
+
 @manager.command()
-@click.option("-f", "--file", help="The mapping file to prune", default="users")
-def prune(**kwargs):
-    """Remove duplicated and outdated mapping entries"""
-    item_names = ["xero", "timely"]
-    checking_name = item_names[0]
+@click.option(
+    "-c",
+    "--collection",
+    type=Choice(COLLECTIONS, case_sensitive=False),
+    default="users",
+)
+def prune(collection, **kwargs):
+    """Remove duplicated and outdated mappings entries"""
     added_names = set()
-    _file = kwargs["file"]
-    is_tasks = _file == "tasks"
-    pruning = PRUNINGS[_file]
+    item_names = ["XERO", "TIMELY"]
+    is_tasks = collection == "tasks"
+    Collection = COLLECTIONS[collection.lower()]
+    mappings = Collection("XERO", dictify=True, dry_run=True).mappings
 
     def gen_items():
         # if there are dupes, keep the most recent
-        for item in reversed(pruning["mapping"]):
+        for item in reversed(mappings):
             if is_tasks:
                 timely_project_id = str(item["timely"]["project"])
-                timely_task_id = str(item["timely"]["task"])
-                _timely_project_tasks = ProjectTasks(
-                    "TIMELY", dictify=True, dry_run=True, rid=timely_project_id
-                )
+                timely_task_id = int(item["timely"]["task"])
+                _timely_project_tasks.rid = timely_project_id
                 timely_proj_tasks = _timely_project_tasks.data
-                timely_task_ids = {str(t["id"]) for t in timely_proj_tasks}
-                has_timely_task = timely_task_id in timely_task_ids
+                has_timely_task = timely_task_id in timely_proj_tasks.keys()
 
                 if not has_timely_task:
                     continue
 
                 xero_project_id = item["xero"]["project"]
                 xero_task_id = item["xero"]["task"]
-                _xero_project_tasks = ProjectTasks(
-                    "XERO", dictify=True, dry_run=True, rid=xero_project_id
-                )
+                _xero_project_tasks.rid = xero_project_id
                 xero_proj_tasks = _xero_project_tasks.data
                 xero_task_ids = {t["taskId"] for t in xero_proj_tasks}
                 valid = xero_task_id in xero_task_ids
             else:
-                valid = all(
-                    str(item[name]) in str(pruning[name]) for name in item_names
-                )
+                for name in item_names:
+                    data = Collection(name, dictify=True, dry_run=True).data
+                    valid = str(item[name]) in data
+
+                    if not valid:
+                        continue
 
             if valid:
-                to_check = item[checking_name]
+                to_check = item["xero"]
 
                 if is_tasks:
                     to_check = (to_check["task"], to_check["project"])
@@ -209,8 +205,28 @@ def prune(**kwargs):
                     added_names.add(to_check)
                     yield item
 
-    results = list(reversed(list(gen_items())))
-    dump(results, pruning["save"].open(mode="w"), indent=2)
+    mappings = list(reversed(list(gen_items())))
+
+
+@manager.command()
+@click.option(
+    "-p",
+    "--prefix",
+    type=Choice(["timely", "xero"], case_sensitive=False),
+    default="xero",
+)
+@click.option(
+    "-c",
+    "--collection",
+    type=Choice(COLLECTIONS, case_sensitive=False),
+    default="users",
+)
+@click.option("-i", "--rid", help="resource ID")
+@click.option("-d", "--dictify/--no-dictify", default=False)
+def store(prefix, collection, **kwargs):
+    """Save user info to cache"""
+    Collection = COLLECTIONS[collection.lower()]
+    _store(prefix.upper(), Collection, **kwargs)
 
 
 @manager.command()
@@ -408,39 +424,6 @@ def sync(**kwargs):
 def check():
     """Check staged changes for lint errors"""
     exit(call(p.join(BASEDIR, "helpers", "check-stage")))
-
-
-collection_map = {
-    "users": Users,
-    "tasks": Tasks,
-    "contacts": Contacts,
-    "inventory": Inventory,
-    "time": Time,
-    "projects": Projects,
-    "projecttasks": ProjectTasks,
-    "projecttime": ProjectTime,
-}
-
-
-@manager.command()
-@click.option(
-    "-p",
-    "--prefix",
-    type=Choice(["timely", "xero"], case_sensitive=False),
-    default="xero",
-)
-@click.option(
-    "-c",
-    "--collection",
-    type=Choice(collection_map, case_sensitive=False),
-    default="users",
-)
-@click.option("-i", "--rid", help="resource ID")
-@click.option("-d", "--dictify/--no-dictify", default=False)
-def store(prefix, collection, **kwargs):
-    """Save user info to cache"""
-    Collection = collection_map[collection.lower()]
-    _store(prefix.upper(), Collection, **kwargs)
 
 
 @manager.command()

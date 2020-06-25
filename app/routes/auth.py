@@ -45,13 +45,14 @@ APP_DIR = Path(__file__).parents[1]
 DATA_DIR = APP_DIR.joinpath("data")
 MAPPINGS_DIR = APP_DIR.joinpath("mappings")
 PREFIX = Config.API_URL_PREFIX
+API_PREFIXES = Config.API_PREFIXES
 
 
-def extract_fields(record, fields, dry_run=False, **kwargs):
+def extract_fields(record, fields, **kwargs):
     item = DotDict(record)
 
     for field in fields:
-        if "[" in field and not dry_run:
+        if "[" in field:
             split_field = field.split("[")
             real_field = split_field[0]
             pos = int(split_field[1].split("]")[0])
@@ -77,7 +78,7 @@ def remove_fields(record, black_list):
             yield (key, value)
 
 
-def process_result(result, fields=None, black_list=None, dry_run=False, **kwargs):
+def process_result(result, fields=None, black_list=None, **kwargs):
     if kwargs.pop("filterer", None):
         result = filter(kwargs["filterer"], result)
 
@@ -85,9 +86,7 @@ def process_result(result, fields=None, black_list=None, dry_run=False, **kwargs
         result = (dict(remove_fields(item, black_list)) for item in result)
 
     if fields:
-        result = (
-            dict(extract_fields(item, fields, dry_run=dry_run)) for item in result
-        )
+        result = (dict(extract_fields(item, fields)) for item in result)
 
     if kwargs:
         result = ({**item, **kwargs} for item in result)
@@ -151,7 +150,7 @@ class BaseView(MethodView):
     def headers(self):
         headers = self._headers
 
-        if self.is_xero and self.client.oauth2:
+        if self.is_xero and self.client and self.client.oauth2:
             headers["Xero-tenant-id"] = self.client.tenant_id
 
         return headers
@@ -253,10 +252,12 @@ class Resource(BaseView):
         name = f"{self.lowered}-{self.lowered_resource}"
 
         if self.subresource:
-            name += f"[id:{self.rid}]-{self.lowered_subresource}"
+            trunc_rid = str(self.rid).split("-")[0]
+            name += f"[id:{trunc_rid}]-{self.lowered_subresource}"
 
         if self.id:
-            name += f"[id:{self.id}]"
+            trunc_id = str(self.id).split("-")[0]
+            name += f"[id:{trunc_id}]"
         elif self.use_default:
             name += f"[pos:{self.pos}]"
 
@@ -291,9 +292,11 @@ class Resource(BaseView):
         self.lowered_subresource = self.subresource.lower()
         super().__init__(prefix, **kwargs)
 
-        self.counterpart = kwargs.get("counterpart", "")
+        def_counterpart = set(API_PREFIXES).difference([self.prefix]).pop().lower()
+        self.counterpart = kwargs.get("counterpart", def_counterpart)
         self.fields = kwargs.get("fields", [])
         self.map_factory = kwargs.get("map_factory", reg_mapper)
+        self.entry_factory = kwargs.get("entry_factory")
         self.eof = False
 
         lowered_class = type(self).__name__.lower()
@@ -316,72 +319,86 @@ class Resource(BaseView):
         self.options = kwargs.get("options", "")
         self.populate = kwargs.get("populate")
         self.filterer = kwargs.get("filterer")
+        self.id_hook = kwargs.get("id_hook")
+        self.rid_hook = kwargs.get("rid_hook")
         self._rid = kwargs.get("rid")
         self._use_default = kwargs.get("use_default")
         self._dictify = kwargs.get("dictify")
         self._subkey = kwargs.get("subkey")
         self._pos = kwargs.get("pos", 0)
         self._data = None
+        self._mappings = None
         self._values = None
         self._kwargs = None
+        self._mapper = None
         self.verb = "get"
         self.error_msg = ""
 
         self.start_param = self.START_PARMS.get(self.prefix, "start")
         self.end_param = self.END_PARMS.get(self.prefix, "end")
 
-        if self.subresource:
-            mappings_filename = f"{self.lowered_subresource}.json"
-        else:
-            mappings_filename = f"{self.lowered_resource}.json"
-
-        self.mappings_p = MAPPINGS_DIR.joinpath(mappings_filename)
-        mappings_content = self.mappings_p.read_text()
-
-        try:
-            mappings = loads(mappings_content)
-        except JSONDecodeError as e:
-            mappings = []
-            self.error_msg = f"{self.mappings_p} {e}!"
-        # else:
-        #     logger.debug(f"{self.mappings_p} found!")
-
-        if self.error_msg:
-            logger.error(self.error_msg)
-
-        self.mappings = mappings
-
         results_filename = kwargs.get("results_filename", "results.json")
         results_p = DATA_DIR.joinpath(results_filename)
         self.results = load_path(results_p, {})
 
+        if self.id and self.id_hook:
+            self.id_hook()
+
+        if self.rid and self.rid_hook:
+            self.rid_hook()
+
     def __iter__(self):
-        yield from self.data if self.is_listlike else self.data.values()
+        yield from self.data.values() if self.dictify else self.data
 
     def __getitem__(self, key):
         return self.data[key]
 
     @property
-    def is_listlike(self):
-        # is it a dict of dicts, or list of dicts?
-        try:
-            self.data.values()
-        except AttributeError:
-            listlike = True
-        else:
-            listlike = False
+    def mappings(self):
+        if self._mappings is None:
+            if self.subresource:
+                mappings_filename = f"{self.lowered_subresource}.json"
+            else:
+                mappings_filename = f"{self.lowered_resource}.json"
 
-        return listlike
+            self.mappings_p = MAPPINGS_DIR.joinpath(mappings_filename)
+            mappings_content = self.mappings_p.read_text()
+
+            try:
+                mappings = loads(mappings_content)
+            except JSONDecodeError as e:
+                mappings = []
+                self.error_msg = f"{self.mappings_p} {e}!"
+            # else:
+            #     logger.debug(f"{self.mappings_p} found!")
+
+            if self.error_msg:
+                logger.error(self.error_msg)
+
+            self._mappings = mappings
+
+        return self._mappings
+
+    @mappings.setter
+    def mappings(self, value):
+        if value:
+            with self.mappings_p.open(mode="w+", encoding="utf8") as mappings_f:
+                dump(value, mappings_f, indent=2, sort_keys=True, ensure_ascii=False)
+                mappings_f.write("\n")
+                self._mappings = None
 
     @property
     def mapper(self):
-        if self.mappings:
-            map_factory_args = (self.mappings, self.counterpart, self.lowered)
-            _mapper = dict(self.map_factory(*map_factory_args))
-        else:
-            _mapper = {}
+        if self._mapper is None:
+            if self.mappings and self.map_factory:
+                map_factory_args = (self.mappings, self.counterpart, self.lowered)
+                _mapper = dict(self.map_factory(*map_factory_args))
+            else:
+                _mapper = {} if self.map_factory else None
 
-        return _mapper
+            self._mapper = _mapper
+
+        return self._mapper
 
     @property
     def id(self):
@@ -389,15 +406,23 @@ class Resource(BaseView):
 
     @id.setter
     def id(self, value):
-        if value and self.subresource:
+        if self.subresource:
             self.subresource_id = value
-        elif value:
+        else:
             self._rid = value
+
+        if self.id_hook:
+            self.id_hook()
 
     @property
     def rid(self):
         if self.use_default and not self._rid:
-            msg = f"{self}[{self.pos}]"
+            name = f"{self.lowered}-{self.lowered_resource}"
+
+            if self.subresource:
+                name += f"-{self.lowered_subresource}"
+
+            msg = f"{name}[{self.pos}]"
 
             try:
                 item = list(islice(self, self.pos, self.pos + 1))[0]
@@ -406,16 +431,19 @@ class Resource(BaseView):
                 logger.error(f"{msg} not found in cache!")
 
                 if not self.data:
-                    logger.error(f"No {self} cached data available!")
-            # else:
-            #     self._rid = item.get(self.id_field)
-            #     logger.debug(f"{msg} found in cache with id {self._rid}!")
+                    logger.error(f"No {name} cached data available!")
+            else:
+                self._rid = item.get(self.id_field)
+                # logger.debug(f"{msg} found in cache with id {self._rid}!")
 
         return self._rid
 
     @rid.setter
     def rid(self, value):
         self._rid = value
+
+        if self.rid_hook:
+            self.rid_hook()
 
     @property
     def data_p(self):
@@ -430,7 +458,7 @@ class Resource(BaseView):
             )
         elif self.subresource:
             self.data_filename = None
-            self.error_msg = f"No {self.lowered} {self.resource} ID given!"
+            self.error_msg = f"No {self} ID given!"
             logger.error(self.error_msg)
         else:
             self.data_filename = f"{self.lowered}_{self.lowered_resource}.json"
@@ -446,16 +474,27 @@ class Resource(BaseView):
     def data(self):
         if self._data is None:
             try:
-                data_content = self.data_p.read_text()
+                self.data_content = self.data_p.read_text()
             except (AttributeError, FileNotFoundError):
-                data_content = None
+                self.data_content = None
 
             try:
-                data = loads(data_content)
+                _data = loads(self.data_content)
             except (JSONDecodeError, TypeError):
-                data = {} if self.dictify else []
+                _data = None
             # else:
             #     logger.debug(f"{self.data_p} found!")
+
+            # remove me
+            try:
+                _data = list(_data.values())
+            except AttributeError:
+                pass
+
+            if _data and self.dictify:
+                data = dict((item.get(self.id_field), item) for item in _data)
+            else:
+                data = _data or ({} if self.dictify else [])
 
             self._data = data
 
@@ -623,36 +662,26 @@ class Resource(BaseView):
         self._kwargs = None
         self.kwargs
 
-    def update_mappings(self, mapped_rid, entry_factory=None):
+    def update_mappings(self, mapped_rid):
         entry = {}
 
-        if entry_factory:
-            entry = entry_factory(self.id, mapped_rid)
+        if self.entry_factory:
+            entry = self.entry_factory(self.id, mapped_rid)
         elif mapped_rid:
             entry[self.counterpart] = mapped_rid
             entry[self.lowered] = self.id
 
         if entry:
-            self.mappings.append(entry)
-            # logger.debug(f"Updating {self.mappings_p}…")
-
-            with self.mappings_p.open(mode="w+", encoding="utf8") as mappings_f:
-                dump(
-                    self.mappings,
-                    mappings_f,
-                    indent=2,
-                    sort_keys=True,
-                    ensure_ascii=False,
-                )
-                mappings_f.write("\n")
+            self._mappings.append(entry)
+            self.mappings = self._mappings
 
     def map_rid(self, mapped_rid, name=None):
         rid = self.mapper.get(mapped_rid)
 
         if not rid:
-            value = f"name {name}" if name else f"ID {mapped_rid}"
-            message = f"No {self.lowered} {self.resource} ID found mapping to {value}!"
-            logger.debug(message)
+            value = f"name {name}" if name else f"{mapped_rid}"
+            message = f"No {self} found mapping to {self.counterpart} {value}!"
+            # logger.debug(message)
 
         return rid
 
@@ -688,8 +717,18 @@ class Resource(BaseView):
             self.id = self.map_rid(mapped_rid)
 
         if self.dry_run:
-            if self.id:
-                result = self.data.get(str(self.id))
+            if self.id and self.dictify:
+                try:
+                    result = self.data.get(int(self.id), {})
+                except ValueError:
+                    result = self.data.get(str(self.id), {})
+            elif self.id:
+                try:
+                    result = next(
+                        x for x in self if str(self.id) == str(x[self.id_field])
+                    )
+                except StopIteration:
+                    result = {}
             elif mapped_name or mapped_rid:
                 result = {}
             else:
@@ -721,7 +760,7 @@ class Resource(BaseView):
             else:
                 response = {"result": {}, "ok": False, "status_code": 404}
 
-        if response["ok"]:
+        if response["ok"] and not self.dry_run:
             result = response.get("result")
 
             if self.subkey:
@@ -749,25 +788,23 @@ class Resource(BaseView):
                 result = [result]
 
             pkwargs = {"black_list": self.black_list, "filterer": self.filterer}
-            result = self.processor(
-                result, self.fields, dry_run=self.dry_run, **pkwargs
-            )
-
-            if self.dictify and result:
-                result = dict((item.get(self.id_field), item) for item in result)
-            elif result:
-                result = list(result)
+            result = self.processor(result, self.fields, **pkwargs)
+            result = list(result)
 
             if result is not None and update_cache and not self.id:
                 self.data = result
         else:
             result = response.get("result")
 
+            if hasattr(result, "get"):
+                result = [result]
+
         if self.error_msg:
             logger.error(self.error_msg)
             response["message"] = self.error_msg
 
         response["result"] = result
+
         return jsonify(**response)
 
     def post(self, **kwargs):
@@ -788,9 +825,7 @@ class Resource(BaseView):
         data = {**self.values, **kwargs}
         data_key = "data"
 
-        if self.dry_run:
-            response = {"result": {}}
-        elif self.is_cloze:
+        if self.is_cloze:
             self.verb = "create"
             rkwargs["headers"]["Content-Type"] = "application/json"
             data = dumps(data)
@@ -800,7 +835,13 @@ class Resource(BaseView):
             data_key = "json"
             data = {singularize(self.resource): data}
 
-        if not response:
+        if self.dry_run:
+            response = {
+                "result": data,
+                "ok": True,
+                "message": f"Disable dry_run mode to POST {self}.",
+            }
+        else:
             rkwargs[data_key] = data
             response = get_response(self.api_url, self.client, **rkwargs)
 
@@ -808,7 +849,9 @@ class Resource(BaseView):
             logger.error(self.error_msg)
             response["message"] = self.error_msg
 
-        response["links"] = get_links(app.url_map.iter_rules())
+        if not self.dry_run:
+            response["links"] = get_links(app.url_map.iter_rules())
+
         return jsonify(**response)
 
     def patch(self, rid=None, **kwargs):
@@ -827,7 +870,7 @@ class Resource(BaseView):
             >>> cloze_person.patch(**data)
             >>>
             >>> url = 'http://localhost:5000/v1/timely-time'
-            >>> requests.patch(url, data={"eventId": 165829339, "dryRun": True})
+            >>> requests.patch(url, data={"rid": 165829339, "dryRun": True})
         """
         self.rid = self.values.pop("id", rid) or self.rid
         rkwargs = {**app.config, "headers": self.headers, "method": "post"}
@@ -847,15 +890,21 @@ class Resource(BaseView):
                 data = {"event": data}
 
         if self.dry_run:
-            response = {"result": data}
+            response = {
+                "result": data,
+                "ok": True,
+                "message": f"Disable dry_run mode to PATCH {self}.",
+            }
 
         if not response:
             self.api_url = f"{self.api_url}/{self.id}"
             rkwargs[data_key] = data
             response = get_response(self.api_url, self.client, **rkwargs)
 
-        links = get_links(app.url_map.iter_rules())
-        response.update({"links": links, "id": self.id})
+        response["id"] = self.id
+
+        if not self.dry_run:
+            response["links"] = get_links(app.url_map.iter_rules())
 
         if self.error_msg:
             logger.error(self.error_msg)

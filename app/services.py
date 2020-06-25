@@ -7,7 +7,7 @@
 """
 import pygogo as gogo
 
-from app.api import ProjectTime
+from app.api import ProjectTime, Time
 
 logger = gogo.Gogo(__name__, monolog=True).logger
 
@@ -26,10 +26,8 @@ def add_xero_time(project_id=None, position=None, dry_run=False, **kwargs):
     return json
 
 
-def mark_billed(event_id=None, dry_run=False, **kwargs):
-    timely_time = ProjectTime(
-        "TIMELY", dictify=True, dry_run=dry_run, event_id=event_id
-    )
+def mark_billed(rid, dry_run=False, **kwargs):
+    timely_time = Time("TIMELY", dictify=True, dry_run=dry_run, rid=rid)
     response = timely_time.patch()
     json = response.json
     json["conflict"] = response.status_code == 409
