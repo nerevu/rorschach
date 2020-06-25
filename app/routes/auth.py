@@ -58,10 +58,6 @@ def extract_fields(record, fields, **kwargs):
             pos = int(split_field[1].split("]")[0])
             values = item.get(real_field, [])
 
-            # FIXME!
-            # if real_field == "label_ids":
-            #     values = [v for v in values if v not in {BILLABLE, NONBILLABLE}]
-
             try:
                 value = values[pos]
             except IndexError:

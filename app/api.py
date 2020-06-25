@@ -111,6 +111,11 @@ def fetch_bool(message):
 
     return answer
 
+def get_label_id(label_ids):
+    try:
+        return next(label for label in label_ids if label not in {BILLABLE, NONBILLABLE})
+    except StopIteration:
+        return 0
 
 def get_task_entry(rid, mapped_rid, xero_project_id=None):
     (timely_project_id, timely_user_id, label_id) = mapped_rid
@@ -123,6 +128,9 @@ def get_task_entry(rid, mapped_rid, xero_project_id=None):
         },
         "xero": {"task": rid, "project": xero_project_id},
     }
+def timely_events_processor(result, fields, **kwargs):
+    result = ({**item, "label_id": get_label_id(item["label_ids"])} for item in result)
+    return process_result(result, fields, **kwargs)
 
 
 def get_position_user_ids(timely_task, field="name"):
@@ -466,12 +474,14 @@ class Time(Resource):
                 "id",
                 "day",
                 "duration.total_minutes",
-                "label_ids[0]",
+                "label_id",
                 "project.id",
                 "user.id",
                 "note",
                 "billed",
             ]
+
+            kwargs["processor"] = timely_events_processor
 
         super().__init__(prefix, "events", fields=fields, **kwargs)
 
@@ -571,13 +581,13 @@ class ProjectTime(Resource):
                 "id",
                 "day",
                 "duration.total_minutes",
-                "label_ids[0]",
+                "label_id",
                 "project.id",
                 "user.id",
                 "note",
                 "billed",
             ]
-            kwargs.update({"subresource": "events"})
+            kwargs.update({"subresource": "events", "processor": timely_events_processor})
         elif prefix == "XERO":
             self.timely_project_id = kwargs.pop("timely_project_id", None)
             fields = []
@@ -627,7 +637,7 @@ class ProjectTime(Resource):
         assert not added, (f"{timely_project_events} already added!", 409)
 
         try:
-            label_id = int(self.timely_event.get("label_ids[0]", 0))
+            label_id = int(self.timely_event.get("label_id", 0))
         except TypeError:
             label_id = 0
 
