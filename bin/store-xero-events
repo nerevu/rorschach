@@ -1,6 +1,6 @@
 #!/usr/bin/env bash -uo pipefail
 
-for PROJECT in $(jq -r 'to_entries[] | .key' app/data/xero_projects.json); do
+for PROJECT in $(jq -r '.[] | .projectId' app/data/xero_projects.json); do
     SHORT=`echo $PROJECT | cut -d'-' -f1`
     manage store -p xero -c projecttime --rid="${PROJECT}"
 done
