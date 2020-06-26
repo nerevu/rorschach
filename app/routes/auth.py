@@ -92,7 +92,7 @@ def process_result(result, fields=None, black_list=None, **kwargs):
     return result
 
 
-def store(prefix, Collection, id=None, *args, **kwargs):
+def store(prefix, Collection, *args, **kwargs):
     collection = Collection(prefix, *args, **kwargs)
     response = collection.get(update_cache=True)
     json = response.json
@@ -790,12 +790,16 @@ class Resource(BaseView):
             self.dry_run = dry_run
 
             if not (dest_item or dry_run):
-                message = f"Project {name} not found in {self}. "
+                message = f"No mapping available for {name} in {self}. "
                 message += f"Do you want to create it?"
                 answer = fetch_bool(message)
 
                 if answer == "y":
                     data = self.get_post_data(source_item, source_name, source_rid)
+                else:
+                    data = {}
+
+                if data:
                     dest_item = self.create_model(data)
 
             if dry_run:

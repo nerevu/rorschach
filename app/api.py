@@ -89,10 +89,12 @@ def timely_events_processor(result, fields, **kwargs):
 
 def get_position_user_ids(xero_task_name):
     position_name = xero_task_name.split("(")[1][:-1]
-    user_ids = POSITIONS.get(position_name, [])
 
-    if not user_ids:
+    try:
+        user_ids = POSITIONS[position_name]
+    except KeyError:
         logger.debug(f"Position map doesn't contain position '{position_name}'!")
+        user_ids = []
 
     return user_ids
 
@@ -391,10 +393,13 @@ class ProjectTasks(Resource):
         try:
             item = matching_task_positions[pos]
         except (IndexError, TypeError):
-            # logger.error(f"Task {timely_task['trunc_name']} not found!.")
+            item = {}
+
+        try:
+            rate = item["SalesDetails"]["UnitPrice"]
+        except KeyError:
             task_data = {}
         else:
-            rate = item["SalesDetails"]["UnitPrice"]
             task_data = {
                 "name": item["Name"],
                 "rate": {"currency": "USD", "value": rate},

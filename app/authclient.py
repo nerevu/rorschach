@@ -61,6 +61,7 @@ class AuthClient(object):
         self.token_url = kwargs.get("token_url")
         self.account_id = kwargs.get("account_id")
         self.state = kwargs.get("state")
+        self.debug = kwargs.get("debug")
         self.headers = kwargs.get("headers", {})
         self.auth_params = kwargs.get("auth_params", {})
         self.created_at = None
@@ -155,7 +156,9 @@ class MyAuth2Client(AuthClient):
         self.expires_at = dt.now() + timedelta(seconds=self.expires_in)
 
         self.save()
-        logger.debug(self.token)
+
+        if self.debug:
+            logger.debug(self.token)
 
     @property
     def verified(self):

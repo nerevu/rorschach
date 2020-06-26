@@ -314,8 +314,8 @@ def sync(**kwargs):
     patched_events = set()
     unpatched_events = set()
 
-    logger.info(f"\nProject ID {kwargs['project_id']}")
-    logger.info("——————————————————")
+    logger.info(f"\nTimely Project {kwargs['project_id']}")
+    logger.info("——————————————————————")
 
     if kwargs["end"]:
         _range = range(kwargs["start"], kwargs["end"])
