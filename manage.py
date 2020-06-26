@@ -3,12 +3,15 @@
 # vim: sw=4:ts=4:expandtab
 
 """ A script to manage development tasks """
+import sys
+
 from os import path as p, getenv, environ
 from subprocess import call, check_call, CalledProcessError
 from urllib.parse import urlparse
 from itertools import count, chain
 from json.decoder import JSONDecodeError
 from sys import exit
+from traceback import print_exception
 
 import pygogo as gogo
 import click
@@ -65,6 +68,13 @@ hdlr_kwargs = {
     "recipients": [__AUTHOR_EMAIL__],
 }
 
+# mappings
+sync_results = xero_project_time.results
+added_events = set()
+skipped_events = set()
+patched_events = set()
+unpatched_events = set()
+
 if getenv("MAILGUN_SMTP_PASSWORD"):
     # NOTE: Sandbox domains are restricted to authorized recipients only.
     # https://help.mailgun.com/hc/en-us/articles/217531258
@@ -81,6 +91,30 @@ if getenv("MAILGUN_SMTP_PASSWORD"):
 
 high_hdlr = gogo.handlers.email_hdlr(**hdlr_kwargs)
 logger = gogo.Gogo(__name__, high_hdlr=high_hdlr).logger
+
+
+def save_results(dry_run=False, **kwargs):
+    if not dry_run:
+        logger.debug("Saving results…\n")
+        all_events = set(
+            chain(added_events, skipped_events, patched_events, unpatched_events)
+        )
+
+        for event in all_events:
+            sync_results[str(event)] = {
+                "added": event in added_events,
+                "patched": event in patched_events,
+            }
+
+        xero_project_time.results = sync_results
+
+
+def info(_type, value, tb):
+    print_exception(_type, value, tb)
+    save_results()
+
+
+sys.excepthook = info
 
 
 def log(message=None, ok=True, r=None, **kwargs):
@@ -308,12 +342,6 @@ def test_oauth(method=None, resource=None, **kwargs):
 @click.option("-d", "--dry-run/--no-dry-run", help="Perform a dry run", default=False)
 def sync(**kwargs):
     """Sync Timely events with Xero time entries"""
-    sync_results = xero_project_time.results
-    added_events = set()
-    skipped_events = set()
-    patched_events = set()
-    unpatched_events = set()
-
     logger.info(f"\nTimely Project {kwargs['project_id']}")
     logger.info("——————————————————————")
 
@@ -382,24 +410,14 @@ def sync(**kwargs):
             logger.info(f"- {message or 'Unknown error!'}")
 
     num_patched_events = len(patched_events)
-    all_events = set(
-        chain(added_events, skipped_events, patched_events, unpatched_events)
-    )
-
-    if not kwargs["dry_run"]:
-        for event in all_events:
-            sync_results[str(event)] = {
-                "added": event in added_events,
-                "patched": event in patched_events,
-            }
 
     logger.info("------------------------------------")
     msg = f"Of {num_total_events} events: {num_added_events} added and "
     msg += f"{num_patched_events} patched"
     logger.info(msg)
     logger.info("------------------------------------")
-    xero_project_time.results = sync_results
     num_errors = len(skipped_events) + len(unpatched_events)
+    save_results(**kwargs)
     exit(num_errors)
 
 
