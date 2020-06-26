@@ -132,13 +132,12 @@ def create_app(script_info=None, **kwargs):
         cache_dir = parent_dir.joinpath(".cache", f"v{DEFAULT_PROTOCOL}")
 
     message = f"Set cache type to {cache_type}"
+    cache_config = get_cache_config(cache_type, CACHE_DIR=cache_dir, **app.config)
 
-    if cache_type == "filesystem":
-        message += f" in {cache_dir}"
+    if cache_config["CACHE_TYPE"] == "filesystem":
+        message += f" in {cache_config['CACHE_DIR']}"
 
     logger.debug(message)
-
-    cache_config = get_cache_config(cache_type, cache_dir=cache_dir, **app.config)
     cache.init_app(app, config=cache_config)
 
     # TODO: keep until https://github.com/sh4nks/flask-caching/issues/113 is
