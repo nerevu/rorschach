@@ -459,14 +459,14 @@ def fetch_choice(choices):
 
 def fetch_bool(message):
     call(["say", "enter a value"])
-    invalid = True
+    valid = False
 
-    while invalid:
-        answer = input(f"{message} [y/n]: ")
+    while not valid:
+        answer = input(f"{message} [Y/n]: ") or "y"
 
-        if answer in {"y", "n"}:
-            invalid = False
-        else:
+        try:
+            valid = answer.lower() in {"y", "n"}
+        except AttributeError:
             logger.error(f"Invalid selection: {answer}.")
 
     return answer

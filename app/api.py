@@ -378,8 +378,9 @@ class ProjectTasks(Resource):
         matching_task_positions = self.get_matching_xero_postions(
             timely_user_id, timely_task_name
         )
-        xero_inventory = Inventory("XERO", dry_run=self.dry_run)
         task_position_names = {t["name"] for t in matching_task_positions}
+
+        xero_inventory = Inventory("XERO", dry_run=self.dry_run)
         matching_inventory_positions = xero_inventory.get_matching_xero_postions(
             timely_user_id, timely_task_name
         )
@@ -401,7 +402,7 @@ class ProjectTasks(Resource):
         pos = fetch_choice(choices) if choices else None
 
         try:
-            item = matching_task_positions[pos]
+            item = matching_positions[pos]
         except (IndexError, TypeError):
             item = {}
 
@@ -414,7 +415,6 @@ class ProjectTasks(Resource):
                 "name": item["Name"],
                 "rate": {"currency": "USD", "value": rate},
                 "chargeType": "TIME" if rate else "NON_CHARGEABLE",
-                "isChargeable": bool(rate),
             }
 
         return task_data

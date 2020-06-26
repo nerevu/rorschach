@@ -506,16 +506,14 @@ class Resource(BaseView):
                 self.data_content = None
 
             try:
-                _data = loads(self.data_content)
+                data = loads(self.data_content)
             except (JSONDecodeError, TypeError):
-                _data = None
+                data = []
 
-            if _data and self.dictify:
-                data = dict((item.get(self.id_field), item) for item in _data)
+            if self.dictify:
+                self._data = dict((item.get(self.id_field), item) for item in data)
             else:
-                data = _data or ({} if self.dictify else [])
-
-            self._data = data
+                self._data = data
 
         return self._data
 
@@ -647,9 +645,6 @@ class Resource(BaseView):
     def result_key(self):
         _result_key = "result"
 
-        if self.subkey:
-            _result_key += f".{self.subkey}"
-
         return _result_key
 
     @property
@@ -689,14 +684,7 @@ class Resource(BaseView):
             json = response.json
 
             if json["ok"]:
-                result = DotDict(json).get(self.result_key)
-
-                try:
-                    model = result[0]
-                except (IndexError, TypeError):
-                    model = {}
-                except KeyError:
-                    model = result
+                model = DotDict(json).get(self.result_key)
             else:
                 logger.error(json.get("message"))
 
@@ -754,6 +742,11 @@ class Resource(BaseView):
         if entry:
             self.mappings = self.mappings + [entry]
 
+    def update_data(self, **kwargs):
+        if kwargs:
+            entry = dict(extract_fields(kwargs, self.fields))
+            self.data = list(self.data) + [entry]
+
     def map_rid(self, rid, name=None):
         return self.mapper.get(rid)
 
@@ -778,9 +771,9 @@ class Resource(BaseView):
                 ekwargs = {"source_rid": source_rid, "source_name": source_name}
 
             dest_item = self.extract_model(**ekwargs)
-            update_mappings = not dest_item
+            needs_update = not dest_item
 
-            if has_id_func and update_mappings:
+            if has_id_func and needs_update:
                 logger.info(f"{name} not found in {self} cache. Select a mapping.")
                 dest_id = self.id_func(source_item, source_name, source_rid)
 
@@ -809,9 +802,10 @@ class Resource(BaseView):
 
             assert dest_item, (error_msg, 404)
 
-            if update_mappings:
+            if needs_update:
                 self.id = dest_item[self.id_field]
                 self.update_mappings(source_rid)
+                self.update_data(**dest_item)
 
             return dest_item
 
@@ -956,14 +950,16 @@ class Resource(BaseView):
             >>> cloze_person.post(**kwargs)
         """
         rkwargs = {**app.config, "headers": self.headers, "method": "post"}
-        data = {**self.values, **kwargs}
+        black_list = {"dryRun", "start", "end", "pos", "dictify", "useDefault", "subkey"}
+        values = dict(remove_fields(self.values, black_list))
+        data = {**values, **kwargs}
         data_key = "data"
 
         if self.is_cloze:
             self.verb = "create"
             rkwargs["headers"]["Content-Type"] = "application/json"
             data = dumps(data)
-        elif self.is_xero and self.domain == "api":
+        elif self.is_xero:
             data_key = "json"
         elif self.is_timely:
             data_key = "json"
@@ -1011,14 +1007,18 @@ class Resource(BaseView):
         """
         self.id = self.values.pop("id", id) or self.id
         rkwargs = {**app.config, "headers": self.headers, "method": "post"}
-        data_key = "data"
-        data = {**self.values, **kwargs}
+        black_list = {"dryRun", "start", "end", "pos", "dictify", "useDefault", "subkey"}
+        values = dict(remove_fields(self.values, black_list))
+        data = {**values, **kwargs}
         data[self.id_field] = self.id
+        data_key = "data"
         response = {}
 
         if not self.id:
             self.error_msg = f"No {self} ID given!"
             response = {"status_code": 404}
+        elif self.is_xero:
+            data_key = "json"
         elif self.is_timely:
             rkwargs["method"] = "put"
             data_key = "json"

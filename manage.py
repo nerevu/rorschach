@@ -260,7 +260,6 @@ def test_oauth(method=None, resource=None, project_id=None, **kwargs):
     task_data = {
         "name": "Deep Fryer",
         "rate": {"currency": "USD", "value": 99.99},
-        "isChargeable": True,
         "chargeType": "TIME",
         "estimateMinutes": 120,
     }
@@ -300,10 +299,10 @@ def test_oauth(method=None, resource=None, project_id=None, **kwargs):
     }
 
     PAYLOAD = {
-        (1, "post", "projects"): "data",
+        (1, "post", "projects"): "json",
         (1, "post", "api"): "json",
-        (2, "post", "projects"): "data",
-        (2, "post", "api"): "data",
+        (2, "post", "projects"): "json",
+        (2, "post", "api"): "json",
     }
 
     URLS = {
@@ -367,6 +366,9 @@ def sync(**kwargs):
                 skipped_events.add(event_id)
 
             logger.info(f"- {message}")
+
+            if result["status_code"] == 401:
+                exit(1)
 
     num_added_events = len(added_events)
     num_skipped_events = len(skipped_events)
