@@ -141,7 +141,7 @@ class Projects(Resource):
             fields = ["id", "name", "active", "billable", "client", "budget"]
         elif prefix == "XERO":
             fields = ["projectId", "name", "status"]
-            kwargs.update({"subkey": "items"})
+            kwargs.update({"id_field": "projectId", "subkey": "items"})
 
         super().__init__(prefix, "projects", fields=fields, **kwargs)
 
@@ -171,7 +171,7 @@ class Users(Resource):
         elif prefix == "XERO":
             fields = ["userId", "name"]
             resource = "projectsusers"
-            kwargs.update({"subkey": "items"})
+            kwargs.update({"id_field": "userId", "subkey": "items"})
 
         super().__init__(prefix, resource, fields=fields, **kwargs)
 
@@ -180,7 +180,9 @@ class Contacts(Resource):
     def __init__(self, prefix, **kwargs):
         if prefix == "XERO":
             fields = ["ContactID", "Name", "FirstName", "LastName"]
-            kwargs.update({"subkey": "Contacts", "domain": "api"})
+            kwargs.update(
+                {"id_field": "ContactID", "subkey": "Contacts", "domain": "api"}
+            )
 
         super().__init__(prefix, "Contacts", fields=fields, **kwargs)
 
@@ -189,7 +191,14 @@ class Inventory(Resource):
     def __init__(self, prefix, **kwargs):
         if prefix == "XERO":
             fields = ["ItemID", "Name", "Code", "Description", "SalesDetails"]
-            kwargs.update({"subkey": "Items", "domain": "api", "name_field": "Name"})
+            kwargs.update(
+                {
+                    "id_field": "ItemID",
+                    "subkey": "Items",
+                    "domain": "api",
+                    "name_field": "Name",
+                }
+            )
 
         super().__init__(prefix, "Items", fields=fields, **kwargs)
 
@@ -301,6 +310,7 @@ class ProjectTasks(Resource):
             subresource = "tasks"
             kwargs.update(
                 {
+                    "id_field": "taskId",
                     "subkey": "items",
                     "map_factory": None,
                     "entry_factory": None,
@@ -465,6 +475,7 @@ class ProjectTime(Resource):
             fields = []
             kwargs.update(
                 {
+                    "id_field": "timeEntryId",
                     "subkey": "items",
                     "subresource": "time",
                     "processor": xero_events_processor,
