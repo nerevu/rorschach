@@ -40,6 +40,10 @@ pip install -r dev-requirements.txt
 
 Your own [Xero](https://developer.xero.com/documentation/getting-started/getting-started-guide) API account is required.
 
+## Headless Setup
+
+https://sites.google.com/a/chromium.org/chromedriver/home
+
 ## API Docs
 
 - [Timely](https://dev.timelyapp.com/)
@@ -86,4 +90,3 @@ You can read more about symlinks [here](https://www.maketecheasier.com/create-sy
 `Download`
 
 [chromium.org](https://sites.google.com/a/chromium.org/chromedriver/downloads)
-
