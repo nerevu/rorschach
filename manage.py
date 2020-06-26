@@ -246,10 +246,9 @@ def store(prefix, collection, **kwargs):
 
 @manager.command()
 @click.option("-m", "--method", help="The HTTP method", default="get")
+@click.option("-p", "--project-id", help="The Xero Project ID", default="f9d0e04b-f07c-423d-8975-418159180dab")
 @click.option("-r", "--resource", help="The API Resource", default="time")
-def test_oauth(method=None, resource=None, **kwargs):
-    project_id = "f9d0e04b-f07c-423d-8975-418159180dab"
-
+def test_oauth(method=None, resource=None, project_id=None, **kwargs):
     time_data = {
         "userId": "3f7626f2-5064-4499-a96c-e73653e5aa01",
         "taskId": "ed9d0041-3680-4011-a24a-a20e72210864",
