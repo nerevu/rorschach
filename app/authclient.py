@@ -538,12 +538,21 @@ def get_response(url, client, params=None, **kwargs):
         method = kwargs.get("method", "get")
         headers = kwargs.get("headers", HEADERS)
         verb = getattr(client.oauth_session, method)
-        result = verb(url, params=params, data=data, json=json, headers=headers)
-        unscoped = result.headers.get("WWW-Authenticate") == "insufficient_scope"
-        ok = result.ok
+
+        try:
+            result = verb(url, params=params, data=data, json=json, headers=headers)
+        except TokenExpiredError:
+            ok = unscoped = False
+            result = None
+            response = {"message": "Token Expired", "status_code": 401}
+        else:
+            unscoped = result.headers.get("WWW-Authenticate") == "insufficient_scope"
+            ok = result.ok
 
         try:
             json = result.json()
+        except AttributeError:
+            pass
         except JSONDecodeError:
             status_code = 500 if result.status_code == 200 else result.status_code
 
