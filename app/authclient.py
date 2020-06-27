@@ -52,8 +52,9 @@ class AuthClient(object):
         self.client_secret = client_secret
         self.access_token = None
         self.refresh_token = None
-        self.oauth1 = kwargs["oauth_version"] == 1
-        self.oauth2 = kwargs["oauth_version"] == 2
+        self.oauth_version = kwargs["oauth_version"]
+        self.oauth1 = self.oauth_version == 1
+        self.oauth2 = self.oauth_version == 2
         self.authorization_base_url = kwargs.get("authorization_base_url")
         self.redirect_uri = kwargs.get("redirect_uri")
         self.api_base_url = kwargs.get("api_base_url")
@@ -66,6 +67,9 @@ class AuthClient(object):
         self.auth_params = kwargs.get("auth_params", {})
         self.created_at = None
         self.error = ""
+
+    def __repr__(self):
+        return f"{self.prefix} oauth{self.oauth_version}"
 
     @property
     def expired(self):
@@ -193,7 +197,7 @@ class MyAuth2Client(AuthClient):
         self.token = token
 
     def renew_token(self, source):
-        logger.debug(f"renew_token from {source}")
+        logger.debug(f"renew {self} from {source}")
         failed = cache.get(f"{self.prefix}_headless_auth_failed")
         has_username = app.config[f"{self.prefix}_USERNAME"]
         has_password = app.config[f"{self.prefix}_PASSWORD"]
@@ -225,13 +229,13 @@ class MyAuth2Client(AuthClient):
                 # logger.debug("", exc_info=True)
             else:
                 if self.oauth_session.authorized:
-                    logger.info("Successfully renewed token!")
+                    logger.info(f"Successfully renewed {self}!")
                     self.token = token
                 else:
-                    self.error = "Failed to renew token!"
+                    self.error = f"Failed to renew {self}!"
                     logger.error(self.error)
         elif has_username and has_password and not failed_or_tried:
-            logger.info(f"Attempting to renew using headless browser")
+            logger.info(f"Attempting to renew {self} using headless browser")
             cache.set(f"{self.prefix}_headless_auth", True)
             headless_auth(self.authorization_url[0], self.prefix)
         else:
@@ -415,7 +419,7 @@ class MyAuth1Client(AuthClient):
         self.verified = cache.get(f"{self.prefix}_verified")
 
     def renew_token(self, source):
-        logger.debug(f"renew_token from {source}")
+        logger.debug(f"renew {self} from {source}")
         self.oauth_token = None
         self.oauth_token_secret = None
         self.verified = False
