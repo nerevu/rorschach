@@ -491,6 +491,7 @@ def get_auth_client(prefix, state=None, **kwargs):
 def get_response(url, client, params=None, **kwargs):
     ok = False
     unscoped = False
+    success_code = kwargs.get("success_code", 200)
 
     if client.expired:
         response = {"message": "Token Expired.", "status_code": 401}
@@ -523,7 +524,10 @@ def get_response(url, client, params=None, **kwargs):
         except AttributeError:
             pass
         except JSONDecodeError:
-            status_code = 500 if result.status_code == 200 else result.status_code
+            if result.status_code == success_code:
+                status_code = 500
+            else:
+                status_code = result.status_code
 
             if "404 Not Found" in result.text:
                 status_code = 404
@@ -598,7 +602,11 @@ def get_response(url, client, params=None, **kwargs):
                         f"{k}: {', '.join(e['Message'] for e in v)}" for k, v in items
                     )
 
-                status_code = 500 if result.status_code == 200 else result.status_code
+                if result.status_code == success_code:
+                    status_code = 500
+                else:
+                    status_code = result.status_code
+
                 response = {"message": message, "status_code": status_code}
 
         if not ok and kwargs.get("debug"):
@@ -621,7 +629,7 @@ def get_response(url, client, params=None, **kwargs):
             if parsed:
                 logger.debug({k: v[0] for k, v in parsed.items()})
 
-    status_code = response.get("status_code", 200)
+    status_code = response.get("status_code", success_code)
     response["ok"] = ok
 
     if not ok:
