@@ -449,7 +449,8 @@ class ProjectTasks(Resource):
 
 
 class ProjectTime(Resource):
-    def __init__(self, prefix, **kwargs):
+    def __init__(self, prefix, source_prefix="TIMELY", **kwargs):
+        self.source_prefix = source_prefix
         self.event_pos = int(kwargs.pop("event_pos", 0))
         self.event_id = kwargs.pop("event_id", None)
         self.timely_event = None
@@ -489,7 +490,8 @@ class ProjectTime(Resource):
             404,
         )
 
-        timely_projects = Projects("TIMELY", use_default=True, dry_run=self.dry_run)
+        prefix = self.source_prefix
+        timely_projects = Projects(prefix, use_default=True, dry_run=self.dry_run)
         self.timely_project_id = self.values.get(
             "timelyProjectId", self.timely_project_id
         )
@@ -499,10 +501,10 @@ class ProjectTime(Resource):
             timely_projects.rid = self.timely_project_id
 
         timely_project = timely_projects.extract_model(update_cache=True, strict=True)
-        self.timely_project_id = timely_project["id"]
+        self.timely_project_id = timely_project[timely_projects.id_field]
 
         timely_project_events = ProjectTime(
-            "TIMELY",
+            prefix,
             use_default=True,
             rid=self.timely_project_id,
             pos=self.event_pos,
@@ -536,13 +538,13 @@ class ProjectTime(Resource):
         self.rid = xero_project["projectId"]
 
         timely_user_id = self.timely_event["user.id"]
-        timely_users = Users("TIMELY", dry_run=self.dry_run, rid=timely_user_id)
+        timely_users = Users(prefix, dry_run=self.dry_run, rid=timely_user_id)
         timely_user = timely_users.extract_model(update_cache=True, strict=True)
         timely_user_name = timely_user["name"]
         xero_user = Users.xero_from_timely(timely_user, dry_run=self.dry_run)
         assert xero_user, (f"User {timely_user_name} doesn't exist in Xero!", 404)
 
-        timely_tasks = Tasks("TIMELY", dry_run=self.dry_run)
+        timely_tasks = Tasks(prefix, dry_run=self.dry_run)
         timely_task = timely_tasks.extract_model(
             label_id, update_cache=True, strict=True
         )

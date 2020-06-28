@@ -12,13 +12,16 @@ from app.api import ProjectTime, Time
 logger = gogo.Gogo(__name__, monolog=True).logger
 
 
-def add_xero_time(project_id=None, position=None, dry_run=False, **kwargs):
+def add_xero_time(source_prefix, project_id=None, position=None, **kwargs):
+    dry_run = kwargs.get("dry_run")
+
     xero_time = ProjectTime(
         "XERO",
         dictify=True,
         dry_run=dry_run,
         event_pos=position,
         timely_project_id=project_id,
+        source_prefix=source_prefix,
     )
 
     data = xero_time.get_post_data()

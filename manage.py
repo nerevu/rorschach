@@ -343,9 +343,10 @@ def test_oauth(method=None, resource=None, project_id=None, **kwargs):
 )
 @click.option("-e", "--end", help="The Timely event end position", type=int)
 @click.option("-d", "--dry-run/--no-dry-run", help="Perform a dry run", default=False)
-def sync(**kwargs):
+def sync(source_prefix, **kwargs):
     """Sync Timely events with Xero time entries"""
-    logger.info(f"\nTimely Project {kwargs['project_id']}")
+    source_prefix = source_prefix.upper()
+    logger.info(f"\n{source_prefix} Project {kwargs['project_id']}")
     logger.info("——————————————————————")
 
     if kwargs["end"]:
@@ -355,7 +356,7 @@ def sync(**kwargs):
 
     logger.info("Adding events…")
     for pos in _range:
-        result = services.add_xero_time(position=pos, **kwargs)
+        result = services.add_xero_time(source_prefix, position=pos, **kwargs)
         event_id = result.get("event_id")
 
         if result["ok"] or result["conflict"]:
