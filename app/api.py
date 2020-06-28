@@ -631,7 +631,7 @@ method_views = {
     },
     "callback": {"view": auth.Callback, "add_prefixes": True},
     "auth": {"view": auth.Auth, "add_prefixes": True},
-    "status": {"view": Status, "add_prefixes": True,"methods": ["GET"]},
+    "status": {"view": Status, "add_prefixes": True, "methods": ["GET"]},
     "projects": {"view": Projects, "add_prefixes": True},
     "contacts": {"view": Contacts, "add_prefixes": True},
     "users": {"view": Users, "add_prefixes": True},

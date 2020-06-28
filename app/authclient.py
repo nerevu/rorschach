@@ -410,7 +410,9 @@ class MyAuth1Client(AuthClient):
         self.oauth_token = cache.get(f"{self.prefix}_oauth_token")
         self.oauth_token_secret = cache.get(f"{self.prefix}_oauth_token_secret")
         self.created_at = cache.get(f"{self.prefix}_created_at")
-        self.oauth_expires_at = cache.get(f"{self.prefix}_oauth_expires_at") or def_expires_at
+        self.oauth_expires_at = (
+            cache.get(f"{self.prefix}_oauth_expires_at") or def_expires_at
+        )
         self.oauth_expires_in = (self.oauth_expires_at - dt.now()).total_seconds()
 
         cached_expires_at = cache.get(f"{self.prefix}_oauth_authorization_expires_at")

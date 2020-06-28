@@ -950,7 +950,15 @@ class Resource(BaseView):
             >>> cloze_person.post(**kwargs)
         """
         rkwargs = {**app.config, "headers": self.headers, "method": "post"}
-        black_list = {"dryRun", "start", "end", "pos", "dictify", "useDefault", "subkey"}
+        black_list = {
+            "dryRun",
+            "start",
+            "end",
+            "pos",
+            "dictify",
+            "useDefault",
+            "subkey",
+        }
         values = dict(remove_fields(self.values, black_list))
         data = {**values, **kwargs}
         data_key = "data"
@@ -1007,7 +1015,15 @@ class Resource(BaseView):
         """
         self.id = self.values.pop("id", id) or self.id
         rkwargs = {**app.config, "headers": self.headers, "method": "post"}
-        black_list = {"dryRun", "start", "end", "pos", "dictify", "useDefault", "subkey"}
+        black_list = {
+            "dryRun",
+            "start",
+            "end",
+            "pos",
+            "dictify",
+            "useDefault",
+            "subkey",
+        }
         values = dict(remove_fields(self.values, black_list))
         data = {**values, **kwargs}
         data[self.id_field] = self.id
