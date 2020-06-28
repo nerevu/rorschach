@@ -20,7 +20,7 @@ def add_xero_time(source_prefix, project_id=None, position=None, **kwargs):
         dictify=True,
         dry_run=dry_run,
         event_pos=position,
-        timely_project_id=project_id,
+        source_project_id=project_id,
         source_prefix=source_prefix,
     )
 

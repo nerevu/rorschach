@@ -1,0 +1,62 @@
+[
+  {
+    "billed": false,
+    "day": "2020-06-08",
+    "duration.total_minutes": 211,
+    "id": "mitchell-47",
+    "label_id": "maintenance",
+    "note": "Fix bugs in ClozeCart",
+    "project.id": "clozecart",
+    "user.id": "mitchell"
+  },
+  {
+    "billed": false,
+    "day": "2020-06-09",
+    "duration.total_minutes": 184,
+    "id": "mitchell-48",
+    "label_id": "development",
+    "note": "Fix Caching issues in ClozeCart",
+    "project.id": "clozecart",
+    "user.id": "mitchell"
+  },
+  {
+    "billed": false,
+    "day": "2020-06-10",
+    "duration.total_minutes": 15,
+    "id": "mitchell-49",
+    "label_id": "development",
+    "note": "Make sure issues will be fixed in ClozeCart",
+    "project.id": "clozecart",
+    "user.id": "mitchell"
+  },
+  {
+    "billed": false,
+    "day": "2020-06-10",
+    "duration.total_minutes": 105,
+    "id": "mitchell-51",
+    "label_id": "research",
+    "note": "Make sure issues will be fixed in ClozeCart, find examples of fixes",
+    "project.id": "clozecart",
+    "user.id": "mitchell"
+  },
+  {
+    "billed": false,
+    "day": "2020-06-11",
+    "duration.total_minutes": 100,
+    "id": "mitchell-52",
+    "label_id": "maintenance",
+    "note": "Investigating/Fixing issues with Julian's orders that aren't uploading",
+    "project.id": "clozecart",
+    "user.id": "mitchell"
+  },
+  {
+    "billed": false,
+    "day": "2020-06-12",
+    "duration.total_minutes": 10,
+    "id": "mitchell-53",
+    "label_id": "maintenance",
+    "note": "Add comments to Cloze issues",
+    "project.id": "clozecart",
+    "user.id": "mitchell"
+  }
+]

@@ -2,3 +2,4 @@
 
 manage store -P timely -c projects --dictify
 manage store -P xero -c projects --dictify
+manage store -P gsheets -c projects --dictify

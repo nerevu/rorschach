@@ -7,6 +7,7 @@
 """
 from itertools import chain
 from functools import partial
+from datetime import date
 
 import pygogo as gogo
 
@@ -21,12 +22,14 @@ from app.utils import (
     jsonify,
     parse_request,
     parse_kwargs,
+    parse,
     cache_header,
     make_cache_key,
     get_links,
 )
 
 from app.routes import auth
+from app.routes.auth import GSheets
 from app.utils import fetch_choice
 from app.routes.auth import Resource, process_result
 from app.mappings import USERS, NAMES, POSITIONS, gen_task_mapping
@@ -41,6 +44,37 @@ BILLABLE = 1344430
 NONBILLABLE = 1339635
 
 timely_events_filterer = lambda item: not (item.get("billed") or item.get("deleted"))
+
+
+def slugify(text):
+    return text.lower().strip().replace(" ", "-")
+
+
+def parse_date(date_str):
+    try:
+        month, day, year = map(int, date_str.split('/'))
+    except ValueError:
+        parsed = ''
+    else:
+        parsed = date(year, month, day).isoformat()
+
+    return parsed
+
+
+def select_by_id(_result, _id, id_field):
+    try:
+        result = next(r for r in _result if _id == r[id_field])
+    except StopIteration:
+        result = {}
+
+    return result
+
+
+def gsheets_events_filterer(item):
+    has_time = item.get("duration.total_minutes")
+    has_date = item.get("day")
+    unbilled = not item.get("billed")
+    return has_time and has_date and unbilled
 
 
 def get_request_base():
@@ -71,6 +105,23 @@ def timely_tasks_processor(result, fields, **kwargs):
 def xero_events_processor(result, fields, **kwargs):
     result = process_result(result, fields, **kwargs)
     return ({**item, "day": item["dateUtc"].split("T")[0]} for item in result)
+
+
+def gsheets_events_processor(result, fields, **kwargs):
+    result = (
+        {
+            **r,
+            "billed": parse(r["billed"]),
+            "id": f"{r['user.id']}-{r['row']}",
+            "day": parse_date(r["date"]),
+            "duration.total_minutes": r["total minutes"],
+            "label_id": slugify(r["task"]),
+            "project.id": slugify(r["project"].split("(")[0]),
+            "note": r["description"],
+        }
+        for r in result
+    )
+    return process_result(result, fields, **kwargs)
 
 
 def get_label_id(label_ids):
@@ -148,6 +199,10 @@ class Projects(Resource):
         elif prefix == "XERO":
             fields = ["projectId", "name", "status"]
             kwargs.update({"id_field": "projectId", "subkey": "items"})
+        elif prefix == "GSHEETS":
+            fields = []
+            self.gsheet = GSheets()
+            self.worksheet = self.gsheet.worksheet
 
         super().__init__(prefix, "projects", fields=fields, **kwargs)
 
@@ -169,18 +224,52 @@ class Projects(Resource):
 
         return project_data
 
+    def get_response(self):
+        self.gsheet.worksheet_name = "client projects"
+        records = self.gsheet.worksheet.get_all_records()
+
+        result = [
+            {
+                "id": slugify(r["project"]),
+                "name": r["project"],
+                "client": {"id": slugify(r["client"]), "name": r["client"]},
+                "row": pos + 2,
+            }
+            for (pos, r) in enumerate(records)
+        ]
+
+        if self.id:
+            result = select_by_id(result, self.id, self.id_field)
+
+        return {"result": result}
+
 
 class Users(Resource):
     def __init__(self, prefix, **kwargs):
+        resource = "users"
+
         if prefix == "TIMELY":
             fields = ["id", "name"]
-            resource = "users"
         elif prefix == "XERO":
             fields = ["userId", "name"]
             resource = "projectsusers"
             kwargs.update({"id_field": "userId", "subkey": "items"})
+        elif prefix == "GSHEETS":
+            fields = []
 
         super().__init__(prefix, resource, fields=fields, **kwargs)
+
+    def get_response(self):
+        result = [
+            {"id": "austin", "name": "Austin Dial"},
+            {"id": "mitchell", "name": "Mitchell Sotto"},
+        ]
+
+        if self.id:
+            result = select_by_id(result, self.id, self.id_field)
+
+        return {"result": result}
+
 
     def id_func(self, user, user_name, rid, prefix=None):
         matching = list(enumerate(x["name"] for x in self))
@@ -205,8 +294,20 @@ class Contacts(Resource):
             kwargs.update(
                 {"id_field": "ContactID", "subkey": "Contacts", "domain": "api"}
             )
+        elif prefix == "GSHEETS":
+            fields = []
+            self.gsheet = GSheets()
+            self.worksheet = self.gsheet.worksheet
 
         super().__init__(prefix, "Contacts", fields=fields, **kwargs)
+
+    def get_response(self):
+        result = self.worksheet.col_values(1)[1:]
+
+        if self.id:
+            result = select_by_id(result, self.id, self.id_field)
+
+        return {"result": result}
 
 
 class Inventory(Resource):
@@ -244,6 +345,11 @@ class Tasks(Resource):
             fields = ["id", "name"]
             resource = "labels"
             kwargs.update({"processor": timely_tasks_processor, "rid_hook": self.hook})
+        elif prefix == "GSHEETS":
+            fields = []
+            resource = "tasks"
+            self.gsheet = GSheets()
+            self.worksheet = self.gsheet.worksheet
 
         super().__init__(prefix, resource, fields=fields, **kwargs)
 
@@ -251,30 +357,41 @@ class Tasks(Resource):
         if self.prefix == "TIMELY" and self.rid:
             self.processor = process_result
 
+    def get_response(self):
+        result = [
+            {"name": v, "row": pos + 2, "id": slugify(v)}
+            for (pos, v) in enumerate(self.worksheet.col_values(3)[1:])
+        ]
+
+        if self.id:
+            result = select_by_id(result, self.id, self.id_field)
+
+        return {"result": result}
+
 
 class Time(Resource):
     def __init__(self, prefix, **kwargs):
         self.event_pos = int(kwargs.pop("event_pos", 0))
+        fields = [
+            "id",
+            "day",
+            "duration.total_minutes",
+            "label_id",
+            "project.id",
+            "user.id",
+            "note",
+            "billed",
+        ]
 
         if prefix == "TIMELY":
-            fields = [
-                "id",
-                "day",
-                "duration.total_minutes",
-                "label_id",
-                "project.id",
-                "user.id",
-                "note",
-                "billed",
-            ]
+            processor = timely_events_processor
+            filterer = timely_events_filterer
+        elif prefix == "GSHEETS":
+            self.gsheet = GSheets()
+            processor = gsheets_events_processor
+            filterer = gsheets_events_filterer
 
-            kwargs.update(
-                {
-                    "processor": timely_events_processor,
-                    "filterer": timely_events_filterer,
-                }
-            )
-
+        kwargs.update({"processor": processor, "filterer": filterer})
         super().__init__(prefix, "events", fields=fields, **kwargs)
 
     def _get_patch_data(self):
@@ -313,6 +430,28 @@ class Time(Resource):
 
         return data
 
+    def get_response(self):
+        self.gsheet.worksheet_name = "austin (time)"
+        austin_records = self.gsheet.worksheet.get_all_records()
+        austin_time = [
+            {**r, "user.id": "austin", "row": pos + 2}
+            for (pos, r) in enumerate(austin_records)
+        ]
+
+        self.gsheet.worksheet_name = "mitchell (time)"
+        mitchell_records = self.gsheet.worksheet.get_all_records()
+        mitchell_time = [
+            {**r, "user.id": "mitchell", "row": pos + 2}
+            for (pos, r) in enumerate(mitchell_records)
+        ]
+
+        result = austin_time + mitchell_time
+
+        if self.id:
+            result = select_by_id(result, self.id, self.id_field)
+
+        return {"result": result}
+
 
 class ProjectTasks(Resource):
     def __init__(self, prefix, **kwargs):
@@ -335,6 +474,10 @@ class ProjectTasks(Resource):
                     "rid_hook": self.hook,
                 }
             )
+        elif prefix == "GSHEETS":
+            fields = ["id", "name"]
+            subresource = ""
+            self.get_response = Tasks(prefix).get_response
 
         super().__init__(
             prefix, "projects", subresource=subresource, fields=fields, **kwargs
@@ -453,25 +596,25 @@ class ProjectTime(Resource):
         self.source_prefix = source_prefix
         self.event_pos = int(kwargs.pop("event_pos", 0))
         self.event_id = kwargs.pop("event_id", None)
-        self.timely_event = None
+        self.source_event = None
         self.eof = False
+        fields = [
+            "id",
+            "day",
+            "duration.total_minutes",
+            "label_id",
+            "project.id",
+            "user.id",
+            "note",
+            "billed",
+        ]
 
         if prefix == "TIMELY":
-            fields = [
-                "id",
-                "day",
-                "duration.total_minutes",
-                "label_id",
-                "project.id",
-                "user.id",
-                "note",
-                "billed",
-            ]
             kwargs.update(
                 {"subresource": "events", "processor": timely_events_processor}
             )
         elif prefix == "XERO":
-            self.timely_project_id = kwargs.pop("timely_project_id", None)
+            self.source_project_id = kwargs.pop("source_project_id", None)
             fields = []
             kwargs.update(
                 {
@@ -479,6 +622,15 @@ class ProjectTime(Resource):
                     "subkey": "items",
                     "subresource": "time",
                     "processor": xero_events_processor,
+                }
+            )
+        elif prefix == "GSHEETS":
+            self.gsheet = GSheets()
+            kwargs.update(
+                {
+                    "subresource": "events",
+                    "processor": gsheets_events_processor,
+                    "filterer": gsheets_events_filterer,
                 }
             )
 
@@ -567,7 +719,7 @@ class ProjectTime(Resource):
 
     def get_post_data(self, *args, **kwargs):
         # url = 'http://localhost:5000/v1/xero-time'
-        # r = requests.post(url, data={"timelyProjectId": 2389295, "dryRun": True})
+        # r = requests.post(url, data={"sourceProjectId": 2389295, "dryRun": True})
         if self.prefix == "XERO":
             try:
                 self._get_post_data()
@@ -576,7 +728,7 @@ class ProjectTime(Resource):
                 data = {}
             else:
                 date_utc = f"{self.day}T12:00:00Z"
-                note = self.timely_event["note"]
+                note = self.source_event["note"]
                 description = f"{note[:64]}…" if len(note) > 64 else note
 
                 data = {
@@ -588,6 +740,33 @@ class ProjectTime(Resource):
                 }
 
         return data
+
+    def get_response(self):
+        if self.is_gsheets and self.rid:
+            self.gsheet.worksheet_name = "austin (time)"
+            austin_records = self.gsheet.worksheet.get_all_records()
+            austin_time = [
+                {**r, "user.id": "austin", "row": pos + 2}
+                for (pos, r) in enumerate(austin_records)
+                if self.rid == slugify(r["project"].split("(")[0])
+            ]
+
+            self.gsheet.worksheet_name = "mitchell (time)"
+            mitchell_records = self.gsheet.worksheet.get_all_records()
+            mitchell_time = [
+                {**r, "user.id": "mitchell", "row": pos + 2}
+                for (pos, r) in enumerate(mitchell_records)
+                if self.rid == slugify(r["project"].split("(")[0])
+            ]
+            response = {"result": austin_time + mitchell_time}
+        elif self.is_gsheets:
+            response = {
+                "result": [],
+                "message": f"No {self} {self.resource} id provided!",
+                "status_code": 404,
+            }
+
+        return response
 
 
 class Memoization(MethodView):

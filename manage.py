@@ -49,7 +49,6 @@ xero_project_tasks = ProjectTasks("XERO", dictify=True, dry_run=True)
 xero_project_time = ProjectTime("XERO", dictify=True, dry_run=True)
 
 # data
-
 BASEDIR = p.dirname(__file__)
 DEF_WHERE = ["app", "manage.py", "config.py"]
 COLLECTIONS = {
@@ -227,7 +226,7 @@ def prune(collection, **kwargs):
 @click.option(
     "-P",
     "--prefix",
-    type=Choice(["timely", "xero"], case_sensitive=False),
+    type=Choice(["timely", "xero", "gsheets"], case_sensitive=False),
     default="xero",
 )
 @click.option(
@@ -340,17 +339,17 @@ def test_oauth(method=None, resource=None, project_id=None, **kwargs):
 @click.option(
     "-P",
     "--source-prefix",
-    type=Choice(["timely"], case_sensitive=False),
+    type=Choice(["timely", "gsheets"], case_sensitive=False),
     default="timely",
 )
-@click.option("-p", "--project-id", help="The Timely Project ID", default=2389295)
+@click.option("-p", "--project-id", help="The Timely Project ID", default="2389295")
 @click.option(
     "-s", "--start", help="The Timely event start position", type=int, default=0
 )
 @click.option("-e", "--end", help="The Timely event end position", type=int)
 @click.option("-d", "--dry-run/--no-dry-run", help="Perform a dry run", default=False)
 def sync(source_prefix, **kwargs):
-    """Sync Timely events with Xero time entries"""
+    """Sync Timely/GSheets events with Xero time entries"""
     source_prefix = source_prefix.upper()
     logger.info(f"\n{source_prefix} Project {kwargs['project_id']}")
     logger.info("——————————————————————")

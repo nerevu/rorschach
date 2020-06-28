@@ -8,8 +8,10 @@
 REUBEN_TIMELY = 933370
 ADITYA_TIMELY = 1281455
 MITCHELL_TIMELY = 1281876
-LEVEL_1 = []
-LEVEL_2 = [ADITYA_TIMELY, MITCHELL_TIMELY]
+MITCHELL_GSHEETS = 'mitchell'
+AUSTIN_GSHEETS = 'austin'
+LEVEL_1 = [AUSTIN_GSHEETS]
+LEVEL_2 = [ADITYA_TIMELY, MITCHELL_TIMELY, MITCHELL_GSHEETS]
 LEVEL_3 = []
 LEVEL_4 = []
 LEVEL_5 = [REUBEN_TIMELY]
@@ -86,9 +88,15 @@ def gen_task_mapping(mapping, *args, user_mappings=None, project_mappings=None):
     for projects in project_mappings:
         proj0, proj1 = map(projects.get, args)
 
+        if proj0 is None or proj1 is None:
+            continue
 
         for users in user_mappings:
             user = users.get(args[0])
+
+            if not user:
+                continue
+
             kwargs = {"proj_pair": {proj0, proj1}, "user": user}
 
             for task_ids in task_mapper(mapping, *args, **kwargs):

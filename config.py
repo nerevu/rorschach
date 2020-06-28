@@ -82,7 +82,7 @@ class Config(object):
     API_URL_PREFIX = "/v1"
     SECRET_KEY = getenv("TIMERO_SECRET_KEY", urandom(24))
     CHROME_DRIVER_VERSIONS = [None] + list(range(81, 77, -1))
-    API_PREFIXES = ["XERO", "TIMELY"]
+    API_PREFIXES = ["XERO", "TIMELY", "GSHEETS"]
     KEY_WHITELIST = {
         "CHUNK_SIZE",
         "ROW_LIMIT",
@@ -96,6 +96,18 @@ class Config(object):
 
     # Authentication
     AUTHENTICATION = {
+        "gsheets": {
+            "auth_type": "service",
+            "service": {
+                "keyfile_path": "internal-256716-b2f899ddbdc5.json",
+                "sheet_id": "1Q-0R_q5-dWeaIAktvxRirZGXJZmMxd8qjVTujauMdak",
+                "worksheet_name": "options",
+                "scope": [
+                    "https://spreadsheets.google.com/feeds",
+                    "https://www.googleapis.com/auth/drive",
+                ],
+            },
+        },
         # https://app.timelyapp.com/777870/oauth_applications
         "timely": {
             "auth_type": "oauth2",

@@ -8,6 +8,7 @@ from pathlib import Path
 from datetime import date, timedelta
 from json import loads, dumps, dump
 from itertools import islice
+from time import sleep
 from json.decoder import JSONDecodeError
 
 import pygogo as gogo
@@ -21,6 +22,7 @@ from flask import (
 )
 
 from flask.views import MethodView
+from gspread.exceptions import APIError
 
 from config import Config
 
@@ -38,6 +40,7 @@ from app.mappings import reg_mapper
 from app.helpers import singularize
 
 from riko.dotdict import DotDict
+from meza.fntools import chunk
 
 logger = gogo.Gogo(__name__, monolog=True).logger
 
@@ -46,6 +49,8 @@ DATA_DIR = APP_DIR.joinpath("data")
 MAPPINGS_DIR = APP_DIR.joinpath("mappings")
 PREFIX = Config.API_URL_PREFIX
 API_PREFIXES = Config.API_PREFIXES
+# DEF_START_ROW = Config.DEF_START_ROW
+DEF_START_ROW = 2  # Since the first row is header
 
 
 def extract_fields(record, fields, **kwargs):
@@ -119,17 +124,20 @@ class BaseView(MethodView):
         self.is_opencart = self.prefix == "OPENCART"
         self.is_cloze = self.prefix == "CLOZE"
         self.is_qb = self.prefix == "QB"
+        self.is_gsheets = self.prefix == "GSHEETS"
         self._dry_run = kwargs.get("dry_run")
 
         def_end = date.today()
 
         if self._dry_run:
             self.client = None
+            self.data_key = None
             self._params = {}
             self.domain = None
             def_start = def_end - timedelta(days=Config.REPORT_DAYS)
         else:
             self.client = get_auth_client(self.prefix, **app.config)
+            self.data_key = self.client.data_key
             self._params = {**kwargs.get("params", {}), **self.client.auth_params}
             self.domain = kwargs.get("domain", self.client.domain)
             def_start = def_end - timedelta(days=app.config["REPORT_DAYS"])
@@ -233,22 +241,152 @@ class Auth(BaseView):
         return jsonify(**response)
 
 
+class GSheets(BaseView):
+    def __init__(self, **kwargs):
+        super().__init__("GSHEETS")
+        self.gc = self.client.gc
+        self._sheet_id = kwargs.get("sheet_id", self.client.sheet_id)
+        self._worksheet_name = kwargs.get("worksheet_name", self.client.worksheet_name)
+        self.use_default = kwargs.get("use_default", True)
+        self.chunksize = kwargs.get("chunksize")
+        self._sheet_name = kwargs.get("sheet_name")
+        self._worksheet_pos = kwargs.get("worksheet_pos")
+        self._sheet = None
+        self._worksheet = None
+
+    @property
+    def sheet_id(self):
+        return self._sheet_id
+
+    @sheet_id.setter
+    def sheet_id(self, value):
+        self._sheet_id = value
+        self._sheet = None
+
+    @property
+    def sheet_name(self):
+        return self._sheet_name
+
+    @sheet_name.setter
+    def sheet_name(self, value):
+        self._sheet_name = value
+        self._sheet = None
+
+    @property
+    def sheet(self):
+        if self._sheet is None:
+            if self.sheet_id:
+                self._sheet = self.gc.open_by_key(self.sheet_id)
+            elif self.sheet_name:
+                self._sheet = self.gc.open(self.sheet_name)
+
+        return self._sheet
+
+    @property
+    def worksheet_pos(self):
+        return self._worksheet_pos
+
+    @worksheet_pos.setter
+    def worksheet_pos(self, value):
+        self._worksheet_pos = value
+        self._worksheet = None
+
+    @property
+    def worksheet_name(self):
+        return self._worksheet_name
+
+    @worksheet_name.setter
+    def worksheet_name(self, value):
+        self._worksheet_name = value
+        self._worksheet = None
+
+    @property
+    def worksheet(self):
+        if self.sheet and self._worksheet is None:
+            if self.worksheet_name:
+                self._worksheet = self.sheet.worksheet(self.worksheet_name)
+            elif self.worksheet_pos is not None:
+                self._worksheet = self.sheet.get_worksheet(self.worksheet_pos)
+            elif self.use_default:
+                self._worksheet = self.sheet.get_worksheet(0)
+
+        return self._worksheet
+
+    def retry_method(self, attr, *args, **kwargs):
+        method = getattr(self.worksheet, attr)
+
+        try:
+            value = method(*args, **kwargs)
+        except APIError as err:
+            err_json = err.response.json()
+            error = err_json["error"]
+            status_code = error["code"]
+            err_message = error["message"]
+
+            # https://console.cloud.google.com/iam-admin/quotas?authuser=1
+            if status_code == 429:  # Exceeded quota
+                logger.debug("Waiting 100 seconds...")
+                sleep(100)
+                logger.debug("Done waiting!")
+                value = self.retry_method(attr, *args, **kwargs)
+            else:
+                logger.error(err_message)
+
+        return value
+
+    def create_range(self, end_row, end_col, start_row=DEF_START_ROW, start_col=1):
+        if end_row > self.worksheet.row_count:
+            logger.debug(f"Adding {self.additional_rows} additional rows...")
+            rows = end_row + self.additional_rows
+            self.worksheet.resize(rows=rows)
+
+        args = (start_row, start_col, end_row, end_col)
+        return self.retry_method("range", *args)
+
+    def insert_row(self, *args, **kwargs):
+        self.retry_method("insert_row", *args, **kwargs)
+
+    def update_cells(self, cells, values):
+        for cell, value in zip(cells, values):
+            cell.value = value
+
+        self.retry_method("update_cells", cells, value_input_option="USER_ENTERED")
+
+    def add_data(self, data):
+        start_row = DEF_START_ROW
+        headers = []
+        end_col = len(headers)
+
+        # https://gspread.readthedocs.io/en/latest/api.html#gspread.models.Spreadsheet.values_update
+        # https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets/request#UpdateCellsRequest
+        for _data in chunk(data, chunksize=self.chunksize):
+            rows = list(_data)
+            end_row = start_row + len(rows) - 1
+            cells = self.create_range(end_row, end_col, start_row=start_row)
+            self.update_cells(cells, rows)
+            start_row = end_row + 1
+
+
 class Resource(BaseView):
     def __repr__(self):
         name = f"{self.lowered}-{self.lowered_resource}"
 
         if self.subresource:
-            if self.rid:
+            if self.rid and len(str(self.rid)) > 16:
                 trunc_rid = str(self.rid).split("-")[0]
                 prefix = f"[id:{trunc_rid}]"
+            elif self.rid:
+                prefix = f"[id:{self.rid}]"
             else:
                 prefix = f"[pos:{self.pos}]" if self.use_default else "[id:None]"
 
             name += f"{prefix}-{self.lowered_subresource}"
 
-        if self.id:
+        if self.id and len(str(self.id)) > 16:
             trunc_id = str(self.id).split("-")[0]
             name += f"[id:{trunc_id}]"
+        elif self.id:
+            name += f"[id:{self.id}]"
         else:
             name += f"[pos:{self.pos}]" if self.use_default else "[id:None]"
 
@@ -532,15 +670,16 @@ class Resource(BaseView):
         elif self.is_timely:
             url += f"/{self.client.account_id}"
 
-        url += f"/{self.resource}"
+        if url:
+            url += f"/{self.resource}"
 
-        if self.subresource:
+        if self.subresource and url:
             if self.rid:
                 url += f"/{self.rid}/{self.subresource}"
             elif not self.eof:
-                assert self.rid, (f"No {self}:{self.resource} id provided!", 404)
+                assert self.rid, (f"No {self} {self.resource} id provided!", 404)
 
-        if self.options:
+        if self.options and url:
             url += f"?{self.options}"
 
         if self.dry_run:
@@ -870,7 +1009,7 @@ class Resource(BaseView):
             status_code = 200 if result else 404
             ok = status_code == 200
             response = {"result": result, "ok": ok, "status_code": status_code}
-        else:
+        elif self.api_url:
             if self.id:
                 url = f"{self.api_url}/{self.id}"
             elif source_name or source_rid:
@@ -887,6 +1026,9 @@ class Resource(BaseView):
                 response = get_response(url, self.client, **rkwargs)
             else:
                 response = {"result": {}, "ok": False, "status_code": 404}
+        else:
+            self.client.response = self.get_response()
+            response = get_response(None, self.client)
 
         if response["ok"] and not self.dry_run:
             result = response.get("result")
@@ -1033,6 +1175,9 @@ class Resource(BaseView):
                 "ok": True,
                 "message": f"Disable dry_run mode to PATCH {self}.",
             }
+        elif not self.api_url:
+            self.client.response = self.patch_response(**data)
+            response = get_response(None, self.client)
 
         if not response:
             url = f"{self.api_url}/{self.id}"

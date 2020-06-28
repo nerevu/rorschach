@@ -1039,5 +1039,65 @@
       "project": "e72ce041-023c-4abf-80e8-c4af054b38ed",
       "task": "5a216fab-362c-48c4-9506-3b5bd67d7a37"
     }
+  },
+  {
+    "gsheets": {
+      "project": "clozecart",
+      "task": "maintenance",
+      "users": [
+        1281455,
+        1281876,
+        "mitchell"
+      ]
+    },
+    "xero": {
+      "project": "34a6629c-6902-4436-881c-b909a285b8bd",
+      "task": "a7c9d6b3-b3ba-4c9f-9181-04fff9317036"
+    }
+  },
+  {
+    "gsheets": {
+      "project": "clozecart",
+      "task": "development",
+      "users": [
+        1281455,
+        1281876,
+        "mitchell"
+      ]
+    },
+    "xero": {
+      "project": "34a6629c-6902-4436-881c-b909a285b8bd",
+      "task": "a7c9d6b3-b3ba-4c9f-9181-04fff9317036"
+    }
+  },
+  {
+    "gsheets": {
+      "project": "clozecart",
+      "task": "research",
+      "users": [
+        1281455,
+        1281876,
+        "mitchell"
+      ]
+    },
+    "xero": {
+      "project": "34a6629c-6902-4436-881c-b909a285b8bd",
+      "task": "977fd631-be38-4462-a215-bd7eda8901e9"
+    }
+  },
+  {
+    "gsheets": {
+      "project": "clozecart",
+      "task": "maintenance",
+      "users": [
+        1281455,
+        1281876,
+        "mitchell"
+      ]
+    },
+    "xero": {
+      "project": "34a6629c-6902-4436-881c-b909a285b8bd",
+      "task": "a7c9d6b3-b3ba-4c9f-9181-04fff9317036"
+    }
   }
 ]

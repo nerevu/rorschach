@@ -10,6 +10,7 @@ from urllib.parse import urlencode, urlparse, parse_qs, parse_qsl
 from itertools import chain
 from json import JSONDecodeError
 from base64 import b64encode
+from pathlib import Path
 
 import pygogo as gogo
 import gspread
@@ -55,9 +56,10 @@ class AuthClient(object):
         self.oauth_version = kwargs.get("oauth_version")
         self.oauth1 = self.oauth_version == 1
         self.oauth2 = self.oauth_version == 2
+        self.scope = kwargs.get("scope", "")
+        self.api_base_url = kwargs.get("api_base_url", "")
         self.authorization_base_url = kwargs.get("authorization_base_url")
         self.redirect_uri = kwargs.get("redirect_uri")
-        self.api_base_url = kwargs.get("api_base_url")
         self.domain = kwargs.get("domain")
         self.token_url = kwargs.get("token_url")
         self.account_id = kwargs.get("account_id")
@@ -65,6 +67,7 @@ class AuthClient(object):
         self.debug = kwargs.get("debug")
         self.username = kwargs.get("username")
         self.password = kwargs.get("password")
+        self.data_key = kwargs.get("data_key", "data")
         self.headers = kwargs.get("headers", {})
         self.auth_params = kwargs.get("auth_params", {})
         self.created_at = None
@@ -84,7 +87,6 @@ class MyAuth2Client(AuthClient):
         self.auth_type = "oauth2"
         self.refresh_url = kwargs["refresh_url"]
         self.revoke_url = kwargs.get("revoke_url")
-        self.scope = kwargs.get("scope", "")
         self.tenant_id = kwargs.get("tenant_id", "")
         self.realm_id = kwargs.get("realm_id")
         self.extra = {"client_id": self.client_id, "client_secret": self.client_secret}
@@ -443,12 +445,17 @@ class MyHeaderAuthClient(AuthClient):
 
 
 class MyServiceAuthClient(AuthClient):
-    def __init__(self, *args, keyfile_path=None, **kwargs):
+    def __init__(self, *args, keyfile_path=None, sheet_id=None, **kwargs):
         super().__init__(*args, **kwargs)
-        p = keyfile_path
-        credentials = ServiceAccountCredentials.from_json_keyfile_name(p, self.scope)
+        p = Path(keyfile_path)
+        credentials = ServiceAccountCredentials.from_json_keyfile_name(
+            p.resolve(), self.scope
+        )
         self.auth_type = "service"
         self.gc = gspread.authorize(credentials)
+        self.worksheet_name = kwargs.get("worksheet_name")
+        self.sheet_id = sheet_id
+        self.verified = True
 
     @property
     def expired(self):
@@ -487,7 +494,7 @@ def get_auth_client(prefix, state=None, **kwargs):
 
     client = g.get(auth_client_name)
 
-    if client.expires_in < RENEW_TIME:
+    if client.oauth_version == 2 and client.expires_in < RENEW_TIME:
         client.renew_token("expired")
 
     return g.get(auth_client_name)
@@ -504,7 +511,7 @@ def get_response(url, client, params=None, **kwargs):
         response = {"message": "Client not authorized.", "status_code": 401}
     elif client.error:
         response = {"message": client.error, "status_code": 500}
-    else:
+    elif client.oauth_version:
         params = params or {}
         data = kwargs.get("data", {})
         json = kwargs.get("json", {})
@@ -633,6 +640,9 @@ def get_response(url, client, params=None, **kwargs):
 
             if parsed:
                 logger.debug({k: v[0] for k, v in parsed.items()})
+    else:
+        response = client.response
+        ok = response.get("status_code", success_code) == success_code
 
     status_code = response.get("status_code", success_code)
     response["ok"] = ok
