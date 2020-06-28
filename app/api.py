@@ -40,7 +40,7 @@ PREFIX = Config.API_URL_PREFIX
 BILLABLE = 1344430
 NONBILLABLE = 1339635
 
-timely_tasks_filterer = lambda item: not (item.get("billed") or item.get("deleted"))
+timely_events_filterer = lambda item: not (item.get("billed") or item.get("deleted"))
 
 
 def get_request_base():
@@ -224,13 +224,7 @@ class Tasks(Resource):
         if prefix == "TIMELY":
             fields = ["id", "name"]
             resource = "labels"
-            kwargs.update(
-                {
-                    "processor": timely_tasks_processor,
-                    "filterer": timely_tasks_filterer,
-                    "rid_hook": self.hook,
-                }
-            )
+            kwargs.update({"processor": timely_tasks_processor, "rid_hook": self.hook})
 
         super().__init__(prefix, resource, fields=fields, **kwargs)
 
@@ -255,7 +249,12 @@ class Time(Resource):
                 "billed",
             ]
 
-            kwargs["processor"] = timely_events_processor
+            kwargs.update(
+                {
+                    "processor": timely_events_processor,
+                    "filterer": timely_events_filterer,
+                }
+            )
 
         super().__init__(prefix, "events", fields=fields, **kwargs)
 

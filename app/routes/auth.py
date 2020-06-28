@@ -811,7 +811,7 @@ class Resource(BaseView):
         converter = dest.convert(source)
         return converter(source_item, source_rid=source_rid)
 
-    def get(self, id=None, source_rid=None, source_name=None, update_cache=False):
+    def get(self, id=None, rid=None, source_rid=None, source_name=None, **kwargs):
         """ Get an API Resource.
         Kwargs:
             rid (str): The API resource_id.
@@ -830,6 +830,7 @@ class Resource(BaseView):
             >>> qb_transactions.get()
         """
         self.id = self.values.pop("id", id) or self.id
+        self.rid = self.values.pop("rid", rid) or self.rid
 
         if self.data and not self.id and source_name is not None:
             try:
@@ -908,7 +909,7 @@ class Resource(BaseView):
 
             result = list(self.processor(result, self.fields, **pkwargs))
 
-            if result is not None and update_cache and not self.id:
+            if result is not None and kwargs.get("update_cache") and not self.id:
                 self.data = result
         else:
             result = response.get("result")
@@ -977,7 +978,7 @@ class Resource(BaseView):
 
         return jsonify(**response)
 
-    def patch(self, id=None, **kwargs):
+    def patch(self, id=None, rid=None, **kwargs):
         """ Upate an API Resource.
         Kwargs:
             rid (str): The API resource_id.
@@ -996,6 +997,8 @@ class Resource(BaseView):
             >>> requests.patch(url, data={"rid": 165829339, "dryRun": True})
         """
         self.id = self.values.pop("id", id) or self.id
+        self.rid = self.values.pop("rid", rid) or self.rid
+
         rkwargs = {"headers": self.headers, "method": "post", **app.config}
         black_list = {
             "dryRun",
