@@ -205,22 +205,21 @@ class MyAuth2Client(AuthClient):
         failed_or_tried = failed or has_performed_headless_auth
 
         if self.refresh_token:
+            logger.info(f"Renewing token using {self.refresh_url}…")
+            args = (self.refresh_url, self.refresh_token)
+
+            if self.prefix == "XERO":
+                # https://developer.xero.com/documentation/oauth2/auth-flow
+                authorization = f"{self.client_id}:{self.client_secret}"
+                encoded = b64encode(authorization.encode("utf-8")).decode("utf-8")
+                headers = {"Authorization": f"Basic {encoded}"}
+            else:
+                headers = {}
+
             try:
-                logger.info(f"Renewing token using {self.refresh_url}…")
-
-                if self.prefix == "XERO":
-                    # https://developer.xero.com/documentation/oauth2/auth-flow
-                    authorization = f"{self.client_id}:{self.client_secret}"
-                    encoded = b64encode(authorization.encode("utf-8")).decode("utf-8")
-                    headers = {"Authorization": f"Basic {encoded}"}
-                else:
-                    headers = {}
-
-                token = self.oauth_session.refresh_token(
-                    self.refresh_url, self.refresh_token, headers=headers
-                )
+                token = self.oauth_session.refresh_token(*args, headers=headers)
             except Exception as e:
-                self.error = f"Failed to renew token: {str(e)} Please re-authenticate!"
+                self.error = f"Failed to renew {self}: {str(e)} Please re-authenticate!"
                 logger.error(self.error)
                 self.oauth_token = None
                 self.access_token = None
