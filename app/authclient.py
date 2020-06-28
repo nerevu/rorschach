@@ -52,7 +52,7 @@ class AuthClient(object):
         self.client_secret = client_secret
         self.access_token = None
         self.refresh_token = None
-        self.oauth_version = kwargs["oauth_version"]
+        self.oauth_version = kwargs.get("oauth_version")
         self.oauth1 = self.oauth_version == 1
         self.oauth2 = self.oauth_version == 2
         self.authorization_base_url = kwargs.get("authorization_base_url")
@@ -71,7 +71,7 @@ class AuthClient(object):
         self.error = ""
 
     def __repr__(self):
-        return f"{self.prefix} oauth{self.oauth_version}"
+        return f"{self.prefix} {self.auth_type}"
 
     @property
     def expired(self):
@@ -81,6 +81,7 @@ class AuthClient(object):
 class MyAuth2Client(AuthClient):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.auth_type = "oauth2"
         self.refresh_url = kwargs["refresh_url"]
         self.revoke_url = kwargs.get("revoke_url")
         self.scope = kwargs.get("scope", "")
@@ -296,6 +297,7 @@ class MyAuth2Client(AuthClient):
 class MyAuth1Client(AuthClient):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.auth_type = "oauth1"
         self.request_url = kwargs["request_url"]
         self.verified = False
         self.oauth_token = None
@@ -433,6 +435,7 @@ class MyAuth1Client(AuthClient):
 class MyHeaderAuthClient(AuthClient):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.auth_type = "basic"
 
     @property
     def expired(self):
@@ -444,6 +447,7 @@ class MyServiceAuthClient(AuthClient):
         super().__init__(*args, **kwargs)
         p = keyfile_path
         credentials = ServiceAccountCredentials.from_json_keyfile_name(p, self.scope)
+        self.auth_type = "service"
         self.gc = gspread.authorize(credentials)
 
     @property
@@ -456,8 +460,9 @@ def get_auth_client(prefix, state=None, **kwargs):
     auth_client_name = f"{prefix}_auth_client"
 
     if auth_client_name not in g:
-        auth_type = kwargs["AUTH_TYPE"]
-        auth_kwargs = kwargs["AUTHENTICATION"][prefix.lower()][auth_type]
+        authentication = kwargs["AUTHENTICATION"][prefix.lower()]
+        auth_type = authentication["auth_type"]
+        auth_kwargs = authentication[auth_type]
 
         if auth_type == "oauth1":
             auth_kwargs["oauth_version"] = 1

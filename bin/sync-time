@@ -1,7 +1,7 @@
 #!/usr/bin/env bash -uo pipefail
 
 for PROJECT in $(jq -r '.[] | .id' app/data/timely_projects.json); do
-  manage sync $@ -p${PROJECT}; STATUS=$?
+  manage sync $@ -P timely -p ${PROJECT}; STATUS=$?
 
   if [ $STATUS -ne 0 ]; then
     echo "Sync exited with failures"

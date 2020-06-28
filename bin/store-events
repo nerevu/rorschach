@@ -1,0 +1,12 @@
+#!/usr/bin/env bash -uo pipefail
+
+manage store -P timely -c time --dictify
+
+for PROJECT in $(jq -r '.[] | .id' app/data/timely_projects.json); do
+    manage store -P timely -c projecttime --rid="${PROJECT}"
+done
+
+for PROJECT in $(jq -r '.[] | .projectId' app/data/xero_projects.json); do
+    SHORT=`echo $PROJECT | cut -d'-' -f1`
+    manage store -P xero -c projecttime --rid="${PROJECT}"
+done

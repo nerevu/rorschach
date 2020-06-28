@@ -82,7 +82,7 @@ class Config(object):
     API_URL_PREFIX = "/v1"
     SECRET_KEY = getenv("TIMERO_SECRET_KEY", urandom(24))
     CHROME_DRIVER_VERSIONS = [None] + list(range(81, 77, -1))
-    API_PREFIXES = ["TIMELY", "XERO"]
+    API_PREFIXES = ["XERO", "TIMELY"]
     KEY_WHITELIST = {
         "CHUNK_SIZE",
         "ROW_LIMIT",
@@ -95,10 +95,10 @@ class Config(object):
     REQUIRED_PROD_SETTINGS = []
 
     # Authentication
-    AUTH_TYPE = "oauth2"
     AUTHENTICATION = {
         # https://app.timelyapp.com/777870/oauth_applications
         "timely": {
+            "auth_type": "oauth2",
             "oauth2": {
                 "api_base_url": "https://api.timelyapp.com/1.1",
                 "authorization_base_url": "https://api.timelyapp.com/1.1/oauth/authorize",
@@ -115,6 +115,7 @@ class Config(object):
         },
         # https://developer.xero.com/myapps/
         "xero": {
+            "auth_type": "oauth2",
             "oauth2": {
                 "api_base_url": "https://api.xero.com",
                 "authorization_base_url": "https://login.xero.com/identity/connect/authorize",

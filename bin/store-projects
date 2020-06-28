@@ -1,4 +1,4 @@
 #!/usr/bin/env bash -uo pipefail
 
-manage store -p timely -c projects --dictify
-manage store -p xero -c projects --dictify
+manage store -P timely -c projects --dictify
+manage store -P xero -c projects --dictify

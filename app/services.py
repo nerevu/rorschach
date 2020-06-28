@@ -29,13 +29,16 @@ def add_xero_time(source_prefix, project_id=None, position=None, **kwargs):
     if data:
         response = xero_time.post(**data)
         json = response.json
-        conflict = response.status_code == 409
+        status_code = response.status_code
+        conflict = status_code == 409
     else:
-        json = {"status_code": xero_time.status_code, "ok": False}
-        conflict = xero_time.status_code == 409
+        json = {"ok": False}
+        status_code = xero_time.status_code
+        conflict = status_code == 409
 
     json.update(
         {
+            "status_code": status_code,
             "conflict": conflict,
             "eof": xero_time.eof,
             "event_id": xero_time.event_id,
@@ -56,13 +59,16 @@ def mark_billed(rid, dry_run=False, **kwargs):
     if data:
         response = timely_time.patch(**data)
         json = response.json
-        conflict = response.status_code == 409
+        status_code = response.status_code
+        conflict = status_code == 409
     else:
-        json = {"status_code": timely_time.status_code, "ok": False}
-        conflict = timely_time.status_code == 409
+        json = {"ok": False}
+        status_code = timely_time.status_code
+        conflict = status_code == 409
 
     json.update(
         {
+            "status_code": status_code,
             "conflict": conflict,
             "eof": False,
             "event_id": timely_time.rid,

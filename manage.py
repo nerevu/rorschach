@@ -225,7 +225,7 @@ def prune(collection, **kwargs):
 
 @manager.command()
 @click.option(
-    "-p",
+    "-P",
     "--prefix",
     type=Choice(["timely", "xero"], case_sensitive=False),
     default="xero",
@@ -337,6 +337,12 @@ def test_oauth(method=None, resource=None, project_id=None, **kwargs):
 
 
 @manager.command()
+@click.option(
+    "-P",
+    "--source-prefix",
+    type=Choice(["timely"], case_sensitive=False),
+    default="timely",
+)
 @click.option("-p", "--project-id", help="The Timely Project ID", default=2389295)
 @click.option(
     "-s", "--start", help="The Timely event start position", type=int, default=0
@@ -361,7 +367,7 @@ def sync(source_prefix, **kwargs):
 
         if result["ok"] or result["conflict"]:
             added_events.add(str(event_id))
-            message = result.get("message") or f"Added Timely event {event_id}"
+            message = result.get("message") or f"Added {source_prefix} event {event_id}"
             logger.info(f"- {message}")
         else:
             message = result.get("message") or "Unknown error!"
