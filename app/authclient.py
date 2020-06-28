@@ -226,7 +226,6 @@ class MyAuth2Client(AuthClient):
                 self.access_token = None
                 cache.set(f"{self.prefix}_access_token", self.access_token)
                 cache.set(f"{self.prefix}_oauth_token", self.oauth_token)
-                # logger.debug("", exc_info=True)
             else:
                 if self.oauth_session.authorized:
                     logger.info(f"Successfully renewed {self}!")
