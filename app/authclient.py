@@ -283,11 +283,13 @@ class MyAuth2Client(AuthClient):
         except RuntimeError:
             def_state = None
 
+        def_expires_at = dt.now() + timedelta(seconds=int(OAUTH_EXPIRY_SECONDS))
+
         self.state = def_state or cache.get(f"{self.prefix}_state")
         self.access_token = cache.get(f"{self.prefix}_access_token")
         self.refresh_token = cache.get(f"{self.prefix}_refresh_token")
         self.created_at = cache.get(f"{self.prefix}_created_at")
-        self.expires_at = cache.get(f"{self.prefix}_expires_at") or dt.now()
+        self.expires_at = cache.get(f"{self.prefix}_expires_at") or def_expires_at
         self.expires_in = (self.expires_at - dt.now()).total_seconds()
         self.tenant_id = cache.get(f"{self.prefix}_tenant_id")
         self.realm_id = cache.get(f"{self.prefix}_realm_id")
@@ -405,14 +407,16 @@ class MyAuth1Client(AuthClient):
         cache.set(f"{self.prefix}_verified", self.verified)
 
     def restore(self):
+        def_expires_at = dt.now() + timedelta(seconds=int(OAUTH_EXPIRY_SECONDS))
+
         self.oauth_token = cache.get(f"{self.prefix}_oauth_token")
         self.oauth_token_secret = cache.get(f"{self.prefix}_oauth_token_secret")
         self.created_at = cache.get(f"{self.prefix}_created_at")
-        self.oauth_expires_at = cache.get(f"{self.prefix}_oauth_expires_at") or dt.now()
+        self.oauth_expires_at = cache.get(f"{self.prefix}_oauth_expires_at") or def_expires_at
         self.oauth_expires_in = (self.oauth_expires_at - dt.now()).total_seconds()
 
         cached_expires_at = cache.get(f"{self.prefix}_oauth_authorization_expires_at")
-        expires_at = cached_expires_at or dt.now()
+        expires_at = cached_expires_at or def_expires_at
         self.oauth_authorization_expires_at = expires_at
         self.oauth_authorization_expires_in = (expires_at - dt.now()).total_seconds()
 
