@@ -27,12 +27,12 @@ from config import Config
 from app import cache
 from app.authclient import get_auth_client, get_response, callback
 from app.utils import (
-    HEADERS,
     jsonify,
     get_links,
     parse_request,
     parse_kwargs,
     fetch_bool,
+    HEADERS,
 )
 from app.mappings import reg_mapper
 from app.helpers import singularize
@@ -131,27 +131,20 @@ class BaseView(MethodView):
         if self._dry_run:
             self.client = None
             self._params = {}
-            self._headers = {}
             self.domain = None
             def_start = def_end - timedelta(days=Config.REPORT_DAYS)
         else:
             self.client = get_auth_client(self.prefix, **app.config)
             self._params = {**kwargs.get("params", {}), **self.client.auth_params}
-            self._headers = {**kwargs.get("headers", HEADERS), **self.client.headers}
             self.domain = kwargs.get("domain", self.client.domain)
             def_start = def_end - timedelta(days=app.config["REPORT_DAYS"])
 
         self._end = kwargs.get("end", def_end.strftime("%Y-%m-%d"))
         self._start = kwargs.get("start", def_start.strftime("%Y-%m-%d"))
-
-    @property
-    def headers(self):
-        headers = self._headers
+        self.headers = HEADERS
 
         if self.is_xero and self.client and self.client.oauth2:
-            headers["Xero-tenant-id"] = self.client.tenant_id
-
-        return headers
+            self.headers["Xero-tenant-id"] = self.client.tenant_id
 
 
 class Callback(BaseView):
@@ -883,13 +876,8 @@ class Resource(BaseView):
                     self.error_msg, status_code = err.args[0]
 
             if url:
-                response = get_response(
-                    url,
-                    self.client,
-                    headers=self.headers,
-                    params=self.params,
-                    **app.config,
-                )
+                rkwargs = {"headers": self.headers, "params": self.params, **app.config}
+                response = get_response(url, self.client, **rkwargs)
             else:
                 response = {"result": {}, "ok": False, "status_code": 404}
 
@@ -949,7 +937,7 @@ class Resource(BaseView):
             >>> kwargs = {"name": "name", "emails": ["value": "email"]}
             >>> cloze_person.post(**kwargs)
         """
-        rkwargs = {**app.config, "headers": self.headers, "method": "post"}
+        rkwargs = {"headers": self.headers, "method": "post", **app.config}
         black_list = {
             "dryRun",
             "start",
@@ -961,16 +949,10 @@ class Resource(BaseView):
         }
         values = dict(remove_fields(self.values, black_list))
         data = {**values, **kwargs}
-        data_key = "data"
 
         if self.is_cloze:
             self.verb = "create"
-            rkwargs["headers"]["Content-Type"] = "application/json"
-            data = dumps(data)
-        elif self.is_xero:
-            data_key = "json"
         elif self.is_timely:
-            data_key = "json"
             data = {singularize(self.resource): data}
 
         if self.dry_run:
@@ -980,7 +962,7 @@ class Resource(BaseView):
                 "message": f"Disable dry_run mode to POST {self}.",
             }
         else:
-            rkwargs[data_key] = data
+            rkwargs[self.data_key] = dumps(data) if self.data_key == "data" else data
             response = get_response(self.api_url, self.client, **rkwargs)
 
         if self.error_msg:
@@ -1014,7 +996,7 @@ class Resource(BaseView):
             >>> requests.patch(url, data={"rid": 165829339, "dryRun": True})
         """
         self.id = self.values.pop("id", id) or self.id
-        rkwargs = {**app.config, "headers": self.headers, "method": "post"}
+        rkwargs = {"headers": self.headers, "method": "post", **app.config}
         black_list = {
             "dryRun",
             "start",
@@ -1027,17 +1009,14 @@ class Resource(BaseView):
         values = dict(remove_fields(self.values, black_list))
         data = {**values, **kwargs}
         data[self.id_field] = self.id
-        data_key = "data"
         response = {}
 
         if not self.id:
             self.error_msg = f"No {self} ID given!"
             response = {"status_code": 404}
-        elif self.is_xero:
-            data_key = "json"
-        elif self.is_timely:
+
+        if self.is_timely:
             rkwargs["method"] = "put"
-            data_key = "json"
             data = {singularize(self.resource): data}
 
         if self.dry_run:
@@ -1049,7 +1028,7 @@ class Resource(BaseView):
 
         if not response:
             url = f"{self.api_url}/{self.id}"
-            rkwargs[data_key] = data
+            rkwargs[self.data_key] = dumps(data) if self.data_key == "data" else data
             response = get_response(url, self.client, **rkwargs)
 
         response["id"] = self.id

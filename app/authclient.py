@@ -46,7 +46,7 @@ def _clear_cache():
 
 
 class AuthClient(object):
-    def __init__(self, prefix, client_id, client_secret, **kwargs):
+    def __init__(self, prefix, client_id=None, client_secret=None, **kwargs):
         self.prefix = prefix
         self.client_id = client_id
         self.client_secret = client_secret
@@ -63,6 +63,8 @@ class AuthClient(object):
         self.account_id = kwargs.get("account_id")
         self.state = kwargs.get("state")
         self.debug = kwargs.get("debug")
+        self.username = kwargs.get("username")
+        self.password = kwargs.get("password")
         self.headers = kwargs.get("headers", {})
         self.auth_params = kwargs.get("auth_params", {})
         self.created_at = None
@@ -199,8 +201,6 @@ class MyAuth2Client(AuthClient):
     def renew_token(self, source):
         logger.debug(f"renew {self} from {source}")
         failed = cache.get(f"{self.prefix}_headless_auth_failed")
-        has_username = app.config[f"{self.prefix}_USERNAME"]
-        has_password = app.config[f"{self.prefix}_PASSWORD"]
         has_performed_headless_auth = cache.get(f"{self.prefix}_headless_auth")
         failed_or_tried = failed or has_performed_headless_auth
 
@@ -232,7 +232,7 @@ class MyAuth2Client(AuthClient):
                 else:
                     self.error = f"Failed to renew {self}!"
                     logger.error(self.error)
-        elif has_username and has_password and not failed_or_tried:
+        elif self.username and self.password and not failed_or_tried:
             logger.info(f"Attempting to renew {self} using headless browser")
             cache.set(f"{self.prefix}_headless_auth", True)
             headless_auth(self.authorization_url[0], self.prefix)
@@ -456,59 +456,22 @@ def get_auth_client(prefix, state=None, **kwargs):
     auth_client_name = f"{prefix}_auth_client"
 
     if auth_client_name not in g:
-        oauth_version = kwargs.get(f"{prefix}_OAUTH_VERSION", 2)
-        keyfile_path = kwargs.get(f"{prefix}_KEYFILE_PATH")
+        auth_type = kwargs["AUTH_TYPE"]
+        auth_kwargs = kwargs["AUTHENTICATION"][prefix.lower()][auth_type]
 
-        if oauth_version == 0:
-            MyAuthClient = MyHeaderAuthClient
-            client_id = ""
-            client_secret = ""
-            _auth_kwargs = {}
-        elif oauth_version == 1:
+        if auth_type == "oauth1":
+            auth_kwargs["oauth_version"] = 1
             MyAuthClient = MyAuth1Client
-            client_id = kwargs[f"{prefix}_CONSUMER_KEY"]
-            client_secret = kwargs[f"{prefix}_CONSUMER_SECRET"]
-
-            _auth_kwargs = {
-                "request_url": kwargs.get(f"{prefix}_REQUEST_URL"),
-                "authorization_base_url": kwargs.get(
-                    f"{prefix}_AUTHORIZATION_BASE_URL_V1"
-                ),
-                "token_url": kwargs.get(f"{prefix}_TOKEN_URL_V1"),
-            }
-        elif keyfile_path:
-            MyAuthClient = MyServiceAuthClient
-            client_id = ""
-            client_secret = ""
-            _auth_kwargs = {"keyfile_path": keyfile_path}
-        else:
+        elif auth_type == "oauth2":
+            auth_kwargs["oauth_version"] = 2
             MyAuthClient = MyAuth2Client
-            client_id = kwargs[f"{prefix}_CLIENT_ID"]
-            client_secret = kwargs[f"{prefix}_SECRET"]
+            auth_kwargs["state"] = state
+        elif auth_type == "service":
+            MyAuthClient = MyServiceAuthClient
+        else:
+            MyAuthClient = MyHeaderAuthClient
 
-            _auth_kwargs = {
-                "authorization_base_url": kwargs[f"{prefix}_AUTHORIZATION_BASE_URL"],
-                "token_url": kwargs[f"{prefix}_TOKEN_URL"],
-                "refresh_url": kwargs[f"{prefix}_REFRESH_URL"],
-                "revoke_url": kwargs.get(f"{prefix}_REVOKE_URL"),
-                "scope": kwargs.get(f"{prefix}_SCOPES"),
-                "tenant_id": kwargs.get("tenant_id") or "",
-                "realm_id": kwargs.get("realm_id") or "",
-                "state": state,
-            }
-
-        auth_kwargs = {
-            **_auth_kwargs,
-            "oauth_version": oauth_version,
-            "api_base_url": kwargs[f"{prefix}_API_BASE_URL"],
-            "redirect_uri": kwargs.get(f"{prefix}_REDIRECT_URI"),
-            "domain": kwargs.get(f"{prefix}_API_DOMAIN"),
-            "account_id": kwargs.get(f"{prefix}_ACCOUNT_ID"),
-            "auth_params": kwargs.get(f"{prefix}_AUTH_PARAMS", {}),
-            "headers": kwargs.get(f"{prefix}_HEADERS", {}),
-        }
-
-        client = MyAuthClient(prefix, client_id, client_secret, **auth_kwargs)
+        client = MyAuthClient(prefix, **auth_kwargs)
 
         # if cache.get(f"{prefix}_restore_from_headless"):
         #     client.restore()
@@ -540,7 +503,9 @@ def get_response(url, client, params=None, **kwargs):
         data = kwargs.get("data", {})
         json = kwargs.get("json", {})
         method = kwargs.get("method", "get")
-        headers = kwargs.get("headers", HEADERS)
+        def_headers = kwargs.get("headers", HEADERS)
+        client_headers = client.headers.get(method, {})
+        headers = {**def_headers, **client_headers}
         verb = getattr(client.oauth_session, method)
 
         try:
