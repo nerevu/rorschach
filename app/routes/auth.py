@@ -920,7 +920,7 @@ class Resource(BaseView):
 
             if not (dest_item or dry_run):
                 message = f"No mapping available for {dispaly_name} in {self}. "
-                message += f"Do you want to create it?"
+                message += "Do you want to create it?"
                 answer = fetch_bool(message)
 
                 if answer == "y":
@@ -956,7 +956,7 @@ class Resource(BaseView):
         converter = dest.convert(source)
         return converter(source_item, rid=source_rid)
 
-    def get(self, id=None, rid=None, source_rid=None, source_name=None, **kwargs):
+    def get(self, _id=None, rid=None, source_rid=None, source_name=None, **kwargs):
         """ Get an API Resource.
         Kwargs:
             rid (str): The API resource_id.
@@ -974,7 +974,7 @@ class Resource(BaseView):
             >>> qb_transactions = Resource("QB", "TransactionList", **kwargs)
             >>> qb_transactions.get()
         """
-        self.id = self.values.pop("id", id) or self.id
+        self.id = self.values.pop("id", _id) or self.id
         self.rid = self.values.pop("rid", rid) or self.rid
 
         if self.data and not self.id and source_name is not None:

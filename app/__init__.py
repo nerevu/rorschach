@@ -94,7 +94,7 @@ def create_app(script_info=None, **kwargs):
         if server_name:
             logger.info(f"SERVER_NAME is {server_name}.")
         else:
-            logger.error(f"SERVER_NAME is not set!")
+            logger.error("SERVER_NAME is not set!")
 
         for setting in app.config.get("REQUIRED_PROD_SETTINGS", []):
             if not app.config.get(setting):
@@ -102,7 +102,7 @@ def create_app(script_info=None, **kwargs):
                 logger.error(f"App setting {setting} is missing!")
 
     if not required_setting_missing:
-        logger.info(f"All required app settings present!")
+        logger.info("All required app settings present!")
 
     app.register_blueprint(api)
 
@@ -110,7 +110,7 @@ def create_app(script_info=None, **kwargs):
         add_basic_auth(blueprint=rq, username=username, password=password)
         logger.info(f"Creating RQ-dashboard login for {username}")
 
-    app.register_blueprint(rq, url_prefix=f"/dashboard")
+    app.register_blueprint(rq, url_prefix="/dashboard")
 
     if app.config.get("TALISMAN"):
         from flask_talisman import Talisman

@@ -110,6 +110,7 @@ def save_results(dry_run=False, **kwargs):
 
 def info(_type, value, tb):
     import pdb
+
     print_exception(_type, value, tb)
     save_results()
     pdb.post_mortem(tb)
@@ -168,7 +169,7 @@ def serve(ctx):
 def help(ctx):
     """Check staged changes for lint errors"""
     commands = ", ".join(manager.list_commands(ctx))
-    print(f"Usage: manage <command> [OPTIONS]")
+    print("Usage: manage <command> [OPTIONS]")
     print(f"commands: {commands}")
 
 
@@ -362,6 +363,7 @@ def sync(source_prefix, **kwargs):
         _range = count(kwargs["start"])
 
     logger.info("Adding events…")
+
     for pos in _range:
         result = services.add_xero_time(source_prefix, position=pos, **kwargs)
         event_id = result.get("event_id")

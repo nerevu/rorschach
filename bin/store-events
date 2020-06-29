@@ -8,7 +8,6 @@ for PROJECT in $(jq -r '.[] | .id' app/data/timely_projects.json); do
 done
 
 for PROJECT in $(jq -r '.[] | .projectId' app/data/xero_projects.json); do
-    SHORT=`echo $PROJECT | cut -d'-' -f1`
     manage store -P xero -c projecttime --rid="${PROJECT}"
 done
 

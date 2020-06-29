@@ -165,7 +165,7 @@ def get_user_name(user_id, prefix=None):
 def home():
     response = {
         "description": "Returns API documentation",
-        "message": f"Welcome to the Timero API!",
+        "message": "Welcome to the Timero API!",
         "links": get_links(app.url_map.iter_rules()),
     }
 
