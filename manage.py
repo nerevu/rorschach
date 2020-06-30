@@ -109,8 +109,10 @@ def save_results(dry_run=False, **kwargs):
 
 
 def info(_type, value, tb):
+    import pdb
     print_exception(_type, value, tb)
     save_results()
+    pdb.post_mortem(tb)
 
 
 sys.excepthook = info
