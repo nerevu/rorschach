@@ -7,7 +7,8 @@
 """
 import pygogo as gogo
 
-from app.api import ProjectTime, Time
+from app.helpers import get_provider
+from app.providers.xero import ProjectTime
 
 logger = gogo.Gogo(__name__, monolog=True).logger
 
@@ -16,7 +17,6 @@ def add_xero_time(source_prefix, project_id=None, position=None, **kwargs):
     dry_run = kwargs.get("dry_run")
 
     xero_time = ProjectTime(
-        "XERO",
         dictify=True,
         dry_run=dry_run,
         event_pos=position,
@@ -52,18 +52,19 @@ def add_xero_time(source_prefix, project_id=None, position=None, **kwargs):
     return json
 
 
-def mark_billed(rid, dry_run=False, **kwargs):
-    timely_time = Time("TIMELY", dictify=True, dry_run=dry_run, rid=rid)
-    data = timely_time.get_patch_data()
+def mark_billed(source_prefix, rid, dry_run=False, **kwargs):
+    provider = get_provider(source_prefix)
+    time = provider.Time(dictify=True, dry_run=dry_run, rid=rid)
+    data = time.get_patch_data()
 
     if data:
-        response = timely_time.patch(**data)
+        response = time.patch(**data)
         json = response.json
         status_code = response.status_code
         conflict = status_code == 409
     else:
         json = {"ok": False}
-        status_code = timely_time.status_code
+        status_code = time.status_code
         conflict = status_code == 409
 
     json.update(
@@ -71,12 +72,11 @@ def mark_billed(rid, dry_run=False, **kwargs):
             "status_code": status_code,
             "conflict": conflict,
             "eof": False,
-            "event_id": timely_time.rid,
-            "event_pos": timely_time.event_pos,
+            "event_id": time.rid,
         }
     )
 
-    if timely_time.error_msg:
-        json["message"] = timely_time.error_msg
+    if time.error_msg:
+        json["message"] = time.error_msg
 
     return json

@@ -31,7 +31,7 @@ from requests_oauthlib.oauth1_session import TokenRequestDenied
 
 from config import Config
 from app import cache
-from app.utils import uncache_header, make_cache_key, jsonify, get_links, HEADERS
+from app.utils import uncache_header, make_cache_key, jsonify, get_links
 from app.headless import headless_auth
 
 logger = gogo.Gogo(__name__, monolog=True).logger
@@ -40,6 +40,7 @@ SET_TIMEOUT = Config.SET_TIMEOUT
 OAUTH_EXPIRY_SECONDS = 3600
 EXPIRATION_BUFFER = 30
 RENEW_TIME = 60
+HEADERS = {"Accept": "application/json"}
 
 
 def _clear_cache():
@@ -67,7 +68,7 @@ class AuthClient(object):
         self.debug = kwargs.get("debug")
         self.username = kwargs.get("username")
         self.password = kwargs.get("password")
-        self.data_key = kwargs.get("data_key", "data")
+        self.data_key = kwargs.get("data_key", "json")
         self.headers = kwargs.get("headers", {})
         self.auth_params = kwargs.get("auth_params", {})
         self.created_at = None
@@ -516,10 +517,11 @@ def get_response(url, client, params=None, **kwargs):
         data = kwargs.get("data", {})
         json = kwargs.get("json", {})
         method = kwargs.get("method", "get")
-        def_headers = kwargs.get("headers", HEADERS)
-        client_headers = client.headers.get(method, {})
-        headers = {**def_headers, **client_headers}
-        verb = getattr(client.oauth_session, method)
+        def_headers = kwargs.get("headers", {})
+        all_headers = client.headers.get("all", {})
+        method_headers = client.headers.get(method, {})
+        client_headers = {**all_headers, **method_headers}
+        headers = {**HEADERS, **def_headers, **client_headers}
 
         try:
             result = verb(url, params=params, data=data, json=json, headers=headers)

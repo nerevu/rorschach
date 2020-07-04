@@ -82,7 +82,7 @@ class Config(object):
     API_URL_PREFIX = "/v1"
     SECRET_KEY = getenv("TIMERO_SECRET_KEY", urandom(24))
     CHROME_DRIVER_VERSIONS = [None] + list(range(81, 77, -1))
-    API_PREFIXES = ["XERO", "TIMELY", "GSHEETS"]
+
     KEY_WHITELIST = {
         "CHUNK_SIZE",
         "ROW_LIMIT",
@@ -122,7 +122,6 @@ class Config(object):
                 "client_secret": getenv("TIMELY_SECRET"),
                 "username": getenv("TIMELY_USERNAME"),
                 "password": getenv("TIMELY_PASSWORD"),
-                "data_key": "json",
             },
         },
         # https://developer.xero.com/myapps/
@@ -139,7 +138,6 @@ class Config(object):
                 "client_secret": getenv("XERO_SECRET"),
                 "username": getenv("XERO_USERNAME"),
                 "password": getenv("XERO_PASSWORD"),
-                "data_key": "json",
                 "scope": [
                     "projects",
                     "offline_access",

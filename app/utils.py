@@ -33,7 +33,6 @@ logger = gogo.Gogo(__name__, monolog=True).logger
 
 ENCODING = "utf-8"
 EPOCH = dt(*gmtime(0)[:6])
-HEADERS = {"Accept": "application/json"}
 
 MIMETYPES = [
     "application/json",

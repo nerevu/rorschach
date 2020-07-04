@@ -8,7 +8,6 @@ from pathlib import Path
 from datetime import date, timedelta
 from json import loads, dumps, dump
 from itertools import islice
-from time import sleep
 from json.decoder import JSONDecodeError
 
 import pygogo as gogo
@@ -22,25 +21,17 @@ from flask import (
 )
 
 from flask.views import MethodView
-from gspread.exceptions import APIError
 
 from config import Config
 
 from app import cache
+from app.routes import ProviderMixin
 from app.authclient import get_auth_client, get_response, callback
-from app.utils import (
-    jsonify,
-    get_links,
-    parse_request,
-    parse_kwargs,
-    fetch_bool,
-    HEADERS,
-)
+from app.utils import jsonify, get_links, fetch_bool
 from app.mappings import reg_mapper
-from app.helpers import singularize
+from app.helpers import singularize, get_collection
 
 from riko.dotdict import DotDict
-from meza.fntools import chunk
 
 logger = gogo.Gogo(__name__, monolog=True).logger
 
@@ -48,9 +39,6 @@ APP_DIR = Path(__file__).parents[1]
 DATA_DIR = APP_DIR.joinpath("data")
 MAPPINGS_DIR = APP_DIR.joinpath("mappings")
 PREFIX = Config.API_URL_PREFIX
-API_PREFIXES = Config.API_PREFIXES
-# DEF_START_ROW = Config.DEF_START_ROW
-DEF_START_ROW = 2  # Since the first row is header
 
 
 def extract_fields(record, fields, **kwargs):
@@ -92,7 +80,8 @@ def process_result(result, fields=None, black_list=None, **kwargs):
     return result
 
 
-def store(prefix, Collection, *args, **kwargs):
+def store(prefix, collection_name, *args, **kwargs):
+    Collection = get_collection(prefix, collection_name)
     collection = Collection(prefix, *args, **kwargs)
     response = collection.get(update_cache=True)
     json = response.json
@@ -103,8 +92,10 @@ def store(prefix, Collection, *args, **kwargs):
         logger.error(json["message"])
 
 
-class BaseView(MethodView):
+class BaseView(ProviderMixin, MethodView):
     def __init__(self, prefix, **kwargs):
+        super().__init__(prefix)
+
         self.START_PARMS = {
             "TIMELY": "since",
             "XERO": "dateAfterUtc",
@@ -117,14 +108,6 @@ class BaseView(MethodView):
             "QB": "end_date",
         }
 
-        self.prefix = prefix
-        self.lowered = self.prefix.lower()
-        self.is_timely = self.prefix == "TIMELY"
-        self.is_xero = self.prefix == "XERO"
-        self.is_opencart = self.prefix == "OPENCART"
-        self.is_cloze = self.prefix == "CLOZE"
-        self.is_qb = self.prefix == "QB"
-        self.is_gsheets = self.prefix == "GSHEETS"
         self._dry_run = kwargs.get("dry_run")
 
         def_end = date.today()
@@ -144,7 +127,7 @@ class BaseView(MethodView):
 
         self._end = kwargs.get("end", def_end.strftime("%Y-%m-%d"))
         self._start = kwargs.get("start", def_start.strftime("%Y-%m-%d"))
-        self.headers = HEADERS
+        self.headers = kwargs.get("headers", {})
 
         if self.is_xero and self.client and self.client.oauth2:
             self.headers["Xero-tenant-id"] = self.client.tenant_id
@@ -241,132 +224,6 @@ class Auth(BaseView):
         return jsonify(**response)
 
 
-class GSheets(BaseView):
-    def __init__(self, **kwargs):
-        super().__init__("GSHEETS")
-        self.gc = self.client.gc
-        self._sheet_id = kwargs.get("sheet_id", self.client.sheet_id)
-        self._worksheet_name = kwargs.get("worksheet_name", self.client.worksheet_name)
-        self.use_default = kwargs.get("use_default", True)
-        self.chunksize = kwargs.get("chunksize")
-        self._sheet_name = kwargs.get("sheet_name")
-        self._worksheet_pos = kwargs.get("worksheet_pos")
-        self._sheet = None
-        self._worksheet = None
-
-    @property
-    def sheet_id(self):
-        return self._sheet_id
-
-    @sheet_id.setter
-    def sheet_id(self, value):
-        self._sheet_id = value
-        self._sheet = None
-
-    @property
-    def sheet_name(self):
-        return self._sheet_name
-
-    @sheet_name.setter
-    def sheet_name(self, value):
-        self._sheet_name = value
-        self._sheet = None
-
-    @property
-    def sheet(self):
-        if self._sheet is None:
-            if self.sheet_id:
-                self._sheet = self.gc.open_by_key(self.sheet_id)
-            elif self.sheet_name:
-                self._sheet = self.gc.open(self.sheet_name)
-
-        return self._sheet
-
-    @property
-    def worksheet_pos(self):
-        return self._worksheet_pos
-
-    @worksheet_pos.setter
-    def worksheet_pos(self, value):
-        self._worksheet_pos = value
-        self._worksheet = None
-
-    @property
-    def worksheet_name(self):
-        return self._worksheet_name
-
-    @worksheet_name.setter
-    def worksheet_name(self, value):
-        self._worksheet_name = value
-        self._worksheet = None
-
-    @property
-    def worksheet(self):
-        if self.sheet and self._worksheet is None:
-            if self.worksheet_name:
-                self._worksheet = self.sheet.worksheet(self.worksheet_name)
-            elif self.worksheet_pos is not None:
-                self._worksheet = self.sheet.get_worksheet(self.worksheet_pos)
-            elif self.use_default:
-                self._worksheet = self.sheet.get_worksheet(0)
-
-        return self._worksheet
-
-    def retry_method(self, attr, *args, **kwargs):
-        method = getattr(self.worksheet, attr)
-
-        try:
-            value = method(*args, **kwargs)
-        except APIError as err:
-            err_json = err.response.json()
-            error = err_json["error"]
-            status_code = error["code"]
-            err_message = error["message"]
-
-            # https://console.cloud.google.com/iam-admin/quotas?authuser=1
-            if status_code == 429:  # Exceeded quota
-                logger.debug("Waiting 100 seconds...")
-                sleep(100)
-                logger.debug("Done waiting!")
-                value = self.retry_method(attr, *args, **kwargs)
-            else:
-                logger.error(err_message)
-
-        return value
-
-    def create_range(self, end_row, end_col, start_row=DEF_START_ROW, start_col=1):
-        if end_row > self.worksheet.row_count:
-            logger.debug(f"Adding {self.additional_rows} additional rows...")
-            rows = end_row + self.additional_rows
-            self.worksheet.resize(rows=rows)
-
-        args = (start_row, start_col, end_row, end_col)
-        return self.retry_method("range", *args)
-
-    def insert_row(self, *args, **kwargs):
-        self.retry_method("insert_row", *args, **kwargs)
-
-    def update_cells(self, cells, values):
-        for cell, value in zip(cells, values):
-            cell.value = value
-
-        self.retry_method("update_cells", cells, value_input_option="USER_ENTERED")
-
-    def add_data(self, data):
-        start_row = DEF_START_ROW
-        headers = []
-        end_col = len(headers)
-
-        # https://gspread.readthedocs.io/en/latest/api.html#gspread.models.Spreadsheet.values_update
-        # https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets/request#UpdateCellsRequest
-        for _data in chunk(data, chunksize=self.chunksize):
-            rows = list(_data)
-            end_row = start_row + len(rows) - 1
-            cells = self.create_range(end_row, end_col, start_row=start_row)
-            self.update_cells(cells, rows)
-            start_row = end_row + 1
-
-
 class Resource(BaseView):
     def __repr__(self):
         name = f"{self.lowered}-{self.lowered_resource}"
@@ -426,9 +283,6 @@ class Resource(BaseView):
         self.entry_factory = kwargs.get("entry_factory")
         self.eof = False
 
-        lowered_class = type(self).__name__.lower()
-        self.path = f"{PREFIX}/{self.lowered}-{lowered_class}"
-
         try:
             def_id_field = next(f for f in self.fields if "id" in f.lower())
         except StopIteration:
@@ -457,8 +311,6 @@ class Resource(BaseView):
         self._data = None
         self._mappings = None
         self._results = None
-        self._values = None
-        self._kwargs = None
         self.verb = "get"
         self.error_msg = ""
 
@@ -691,38 +543,6 @@ class Resource(BaseView):
         return url
 
     @property
-    def values(self):
-        if self._values is None:
-            try:
-                if self.path == request.path:
-                    self._values = parse_request()
-                else:
-                    self._values = {}
-                    logger.debug(
-                        f"path:{self.path} doesn't match request:{request.path}"
-                    )
-            except RuntimeError:
-                self._values = {}
-
-        return self._values
-
-    @property
-    def kwargs(self):
-        if self._kwargs is None:
-            try:
-                if self.path == request.path:
-                    self._kwargs = parse_kwargs(app)
-                else:
-                    self._kwargs = {}
-                    logger.debug(
-                        f"path:{self.path} doesn't match request:{request.path}"
-                    )
-            except RuntimeError:
-                self._kwargs = {}
-
-        return self._kwargs
-
-    @property
     def dry_run(self):
         return self.values.get("dryRun", self._dry_run)
 
@@ -949,10 +769,13 @@ class Resource(BaseView):
 
     @classmethod
     def from_source(cls, source_item, dry_run=True, source_rid=None, **kwargs):
-        dest_prefix = kwargs.get("dest_prefix", API_PREFIXES[0])
-        source_prefix = kwargs.get("source_prefix", API_PREFIXES[1])
-        dest = cls(dest_prefix, dry_run=dry_run, **kwargs)
-        source = cls(source_prefix, dry_run=dry_run)
+        dest_prefix = kwargs["dest_prefix"]
+        dest_collection = get_collection(dest_prefix, cls.__name__)
+        dest = dest_collection(dry_run=dry_run, **kwargs)
+
+        source_prefix = kwargs["source_prefix"]
+        source_collection = get_collection(source_prefix, cls.__name__)
+        source = source_collection(dry_run=dry_run)
         converter = dest.convert(source)
         return converter(source_item, rid=source_rid)
 
