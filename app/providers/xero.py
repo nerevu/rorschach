@@ -12,6 +12,7 @@ import pygogo as gogo
 from app.utils import fetch_choice
 from app.helpers import get_collection, get_provider
 from app.mappings import USERS, NAMES, POSITIONS, gen_task_mapping
+from app.routes.webhook import Webhook
 from app.routes.auth import Resource, process_result
 from app.providers.postmark import Email
 
@@ -439,3 +440,33 @@ class ProjectTime(Resource):
             }
 
         return data
+
+
+###########################################################################
+# Hooks
+###########################################################################
+class InvoiceHook(Webhook, Invoices):
+    def __init__(self, **kwargs):
+        methods = {("new", "invoice"): self.notify}
+        super().__init__(methods=methods, **kwargs)
+
+    def process_value(self, value):
+        ok = True
+        result = {}
+
+        for event in value:
+            key = (event["eventType"].lower(), event["eventCategory"].lower())
+            method = self.methods.get(key)
+
+            if method:
+                response = method(**event)
+                result[event["eventId"]] = response.get("response")
+
+                if not response["ok"]:
+                    ok = False
+
+        return {"status_code": 200 if ok else 400, "result": result}
+
+    def notify(self, resourceId=None, **kwargs):
+        data = self.get_notification_data(resourceId)
+        return Email().post(data=data)

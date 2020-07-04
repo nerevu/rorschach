@@ -21,6 +21,7 @@ from app.utils import (
 
 from app.routes import auth, Memoization
 from app.helpers import get_collection
+from app.providers import xero
 
 logger = gogo.Gogo(__name__, monolog=True).logger
 blueprint = Blueprint("API", __name__)
@@ -82,6 +83,7 @@ method_views = {
     "time": {"collection": "Time", "providers": AUTHENTICATION},
     "projecttasks": {"collection": "ProjectTasks", "providers": AUTHENTICATION},
     "projecttime": {"collection": "ProjectTime", "providers": AUTHENTICATION},
+    "invoicehook": {"view": xero.InvoiceHook, "methods": ["GET", "POST"]},
 }
 
 for name, options in method_views.items():

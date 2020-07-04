@@ -79,9 +79,9 @@ def responsify(mimetype, status_code=200, indent=2, sort_keys=True, **kwargs):
     """
     encoding = kwargs.get("encoding", ENCODING)
     options = {"indent": indent, "sort_keys": sort_keys, "ensure_ascii": False}
-    kwargs["status"] = responses[status_code]
 
     if mimetype.endswith("json"):
+        kwargs["status"] = responses[status_code]
         content = dumps(kwargs, cls=ft.CustomEncoder, **options)
     elif mimetype.endswith("csv") and kwargs.get("result"):
         content = cv.records2csv(kwargs["result"]).getvalue()

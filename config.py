@@ -163,6 +163,17 @@ class Config(object):
         },
     }
 
+    # Webhooks
+    WEBHOOKS = {
+        "xero": {
+            "signature_header": "x-xero-signature",
+            "webhook_secret": getenv("XERO_WEBHOOK_SECRET"),
+            "digest": "sha256",
+            "b64_encode": True,
+            "payload_key": "events",
+        },
+    }
+
     # RQ
     REQUIRED_PROD_SETTINGS += ["RQ_DASHBOARD_USERNAME", "RQ_DASHBOARD_PASSWORD"]
     RQ_DASHBOARD_REDIS_URL = (
