@@ -118,5 +118,9 @@
   {
     "gsheets": "clozecart",
     "xero": "34a6629c-6902-4436-881c-b909a285b8bd"
+  },
+  {
+    "gsheets": "internal",
+    "xero": "f9d0e04b-f07c-423d-8975-418159180dab"
   }
 ]

@@ -1099,5 +1099,18 @@
       "project": "34a6629c-6902-4436-881c-b909a285b8bd",
       "task": "a7c9d6b3-b3ba-4c9f-9181-04fff9317036"
     }
+  },
+  {
+    "gsheets": {
+      "project": "internal",
+      "task": "admin",
+      "users": [
+        "austin"
+      ]
+    },
+    "xero": {
+      "project": "f9d0e04b-f07c-423d-8975-418159180dab",
+      "task": "ed9d0041-3680-4011-a24a-a20e72210864"
+    }
   }
 ]
