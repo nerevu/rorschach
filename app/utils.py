@@ -59,7 +59,7 @@ AUTH_ROUTES = {
 
 get_hash = lambda text: md5(str(text).encode(ENCODING)).hexdigest()
 
-KEY_WHITELIST = Config.KEY_WHITELIST
+APP_CONFIG_WHITELIST = Config.APP_CONFIG_WHITELIST
 TODAY = date.today()
 YESTERDAY = TODAY - timedelta(days=1)
 
@@ -391,7 +391,7 @@ def parse_kwargs(app):
 
     with app.app_context():
         for k, v in app.config.items():
-            if k in KEY_WHITELIST:
+            if k in APP_CONFIG_WHITELIST:
                 kwargs.setdefault(k.lower(), v)
 
     return kwargs

@@ -83,11 +83,10 @@ class Config(object):
     SECRET_KEY = getenv("TIMERO_SECRET_KEY", urandom(24))
     CHROME_DRIVER_VERSIONS = [None] + list(range(81, 77, -1))
 
-    KEY_WHITELIST = {
+    APP_CONFIG_WHITELIST = {
         "CHUNK_SIZE",
         "ROW_LIMIT",
         "ERR_LIMIT",
-        "WEBHOOKS",
     }
 
     # Variables warnings
@@ -162,6 +161,20 @@ class Config(object):
             },
         },
     }
+
+    # AWS
+    REQUIRED_PROD_SETTINGS += [
+        "AWS_ACCESS_KEY_ID",
+        "AWS_SECRET_ACCESS_KEY",
+        "AWS_REGION",
+        "CF_DISTRIBUTION_ID",
+    ]
+    AWS_ACCESS_KEY_ID = getenv("AWS_ACCESS_KEY_ID")
+    AWS_SECRET_ACCESS_KEY = getenv("AWS_SECRET_ACCESS_KEY")
+    AWS_REGION = getenv("AWS_REGION")
+    DISTRIBUTION_ID = getenv("CF_DISTRIBUTION_ID")
+    APP_CONFIG_WHITELIST.update(REQUIRED_PROD_SETTINGS)
+    APP_CONFIG_WHITELIST.add("DISTRIBUTION_ID")
 
     # Webhooks
     WEBHOOKS = {
