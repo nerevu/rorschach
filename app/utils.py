@@ -5,26 +5,27 @@
 
     Provides misc utility functions
 """
-import random
+import re
+import hmac
 
 from json import load, loads, dumps
-from json.decoder import JSONDecodeError
 from ast import literal_eval
-from datetime import date, datetime as dt, timedelta
+from base64 import b64encode
+from datetime import datetime as dt, date, timedelta
 from time import gmtime
 from functools import wraps, partial
 from hashlib import md5
 from http.client import responses
+from json.decoder import JSONDecodeError
+from subprocess import call
 
-import requests
 import pygogo as gogo
 
-from requests import Response
 from flask import make_response, request
 from dateutil.relativedelta import relativedelta
 
-from meza import fntools as ft, process as pr
-from mezmorize import get_cache
+from meza import fntools as ft, convert as cv
+from config import Config
 
 from app import cache
 
@@ -32,6 +33,7 @@ logger = gogo.Gogo(__name__, monolog=True).logger
 
 ENCODING = "utf-8"
 EPOCH = dt(*gmtime(0)[:6])
+HEADERS = {"Accept": "application/json"}
 
 MIMETYPES = [
     "application/json",
@@ -41,18 +43,26 @@ MIMETYPES = [
     "image/jpg",
 ]
 
+COMMON_ROUTES = {
+    ("v1", "GET"): "home",
+    ("ipsum", "GET"): "ipsum",
+    ("memoization", "GET"): "memoize",
+    ("memoization", "DELETE"): "reset",
+}
+
+AUTH_ROUTES = {
+    ("auth", "GET"): "authenticate",
+    ("auth", "DELETE"): "revoke",
+    ("refresh", "GET"): "refresh",
+    ("status", "GET"): "status",
+}
+
 
 get_hash = lambda text: md5(str(text).encode(ENCODING)).hexdigest()
 
-
-class CustomEncoder(ft.CustomEncoder):
-    def default(self, obj):
-        if "days" in set(dir(obj)):
-            encoded = str(obj)
-        else:
-            encoded = super().default(obj)
-
-        return encoded
+KEY_WHITELIST = Config.KEY_WHITELIST
+TODAY = date.today()
+YESTERDAY = TODAY - timedelta(days=1)
 
 
 def responsify(mimetype, status_code=200, indent=2, sort_keys=True, **kwargs):
@@ -73,9 +83,9 @@ def responsify(mimetype, status_code=200, indent=2, sort_keys=True, **kwargs):
     kwargs["status"] = responses[status_code]
 
     if mimetype.endswith("json"):
-        content = dumps(kwargs, cls=CustomEncoder, **options)
-    elif mimetype.endswith("csv") and kwargs.get(result):
-        content = cv.records2csv(kwargs[result]).getvalue()
+        content = dumps(kwargs, cls=ft.CustomEncoder, **options)
+    elif mimetype.endswith("csv") and kwargs.get("result"):
+        content = cv.records2csv(kwargs["result"]).getvalue()
     else:
         content = ""
 
@@ -124,7 +134,9 @@ def make_cache_key(*args, **kwargs):
         (obj): Flask request url
     """
     mimetype = get_mimetype(request)
-    return f"{request.method}:{request.full_path}"
+    cache_key = f"{mimetype}:{request.full_path}"
+    logger.debug(cache_key)
+    return cache_key
 
 
 def fmt_elapsed(elapsed):
@@ -164,15 +176,12 @@ def cache_header(max_age, **ckwargs):
 
     If max_age is 0, caching will be disabled.
     Otherwise, caching headers are set to expire in now + max_age seconds
-    If round_to_minute is True, then it will always expire at the start of a
-    minute (seconds = 0)
 
-    Example usage:
-
-    @app.route('/map')
-    @cache_header(60)
-    def index():
-        return render_template('index.html')
+    Examples:
+    >>> @app.route('/map')
+    >>> @cache_header(60)
+    >>> def index():
+    ...     return render_template('index.html')
 
     """
 
@@ -230,6 +239,198 @@ def get_mimetype(request):
     return mimetype
 
 
+def _title_case(word):
+    return f"{word[0].upper()}{word[1:].lower()}"
+
+
+def title_case(text):
+    text_words = text.split(" ")
+    return " ".join(map(_title_case, text_words))
+
+
+def get_common_rel(resourceName, method):
+    key = (resourceName, method)
+    return COMMON_ROUTES.get(key, AUTH_ROUTES.get(key))
+
+
+def get_resource_name(rule):
+    """ Returns resourceName from endpoint
+
+    Args:
+        rule (str): the endpoint path (e.g. '/v1/data')
+
+    Returns:
+        (str): the resource name
+
+    Examples:
+        >>> rule = '/v1/data'
+        >>> get_resource_name(rule)
+        'data'
+    """
+    url_path_list = [p for p in rule.split("/") if p]
+    return url_path_list[:2].pop()
+
+
+def get_params(rule):
+    """ Returns params from the url
+
+    Args:
+        rule (str): the endpoint path (e.g. '/v1/data/<int:id>')
+
+    Returns:
+        (list): parameters from the endpoint path
+
+    Examples:
+        >>> rule = '/v1/random_resource/<string:path>/<status_type>'
+        >>> list(get_params(rule))
+        ['path', 'status_type']
+    """
+    # param regexes
+    param_with_colon = r"<.+?:(.+?)>"
+    param_no_colon = r"<(.+?)>"
+    either_param = param_with_colon + r"|" + param_no_colon
+
+    parameter_matches = re.findall(either_param, rule)
+    return map("".join, parameter_matches)
+
+
+def get_rel(href, method, rule):
+    """ Returns the `rel` of an endpoint (see `Returns` below).
+
+    If the rule is a common rule as specified in the utils.py file, then that rel is
+    returned.
+
+    If the current url is the same as the href for the current route, `self` is
+    returned.
+
+    Args:
+        href (str): the full endpoint url (e.g. https://alegna-api.nerevu.com/v1/data)
+        method (str): an HTTP method (e.g. 'GET' or 'DELETE')
+        rule (str): the endpoint path (e.g. '/v1/data/<int:id>')
+
+    Returns:
+        rel (str): a string representing what the endpoint does
+
+    Examples:
+        >>> href = 'https://alegna-api.nerevu.com/v1/data'
+        >>> method = 'GET'
+        >>> rule = '/v1/data'
+        >>> get_rel(href, method, rule)
+        'data'
+
+        >>> method = 'DELETE'
+        >>> get_rel(href, method, rule)
+        'data_delete'
+
+        >>> method = 'GET'
+        >>> href = 'https://alegna-api.nerevu.com/v1'
+        >>> rule = '/v1
+        >>> get_rel(href, method, rule)
+        'home'
+    """
+    if href == request.url and method == request.method:
+        rel = "self"
+    else:
+        # check if route is a common route
+        resourceName = get_resource_name(rule)
+        rel = get_common_rel(resourceName, method)
+
+        # add the method if not common or GET
+        if not rel:
+            rel = resourceName
+
+            if method != "GET":
+                rel = f"{rel}_{method.lower()}"
+
+        # get params and add to rel
+        params = get_params(rule)
+        joined_params = "_".join(params)
+
+        if joined_params:
+            rel = f"{rel}_{joined_params}"
+
+    return rel
+
+
+def get_url_root():
+    return request.url_root.rstrip("/")
+
+
+def get_request_base():
+    return request.base_url.split("/")[-1]
+
+
+def gen_links(rules):
+    """ Makes a generator of all endpoints, their methods,
+    and their rels (strings representing purpose of the endpoint)
+
+    Yields: (dict)
+
+    Examples:
+    >>> gen_links(rules)
+    {"rel": "data", "href": f"https://alegna-api.nerevu.com/v1/data", "method": "GET"}
+    """
+    url_root = get_url_root()
+
+    for r in rules:
+        if "static" not in r.rule and "callback" not in r.rule and r.rule != "/":
+            for method in r.methods - {"HEAD", "OPTIONS"}:
+                href = f"{url_root}{r.rule}".rstrip("/")
+                rel = get_rel(href, method, r.rule)
+                yield {"rel": rel, "href": href, "method": method}
+
+
+def get_links(rules):
+    """ Sorts endpoint links alphabetically by their href
+    """
+    links = gen_links(rules)
+    return sorted(links, key=lambda link: link["href"])
+
+
+def parse_kwargs(app):
+    kwargs = {k: parse(v) for k, v in request.args.to_dict().items()}
+
+    with app.app_context():
+        for k, v in app.config.items():
+            if k in KEY_WHITELIST:
+                kwargs.setdefault(k.lower(), v)
+
+    return kwargs
+
+
+def parse_request():
+    values = request.values or {}
+    json = request.json or {}
+    kwargs = {**values, **json}
+    return {k: parse(v) for k, v in kwargs.items()}
+
+
+# https://github.com/bloomberg/python-github-webhook
+# https://github.com/carlos-jenkins/python-github-webhooks
+# https://github.com/nickfrostatx/flask-hookserver
+def check_signature(digest="sha256", signature_header="", webhook_secret="", **kwargs):
+    if signature_header and webhook_secret:
+        signature = request.headers.get(signature_header).encode("utf-8")
+
+        if kwargs.get("split_signature"):
+            signature = signature.split("=")[1]
+
+        secret = webhook_secret.encode("utf-8")
+
+        if kwargs.get("b64_encode"):
+            mac_digest = hmac.digest(secret, request.data, digest)
+            calculated_hmac = b64encode(mac_digest)
+        else:
+            mac = hmac.new(secret, request.data, digest)
+            calculated_hmac = mac.hexdigest()
+
+        is_valid = hmac.compare_digest(calculated_hmac, signature)
+    else:
+        is_valid = False
+
+    return is_valid
+
+
 def load_path(path, default=None):
     default = default or {}
 
@@ -239,3 +440,33 @@ def load_path(path, default=None):
         contents = default
 
     return contents
+
+
+def fetch_choice(choices):
+    call(["say", "enter a value"])
+    pos = None
+
+    while pos is None:
+        answer = input(f"{choices}: ")
+
+        try:
+            pos = int(answer or "0")
+        except ValueError:
+            logger.error(f"Invalid selection: {answer}.")
+
+    return pos
+
+
+def fetch_bool(message):
+    call(["say", "enter a value"])
+    valid = False
+
+    while not valid:
+        answer = input(f"{message} [Y/n]: ") or "y"
+
+        try:
+            valid = answer.lower() in {"y", "n"}
+        except AttributeError:
+            logger.error(f"Invalid selection: {answer}.")
+
+    return answer

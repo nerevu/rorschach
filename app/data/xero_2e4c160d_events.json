@@ -1,41 +1,5 @@
 [
   {
-    "dateEnteredUtc": "2020-04-01T22:07:42.3006101Z",
-    "dateUtc": "2020-03-16T12:00:00Z",
-    "day": "2020-03-16",
-    "description": "Finalize FTP syncing repo membership",
-    "duration": 24,
-    "projectId": "2e4c160d-a4bf-4eb4-b531-3cae6cfeb2fa",
-    "status": "INVOICED",
-    "taskId": "db0e6752-7c1b-48a2-a411-f22b357ba78c",
-    "timeEntryId": "86783d3a-d359-4973-a133-f122089057f5",
-    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
-  },
-  {
-    "dateEnteredUtc": "2020-04-01T22:07:43.4100639Z",
-    "dateUtc": "2020-03-17T12:00:00Z",
-    "day": "2020-03-17",
-    "description": "update ClozeCart to use billing name",
-    "duration": 35,
-    "projectId": "2e4c160d-a4bf-4eb4-b531-3cae6cfeb2fa",
-    "status": "INVOICED",
-    "taskId": "db0e6752-7c1b-48a2-a411-f22b357ba78c",
-    "timeEntryId": "f6f2ab6f-b575-4098-8e42-178b9b58ee64",
-    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
-  },
-  {
-    "dateEnteredUtc": "2020-04-01T22:07:44.2665971Z",
-    "dateUtc": "2020-03-17T12:00:00Z",
-    "day": "2020-03-17",
-    "description": "GitHub repo administration",
-    "duration": 7,
-    "projectId": "2e4c160d-a4bf-4eb4-b531-3cae6cfeb2fa",
-    "status": "INVOICED",
-    "taskId": "37033e43-1e77-4431-839e-7535da6f5f42",
-    "timeEntryId": "1e361f16-0997-4c19-87fe-be9cebfc975d",
-    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
-  },
-  {
     "dateEnteredUtc": "2020-04-16T03:42:11.3119777Z",
     "dateUtc": "2020-04-06T12:00:00Z",
     "day": "2020-04-06",

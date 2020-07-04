@@ -1,12 +1,7 @@
 [
   {
-    "id": 1339639,
-    "name": "Admin (meetings, time tracking, email, calendar, organizing, paperwork, etc.)",
-    "projectId": 2906312
-  },
-  {
-    "id": 1340560,
-    "name": "Instructing (explaining, wiki documentation, reviewing, etc.)",
+    "id": 1344466,
+    "name": "Networking (social media, meetups, conferences, etc.)",
     "projectId": 2906312
   },
   {
@@ -15,8 +10,13 @@
     "projectId": 2906312
   },
   {
-    "id": 1344466,
-    "name": "Networking (social media, meetups, conferences, etc.)",
+    "id": 1340560,
+    "name": "Instructing (explaining, wiki documentation, reviewing, etc.)",
+    "projectId": 2906312
+  },
+  {
+    "id": 1339639,
+    "name": "Admin (meetings, time tracking, email, calendar, organizing, paperwork, etc.)",
     "projectId": 2906312
   }
 ]

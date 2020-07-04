@@ -24,18 +24,6 @@
     "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
   },
   {
-    "dateEnteredUtc": "2020-04-01T22:02:39.0963948Z",
-    "dateUtc": "2020-03-18T12:00:00Z",
-    "day": "2020-03-18",
-    "description": "coronavirus_IL.csv",
-    "duration": 19,
-    "projectId": "e72ce041-023c-4abf-80e8-c4af054b38ed",
-    "status": "ACTIVE",
-    "taskId": "34ea16e1-e0fa-403f-a69f-57c331f5c063",
-    "timeEntryId": "511c4b72-7d70-4f31-b554-418c0fbaf2f9",
-    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
-  },
-  {
     "dateEnteredUtc": "2020-04-01T22:02:47.3077932Z",
     "dateUtc": "2020-03-19T12:00:00Z",
     "day": "2020-03-19",

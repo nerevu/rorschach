@@ -74,4 +74,5 @@ setup(
         'Operating System :: Microsoft :: Windows',
     ],
     platforms=['MacOS X', 'Windows', 'Linux'],
+    python_requires='>=3.6',
 )

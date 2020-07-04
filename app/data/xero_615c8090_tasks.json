@@ -2,35 +2,35 @@
   {
     "name": "1 Hour Development (Pro-Bono)",
     "projectId": "615c8090-938d-4ee7-8f4e-6ae945920507",
-    "rate.value": 0,
+    "rate.value": 0.0,
     "status": "ACTIVE",
     "taskId": "03c04504-ae82-4f6d-bb97-36b479299cd2"
   },
   {
     "name": "1 Hour Consulting (Pro-bono)",
     "projectId": "615c8090-938d-4ee7-8f4e-6ae945920507",
-    "rate.value": 0,
+    "rate.value": 0.0,
     "status": "ACTIVE",
     "taskId": "bef4ecbf-78ba-41af-b902-da865cc497fa"
   },
   {
     "name": "1 Hour Client Work (Non-Billable)",
     "projectId": "615c8090-938d-4ee7-8f4e-6ae945920507",
-    "rate.value": 0,
+    "rate.value": 0.0,
     "status": "ACTIVE",
     "taskId": "41682eef-2a95-4227-91bb-73d441907df3"
   },
   {
     "name": "1 Hour Internal Work (Non-Billable)",
     "projectId": "615c8090-938d-4ee7-8f4e-6ae945920507",
-    "rate.value": 0,
+    "rate.value": 0.0,
     "status": "ACTIVE",
     "taskId": "892fa5f6-00a4-4b4e-987c-9f80b07e2293"
   },
   {
     "name": "1 Hour Coaching (Pro-Bono)",
     "projectId": "615c8090-938d-4ee7-8f4e-6ae945920507",
-    "rate.value": 0,
+    "rate.value": 0.0,
     "status": "ACTIVE",
     "taskId": "b648b234-f265-4f0b-824d-ac9824c80baf"
   }

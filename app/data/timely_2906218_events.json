@@ -1,1 +1,22 @@
-[]
+[
+  {
+    "billed": true,
+    "day": "2020-04-06",
+    "duration.total_minutes": 9,
+    "id": 170229344,
+    "label_id": 1340560,
+    "note": "Investigating clozecart update",
+    "project.id": 2906218,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-05-20",
+    "duration.total_minutes": 11,
+    "id": 171419685,
+    "label_id": 1340560,
+    "note": "Fullstory script installation support",
+    "project.id": 2906218,
+    "user.id": 933370
+  }
+]

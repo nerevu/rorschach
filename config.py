@@ -16,27 +16,30 @@
 from os import getenv, urandom, path as p
 from datetime import timedelta
 from collections import namedtuple
-from socket import error as SocketError, timeout as SocketTimeout
 
-import requests
 import pygogo as gogo
 
-from pkutils import parse_module
-from meza.process import merge
+from dotenv import load_dotenv
 
 PARENT_DIR = p.abspath(p.dirname(__file__))
 DAYS_PER_MONTH = 30
 
-app = parse_module(p.join(PARENT_DIR, "app", "__init__.py"))
-user = getenv("USER", "user")
+load_dotenv(p.join(PARENT_DIR, ".env"))
+db_env_list = ["DATABASE_URL", "REDIS_URL", "MEMCACHIER_SERVERS", "REDISTOGO_URL"]
 
-__APP_NAME__ = app.__package_name__
-__APP_TITLE__ = app.__title__
-__PROD_SERVER__ = getenv("DATABASE_URL") or getenv("MEMCACHIER_SERVERS")
+__USER__ = "reubano"
+__APP_NAME__ = "timero"
+__PROD_SERVER__ = any(map(getenv, db_env_list))
+__DEF_HOST__ = "127.0.0.1"
+__DEF_REDIS_PORT__ = 6379
+__DEF_REDIS_HOST__ = getenv("REDIS_PORT_6379_TCP_ADDR", __DEF_HOST__)
+__DEF_REDIS_URL__ = "redis://{}:{}".format(__DEF_REDIS_HOST__, __DEF_REDIS_PORT__)
+
 __STAG_SERVER__ = getenv("STAGE")
 __END__ = "-stage" if __STAG_SERVER__ else ""
 __SUB_DOMAIN__ = f"{__APP_NAME__}{__END__}"
-
+__AUTHOR__ = "Reuben Cummings"
+__AUTHOR_EMAIL__ = "rcummings@nerevu.com"
 
 Admin = namedtuple("Admin", ["name", "email"])
 get_path = lambda name: f"file://{p.join(PARENT_DIR, 'data', name)}"
@@ -63,15 +66,15 @@ class Config(object):
 
     # see http://bootswatch.com/3/ for available swatches
     FLASK_ADMIN_SWATCH = "cerulean"
-    ADMIN = Admin(app.__author__, app.__email__)
+    ADMIN = Admin(__AUTHOR__, __AUTHOR_EMAIL__)
     ADMINS = frozenset([ADMIN.email])
     HOST = "127.0.0.1"
 
     # These don't change
     ROUTE_DEBOUNCE = get_seconds(5)
-    ROUTE_TIMEOUT = get_seconds(hours=3)
+    ROUTE_TIMEOUT = get_seconds(0)
     SET_TIMEOUT = get_seconds(days=30)
-    REPORT_MONTHS = 1
+    REPORT_MONTHS = 3
     LRU_CACHE_SIZE = 128
     REPORT_DAYS = REPORT_MONTHS * DAYS_PER_MONTH
     SEND_FILE_MAX_AGE_DEFAULT = ROUTE_TIMEOUT
@@ -79,6 +82,17 @@ class Config(object):
     API_URL_PREFIX = "/v1"
     SECRET_KEY = getenv("TIMERO_SECRET_KEY", urandom(24))
     CHROME_DRIVER_VERSIONS = [None] + list(range(81, 77, -1))
+    API_PREFIXES = ["TIMELY", "XERO"]
+    KEY_WHITELIST = {
+        "CHUNK_SIZE",
+        "ROW_LIMIT",
+        "ERR_LIMIT",
+        "WEBHOOKS",
+    }
+
+    # Variables warnings
+    REQUIRED_SETTINGS = []
+    REQUIRED_PROD_SETTINGS = []
 
     # https://app.timelyapp.com/777870/oauth_applications
     TIMELY_ACCOUNT_ID = "777870"
@@ -88,26 +102,32 @@ class Config(object):
     TIMELY_AUTHORIZATION_BASE_URL = f"{TIMELY_API_BASE_URL}/oauth/authorize"
     TIMELY_TOKEN_URL = f"{TIMELY_API_BASE_URL}/oauth/token"
     TIMELY_REFRESH_URL = TIMELY_TOKEN_URL
-    TIMELY_USERNAME = getenv('TIMELY_USERNAME')
-    TIMELY_PASSWORD = getenv('TIMELY_PASSWORD')
+    TIMELY_USERNAME = getenv("TIMELY_USERNAME")
+    TIMELY_PASSWORD = getenv("TIMELY_PASSWORD")
 
     # https://developer.xero.com/myapps/
     XERO_API_BASE_URL = "https://api.xero.com"
     XERO_OAUTH_VERSION = 2
-    XERO_USERNAME = getenv('XERO_USERNAME')
-    XERO_PASSWORD = getenv('XERO_PASSWORD')
+    XERO_USERNAME = getenv("XERO_USERNAME")
+    XERO_PASSWORD = getenv("XERO_PASSWORD")
 
     # oauth2
     XERO_CLIENT_ID = getenv("XERO_CLIENT_ID")
     XERO_SECRET = getenv("XERO_SECRET")
     XERO_AUTHORIZATION_BASE_URL = "https://login.xero.com/identity/connect/authorize"
     XERO_TOKEN_URL = "https://identity.xero.com/connect/token"
+    XERO_API_DOMAIN = "projects"
     XERO_REFRESH_URL = XERO_TOKEN_URL
     # XERO_AUTHENTICATE_REFRESH = False
     XERO_SCOPES = [
-        "projects", "offline_access", "accounting.transactions",
-        "accounting.settings", "accounting.contacts", "accounting.attachments",
-        "files", "assets"
+        "projects",
+        "offline_access",
+        "accounting.transactions",
+        "accounting.settings",
+        "accounting.contacts",
+        "accounting.attachments",
+        "files",
+        "assets",
     ]
 
     # oauth1
@@ -116,6 +136,15 @@ class Config(object):
     XERO_REQUEST_URL = f"{XERO_API_BASE_URL}/oauth/RequestToken"
     XERO_AUTHORIZATION_BASE_URL_V1 = f"{XERO_API_BASE_URL}/oauth/Authorize"
     XERO_TOKEN_URL_V1 = f"{XERO_API_BASE_URL}/oauth/AccessToken"
+
+    # RQ
+    REQUIRED_PROD_SETTINGS += ["RQ_DASHBOARD_USERNAME", "RQ_DASHBOARD_PASSWORD"]
+    RQ_DASHBOARD_REDIS_URL = (
+        getenv("REDIS_URL") or getenv("REDISTOGO_URL") or __DEF_REDIS_URL__
+    )
+    RQ_DASHBOARD_USERNAME = getenv("RQ_DASHBOARD_USERNAME")
+    RQ_DASHBOARD_PASSWORD = getenv("RQ_DASHBOARD_PASSWORD")
+    RQ_DASHBOARD_DEBUG = False
 
     # Change based on mode
     TIMELY_REDIRECT_URI = "urn:ietf:wg:oauth:2.0:oob"
@@ -134,7 +163,7 @@ class Production(Config):
     #       or waitress https://github.com/etianen/django-herokuapp/issues/9
     #       test with slowloris https://github.com/gkbrk/slowloris
     #       look into preboot https://devcenter.heroku.com/articles/preboot
-    defaultdb = f"postgres://{user}@localhost/{__APP_NAME__.replace('-','_')}"
+    defaultdb = f"postgres://{__USER__}@{__DEF_HOST__}/{__APP_NAME__.replace('-','_')}"
     SQLALCHEMY_DATABASE_URI = getenv("DATABASE_URL", defaultdb)
 
     # max 20 connections per dyno spread over 4 workers
@@ -145,7 +174,15 @@ class Production(Config):
 
     if __PROD_SERVER__:
         TALISMAN = True
-        TALISMAN_PERMANENT = True
+        TALISMAN_FORCE_HTTPS_PERMANENT = True
+
+        # https://stackoverflow.com/a/18428346/408556
+        # https://github.com/Parallels/rq-dashboard/issues/328
+        TALISMAN_CONTENT_SECURITY_POLICY = {
+            "default-src": "'self'",
+            "script-src": "'self' 'unsafe-inline' 'unsafe-eval'",
+            "style-src": "'self' 'unsafe-inline'",
+        }
 
     HOST = "0.0.0.0"
 
@@ -175,14 +212,15 @@ class Custom(Production):
     )
 
     if __PROD_SERVER__:
-        TALISMAN_SUBDOMAINS = True
         SERVER_NAME = f"{__SUB_DOMAIN__}.{DOMAIN}"
         logger.info(f"SERVER_NAME is {SERVER_NAME}")
 
 
 class Development(Config):
     base = "sqlite:///{}?check_same_thread=False"
+    ENV = "development"
     SQLALCHEMY_DATABASE_URI = base.format(p.join(PARENT_DIR, "app.db"))
+    RQ_DASHBOARD_DEBUG = True
     DEBUG = True
     DEBUG_MEMCACHE = False
     DEBUG_QB_CLIENT = False
@@ -195,12 +233,16 @@ class Development(Config):
 
 class Ngrok(Development):
     # Xero localhost callbacks work fine
+    XERO_REDIRECT_URI = (
+        f"https://nerevu-api.ngrok.io{Config.API_URL_PREFIX}/xero-callback"
+    )
     TIMELY_REDIRECT_URI = (
         f"https://nerevu-api.ngrok.io{Config.API_URL_PREFIX}/timely-callback"
     )
 
 
 class Test(Config):
+    ENV = "development"
     SQLALCHEMY_DATABASE_URI = "sqlite:///:memory:"
     DEBUG = True
     DEBUG_MEMCACHE = False

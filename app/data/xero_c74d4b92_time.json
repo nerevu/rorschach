@@ -1,0 +1,38 @@
+[
+  {
+    "dateEnteredUtc": "2020-06-25T16:28:19.7140014Z",
+    "dateUtc": "2020-04-22T12:00:00Z",
+    "day": "2020-04-22",
+    "description": "Handshake • OmniFocus • VirtualAssistant • MIT Career Advising &…",
+    "duration": 69,
+    "projectId": "c74d4b92-4a5c-4301-80ac-a601593b41ba",
+    "status": "ACTIVE",
+    "taskId": "c78b97dd-f2ba-41a3-888d-43e8677fdc31",
+    "timeEntryId": "fbb891c9-df29-4fdd-aed3-943e24185675",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  },
+  {
+    "dateEnteredUtc": "2020-06-25T16:28:28.2170492Z",
+    "dateUtc": "2020-04-23T12:00:00Z",
+    "day": "2020-04-23",
+    "description": "Eric Woodson Employment Agreement - Nerevu.pages • Eric Woodson …",
+    "duration": 160,
+    "projectId": "c74d4b92-4a5c-4301-80ac-a601593b41ba",
+    "status": "ACTIVE",
+    "taskId": "c78b97dd-f2ba-41a3-888d-43e8677fdc31",
+    "timeEntryId": "b60358a3-c681-4db5-ae14-ddb040be0d3f",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  },
+  {
+    "dateEnteredUtc": "2020-06-26T15:24:39.9051333Z",
+    "dateUtc": "2020-05-03T12:00:00Z",
+    "day": "2020-05-03",
+    "description": "nerevu/handbook",
+    "duration": 18,
+    "projectId": "c74d4b92-4a5c-4301-80ac-a601593b41ba",
+    "status": "ACTIVE",
+    "taskId": "c78b97dd-f2ba-41a3-888d-43e8677fdc31",
+    "timeEntryId": "2363225c-dcda-49ee-8f9a-f0e0c3bad507",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  }
+]

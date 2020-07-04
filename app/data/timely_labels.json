@@ -1,92 +1,92 @@
-{
-  "1339636": {
-    "billable": false,
-    "id": 1339636,
-    "name": "R&D (creating new products, services, frameworks, libraries, tools, processes, etc.)"
-  },
-  "1339639": {
-    "billable": false,
-    "id": 1339639,
-    "name": "Admin (meetings, time tracking, email, calendar, organizing, paperwork, etc.)"
-  },
-  "1339640": {
-    "billable": false,
-    "id": 1339640,
-    "name": "Sales (validating, prospecting, proposals, contracts, etc.)"
-  },
-  "1340560": {
-    "billable": false,
-    "id": 1340560,
-    "name": "Instructing (explaining, wiki documentation, reviewing, etc.)"
-  },
-  "1344431": {
+[
+  {
     "billable": true,
     "id": 1344431,
     "name": "Development (setup, programming, debugging, testing, documentation etc.)"
   },
-  "1344432": {
+  {
     "billable": true,
     "id": 1344432,
     "name": "Maintenance (server upgrades, bug fixes, etc.)"
   },
-  "1344444": {
+  {
     "billable": true,
     "id": 1344444,
     "name": "Design (web, database, spec, etc.)"
   },
-  "1344445": {
+  {
     "billable": true,
     "id": 1344445,
     "name": "Consulting (strategizing, client meetings, presentations, demos, etc.)"
   },
-  "1344447": {
+  {
     "billable": true,
     "id": 1344447,
     "name": "Coaching (leading a: workshop, seminar, coaching session, etc.)"
   },
-  "1344449": {
+  {
     "billable": true,
     "id": 1344449,
     "name": "Research (specific: via blogs, documentation, company sites, etc.)"
   },
-  "1344451": {
+  {
+    "billable": false,
+    "id": 1339636,
+    "name": "R&D (creating new products, services, frameworks, libraries, tools, processes, etc.)"
+  },
+  {
+    "billable": false,
+    "id": 1339639,
+    "name": "Admin (meetings, time tracking, email, calendar, organizing, paperwork, etc.)"
+  },
+  {
+    "billable": false,
+    "id": 1339640,
+    "name": "Sales (validating, prospecting, proposals, contracts, etc.)"
+  },
+  {
+    "billable": false,
+    "id": 1340560,
+    "name": "Instructing (explaining, wiki documentation, reviewing, etc.)"
+  },
+  {
     "billable": false,
     "id": 1344451,
     "name": "Evaluating (selecting internal tools and services)"
   },
-  "1344452": {
+  {
     "billable": false,
     "id": 1344452,
     "name": "Marketing/PR (blogging, social media, etc.)"
   },
-  "1344464": {
+  {
     "billable": false,
     "id": 1344464,
     "name": "Learning (general: via articles, books, tutorials, courses, etc.)"
   },
-  "1344466": {
+  {
     "billable": false,
     "id": 1344466,
     "name": "Networking (social media, meetups, conferences, etc.)"
   },
-  "1344521": {
+  {
     "billable": false,
     "id": 1344521,
     "name": "HR (benefits, contracts, payroll, etc.)"
   },
-  "1344604": {
+  {
     "billable": false,
     "id": 1344604,
     "name": "Misc (doesn't fit elsewhere)"
   },
-  "1344671": {
+  {
     "billable": false,
     "id": 1344671,
     "name": "Finance & Accounting (bookkeeping, budgeting, forecasting, invoicing, etc.)"
   },
-  "1469676": {
+  {
     "billable": false,
     "id": 1469676,
     "name": "Market Research (obvious...)"
   }
-}
+]

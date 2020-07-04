@@ -1,152 +1,162 @@
-{
-  "0d4a1f7f-173f-47e5-98f2-6b37eb4974cf": {
-    "name": "Website Audit",
-    "projectId": "0d4a1f7f-173f-47e5-98f2-6b37eb4974cf",
-    "status": "INPROGRESS"
-  },
-  "132489d0-9094-4da6-a739-ced4d0a1f0c9": {
-    "name": "IPA/AEA Site",
-    "projectId": "132489d0-9094-4da6-a739-ced4d0a1f0c9",
-    "status": "CLOSED"
-  },
-  "13b73b2a-d949-4887-9fc4-fbf4b1c62491": {
-    "name": "Smart Airport",
-    "projectId": "13b73b2a-d949-4887-9fc4-fbf4b1c62491",
-    "status": "INPROGRESS"
-  },
-  "13cec3b6-1cfd-4572-9f4d-3da85bc07a3b": {
-    "name": "Data Update Service",
-    "projectId": "13cec3b6-1cfd-4572-9f4d-3da85bc07a3b",
-    "status": "INPROGRESS"
-  },
-  "15ff819d-6d69-406c-98c5-ed9ab9163779": {
-    "name": "Data Automation",
-    "projectId": "15ff819d-6d69-406c-98c5-ed9ab9163779",
-    "status": "INPROGRESS"
-  },
-  "23be1505-900b-4504-b1fe-cf1b1c7e1d12": {
-    "name": "BOD",
-    "projectId": "23be1505-900b-4504-b1fe-cf1b1c7e1d12",
-    "status": "INPROGRESS"
-  },
-  "2e4c160d-a4bf-4eb4-b531-3cae6cfeb2fa": {
-    "name": "Retainer",
-    "projectId": "2e4c160d-a4bf-4eb4-b531-3cae6cfeb2fa",
-    "status": "INPROGRESS"
-  },
-  "37b69d72-7168-47d4-8a9f-d225fccf8b38": {
-    "name": "GP Data Community",
-    "projectId": "37b69d72-7168-47d4-8a9f-d225fccf8b38",
-    "status": "INPROGRESS"
-  },
-  "3fe4d0ef-b45f-4812-8ca8-9c64f6bd679c": {
-    "name": "NomCom",
-    "projectId": "3fe4d0ef-b45f-4812-8ca8-9c64f6bd679c",
-    "status": "INPROGRESS"
-  },
-  "4487260c-7d80-486f-a18f-7e209301e06c": {
-    "name": "Kazeeki",
-    "projectId": "4487260c-7d80-486f-a18f-7e209301e06c",
-    "status": "INPROGRESS"
-  },
-  "4ae942e8-af62-4318-b569-7476df14cbef": {
-    "name": "Analytics Committee",
-    "projectId": "4ae942e8-af62-4318-b569-7476df14cbef",
-    "status": "INPROGRESS"
-  },
-  "615c8090-938d-4ee7-8f4e-6ae945920507": {
-    "name": "Open Peoria",
-    "projectId": "615c8090-938d-4ee7-8f4e-6ae945920507",
-    "status": "INPROGRESS"
-  },
-  "62859aaa-0b21-4a8c-9009-03f3458a9fe2": {
-    "name": "Smart Cities",
-    "projectId": "62859aaa-0b21-4a8c-9009-03f3458a9fe2",
-    "status": "INPROGRESS"
-  },
-  "69cb6ef7-7886-4172-8112-bbc70e949a9e": {
-    "name": "Invoice/Billing Service",
-    "projectId": "69cb6ef7-7886-4172-8112-bbc70e949a9e",
-    "status": "INPROGRESS"
-  },
-  "6af33309-b00b-4f9c-991f-25f0b4506582": {
-    "name": "TCPUL Website",
-    "projectId": "6af33309-b00b-4f9c-991f-25f0b4506582",
-    "status": "INPROGRESS"
-  },
-  "6bee8c68-9266-40f2-9a4b-3bb03186d322": {
-    "name": "WEI CMS",
-    "projectId": "6bee8c68-9266-40f2-9a4b-3bb03186d322",
-    "status": "INPROGRESS"
-  },
-  "79867896-5504-4215-9a1a-8f9ca45ac7ec": {
-    "name": "Timero",
-    "projectId": "79867896-5504-4215-9a1a-8f9ca45ac7ec",
-    "status": "INPROGRESS"
-  },
-  "7fe1e7c0-24e2-4c26-809f-654f1cbae1f1": {
-    "name": "Company Website",
-    "projectId": "7fe1e7c0-24e2-4c26-809f-654f1cbae1f1",
-    "status": "INPROGRESS"
-  },
-  "803591c3-72af-4475-888f-7c4c50044589": {
+[
+  {
     "name": "DinerDiver",
     "projectId": "803591c3-72af-4475-888f-7c4c50044589",
     "status": "INPROGRESS"
   },
-  "b1d797e3-e54b-4686-b83f-d8ea5a35f1c2": {
+  {
+    "name": "IPA/AEA Site",
+    "projectId": "132489d0-9094-4da6-a739-ced4d0a1f0c9",
+    "status": "CLOSED"
+  },
+  {
     "name": "Commission Dashboard",
     "projectId": "b1d797e3-e54b-4686-b83f-d8ea5a35f1c2",
     "status": "CLOSED"
   },
-  "bf46311b-de69-4480-a173-8a8ba7700db3": {
-    "name": "Incentives Dashboard",
-    "projectId": "bf46311b-de69-4480-a173-8a8ba7700db3",
+  {
+    "name": "Data Automation",
+    "projectId": "15ff819d-6d69-406c-98c5-ed9ab9163779",
     "status": "INPROGRESS"
   },
-  "c74d4b92-4a5c-4301-80ac-a601593b41ba": {
+  {
+    "name": "Open Peoria",
+    "projectId": "615c8090-938d-4ee7-8f4e-6ae945920507",
+    "status": "INPROGRESS"
+  },
+  {
+    "name": "NomCom",
+    "projectId": "3fe4d0ef-b45f-4812-8ca8-9c64f6bd679c",
+    "status": "INPROGRESS"
+  },
+  {
+    "name": "BOD",
+    "projectId": "23be1505-900b-4504-b1fe-cf1b1c7e1d12",
+    "status": "INPROGRESS"
+  },
+  {
+    "name": "Internal",
+    "projectId": "f9d0e04b-f07c-423d-8975-418159180dab",
+    "status": "INPROGRESS"
+  },
+  {
+    "name": "GP Data Community",
+    "projectId": "37b69d72-7168-47d4-8a9f-d225fccf8b38",
+    "status": "INPROGRESS"
+  },
+  {
     "name": "Hiring",
     "projectId": "c74d4b92-4a5c-4301-80ac-a601593b41ba",
     "status": "INPROGRESS"
   },
-  "c7f2aa8e-bf50-4359-8e3e-0721f5cd49bc": {
-    "name": "Company Metrics",
-    "projectId": "c7f2aa8e-bf50-4359-8e3e-0721f5cd49bc",
-    "status": "INPROGRESS"
-  },
-  "c8b18830-fed0-4979-8c42-6619c4b6b67c": {
+  {
     "name": "Onboarding",
     "projectId": "c8b18830-fed0-4979-8c42-6619c4b6b67c",
     "status": "INPROGRESS"
   },
-  "d2812acb-40dc-4ed2-8e83-e105ef21b9ef": {
-    "name": "Workforce Initiative Website",
+  {
+    "name": "Analytics Committee",
+    "projectId": "4ae942e8-af62-4318-b569-7476df14cbef",
+    "status": "INPROGRESS"
+  },
+  {
+    "name": "Invoice/Billing Service",
+    "projectId": "69cb6ef7-7886-4172-8112-bbc70e949a9e",
+    "status": "INPROGRESS"
+  },
+  {
+    "name": "Company Website",
+    "projectId": "7fe1e7c0-24e2-4c26-809f-654f1cbae1f1",
+    "status": "INPROGRESS"
+  },
+  {
+    "name": "Smart Cities",
+    "projectId": "62859aaa-0b21-4a8c-9009-03f3458a9fe2",
+    "status": "CLOSED"
+  },
+  {
+    "name": "Retainer",
+    "projectId": "2e4c160d-a4bf-4eb4-b531-3cae6cfeb2fa",
+    "status": "INPROGRESS"
+  },
+  {
+    "name": "Timero",
+    "projectId": "79867896-5504-4215-9a1a-8f9ca45ac7ec",
+    "status": "INPROGRESS"
+  },
+  {
+    "name": "Smart Airport",
+    "projectId": "13b73b2a-d949-4887-9fc4-fbf4b1c62491",
+    "status": "INPROGRESS"
+  },
+  {
+    "name": "Company Metrics",
+    "projectId": "c7f2aa8e-bf50-4359-8e3e-0721f5cd49bc",
+    "status": "INPROGRESS"
+  },
+  {
+    "name": "Website Audit",
+    "projectId": "0d4a1f7f-173f-47e5-98f2-6b37eb4974cf",
+    "status": "CLOSED"
+  },
+  {
+    "name": "WEI CMS",
+    "projectId": "6bee8c68-9266-40f2-9a4b-3bb03186d322",
+    "status": "CLOSED"
+  },
+  {
+    "name": "Workforce Initiative (WEI) Website",
     "projectId": "d2812acb-40dc-4ed2-8e83-e105ef21b9ef",
     "status": "INPROGRESS"
   },
-  "da71537a-8806-4b4b-b3a1-6b470f52dd7e": {
+  {
+    "name": "Incentives Dashboard",
+    "projectId": "bf46311b-de69-4480-a173-8a8ba7700db3",
+    "status": "CLOSED"
+  },
+  {
     "name": "GDPR Policy",
     "projectId": "da71537a-8806-4b4b-b3a1-6b470f52dd7e",
+    "status": "CLOSED"
+  },
+  {
+    "name": "Data Update Service",
+    "projectId": "13cec3b6-1cfd-4572-9f4d-3da85bc07a3b",
     "status": "INPROGRESS"
   },
-  "e72ce041-023c-4abf-80e8-c4af054b38ed": {
+  {
+    "name": "Calendar Service",
+    "projectId": "ebf98c35-4d4b-41c6-b717-08afb9243b03",
+    "status": "CLOSED"
+  },
+  {
+    "name": "TCPUL Website",
+    "projectId": "6af33309-b00b-4f9c-991f-25f0b4506582",
+    "status": "INPROGRESS"
+  },
+  {
+    "name": "Kazeeki",
+    "projectId": "4487260c-7d80-486f-a18f-7e209301e06c",
+    "status": "INPROGRESS"
+  },
+  {
+    "name": "Sitation Dashboard",
+    "projectId": "ed071320-fbcb-465d-8066-324cae235718",
+    "status": "CLOSED"
+  },
+  {
     "name": "COVID-19",
     "projectId": "e72ce041-023c-4abf-80e8-c4af054b38ed",
     "status": "INPROGRESS"
   },
-  "ebf98c35-4d4b-41c6-b717-08afb9243b03": {
-    "name": "Calendar Service",
-    "projectId": "ebf98c35-4d4b-41c6-b717-08afb9243b03",
+  {
+    "name": "Dashboard Service",
+    "projectId": "7c147cbf-4f92-43e4-bcc2-d32dbf48fed3",
     "status": "INPROGRESS"
   },
-  "ed071320-fbcb-465d-8066-324cae235718": {
-    "name": "Sitation Dashboard",
-    "projectId": "ed071320-fbcb-465d-8066-324cae235718",
-    "status": "INPROGRESS"
-  },
-  "f9d0e04b-f07c-423d-8975-418159180dab": {
-    "name": "Internal",
-    "projectId": "f9d0e04b-f07c-423d-8975-418159180dab",
+  {
+    "name": "R&D",
+    "projectId": "c799cd2f-9371-4917-bde2-a8981385be34",
     "status": "INPROGRESS"
   }
-}
+]

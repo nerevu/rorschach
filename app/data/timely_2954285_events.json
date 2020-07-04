@@ -1,1 +1,22 @@
-[]
+[
+  {
+    "billed": true,
+    "day": "2020-04-24",
+    "duration.total_minutes": 202,
+    "id": 170622383,
+    "label_id": 1344432,
+    "note": "Sublime Text • Fork • Terminal • https://nerevu-api.ngrok.io/v1/realtime_data • https://nerevu-api.ngrok.io/v1/status • Heroku • OmniFocus • Dash • 127.0.0.1:5000/v1 • QuickBooks App Store",
+    "project.id": 2954285,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-05-06",
+    "duration.total_minutes": 100,
+    "id": 170886546,
+    "label_id": 1344432,
+    "note": "Fixing authentication errors",
+    "project.id": 2954285,
+    "user.id": 933370
+  }
+]

@@ -3,176 +3,215 @@
 # vim: sw=4:ts=4:expandtab
 
 """ A script to manage development tasks """
-from os import path as p
+import sys
+
+from os import path as p, getenv, environ
 from subprocess import call, check_call, CalledProcessError
-from urllib.parse import urlsplit, urlencode, parse_qs, urlparse
-from datetime import datetime as dt, timedelta
+from urllib.parse import urlparse
 from itertools import count, chain
-from json import load, dump
 from json.decoder import JSONDecodeError
-from pathlib import Path
 from sys import exit
+from traceback import print_exception
 
 import pygogo as gogo
+import click
 
 from flask import current_app as app
-from flask_script import Server, Manager
-from requests.exceptions import ConnectionError
+from click import Choice
+from flask.cli import FlaskGroup, pass_script_info
+from flask.config import Config
 
-from app import create_app, cache, services
+from config import __APP_NAME__, __AUTHOR_EMAIL__
+
+from app import create_app, services
+from app.helpers import configure
+from app.authclient import get_auth_client, get_response
+from app.routes.auth import store as _store
+
 from app.api import (
-    sync_results_p,
-    timely_users_p,
-    timely_events_p,
-    timely_projects_p,
-    timely_tasks_p,
-    xero_users_p,
-    xero_projects_p,
-    projects_p,
-    users_p,
-    tasks_p,
-    HEADERS,
-    get_auth_client,
-    get_realtime_response,
+    Contacts,
+    Inventory,
+    Projects,
+    ProjectTasks,
+    ProjectTime,
+    Tasks,
+    Time,
+    Users,
 )
 
-from app.utils import load_path
-
-BASEDIR = p.dirname(__file__)
-DEF_PORT = 5000
-
-manager = Manager(create_app)
-manager.add_option("-m", "--cfgmode", dest="config_mode", default="Development")
-manager.add_option("-f", "--cfgfile", dest="config_file", type=p.abspath)
-manager.main = manager.run  # Needed to do `manage <command>` from the cli
+# collections
+timely_users = Users("TIMELY", dictify=True, dry_run=True)
+timely_events = Time("TIMELY", dictify=True, dry_run=True)
+timely_projects = Projects("TIMELY", dictify=True, dry_run=True)
+timely_tasks = Tasks("TIMELY", dictify=True, dry_run=True)
+timely_project_tasks = ProjectTasks("TIMELY", dictify=True, dry_run=True)
+xero_project_tasks = ProjectTasks("XERO", dictify=True, dry_run=True)
+xero_project_time = ProjectTime("XERO", dictify=True, dry_run=True)
 
 # data
-timely_users = load_path(timely_users_p, {})
-timely_events = load_path(timely_events_p, {})
-timely_projects = load_path(timely_projects_p, {})
-timely_tasks = load_path(timely_tasks_p, {})
-xero_users = load_path(xero_users_p, {})
-xero_projects = load_path(xero_projects_p, {})
 
-# mappings
-projects = load(projects_p.open())
-users = load(users_p.open())
-tasks = load(tasks_p.open())
-
-PRUNINGS = {
-    "users": {
-        "mapping": users,
-        "save": users_p,
-        "timely": timely_users,
-        "xero": xero_users,
-    },
-    "projects": {
-        "mapping": projects,
-        "save": projects_p,
-        "timely": timely_projects,
-        "xero": xero_projects,
-    },
-    "tasks": {"mapping": tasks, "save": tasks_p},
+BASEDIR = p.dirname(__file__)
+DEF_WHERE = ["app", "manage.py", "config.py"]
+COLLECTIONS = {
+    "users": Users,
+    "tasks": Tasks,
+    "contacts": Contacts,
+    "inventory": Inventory,
+    "time": Time,
+    "projects": Projects,
+    "projecttasks": ProjectTasks,
+    "projecttime": ProjectTime,
 }
 
-logger = gogo.Gogo(__name__, monolog=True).logger
-get_logger = lambda ok: logger.info if ok else logger.error
+hdlr_kwargs = {
+    "subject": f"{__APP_NAME__} notification",
+    "recipients": [__AUTHOR_EMAIL__],
+}
+
+# mappings
+sync_results = xero_project_time.results
+added_events = set()
+skipped_events = set()
+patched_events = set()
+unpatched_events = set()
+
+if getenv("MAILGUN_SMTP_PASSWORD"):
+    # NOTE: Sandbox domains are restricted to authorized recipients only.
+    # https://help.mailgun.com/hc/en-us/articles/217531258
+    def_username = f"postmaster@{getenv('MAILGUN_DOMAIN')}"
+    mailgun_kwargs = {
+        "host": getenv("MAILGUN_SMTP_SERVER", "smtp.mailgun.org"),
+        "port": getenv("MAILGUN_SMTP_PORT", 587),
+        "sender": f"notifications@{getenv('MAILGUN_DOMAIN')}",
+        "username": getenv("MAILGUN_SMTP_LOGIN", def_username),
+        "password": getenv("MAILGUN_SMTP_PASSWORD"),
+    }
+
+    hdlr_kwargs.update(mailgun_kwargs)
+
+high_hdlr = gogo.handlers.email_hdlr(**hdlr_kwargs)
+logger = gogo.Gogo(__name__, high_hdlr=high_hdlr).logger
 
 
-def log_resp(r, prefix):
-    msg = r.json().get("message")
-    message = "{}{}".format(prefix, msg) if prefix else msg
+def save_results(dry_run=False, **kwargs):
+    if not dry_run:
+        logger.debug("Saving results…\n")
+        all_events = set(
+            chain(added_events, skipped_events, patched_events, unpatched_events)
+        )
 
-    if message:
-        get_logger(r.ok)(message)
+        for event in all_events:
+            sync_results[str(event)] = {
+                "added": event in added_events,
+                "patched": event in patched_events,
+            }
 
-
-def notify_or_log(ok, message):
-    get_logger(ok)(message)
-
-
-@manager.option("-h", "--host", help="The server host")
-@manager.option("-p", "--port", help="The server port")
-@manager.option("-t", "--threaded", help="Run multiple threads", action="store_true")
-def runserver(**kwargs):
-    # Overriding the built-in `runserver` behavior
-    """Runs the flask development server"""
-    with app.app_context():
-        kwargs["threaded"] = app.config["PARALLEL"]
-
-        if app.config.get("SERVER"):
-            parsed = urlsplit(app.config["SERVER"])
-            host, port = parsed.netloc, parsed.port or DEF_PORT
-        else:
-            host, port = app.config["HOST"], DEF_PORT
-
-        kwargs.setdefault("host", host)
-        kwargs.setdefault("port", port)
-
-        server = Server(**kwargs)
-        args = [
-            app,
-            server.host,
-            server.port,
-            server.use_debugger,
-            server.use_reloader,
-            server.threaded,
-            server.processes,
-            server.passthrough_errors,
-        ]
-
-        server(*args)
+        xero_project_time.results = sync_results
 
 
-@manager.option("-h", "--host", help="The server host")
-@manager.option("-p", "--port", help="The server port")
-@manager.option("-t", "--threaded", help="Run multiple threads", action="store_true")
-def serve(**kwargs):
-    # Alias for `runserver`
-    """Runs the flask development server"""
-    runserver(**kwargs)
+def info(_type, value, tb):
+    print_exception(_type, value, tb)
+    save_results()
 
 
-@manager.option("-f", "--file", help="The mapping file to prune", default="users")
-def prune(**kwargs):
-    """Remove duplicated and outdated mapping entries"""
-    item_names = ["xero", "timely"]
-    checking_name = item_names[0]
+sys.excepthook = info
+
+
+def log(message=None, ok=True, r=None, **kwargs):
+    if r is not None:
+        ok = r.ok
+
+        try:
+            message = r.json().get("message")
+        except JSONDecodeError:
+            message = r.text
+
+    if message and ok:
+        logger.info(message)
+    elif message:
+        try:
+            logger.error(message)
+        except ConnectionRefusedError:
+            logger.info("Connect refused. Make sure an SMTP server is running.")
+            logger.info("Try running `sudo postfix start`.")
+            logger.info(message)
+
+
+@click.group(cls=FlaskGroup, create_app=create_app)
+@click.option("-m", "--config-mode", default="Development")
+@click.option("-f", "--config-file", type=p.abspath)
+@click.option("-e", "--config-envvar")
+@pass_script_info
+def manager(script_info, **kwargs):
+    flask_config = Config(BASEDIR)
+    configure(flask_config, **kwargs)
+    script_info.flask_config = flask_config
+
+    if flask_config.get("ENV"):
+        environ["FLASK_ENV"] = flask_config["ENV"]
+
+    if flask_config.get("DEBUG"):
+        environ["FLASK_DEBUG"] = str(flask_config["DEBUG"]).lower()
+
+
+@manager.command()
+@click.pass_context
+def serve(ctx):
+    """Check staged changes for lint errors"""
+    print("Deprecated. Use `manage run` instead.")
+    # manager.get_command(ctx, 'run')()
+
+
+@manager.command()
+@click.pass_context
+def help(ctx):
+    """Check staged changes for lint errors"""
+    commands = ", ".join(manager.list_commands(ctx))
+    print(f"Usage: manage <command> [OPTIONS]")
+    print(f"commands: {commands}")
+
+
+@manager.command()
+@click.option(
+    "-c",
+    "--collection",
+    type=Choice(COLLECTIONS, case_sensitive=False),
+    default="users",
+)
+def prune(collection, **kwargs):
+    """Remove duplicated and outdated mappings entries"""
     added_names = set()
-    _file = kwargs["file"]
-    is_tasks = _file == "tasks"
-    pruning = PRUNINGS[_file]
+    item_names = ["XERO", "TIMELY"]
+    is_tasks = collection == "projecttasks"
+    Collection = COLLECTIONS[collection.lower()]
+    mappings = Collection("XERO", dictify=True, dry_run=True).mappings
 
     def gen_items():
         # if there are dupes, keep the most recent
-        for item in reversed(pruning["mapping"]):
+        for item in reversed(mappings):
             if is_tasks:
                 timely_project_id = str(item["timely"]["project"])
-                timely_task_id = str(item["timely"]["task"])
-                timely_proj_tasks_p = Path(
-                    f"app/data/timely_{timely_project_id}_tasks.json"
-                )
-                timely_proj_tasks = load_path(timely_proj_tasks_p, [])
-                timely_task_ids = {str(t["id"]) for t in timely_proj_tasks}
-                has_timely_task = timely_task_id in timely_task_ids
+                timely_task_id = int(item["timely"]["task"])
+                timely_project_tasks.rid = timely_project_id
+                has_timely_task = timely_task_id in timely_project_tasks.data
 
                 if not has_timely_task:
                     continue
 
                 xero_project_id = item["xero"]["project"]
-                trunc_id = xero_project_id.split("-")[0]
-                xero_task_id = item["xero"]["task"]
-                xero_proj_tasks_p = Path(f"app/data/xero_{trunc_id}_tasks.json")
-                xero_proj_tasks = load_path(xero_proj_tasks_p, [])
-                xero_task_ids = {t["taskId"] for t in xero_proj_tasks}
-                valid = xero_task_id in xero_task_ids
+                xero_project_tasks.rid = xero_project_id
+                xero_task_ids = {t["taskId"] for t in xero_project_tasks}
+                valid = item["xero"]["task"] in xero_task_ids
             else:
-                valid = all(
-                    str(item[name]) in str(pruning[name]) for name in item_names
-                )
+                for name in item_names:
+                    data = Collection(name, dictify=True, dry_run=True).data
+                    valid = str(item[name.lower()]) in data
+
+                    if not valid:
+                        continue
 
             if valid:
-                to_check = item[checking_name]
+                to_check = item["xero"]
 
                 if is_tasks:
                     to_check = (to_check["task"], to_check["project"])
@@ -181,15 +220,35 @@ def prune(**kwargs):
                     added_names.add(to_check)
                     yield item
 
-    results = list(reversed(list(gen_items())))
-    dump(results, pruning["save"].open(mode="w"), indent=2)
+    mappings = list(reversed(list(gen_items())))
 
 
-@manager.option("-m", "--method", help="The HTTP method", default="get")
-@manager.option("-r", "--resource", help="The API Resource", default="time")
-def test(method=None, resource=None, **kwargs):
-    project_id = "f9d0e04b-f07c-423d-8975-418159180dab"
+@manager.command()
+@click.option(
+    "-p",
+    "--prefix",
+    type=Choice(["timely", "xero"], case_sensitive=False),
+    default="xero",
+)
+@click.option(
+    "-c",
+    "--collection",
+    type=Choice(COLLECTIONS, case_sensitive=False),
+    default="users",
+)
+@click.option("-i", "--rid", help="resource ID")
+@click.option("-d", "--dictify/--no-dictify", default=False)
+def store(prefix, collection, **kwargs):
+    """Save user info to cache"""
+    Collection = COLLECTIONS[collection.lower()]
+    _store(prefix.upper(), Collection, **kwargs)
 
+
+@manager.command()
+@click.option("-m", "--method", help="The HTTP method", default="get")
+@click.option("-p", "--project-id", help="The Xero Project ID", default="f9d0e04b-f07c-423d-8975-418159180dab")
+@click.option("-r", "--resource", help="The API Resource", default="time")
+def test_oauth(method=None, resource=None, project_id=None, **kwargs):
     time_data = {
         "userId": "3f7626f2-5064-4499-a96c-e73653e5aa01",
         "taskId": "ed9d0041-3680-4011-a24a-a20e72210864",
@@ -201,7 +260,6 @@ def test(method=None, resource=None, **kwargs):
     task_data = {
         "name": "Deep Fryer",
         "rate": {"currency": "USD", "value": 99.99},
-        "isChargeable": True,
         "chargeType": "TIME",
         "estimateMinutes": 120,
     }
@@ -241,10 +299,10 @@ def test(method=None, resource=None, **kwargs):
     }
 
     PAYLOAD = {
-        (1, "post", "projects"): "data",
+        (1, "post", "projects"): "json",
         (1, "post", "api"): "json",
-        (2, "post", "projects"): "data",
-        (2, "post", "api"): "data",
+        (2, "post", "projects"): "json",
+        (2, "post", "api"): "json",
     }
 
     URLS = {
@@ -264,7 +322,7 @@ def test(method=None, resource=None, **kwargs):
     if method == "post":
         kwargs[PAYLOAD[key]] = data
 
-    response = get_realtime_response(url, xero, **kwargs)
+    response = get_response(url, xero, **kwargs)
 
     if response.get("message"):
         print(response["message"])
@@ -273,22 +331,17 @@ def test(method=None, resource=None, **kwargs):
         print(response["result"])
 
 
-@manager.option("-p", "--project-id", help="The Timely Project ID", default=2389295)
-@manager.option(
+@manager.command()
+@click.option("-p", "--project-id", help="The Timely Project ID", default=2389295)
+@click.option(
     "-s", "--start", help="The Timely event start position", type=int, default=0
 )
-@manager.option("-e", "--end", help="The Timely event end position", type=int)
-@manager.option("-d", "--dry-run", help="Perform a dry run", action="store_true")
+@click.option("-e", "--end", help="The Timely event end position", type=int)
+@click.option("-d", "--dry-run/--no-dry-run", help="Perform a dry run", default=False)
 def sync(**kwargs):
     """Sync Timely events with Xero time entries"""
-    sync_results = load(sync_results_p.open())
-    added_events = set()
-    skipped_events = set()
-    patched_events = set()
-    unpatched_events = set()
-
-    logger.info(f"Project ID {kwargs['project_id']}")
-    logger.info("——————————————————")
+    logger.info(f"\nTimely Project {kwargs['project_id']}")
+    logger.info("——————————————————————")
 
     if kwargs["end"]:
         _range = range(kwargs["start"], kwargs["end"])
@@ -298,17 +351,24 @@ def sync(**kwargs):
     logger.info("Adding events…")
     for pos in _range:
         result = services.add_xero_time(position=pos, **kwargs)
+        event_id = result.get("event_id")
 
-        if result["eof"]:
-            break
-        elif result["ok"] or result["conflict"]:
-            added_events.add(str(result["event_id"]))
-            message = result["message"] or f"Added event {result['event_id']}"
+        if result["ok"] or result["conflict"]:
+            added_events.add(str(event_id))
+            message = result.get("message") or f"Added Timely event {event_id}"
             logger.info(f"- {message}")
-        elif result.get("event_id"):
-            skipped_events.add(result["event_id"])
-            message = result["message"] or "Unknown error!"
+        else:
+            message = result.get("message") or "Unknown error!"
+
+            if result["eof"]:
+                break
+            elif event_id:
+                skipped_events.add(event_id)
+
             logger.info(f"- {message}")
+
+            if result["status_code"] == 401:
+                exit(1)
 
     num_added_events = len(added_events)
     num_skipped_events = len(skipped_events)
@@ -319,68 +379,68 @@ def sync(**kwargs):
 
     for event_id in added_events:
         result = services.mark_billed(event_id, **kwargs)
+        message = result.get("message")
 
         if result["ok"] or result["conflict"]:
             patched_events.add(event_id)
-            event = timely_events.get(event_id)
+            event = timely_events.extract_model(int(event_id))
 
-            if result["message"]:
-                logger.info(f"- {result['message']}")
+            if message:
+                logger.info(f"- {message}")
             elif event:
-                user_name = timely_users.get(str(event["user.id"]), {}).get(
-                    "name", "Unknown"
-                )
-                project_name = timely_projects.get(str(event["project.id"]), {}).get(
-                    "name", "Unknown"
-                )
-                task = timely_tasks.get(str(event["label_ids[0]"]), {})
-                task_name = task.get("name", "Unknown").split(" ")[0]
+                user_id = int(event["user.id"])
+                project_id = int(event["project.id"])
+                label_id = int(event["label_id"])
+                task = timely_tasks.extract_model(label_id)
+                user_name = timely_users.extract_model(user_id).get("name", "Unknown")
                 event_time = event["duration.total_minutes"]
+                task_name = task.get("name", "Unknown").split(" ")[0]
                 event_day = event["day"]
-                logger.debug(
-                    f"- {user_name} did {event_time}m of {task_name} on {event_day} for {project_name}"
+                project_name = timely_projects.extract_model(project_id).get(
+                    "name", "Unknown"
                 )
+                msg = f"- {user_name} did {event_time}m of {task_name} on {event_day} "
+                msg += f"for {project_name}"
+                logger.debug(msg)
             else:
-                logger.info(
-                    f"- Event {event_id} patched, but not found in {timely_events_p}."
-                )
+                msg = f"- Event {event_id} patched, but not found in "
+                msg += f"{timely_events.data_p}."
+                logger.info(msg)
         else:
             unpatched_events.add(event_id)
-            message = result["message"] or "Unknown error!"
-            logger.info(f"- {message}")
+            logger.info(f"- {message or 'Unknown error!'}")
 
     num_patched_events = len(patched_events)
-    all_events = set(
-        chain(added_events, skipped_events, patched_events, unpatched_events)
-    )
-
-    if not kwargs["dry_run"]:
-        for event in all_events:
-            sync_results[event] = {
-                "added": event in added_events,
-                "patched": event in patched_events,
-            }
 
     logger.info("------------------------------------")
-    logger.info(
-        f"Of {num_total_events} events: {num_added_events} added and {num_patched_events} patched"
-    )
+    msg = f"Of {num_total_events} events: {num_added_events} added and "
+    msg += f"{num_patched_events} patched"
+    logger.info(msg)
     logger.info("------------------------------------")
-    dump(sync_results, sync_results_p.open(mode="w"), indent=2)
-    exit(len(skipped_events) + len(unpatched_events))
+    num_errors = len(skipped_events) + len(unpatched_events)
+    save_results(**kwargs)
+    exit(num_errors)
 
 
-@manager.command
+@manager.command()
 def check():
     """Check staged changes for lint errors"""
     exit(call(p.join(BASEDIR, "helpers", "check-stage")))
 
 
-@manager.option("-w", "--where", help="Modules to check")
+@manager.command()
+@click.option("-w", "--where", help="Requirement file", default=None)
+def test(where):
+    """Run nose tests"""
+    cmd = "nosetests -xvw %s" % where if where else "nosetests -xv"
+    return call(cmd, shell=True)
+
+
+@manager.command()
+@click.option("-w", "--where", help="Modules to check")
 def prettify(where):
     """Prettify code with black"""
-    def_where = ["app", "manage.py", "config.py"]
-    extra = where.split(" ") if where else def_where
+    extra = where.split(" ") if where else DEF_WHERE
 
     try:
         check_call(["black"] + extra)
@@ -388,12 +448,12 @@ def prettify(where):
         exit(e.returncode)
 
 
-@manager.option("-w", "--where", help="Modules to check")
-@manager.option("-s", "--strict", help="Check with pylint", action="store_true")
+@manager.command()
+@click.option("-w", "--where", help="Modules to check")
+@click.option("-s", "--strict/--no-strict", help="Check with pylint", default=False)
 def lint(where, strict):
     """Check style with linters"""
-    def_where = ["app", "tests", "manage.py", "config.py"]
-    extra = where.split(" ") if where else def_where
+    extra = where.split(" ") if where else DEF_WHERE
 
     args = ["pylint", "--rcfile=tests/standard.rc", "-rn", "-fparseable", "app"]
 
@@ -404,14 +464,16 @@ def lint(where, strict):
         exit(e.returncode)
 
 
-@manager.option("-r", "--remote", help="the heroku branch", default="staging")
+@manager.command()
+@click.option("-r", "--remote", help="the heroku branch", default="staging")
 def add_keys(remote):
     """Deploy staging app"""
     cmd = "heroku keys:add ~/.ssh/id_rsa.pub --remote {}"
     check_call(cmd.format(remote).split(" "))
 
 
-@manager.option("-r", "--remote", help="the heroku branch", default="staging")
+@manager.command()
+@click.option("-r", "--remote", help="the heroku branch", default="staging")
 def deploy(remote):
     """Deploy staging app"""
     branch = "master" if remote == "production" else "features"
@@ -419,7 +481,7 @@ def deploy(remote):
     check_call(cmd.format(branch).split(" "))
 
 
-@manager.command
+@manager.command()
 def require():
     """Create requirements.txt"""
     cmd = "pip freeze -l | grep -vxFf dev-requirements.txt "

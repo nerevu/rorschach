@@ -1,1 +1,32 @@
-[]
+[
+  {
+    "billed": true,
+    "day": "2020-04-22",
+    "duration.total_minutes": 69,
+    "id": 170540027,
+    "label_id": 1339639,
+    "note": "Handshake • OmniFocus • VirtualAssistant • MIT Career Advising & Professional Development • KeePassXC",
+    "project.id": 2980115,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-04-23",
+    "duration.total_minutes": 160,
+    "id": 170615633,
+    "label_id": 1344521,
+    "note": "Eric Woodson Employment Agreement - Nerevu.pages • Eric Woodson Employment Offer - Nerevu Data Analyst & Backend Development Intern.pages • Glassdoor • Salary Survey, Salaries, Wages, Compensation Information and Analysis • Google Sheets • Fastmail • Finder • Gusto • Cloze • Mitchell Sotto <> Ner...",
+    "project.id": 2980115,
+    "user.id": 933370
+  },
+  {
+    "billed": true,
+    "day": "2020-05-03",
+    "duration.total_minutes": 18,
+    "id": 170885860,
+    "label_id": 1340560,
+    "note": "nerevu/handbook",
+    "project.id": 2980115,
+    "user.id": 933370
+  }
+]

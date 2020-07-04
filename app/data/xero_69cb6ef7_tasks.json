@@ -2,7 +2,7 @@
   {
     "name": "1 Hour R&D (Non-Billable)",
     "projectId": "69cb6ef7-7886-4172-8112-bbc70e949a9e",
-    "rate.value": 0,
+    "rate.value": 0.0,
     "status": "ACTIVE",
     "taskId": "13c4fce8-fdc4-4c3a-8802-fff77fef1e99"
   }

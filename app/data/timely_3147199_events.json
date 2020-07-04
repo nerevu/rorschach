@@ -1,1 +1,12 @@
-[]
+[
+  {
+    "billed": true,
+    "day": "2020-04-16",
+    "duration.total_minutes": 11,
+    "id": 170483288,
+    "label_id": 1344431,
+    "note": "Fastmail • Finder • Fork • Preview",
+    "project.id": 3147199,
+    "user.id": 933370
+  }
+]

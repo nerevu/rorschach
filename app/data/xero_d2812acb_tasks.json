@@ -2,29 +2,43 @@
   {
     "name": "1 Hour Internal Work (Non-Billable)",
     "projectId": "d2812acb-40dc-4ed2-8e83-e105ef21b9ef",
-    "rate.value": 0,
+    "rate.value": 0.0,
     "status": "ACTIVE",
     "taskId": "7419b30c-6c60-4744-bec2-e97d505cda25"
   },
   {
     "name": "1 Hour Consulting (Partner)",
     "projectId": "d2812acb-40dc-4ed2-8e83-e105ef21b9ef",
-    "rate.value": 0,
+    "rate.value": 0.0,
     "status": "ACTIVE",
     "taskId": "e5581748-4041-4da6-ba3e-b633ac7a802c"
   },
   {
     "name": "1 Hour Client Work (Non-Billable)",
     "projectId": "d2812acb-40dc-4ed2-8e83-e105ef21b9ef",
-    "rate.value": 0,
+    "rate.value": 0.0,
     "status": "ACTIVE",
     "taskId": "b6903106-e326-489a-820c-cd90ae867caf"
   },
   {
     "name": "1 Hour Design (Creative Director)",
     "projectId": "d2812acb-40dc-4ed2-8e83-e105ef21b9ef",
-    "rate.value": 0,
+    "rate.value": 0.0,
     "status": "ACTIVE",
     "taskId": "ac6b630d-55f7-46a7-96e8-538ef175581b"
+  },
+  {
+    "name": "1 Hour Development (Technical Director)",
+    "projectId": "d2812acb-40dc-4ed2-8e83-e105ef21b9ef",
+    "rate.value": 0.0,
+    "status": "ACTIVE",
+    "taskId": "7a304d1e-b7cc-4ec3-a326-aa0d081f74c5"
+  },
+  {
+    "name": "1 Hour R&D (Non-Billable)",
+    "projectId": "d2812acb-40dc-4ed2-8e83-e105ef21b9ef",
+    "rate.value": 0.0,
+    "status": "ACTIVE",
+    "taskId": "e60e4b66-ae0d-454a-91a7-277507973e37"
   }
 ]

@@ -1,10 +1,5 @@
 [
   {
-    "id": 1339636,
-    "name": "R&D (creating new products, services, frameworks, libraries, tools, processes, etc.)",
-    "projectId": 3154983
-  },
-  {
     "id": 1339639,
     "name": "Admin (meetings, time tracking, email, calendar, organizing, paperwork, etc.)",
     "projectId": 3154983
@@ -55,18 +50,8 @@
     "projectId": 3154983
   },
   {
-    "id": 1344466,
-    "name": "Networking (social media, meetups, conferences, etc.)",
-    "projectId": 3154983
-  },
-  {
     "id": 1344604,
     "name": "Misc (doesn't fit elsewhere)",
-    "projectId": 3154983
-  },
-  {
-    "id": 1344671,
-    "name": "Finance & Accounting (bookkeeping, budgeting, forecasting, invoicing, etc.)",
     "projectId": 3154983
   },
   {
