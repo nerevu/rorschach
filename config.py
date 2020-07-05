@@ -94,7 +94,20 @@ class Config(object):
     REQUIRED_PROD_SETTINGS = []
 
     # Authentication
+    DEF_MG_DOMAIN = f"{getenv('MAILGUN_SANDBOX')}.mailgun.org"
     AUTHENTICATION = {
+        "mailgun": {
+            "auth_type": "basic",
+            "basic": {
+                "api_base_url": "https://api.mailgun.net/v3",
+                "username": "api",
+                "password": getenv("MAILGUN_API_KEY"),
+                "domain": getenv("MAILGUN_DOMAIN", DEF_MG_DOMAIN),
+                "address": "820 SW Adams St. Peoria, IL 61602",
+                "company": "Nerevu Gropup, LLC",
+                "list_prefix": "blog",
+            },
+        },
         "gsheets": {
             "auth_type": "service",
             "service": {

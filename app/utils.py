@@ -85,6 +85,8 @@ def responsify(mimetype, status_code=200, indent=2, sort_keys=True, **kwargs):
         content = dumps(kwargs, cls=ft.CustomEncoder, **options)
     elif mimetype.endswith("csv") and kwargs.get("result"):
         content = cv.records2csv(kwargs["result"]).getvalue()
+    elif mimetype.endswith("html") and kwargs.get("html"):
+        content = kwargs["html"]
     else:
         content = ""
 
@@ -387,7 +389,10 @@ def get_links(rules):
 
 
 def parse_kwargs(app):
-    kwargs = {k: parse(v) for k, v in request.args.to_dict().items()}
+    form = request.form or {}
+    args = request.args.to_dict()
+    _kwargs = {**form, **args}
+    kwargs = {k: parse(v) for k, v in _kwargs.items()}
 
     with app.app_context():
         for k, v in app.config.items():
@@ -428,6 +433,14 @@ def check_signature(digest="sha256", signature_header="", webhook_secret="", **k
         is_valid = False
 
     return is_valid
+
+
+def hash_text(**kwargs):
+    return get_hash("{email}:{list}:{secret}".format(**kwargs))
+
+
+def verify(hash="", **kwargs):
+    return hmac.compare_digest(hash, hash_text(**kwargs))
 
 
 def load_path(path, default=None):

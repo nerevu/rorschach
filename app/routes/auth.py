@@ -109,7 +109,7 @@ class BaseView(ProviderMixin, MethodView):
         }
 
         self._dry_run = kwargs.get("dry_run")
-
+        self.ignore_domain = kwargs.get("ignore_domain")
         def_end = date.today()
 
         if self._dry_run:
@@ -512,13 +512,17 @@ class Resource(BaseView):
         client = self.client
         url = client.api_base_url
 
+        if self.domain and not self.ignore_domain:
+            url += f"/{self.domain}"
+
+        if self.is_xero:
+            url += ".xro/2.0"
+
         if self.is_qb:
             # https://developer.intuit.com/app/developer/qbo/docs/api/accounting/report-entities/transactionlist
             url += f"/company/{client.realm_id}/reports"
         if self.is_cloze:
             url += f"/{self.verb}"
-        elif self.is_xero:
-            url += f"/{self.domain}.xro/2.0"
         elif self.is_timely:
             url += f"/{self.client.account_id}"
 

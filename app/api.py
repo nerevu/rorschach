@@ -19,7 +19,7 @@ from app.utils import (
     get_links,
 )
 
-from app.routes import auth, Memoization
+from app.routes import auth, Memoization, subscription
 from app.helpers import get_collection
 from app.providers import xero, aws
 
@@ -83,6 +83,7 @@ method_views = {
     "time": {"collection": "Time", "providers": AUTHENTICATION},
     "projecttasks": {"collection": "ProjectTasks", "providers": AUTHENTICATION},
     "projecttime": {"collection": "ProjectTime", "providers": AUTHENTICATION},
+    "subscription": {"view": subscription.Subscription, "methods": ["GET", "POST"]},
     "invoicehook": {"view": xero.InvoiceHook, "methods": ["GET", "POST"]},
     "distributionhook": {"view": aws.DistributionHook, "methods": ["GET", "POST"]},
 }

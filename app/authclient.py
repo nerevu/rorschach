@@ -8,12 +8,14 @@
 from datetime import timedelta, datetime as dt
 from urllib.parse import urlencode, urlparse, parse_qs, parse_qsl
 from itertools import chain
+from functools import partial
 from json import JSONDecodeError
 from base64 import b64encode
 from pathlib import Path
 
-import pygogo as gogo
 import gspread
+import requests
+import pygogo as gogo
 
 from flask import (
     request,
@@ -435,10 +437,11 @@ class MyAuth1Client(AuthClient):
         self._init_credentials()
 
 
-class MyHeaderAuthClient(AuthClient):
-    def __init__(self, *args, **kwargs):
+class MyBasicAuthClient(AuthClient):
+    def __init__(self, *args, username=None, password=None, **kwargs):
         super().__init__(*args, **kwargs)
         self.auth_type = "basic"
+        self.auth = (username, password)
 
     @property
     def expired(self):
@@ -481,8 +484,10 @@ def get_auth_client(prefix, state=None, **kwargs):
             auth_kwargs["state"] = state
         elif auth_type == "service":
             MyAuthClient = MyServiceAuthClient
+        elif auth_type == "basic":
+            MyAuthClient = MyBasicAuthClient
         else:
-            MyAuthClient = MyHeaderAuthClient
+            logger.error(f"No authentication scheme found matching {auth_type}.")
 
         client = MyAuthClient(prefix, **auth_kwargs)
 
@@ -512,7 +517,7 @@ def get_response(url, client, params=None, **kwargs):
         response = {"message": "Client not authorized.", "status_code": 401}
     elif client.error:
         response = {"message": client.error, "status_code": 500}
-    elif client.oauth_version:
+    elif client.oauth_version or client.auth:
         params = params or {}
         data = kwargs.get("data", {})
         json = kwargs.get("json", {})
@@ -522,6 +527,12 @@ def get_response(url, client, params=None, **kwargs):
         method_headers = client.headers.get(method, {})
         client_headers = {**all_headers, **method_headers}
         headers = {**HEADERS, **def_headers, **client_headers}
+
+        if client.oauth_version:
+            verb = getattr(client.oauth_session, method)
+        else:
+            _verb = getattr(requests, method)
+            verb = partial(_verb, auth=client.auth)
 
         try:
             result = verb(url, params=params, data=data, json=json, headers=headers)
