@@ -108,6 +108,20 @@ class Config(object):
                 "list_prefix": "blog",
             },
         },
+        # https://postmarkapp.com/developer/api/overview
+        "postmark": {
+            "auth_type": "token",
+            "token": {
+                "api_base_url": "https://api.postmarkapp.com",
+                "headers": {
+                    "all": {
+                        "X-Postmark-Server-Token": getenv("POSTMARK_SERVER_TOKEN"),
+                        "X-Postmark-Account-Token": getenv("POSTMARK_ACCOUNT_TOKEN"),
+                        "Content-Type": "application/json",
+                    },
+                },
+            },
+        },
         "gsheets": {
             "auth_type": "service",
             "service": {

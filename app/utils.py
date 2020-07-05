@@ -56,6 +56,12 @@ AUTH_ROUTES = {
     ("status", "GET"): "status",
 }
 
+CTYPES = {
+    "pdf": "application/octet-stream",
+    "jpg": "image/jpeg",
+    "jpeg": "image/jpeg",
+    "txt": "text/plain",
+}
 
 get_hash = lambda text: md5(str(text).encode(ENCODING)).hexdigest()
 

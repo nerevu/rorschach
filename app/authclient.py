@@ -56,6 +56,7 @@ class AuthClient(object):
         self.client_secret = client_secret
         self.access_token = None
         self.refresh_token = None
+        self.auth_type = "other"
         self.oauth_version = kwargs.get("oauth_version")
         self.oauth1 = self.oauth_version == 1
         self.oauth2 = self.oauth_version == 2
@@ -487,7 +488,7 @@ def get_auth_client(prefix, state=None, **kwargs):
         elif auth_type == "basic":
             MyAuthClient = MyBasicAuthClient
         else:
-            logger.error(f"No authentication scheme found matching {auth_type}.")
+            MyAuthClient = AuthClient
 
         client = MyAuthClient(prefix, **auth_kwargs)
 
@@ -527,12 +528,11 @@ def get_response(url, client, params=None, **kwargs):
         method_headers = client.headers.get(method, {})
         client_headers = {**all_headers, **method_headers}
         headers = {**HEADERS, **def_headers, **client_headers}
+        requestor = client.oauth_session if client.oauth_version else requests
+        verb = getattr(requestor, method)
 
-        if client.oauth_version:
-            verb = getattr(client.oauth_session, method)
-        else:
-            _verb = getattr(requests, method)
-            verb = partial(_verb, auth=client.auth)
+        if client.auth_type == "basic":
+            verb = partial(verb, auth=client.auth)
 
         try:
             result = verb(url, params=params, data=data, json=json, headers=headers)

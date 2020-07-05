@@ -83,6 +83,7 @@ method_views = {
     "time": {"collection": "Time", "providers": AUTHENTICATION},
     "projecttasks": {"collection": "ProjectTasks", "providers": AUTHENTICATION},
     "projecttime": {"collection": "ProjectTime", "providers": AUTHENTICATION},
+    "email": {"collection": "Email", "providers": AUTHENTICATION, "methods": ["POST"]},
     "subscription": {"view": subscription.Subscription, "methods": ["GET", "POST"]},
     "invoicehook": {"view": xero.InvoiceHook, "methods": ["GET", "POST"]},
     "distributionhook": {"view": aws.DistributionHook, "methods": ["GET", "POST"]},
