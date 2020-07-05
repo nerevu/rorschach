@@ -483,7 +483,7 @@ class Resource(BaseView):
 
     @data.setter
     def data(self, value):
-        if value:
+        if value is not None:
             with self.data_p.open(mode="w+", encoding="utf8") as data_f:
                 dump(value, data_f, indent=2, sort_keys=True, ensure_ascii=False)
                 data_f.write("\n")
@@ -857,9 +857,15 @@ class Resource(BaseView):
             self.client.response = self.get_response()
             response = get_response(None, self.client)
 
-        if response["ok"] and not self.dry_run:
-            result = response.get("result")
+        result = response.get("result")
 
+        if self.dry_run:
+            if hasattr(result, "get"):
+                result = [result]
+
+            if self.filterer and not self.id:
+                result = list(filter(self.filterer, result))
+        elif response["ok"]:
             if self.subkey:
                 try:
                     result = result.get(self.subkey, {})
@@ -885,11 +891,6 @@ class Resource(BaseView):
 
             if result is not None and kwargs.get("update_cache") and not self.id:
                 self.data = result
-        else:
-            result = response.get("result")
-
-            if hasattr(result, "get"):
-                result = [result]
 
         if self.error_msg:
             logger.error(self.error_msg)
