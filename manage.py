@@ -189,7 +189,7 @@ def prune(source_prefix, collection, **kwargs):
     is_tasks = collection == "projecttasks"
 
     project_tasks = provider.ProjectTasks(dictify=True, dry_run=True)
-    XeroCollection = get_collection("XERO", collection)
+    XeroCollection = get_collection("xero", collection)
     mappings = XeroCollection(dictify=True, dry_run=True).mappings
     COLLECTIONS = dict(gen_collections(collection))
 
@@ -283,7 +283,7 @@ def test_oauth(method=None, resource=None, project_id=None, **kwargs):
         "estimateAmount": 99.99,
     }
 
-    xero = get_auth_client("XERO", **app.config)
+    xero = get_auth_client("xero", **app.config)
     accept = ("Accept", "application/json")
     content_type = ("Content-Type", "application/x-www-form-urlencoded")
 

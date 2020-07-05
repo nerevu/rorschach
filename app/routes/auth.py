@@ -97,15 +97,15 @@ class BaseView(ProviderMixin, MethodView):
         super().__init__(prefix)
 
         self.START_PARMS = {
-            "TIMELY": "since",
-            "XERO": "dateAfterUtc",
-            "QB": "start_date",
+            "timely": "since",
+            "xero": "dateAfterUtc",
+            "qb": "start_date",
         }
 
         self.END_PARMS = {
-            "TIMELY": "upto",
-            "XERO": "dateBeforeUtc",
-            "QB": "end_date",
+            "timely": "upto",
+            "xero": "dateBeforeUtc",
+            "qb": "end_date",
         }
 
         self._dry_run = kwargs.get("dry_run")
@@ -160,11 +160,11 @@ class Auth(BaseView):
             # working fine I guess, but we should really look into
             # making this work a little smoother.
             #
-            # Resource("TIMELY", "accounts").api_url
-            # Resource("XERO", "projects", subresource=users).get()
-            "TIMELY": f"{self.client.api_base_url}/accounts",
-            "XERO": xero_url,
-            "QB": qb_url,
+            # Resource("timely", "accounts").api_url
+            # Resource("xero", "projects", subresource=users).get()
+            "timely": f"{self.client.api_base_url}/accounts",
+            "xero": xero_url,
+            "qb": qb_url,
         }
         self.status_url = status_urls.get(prefix)
 
@@ -269,7 +269,7 @@ class Resource(BaseView):
             >>>
             >>> options = f"start_date={start}&end_date={end}&columns=name,net_amount"
             >>> kwargs = {"options": options}
-            >>> qb_transactions = Resource("QB", "TransactionList", **kwargs)
+            >>> qb_transactions = Resource("qb", "TransactionList", **kwargs)
         """
         self.resource = resource
         self.subresource = kwargs.get("subresource", "")
@@ -798,7 +798,7 @@ class Resource(BaseView):
             >>> cloze_person.get(rid="name@company.com")
             >>>
             >>> kwargs = {"fields": ["name", "net_amount"], "start": start}
-            >>> qb_transactions = Resource("QB", "TransactionList", **kwargs)
+            >>> qb_transactions = Resource("qb", "TransactionList", **kwargs)
             >>> qb_transactions.get()
         """
         self.id = self.values.pop("id", _id) or self.id

@@ -104,11 +104,11 @@ def find_element_loop(browser, selector, count=1, max_retries=3):
 
 
 def _headless_auth(redirect_url, prefix, chrome_path=None):
-    if prefix == "TIMELY":
+    if prefix == "timely":
         username_css = "input#email"
         password_css = "input#password"
         signin_css = '[type="submit"]'
-    elif prefix == "XERO":
+    elif prefix == "xero":
         username_css = 'input[type="email"]'
         password_css = 'input[type="password"]'
         signin_css = 'button[name="button"]'
@@ -140,7 +140,7 @@ def _headless_auth(redirect_url, prefix, chrome_path=None):
 
     #######################################################
 
-    if prefix == "XERO":
+    if prefix == "xero":
         allow_access = find_element_loop(browser, 'button[value="yes"]')
         allow_access.click()
         connect = find_element_loop(browser, 'button[value="true"]')

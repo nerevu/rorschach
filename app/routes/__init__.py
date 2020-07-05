@@ -30,12 +30,12 @@ class ProviderMixin:
     def __init__(self, prefix=""):
         self.prefix = prefix
         self.lowered = self.prefix.lower()
-        self.is_timely = self.prefix == "TIMELY"
-        self.is_xero = self.prefix == "XERO"
-        self.is_opencart = self.prefix == "OPENCART"
-        self.is_cloze = self.prefix == "CLOZE"
-        self.is_qb = self.prefix == "QB"
-        self.is_gsheets = self.prefix == "GSHEETS"
+        self.is_timely = self.prefix == "timely"
+        self.is_xero = self.prefix == "xero"
+        self.is_opencart = self.prefix == "opencart"
+        self.is_cloze = self.prefix == "cloze"
+        self.is_qb = self.prefix == "qb"
+        self.is_gsheets = self.prefix == "gsheets"
 
         lowered_class = type(self).__name__.lower()
 

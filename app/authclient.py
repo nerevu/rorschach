@@ -215,7 +215,7 @@ class MyAuth2Client(AuthClient):
             logger.info(f"Renewing token using {self.refresh_url}…")
             args = (self.refresh_url, self.refresh_token)
 
-            if self.prefix == "XERO":
+            if self.prefix == "xero":
                 # https://developer.xero.com/documentation/oauth2/auth-flow
                 authorization = f"{self.client_id}:{self.client_secret}"
                 encoded = b64encode(authorization.encode("utf-8")).decode("utf-8")
@@ -637,7 +637,7 @@ def get_response(url, client, params=None, **kwargs):
         if not ok and kwargs.get("debug"):
             header_names = ["Authorization", "Accept", "Content-Type"]
 
-            if client.prefix == "XERO" and client.oauth2:
+            if client.prefix == "xero" and client.oauth2:
                 header_names.append("Xero-tenant-id")
 
             for name in header_names:
@@ -720,7 +720,7 @@ def get_redirect_url(prefix):
     else:
         redirect_url = url_for(f".{prefix}-auth".lower())
 
-    if prefix == "XERO" and client.oauth2:
+    if prefix == "xero" and client.oauth2:
         api_url = f"{client.api_base_url}/connections"
         response = get_response(api_url, client, **app.config)
         # https://developer.xero.com/documentation/oauth2/auth-flow
