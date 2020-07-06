@@ -24,10 +24,12 @@ from flask.views import MethodView
 
 from config import Config
 
+from meza.fntools import listize, remove_keys
+
 from app import cache
 from app.routes import ProviderMixin
 from app.authclient import get_auth_client, get_response, callback
-from app.utils import jsonify, get_links, fetch_bool
+from app.utils import jsonify, get_links, fetch_bool, extract_fields
 from app.mappings import reg_mapper
 from app.helpers import singularize, get_collection
 
@@ -41,38 +43,12 @@ MAPPINGS_DIR = APP_DIR.joinpath("mappings")
 PREFIX = Config.API_URL_PREFIX
 
 
-def extract_fields(record, fields, **kwargs):
-    item = DotDict(record)
-
-    for field in fields:
-        if "[" in field:
-            split_field = field.split("[")
-            real_field = split_field[0]
-            pos = int(split_field[1].split("]")[0])
-            values = item.get(real_field, [])
-
-            try:
-                value = values[pos]
-            except IndexError:
-                value = None
-        else:
-            value = item.get(field)
-
-        yield (field, value)
-
-
-def remove_fields(record, black_list):
-    for key, value in record.items():
-        if key not in black_list:
-            yield (key, value)
-
-
 def process_result(result, fields=None, black_list=None, **kwargs):
     if black_list:
-        result = (dict(remove_fields(item, black_list)) for item in result)
+        result = (remove_keys(item, *black_list) for item in result)
 
     if fields:
-        result = (dict(extract_fields(item, fields)) for item in result)
+        result = (dict(extract_fields(item, *fields)) for item in result)
 
     if kwargs:
         result = ({**item, **kwargs} for item in result)
@@ -641,8 +617,8 @@ class Resource(BaseView):
 
         return model
 
-    def extract_model(self, id=None, strict=False, **kwargs):
-        response = self.get(id, **kwargs)
+    def extract_model(self, _id=None, strict=False, **kwargs):
+        response = self.get(_id, **kwargs)
         json = response.json
         result = [] if self.eof else json["result"]
 
@@ -698,7 +674,7 @@ class Resource(BaseView):
 
     def update_data(self, **kwargs):
         if kwargs:
-            entry = dict(extract_fields(kwargs, self.fields))
+            entry = dict(extract_fields(kwargs, *self.fields))
             self.data = list(self.data) + [entry]
 
     def map_rid(self, rid, prefix=None, **kwargs):
@@ -860,8 +836,7 @@ class Resource(BaseView):
         result = response.get("result")
 
         if self.dry_run:
-            if hasattr(result, "get"):
-                result = [result]
+            result = listize(result)
 
             if self.filterer and not self.id:
                 result = list(filter(self.filterer, result))
@@ -872,9 +847,7 @@ class Resource(BaseView):
                 except AttributeError:
                     pass
 
-            if hasattr(result, "get"):
-                result = [result]
-
+            result = listize(result)
             pkwargs = {"black_list": self.black_list}
             result = list(self.processor(result, self.fields, **pkwargs))
 
@@ -923,7 +896,7 @@ class Resource(BaseView):
             "useDefault",
             "subkey",
         }
-        values = dict(remove_fields(self.values, black_list))
+        values = remove_keys(self.values, black_list)
         data = {**values, **kwargs}
 
         if self.is_cloze:
@@ -953,7 +926,7 @@ class Resource(BaseView):
 
         return jsonify(**response)
 
-    def patch(self, id=None, rid=None, **kwargs):
+    def patch(self, _id=None, rid=None, **kwargs):
         """ Upate an API Resource.
         Kwargs:
             rid (str): The API resource_id.
@@ -971,7 +944,7 @@ class Resource(BaseView):
             >>> url = 'http://localhost:5000/v1/timely-time'
             >>> requests.patch(url, data={"rid": 165829339, "dryRun": True})
         """
-        self.id = self.values.pop("id", id) or self.id
+        self.id = self.values.pop("id", _id) or self.id
         self.rid = self.values.pop("rid", rid) or self.rid
 
         rkwargs = {"headers": self.headers, "method": "post", **app.config}
@@ -984,7 +957,7 @@ class Resource(BaseView):
             "useDefault",
             "subkey",
         }
-        values = dict(remove_fields(self.values, black_list))
+        values = remove_keys(self.values, black_list)
         data = {**values, **kwargs}
         data[self.id_field] = self.id
         response = {}

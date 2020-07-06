@@ -24,7 +24,9 @@ import pygogo as gogo
 from flask import make_response, request
 from dateutil.relativedelta import relativedelta
 
-from meza import fntools as ft, convert as cv
+from riko.dotdict import DotDict
+from meza.fntools import CustomEncoder
+from meza.convert import records2csv
 from config import Config
 
 from app import cache
@@ -88,9 +90,9 @@ def responsify(mimetype, status_code=200, indent=2, sort_keys=True, **kwargs):
 
     if mimetype.endswith("json"):
         kwargs["status"] = responses[status_code]
-        content = dumps(kwargs, cls=ft.CustomEncoder, **options)
+        content = dumps(kwargs, cls=CustomEncoder, **options)
     elif mimetype.endswith("csv") and kwargs.get("result"):
-        content = cv.records2csv(kwargs["result"]).getvalue()
+        content = records2csv(kwargs["result"]).getvalue()
     elif mimetype.endswith("html") and kwargs.get("html"):
         content = kwargs["html"]
     else:
@@ -488,3 +490,23 @@ def fetch_bool(message):
             logger.error(f"Invalid selection: {answer}.")
 
     return answer
+
+
+def extract_fields(record, *fields, **kwargs):
+    item = DotDict(record)
+
+    for field in fields:
+        if "[" in field:
+            split_field = field.split("[")
+            real_field = split_field[0]
+            pos = int(split_field[1].split("]")[0])
+            values = item.get(real_field, [])
+
+            try:
+                value = values[pos]
+            except IndexError:
+                value = None
+        else:
+            value = item.get(field)
+
+        yield (field, value)
