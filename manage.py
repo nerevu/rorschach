@@ -23,7 +23,7 @@ from flask.config import Config as FlaskConfig
 
 from config import __APP_NAME__, Config
 
-from app import create_app, services
+from app import create_app, actions
 from app.helpers import configure, get_collection, get_provider, get_class_members
 from app.authclient import get_auth_client, get_response
 from app.routes.auth import store as _store
@@ -106,7 +106,7 @@ def info(_type, value, tb):
 sys.excepthook = info
 
 
-def log(message=None, ok=True, r=None, **kwargs):
+def log(message=None, ok=True, r=None, exit_on_completion=False, **kwargs):
     if r is not None:
         ok = r.ok
 
@@ -124,6 +124,9 @@ def log(message=None, ok=True, r=None, **kwargs):
             logger.info("Connect refused. Make sure an SMTP server is running.")
             logger.info("Try running `sudo postfix start`.")
             logger.info(message)
+
+    if exit_on_completion:
+        exit(0 if ok else 1)
 
 
 def gen_collections(collection):
@@ -372,7 +375,7 @@ def sync(source_prefix, **kwargs):
     logger.info("Adding events…")
 
     for pos in _range:
-        result = services.add_xero_time(source_prefix, position=pos, **kwargs)
+        result = actions.add_xero_time(source_prefix, position=pos, **kwargs)
         event_id = result.get("event_id")
 
         if result["ok"] or result["conflict"]:
@@ -405,7 +408,7 @@ def sync(source_prefix, **kwargs):
     projects = provider.Projects(dictify=True, dry_run=True)
 
     for event_id in added_events:
-        result = services.mark_billed(source_prefix, event_id, **kwargs)
+        result = actions.mark_billed(source_prefix, event_id, **kwargs)
         message = result.get("message")
 
         if result["ok"] or result["conflict"]:
@@ -449,6 +452,33 @@ def sync(source_prefix, **kwargs):
     num_errors = len(skipped_events) + len(unpatched_events)
     save_results(**kwargs)
     exit(num_errors)
+
+
+@manager.command()
+@click.argument("invoice-id")
+@click.option(
+    "-e",
+    "--sender-email",
+    help="The sender's email address",
+    default="billing@nerevu.com",
+)
+@click.option(
+    "-n", "--sender-name", help="The sender's name", default="Nerevu Billing Team"
+)
+@click.option("-r", "--recipient-email", help="The recipient's email address")
+@click.option("-m", "--recipient-name", help="The recipient's name")
+@click.option("-d", "--dry-run/--no-dry-run", help="Perform a dry run", default=False)
+@click.option(
+    "-p", "--no-prompt/--prompt", help="Prompt before sending email", default=True
+)
+def notify(invoice_id, **kwargs):
+    """Send Xero invoice notification"""
+    response = actions.send_charge_notification(invoice_id, **kwargs)
+
+    try:
+        log(**response, exit_on_completion=True)
+    except Exception:
+        pass
 
 
 @manager.command()

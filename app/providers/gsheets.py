@@ -14,11 +14,13 @@ from gspread.exceptions import APIError
 
 from app.utils import parse
 from app.routes.auth import Resource, process_result
+from app.routes.webhook import Webhook
 
 from meza.fntools import chunk
 
 logger = gogo.Gogo(__name__, monolog=True).logger
 
+PREFIX = __name__.split(".")[-1]
 # DEF_START_ROW = Config.DEF_START_ROW
 DEF_START_ROW = 2  # Since the first row is header
 
@@ -76,7 +78,7 @@ def add_id(record):
 
 class GSheets(Resource):
     def __init__(self, *args, **kwargs):
-        super().__init__(__name__, *args, **kwargs)
+        super().__init__(PREFIX, *args, **kwargs)
         self.gc = self.client.gc
         self._sheet_id = kwargs.get("sheet_id", self.client.sheet_id)
         self._worksheet_name = kwargs.get("worksheet_name", self.client.worksheet_name)
@@ -204,13 +206,13 @@ class GSheets(Resource):
 # METHODVIEW ROUTES
 ###########################################################################
 class Status(GSheets):
-    def __init__(self, **kwargs):
-        super().__init__("status", **kwargs)
+    def __init__(self, *args, **kwargs):
+        super().__init__("status", *args, **kwargs)
 
 
 class Projects(GSheets):
-    def __init__(self, **kwargs):
-        super().__init__("projects", **kwargs)
+    def __init__(self, *args, **kwargs):
+        super().__init__("projects", *args, **kwargs)
 
     def get_response(self):
         self.worksheet_name = "client projects"
@@ -233,8 +235,8 @@ class Projects(GSheets):
 
 
 class Users(GSheets):
-    def __init__(self, **kwargs):
-        super().__init__("users", **kwargs)
+    def __init__(self, *args, **kwargs):
+        super().__init__("users", *args, **kwargs)
 
     def get_response(self):
         result = [
@@ -249,8 +251,8 @@ class Users(GSheets):
 
 
 class Contacts(GSheets):
-    def __init__(self, **kwargs):
-        super().__init__("contacts", **kwargs)
+    def __init__(self, *args, **kwargs):
+        super().__init__("contacts", *args, **kwargs)
 
     def get_response(self):
         result = self.worksheet.col_values(1)[1:]
@@ -262,8 +264,8 @@ class Contacts(GSheets):
 
 
 class Tasks(GSheets):
-    def __init__(self, **kwargs):
-        super().__init__("tasks", **kwargs)
+    def __init__(self, *args, **kwargs):
+        super().__init__("tasks", *args, **kwargs)
 
     def get_response(self):
         result = [
@@ -278,7 +280,7 @@ class Tasks(GSheets):
 
 
 class Time(GSheets):
-    def __init__(self, **kwargs):
+    def __init__(self, *args, **kwargs):
         fields = [
             "id",
             "row",
@@ -293,8 +295,8 @@ class Time(GSheets):
 
         processor = events_processor
         filterer = events_filterer
-        kwargs.update({"processor": processor, "filterer": filterer})
-        super().__init__("events", fields=fields, **kwargs)
+        kwargs.update({"fields": fields, "processor": processor, "filterer": filterer})
+        super().__init__("events", *args, **kwargs)
 
     def set_patch_data(self):
         assert self.rid, ("No 'rid' given!", 500)
@@ -350,22 +352,26 @@ class Time(GSheets):
 
 
 class ProjectTasks(GSheets):
-    def __init__(self, **kwargs):
-        fields = ["id", "name"]
+    def __init__(self, *args, **kwargs):
+        kwargs["fields"] = ["id", "name"]
         self.get_response = Tasks().get_response
-        super().__init__("projects", fields=fields, **kwargs)
+        super().__init__("projects", *args, **kwargs)
 
 
 class ProjectTime(GSheets):
-    def __init__(self, **kwargs):
-        fields = Time().fields
+    def __init__(self, *args, **kwargs):
         processor = events_processor
         filterer = events_filterer
         kwargs.update(
-            {"subresource": "events", "processor": processor, "filterer": filterer}
+            {
+                "fields": Time().fields,
+                "subresource": "events",
+                "processor": processor,
+                "filterer": filterer,
+            }
         )
 
-        super().__init__("projects", fields=fields, **kwargs)
+        super().__init__("projects", *args, **kwargs)
 
     def get_response(self):
         if self.rid:
@@ -400,3 +406,21 @@ class ProjectTime(GSheets):
             }
 
         return response
+
+
+class Hooks(Webhook):
+    def __init__(self, *args, **kwargs):
+        super().__init__(PREFIX, *args, **kwargs)
+
+    def process_value(self, value):
+        result = {}
+
+        for event in value:
+            key = (event["eventType"].lower(), event["eventCategory"].lower())
+            method = self.methods.get(key)
+
+            if method:
+                response = method(self.prefix, event["ResourceId"])
+                result[event["eventId"]] = response.get("response")
+
+        return result

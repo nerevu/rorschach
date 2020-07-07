@@ -14,9 +14,11 @@ from botocore.exceptions import ProfileNotFound
 from app.routes.webhook import Webhook
 from app.routes.auth import Resource
 
+PREFIX = __name__.split(".")[-1]
+
 
 class AWS(Resource):
-    def __init__(self, resource, **kwargs):
+    def __init__(self, *args, **kwargs):
         rid = kwargs.get("rid", "nerevu")
 
         try:
@@ -28,12 +30,12 @@ class AWS(Resource):
             session = boto3.Session(**boto_kwargs)
 
         self.session = session
-        super().__init__(__name__, resource, **kwargs)
+        super().__init__(PREFIX, *args, **kwargs)
 
 
 class Cloudfront(AWS):
-    def __init__(self, **kwargs):
-        super().__init__("cloudfront", **kwargs)
+    def __init__(self, *args, **kwargs):
+        super().__init__("cloudfront", *args, **kwargs)
         self.client = self.session.client(self.resource)
 
 
@@ -45,20 +47,22 @@ class Distribution(Cloudfront):
         "/*.json",
     ]
 
-    def __init__(self, distribution_id=None, **kwargs):
+    def __init__(self, *args, distribution_id=None, **kwargs):
+        def_distribution_id = self.kwargs.get("cloudfront_distribution_id")
+
         kwargs.update(
             {
                 "id_field": "distribution_id",
                 "sub_resource": "distribution",
-                "subresource_id": distribution_id,
+                "subresource_id": distribution_id or def_distribution_id,
             }
         )
 
-        super().__init__(**kwargs)
+        super().__init__(*args, **kwargs)
 
     # https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/
     # cloudfront.html#CloudFront.Client.create_invalidation
-    def invalidate(self, *args, **kwargs):
+    def invalidate(self, **kwargs):
         return self.client.create_invalidation(
             DistributionId=self.id,
             InvalidationBatch={
@@ -68,13 +72,10 @@ class Distribution(Cloudfront):
         )
 
 
-class DistributionHook(Webhook, Distribution):
-    def __init__(self, **kwargs):
-        methods = {"update": self.invalidate}
-        kwargs.update(**self.kwargs)
-        super().__init__(methods=methods, **kwargs)
+class Hooks(Webhook):
+    def __init__(self, *args, **kwargs):
+        super().__init__(PREFIX, *args, **kwargs)
 
     def process_value(self, value):
         method = self.METHODS.get(value)
-        response = {"message": "Invalid action", "status_code": 400, "ok": False}
-        return method(value) if method else response
+        return method(value) if method else {}

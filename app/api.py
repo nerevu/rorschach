@@ -19,9 +19,9 @@ from app.utils import (
     get_links,
 )
 
+from app import actions, providers
 from app.routes import auth, Memoization, subscription
 from app.helpers import get_collection
-from app.providers import xero, aws
 
 logger = gogo.Gogo(__name__, monolog=True).logger
 blueprint = Blueprint("API", __name__)
@@ -60,6 +60,38 @@ def ipsum():
     return jsonify(**response)
 
 
+@blueprint.route(f"{PREFIX}/hooks/xero", methods=["POST"])
+def xero_hooks():
+    methods = {("new", "invoice"): actions.send_charge_notification}
+    hooks = providers.xero.Hooks(methods=methods)
+    response = hooks.post()
+    return jsonify(**response)
+
+
+@blueprint.route(f"{PREFIX}/hooks/timely", methods=["POST"])
+def timely_hooks():
+    methods = {("new", "event"): actions.add_xero_time}
+    hooks = providers.timely.Hooks(methods=methods)
+    response = hooks.post()
+    return jsonify(**response)
+
+
+@blueprint.route(f"{PREFIX}/hooks/gsheets", methods=["POST"])
+def gsheets_hooks():
+    methods = {("new", "row"): actions.add_xero_time}
+    hooks = providers.gsheets.Hooks(methods=methods)
+    response = hooks.post()
+    return jsonify(**response)
+
+
+@blueprint.route(f"{PREFIX}/hooks/aws", methods=["POST"])
+def aws_hooks():
+    methods = {"update": actions.invalidate_cf_distribution}
+    hooks = providers.aws.Hooks(methods=methods)
+    response = hooks.post()
+    return jsonify(**response)
+
+
 add_rule = blueprint.add_url_rule
 
 method_views = {
@@ -75,24 +107,46 @@ method_views = {
         "methods": ["GET", "PATCH"],
     },
     "status": {"collection": "Status", "providers": AUTHENTICATION},
-    "projects": {"collection": "Projects", "providers": AUTHENTICATION},
+    "projects": {
+        "collection": "Projects",
+        "providers": AUTHENTICATION,
+        "methods": ["GET", "POST"],
+    },
     "contacts": {"collection": "Contacts", "providers": AUTHENTICATION},
     "users": {"collection": "Users", "providers": AUTHENTICATION},
     "inventory": {"collection": "Inventory", "providers": AUTHENTICATION},
     "tasks": {"collection": "Tasks", "providers": AUTHENTICATION},
-    "time": {"collection": "Time", "providers": AUTHENTICATION},
-    "projecttasks": {"collection": "ProjectTasks", "providers": AUTHENTICATION},
-    "projecttime": {"collection": "ProjectTime", "providers": AUTHENTICATION},
+    "time": {
+        "collection": "Time",
+        "providers": AUTHENTICATION,
+        "methods": ["GET", "PATCH"],
+    },
+    "projecttasks": {
+        "collection": "ProjectTasks",
+        "providers": AUTHENTICATION,
+        "methods": ["GET", "POST"],
+    },
+    "projecttime": {
+        "collection": "ProjectTime",
+        "providers": AUTHENTICATION,
+        "methods": ["GET", "POST"],
+    },
     "email": {"collection": "Email", "providers": AUTHENTICATION, "methods": ["POST"]},
+    "invoices": {
+        "collection": "Invoices",
+        "providers": AUTHENTICATION,
+        "methods": ["GET", "POST"],
+    },
+    "invoicenotification": {
+        "collection": "InvoiceNotification",
+        "providers": AUTHENTICATION,
+    },
+    "onlineinvoices": {"collection": "OnlineInvoices", "providers": AUTHENTICATION},
     "subscription": {"view": subscription.Subscription, "methods": ["GET", "POST"]},
-    "invoicehook": {"view": xero.InvoiceHook, "methods": ["GET", "POST"]},
-    "distributionhook": {"view": aws.DistributionHook, "methods": ["GET", "POST"]},
 }
 
 for name, options in method_views.items():
-    providers = options.get("providers", [None])
-
-    for provider in providers:
+    for provider in options.get("providers", [None]):
         view = options.get("view", get_collection(provider, **options))
 
         if not view:

@@ -6,6 +6,7 @@
     Provides Postmark API related functions
 """
 from os.path import splitext
+from base64 import b64encode
 
 import pygogo as gogo
 
@@ -14,78 +15,54 @@ from app.routes.auth import Resource
 
 logger = gogo.Gogo(__name__, monolog=True).logger
 
+PREFIX = __name__.split(".")[-1]
+
 
 class Domains(Resource):
     def __init__(self, *args, **kwargs):
-        kwargs["subkey"] = "domain"
-        super().__init__(__name__, "domains", **kwargs)
+        kwargs.update({"subkey": "Domains", "id_field": "ID", "name_field": "Name"})
+        kwargs["subkey"] = "Domains"
+        super().__init__(PREFIX, "domains", *args, **kwargs)
 
 
-class EmailLists(Resource):
-    def __init__(self, list_prefix=None, **kwargs):
-        super().__init__(__name__, "lists", **kwargs)
-        self._list_prefix = None
-        self.list_prefix = list_prefix
-
-    @property
-    def list_prefix(self):
-        return self._list_prefix
-
-    @list_prefix.setter
-    def list_prefix(self, value):
-        self._list_prefix = value
-
-        if self.list_prefix:
-            self.rid = f"{self.list_prefix}@{self.client.domain}"
-
-
-class EmailListMembers(EmailLists):
+class Templates(Resource):
     def __init__(self, *args, **kwargs):
-        kwargs["subresource"] = "members"
-        super().__init__(*args, **kwargs)
+        kwargs.update(
+            {"subkey": "Templates", "id_field": "TemplateId", "name_field": "Name"}
+        )
+        super().__init__(PREFIX, "templates", *args, **kwargs)
 
-    def set_post_data(self, email, list_prefix=None, **kwargs):
+
+class Email(Resource):
+    def __init__(self, *args, template_id=None, **kwargs):
+        kwargs.update({"id_field": "MessageID", "name_field": "To"})
+        super().__init__(PREFIX, "email", *args, **kwargs)
+        admin = self.kwargs["admin"]
+        sender_name = kwargs.get("sender_name") or admin.name
+        sender_email = kwargs.get("sender_email") or admin.email
+        self.sender = f"{sender_name} <{sender_email}>"
+
+        def_template_id = self.kwargs.get("postmark_template_id")
+        self.template_id = template_id or def_template_id
+
+    def set_post_data(self, email, name="", subject="", text="", html="", **kwargs):
         assert email, ("You must provide an email address.", 400)
-
-        if list_prefix:
-            self.list_prefix = list_prefix
-
-    def get_post_data(self, email, **kwargs):
-        try:
-            self.set_post_data(email, **kwargs)
-        except AssertionError as err:
-            self.error_msg, self.status_code = err.args[0]
-            member_data = {}
-        else:
-            member_data = {"subscribed": True, "address": email}
-
-        return member_data
-
-
-class Email(EmailLists):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.resource = "email"
-        self.id_field = "MessageID"
-
-        email_list = self.extract_model()
-        self.list_name = email_list[self.name_field]
-        self.admin_email = f"owner@{self.client.domain}"
-        self.admin_name = self.kwargs["admin"].name
-
-    def set_post_data(self, email, subject, text="", html="", **kwargs):
-        assert email, ("You must provide an email address.", 400)
-        name = kwargs.get("name")
         self.recipient = f"{name} <{email}>" if name else email
-        self.sender = f"{self.admin_name} <{self.admin_email}>"
-
-        assert subject, ("You must provide a subject.", 400)
-        self.subject = subject
-
-        assert html or text, ("You must provide the email body text or html.", 400)
-        self.text = text
-        self.html = html or f"<html><p>{self.text}</p></html>"
         self.tag = kwargs.get("tag")
+        self.metadata = kwargs.get("metadata", {})
+        model = kwargs.get("model")
+
+        if self.template_id:
+            assert model, ("You must provide a model.", 400)
+            self.model = model
+            self.resource += "/withTemplate"
+        else:
+            assert subject, ("You must provide a subject.", 400)
+            self.subject = subject
+
+            assert html or text, ("You must provide the email body text or html.", 400)
+            self.text = text
+            self.html = html or f"<html><p>{self.text}</p></html>"
 
         if kwargs.get("f"):
             f = kwargs["f"]
@@ -94,12 +71,14 @@ class Email(EmailLists):
             content_type = CTYPES[ext]
 
             self.attachments = [
-                {"Name": filename, "Content": f.read(), "ContentType": content_type},
+                {
+                    "Name": filename,
+                    "Content": b64encode(f.read()).decode("utf-8"),
+                    "ContentType": content_type,
+                },
             ]
         else:
             self.attachments = []
-
-        self.metadata = {"client-id": "12345"}
 
     def get_post_data(self, *args, **kwargs):
         try:
@@ -111,17 +90,29 @@ class Email(EmailLists):
             email_data = {
                 "From": self.sender,
                 "To": self.recipient,
-                "Subject": self.subject,
                 "Tag": self.tag,
-                "HtmlBody": self.html,
-                "TextBody": self.text,
                 "TrackOpens": True,
                 "TrackLinks": "None",
                 "Attachments": self.attachments,
                 "Metadata": self.metadata,
             }
 
-            message = f'Prepared email data "{self.subject}" to {self.recipient}'
-            self.logger.debug(message)
+            message = "Got email data for "
+
+            if self.template_id:
+                updates = {"TemplateId": self.template_id, "TemplateModel": self.model}
+                message += f"template {self.template_id} "
+            else:
+                updates = {
+                    "Subject": self.subject,
+                    "HtmlBody": self.html,
+                    "TextBody": self.text,
+                }
+
+                message += f'subject "{self.subject}" '
+
+            message += f"to {self.recipient} from {self.sender}"
+            email_data.update(updates)
+            logger.debug(message)
 
         return email_data

@@ -16,19 +16,23 @@ from app.routes.auth import Resource
 
 logger = gogo.Gogo(__name__, monolog=True).logger
 
+PREFIX = __name__.split(".")[-1]
+
 
 class Domains(Resource):
     def __init__(self, *args, **kwargs):
         kwargs.update({"subkey": "domain", "ignore_domain": True})
-        super().__init__(__name__, "domains", **kwargs)
+        super().__init__(PREFIX, "domains", *args, **kwargs)
 
 
 class EmailLists(Resource):
-    def __init__(self, list_prefix=None, **kwargs):
+    def __init__(self, *args, list_prefix=None, **kwargs):
         kwargs["ignore_domain"] = True
-        super().__init__(__name__, "lists", **kwargs)
+        super().__init__(PREFIX, "lists", *args, **kwargs)
+
+        def_list_prefix = self.kwargs.get("mailgun_list_prefix")
         self._list_prefix = None
-        self.list_prefix = list_prefix
+        self.list_prefix = list_prefix or def_list_prefix
 
     @property
     def list_prefix(self):
@@ -45,32 +49,25 @@ class EmailLists(Resource):
 class EmailListMembers(EmailLists):
     def __init__(self, *args, **kwargs):
         kwargs["subresource"] = "members"
-        super().__init__(**kwargs)
-
-    def set_post_data(self, email, list_prefix=None, **kwargs):
-        assert email, ("You must provide an email address.", 400)
-
-        if list_prefix:
-            self.list_prefix = list_prefix
+        super().__init__(*args, **kwargs)
 
     def get_post_data(self, email, **kwargs):
-        try:
-            self.set_post_data(email, **kwargs)
-        except AssertionError as err:
-            self.error_msg, self.status_code = err.args[0]
-            member_data = {}
-        else:
+        if email:
             member_data = {"subscribed": True, "address": email}
+        else:
+            self.error_msg = "You must provide an email address."
+            self.status_code = 400
+            member_data = {}
 
         return member_data
 
 
 class Email(Resource):
-    def __init__(self, *args, list_prefix=None, **kwargs):
+    def __init__(self, *args, **kwargs):
         kwargs["id_field"] = "MessageID"
-        super().__init__(__name__, "messages", **kwargs)
+        super().__init__(PREFIX, "messages", *args, **kwargs)
 
-        self.lists = EmailLists(list_prefix=list_prefix)
+        self.lists = EmailLists()
         email_list = self.lists.extract_model()
         self.list_name = email_list[self.lists.name_field]
         self.admin_email = f"owner@{self.client.domain}"

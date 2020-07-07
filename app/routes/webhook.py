@@ -9,7 +9,7 @@ Live Site:
 Endpoints:
     Visit the live site for a list of all available endpoints
 """
-from flask import current_app as app, request
+from flask import request
 from flask.views import MethodView
 
 import pygogo as gogo
@@ -17,7 +17,7 @@ import pygogo as gogo
 from config import Config
 
 from app.routes import ProviderMixin
-from app.utils import responsify, jsonify, get_links, check_signature
+from app.utils import responsify, check_signature
 
 WEBHOOKS = Config.WEBHOOKS
 
@@ -30,12 +30,12 @@ logger = gogo.Gogo(__name__, monolog=True).logger
 # METHODVIEW ROUTES
 ###########################################################################
 class Webhook(ProviderMixin, MethodView):
-    def __init__(self, prefix, methods=None, **kwargs):
-        super().__init__(prefix, **kwargs)
+    def __init__(self, *args, methods=None, **kwargs):
+        super().__init__(*args, **kwargs)
         self.methods = methods or {}
 
         try:
-            self.webhook_kwargs = WEBHOOKS[prefix.lower()]
+            self.webhook_kwargs = WEBHOOKS[self.prefix.lower()]
         except IndexError:
             logger.error(f"Invalid provider: {self.prefix}")
             self.payload_key = None
@@ -46,14 +46,16 @@ class Webhook(ProviderMixin, MethodView):
     def verified(self):
         return self.payload_key and check_signature(**self.webhook_kwargs)
 
-    def get(self):
-        response = {
-            "description": f"The {self.prefix} webhook.",
-            "links": get_links(app.url_map.iter_rules()),
-        }
-
-        return jsonify(**response)
-
+    # def get(self):
+    #     response = {"description": f"The {self.prefix} webhook."}
+    #
+    #     try:
+    #         response["links"] = get_links(app.url_map.iter_rules())
+    #     except RuntimeError:
+    #         pass
+    #
+    #     return jsonify(**response)
+    #
     def post(self):
         """ Respond to a Webhook post.
         """

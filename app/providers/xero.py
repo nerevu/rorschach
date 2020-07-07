@@ -6,6 +6,8 @@
     Provides Xero API related functions
 """
 from functools import partial
+from datetime import date
+from decimal import Decimal
 
 import pygogo as gogo
 
@@ -14,9 +16,11 @@ from app.helpers import get_collection, get_provider
 from app.mappings import USERS, NAMES, POSITIONS, gen_task_mapping
 from app.routes.webhook import Webhook
 from app.routes.auth import Resource, process_result
-from app.providers.postmark import Email
 
 logger = gogo.Gogo(__name__, monolog=True).logger
+
+TWOPLACES = Decimal(10) ** -2
+PREFIX = __name__.split(".")[-1]
 
 
 def events_processor(result, fields, **kwargs):
@@ -43,19 +47,24 @@ def get_user_name(user_id, prefix=None):
     return user[users.name_field]
 
 
+def parse_date(date_str):
+    year, month, day = map(int, date_str.split("T")[0].split("-"))
+    return date(year, month, day).strftime("%b %-d, %Y")
+
+
 ###########################################################################
 # Resources
 ###########################################################################
 class Status(Resource):
-    def __init__(self, **kwargs):
-        super().__init__(__name__, "status", **kwargs)
+    def __init__(self, *args, **kwargs):
+        super().__init__(PREFIX, "status", *args, **kwargs)
 
 
 class Projects(Resource):
-    def __init__(self, **kwargs):
+    def __init__(self, *args, **kwargs):
         fields = ["projectId", "name", "status"]
-        kwargs.update({"id_field": "projectId", "subkey": "items"})
-        super().__init__(__name__, "projects", fields=fields, **kwargs)
+        kwargs.update({"fields": fields, "id_field": "projectId", "subkey": "items"})
+        super().__init__(PREFIX, "projects", *args, **kwargs)
 
     def get_post_data(self, project, project_name, rid, **kwargs):
         client = project["client"]
@@ -77,10 +86,10 @@ class Projects(Resource):
 
 
 class Users(Resource):
-    def __init__(self, **kwargs):
+    def __init__(self, *args, **kwargs):
         fields = ["userId", "name"]
-        kwargs.update({"id_field": "userId", "subkey": "items"})
-        super().__init__(__name__, "projectsusers", fields=fields, **kwargs)
+        kwargs.update({"fields": fields, "id_field": "userId", "subkey": "items"})
+        super().__init__(PREFIX, "projectsusers", *args, **kwargs)
 
     def id_func(self, user, user_name, rid, prefix=None):
         matching = list(enumerate(x["name"] for x in self))
@@ -99,91 +108,112 @@ class Users(Resource):
 
 
 class Contacts(Resource):
-    def __init__(self, **kwargs):
-        fields = ["ContactID", "Name", "FirstName", "LastName"]
-        kwargs.update({"id_field": "ContactID", "subkey": "Contacts", "domain": "api"})
-        super().__init__(__name__, "Contacts", fields=fields, **kwargs)
+    def __init__(self, *args, **kwargs):
+        kwargs.update(
+            {
+                "fields": ["ContactID", "Name", "FirstName", "LastName"],
+                "id_field": "ContactID",
+                "subkey": "Contacts",
+                "domain": "api",
+            }
+        )
+        super().__init__(PREFIX, "Contacts", *args, **kwargs)
 
 
 class Invoices(Resource):
-    def __init__(self, **kwargs):
-        fields = []
+    def __init__(self, *args, **kwargs):
         kwargs.update(
             {
-                "id_field": "resourceId",
-                # "subkey": "Items",
+                "fields": [],
+                "id_field": "InvoiceID",
+                "subkey": "Invoices",
                 "domain": "api",
-                # "name_field": "Name",
+                "name_field": "InvoiceNumber",
             }
         )
 
-        super().__init__(__name__, "Invoices", fields=fields, **kwargs)
-
-    def get_notification_data(self, resourceId, **kwargs):
-        self.id = resourceId
-        invoice = self.extract_model()
-        pdf_invoice = self.extract_model(pdf=True)
-        invoice_num = invoice["InvoiceNumber"]
-        items = invoice["LineItems"]
-        subtotal = sum(float(item["LineAmount"]) for item in items)
-        due = invoice["AmountDue"]
-        contact = invoice["Contact"]
-        customer_id = contact["ContactID"]
-        customers = Contacts(rid=customer_id)
-        customer = customers.extract_model()
-
-        online_invoices = OnlineInvoices(rid=self.id)
-        online_invoice = online_invoices.extract_model()
-        invoice_url = online_invoice["OnlineInvoiceUrl"]
-
-        data = {
-            "contact_name": customer["FirstName"],
-            "reference": invoice["Reference"],
-            "currency": invoice["CurrencyCode"],
-            "charge_date": invoice["DueDate"],
-            "link": invoice_url,
-            "customer_name": customer["Name"],
-            "invoice_num": invoice_num,
-            "invoice_date": invoice["Date"],
-            # {"Description": "1 month of Nerevu Data", "LineAmount": "72.00"}
-            "items": items,
-            "subtotal": subtotal,
-            "tax": invoice["TotalTax"],
-            "total": invoice["Total"],
-            "charge": due,
-            "discount": round(subtotal - due, 2),
-            "Attachments": [
-                {
-                    "Name": f"Invoice-{invoice_num}.pdf",
-                    "Content": pdf_invoice,
-                    "ContentType": "application/octet-stream",
-                }
-            ],
-        }
-
-        return data
+        super().__init__(PREFIX, "Invoices", *args, **kwargs)
 
 
-class OnlineInvoices(Invoices):
-    def __init__(self, **kwargs):
-        fields = []
+class OnlineInvoices(Resource):
+    def __init__(self, *args, **kwargs):
         kwargs.update(
             {
-                # "id_field": "resourceId",
+                "id_field": "OnlineInvoiceUrl",
                 "subkey": "OnlineInvoices",
                 "domain": "api",
                 "subresource": "OnlineInvoice",
             }
         )
 
-        super().__init__(__name__, "Invoices", fields=fields, **kwargs)
+        super().__init__(PREFIX, "Invoices", *args, **kwargs)
+
+
+class EmailTemplate(Resource):
+    def __init__(self, *args, **kwargs):
+        kwargs["get_response"] = self.get_response
+        super().__init__(PREFIX, "Invoices", *args, **kwargs)
+        self.recipient_name = kwargs.get("recipient_name")
+        self.recipient_email = kwargs.get("recipient_email")
+
+    def get_line_item(self, **kwargs):
+        item_price = Decimal(kwargs["LineAmount"]) + Decimal(kwargs["DiscountAmount"])
+        line_item = {
+            "description": kwargs["Description"],
+            "item_price": str(Decimal(item_price).quantize(TWOPLACES)),
+        }
+        return line_item
+
+    def get_response(self):
+        invoices = Invoices(rid=self.id)
+        invoice = invoices.extract_model()
+        invoice_num = invoice["InvoiceNumber"]
+        items = [self.get_line_item(**item) for item in invoice["LineItems"]]
+        customer = invoice["Contact"]
+        charge_date = parse_date(invoice["DueDateString"])
+        invoice_date = parse_date(invoice["DateString"])
+        subtotal = invoice["AmountDue"] + invoice["TotalDiscount"]
+
+        try:
+            address = next(x for x in customer["Addresses"] if x.get("AddressLine1"))
+        except StopIteration:
+            address = {}
+
+        online_invoices = OnlineInvoices(rid=self.id)
+        online_invoice = online_invoices.extract_model()
+
+        model = {
+            "contact_name": customer["FirstName"],
+            "reference": invoice["Reference"],
+            "charge": str(Decimal(invoice["AmountDue"]).quantize(TWOPLACES)),
+            "currency": invoice["CurrencyCode"],
+            "charge_date": charge_date,
+            "link": online_invoice[online_invoices.id_field],
+            "customer_name": customer["Name"],
+            "invoice_num": invoice_num,
+            "invoice_date": invoice_date,
+            "items": items,
+            "subtotal": str(Decimal(subtotal).quantize(TWOPLACES)),
+            "discount": str(Decimal(invoice["TotalDiscount"]).quantize(TWOPLACES)),
+            "address": address,
+        }
+        result = {
+            "model": model,
+            "name": self.recipient_name or customer["FirstName"],
+            "email": self.recipient_email or customer["EmailAddress"],
+            "filename": "Nerevu Invoice {invoice_num}.pdf".format(**model),
+            "pdf": invoices.extract_model(headers={"Accept": "application/pdf"}),
+            "metadata": {"client-id": customer["ContactID"]},
+        }
+
+        return {"result": result}
 
 
 class Inventory(Resource):
-    def __init__(self, **kwargs):
-        fields = ["ItemID", "Name", "Code", "Description", "SalesDetails"]
+    def __init__(self, *args, **kwargs):
         kwargs.update(
             {
+                "fields": ["ItemID", "Name", "Code", "Description", "SalesDetails"],
                 "id_field": "ItemID",
                 "subkey": "Items",
                 "domain": "api",
@@ -191,7 +221,7 @@ class Inventory(Resource):
             }
         )
 
-        super().__init__(__name__, "Items", fields=fields, **kwargs)
+        super().__init__(PREFIX, "Items", *args, **kwargs)
 
     def get_matching_xero_postions(self, user_id, task_name, user_name=None):
         trunc_name = task_name.split(" ")[0]
@@ -208,11 +238,11 @@ class Inventory(Resource):
 
 
 class ProjectTasks(Resource):
-    def __init__(self, **kwargs):
+    def __init__(self, *args, **kwargs):
         # TODO: filter by active xero tasks
-        fields = ["taskId", "name", "status", "rate.value", "projectId"]
         kwargs.update(
             {
+                "fields": ["taskId", "name", "status", "rate.value", "projectId"],
                 "id_field": "taskId",
                 "subkey": "items",
                 "map_factory": None,
@@ -222,7 +252,7 @@ class ProjectTasks(Resource):
             }
         )
 
-        super().__init__(__name__, "projects", fields=fields, **kwargs)
+        super().__init__(PREFIX, "projects", *args, **kwargs)
 
     def get_task_entry(self, rid, source_rid, prefix=None):
         (project_id, user_id, label_id) = source_rid
@@ -323,7 +353,7 @@ class ProjectTasks(Resource):
 
 
 class ProjectTime(Resource):
-    def __init__(self, source_prefix="TIMELY", **kwargs):
+    def __init__(self, source_prefix="timely", *args, **kwargs):
         self.source_prefix = source_prefix
         self.event_pos = int(kwargs.pop("event_pos", 0))
         self.event_id = kwargs.pop("event_id", None)
@@ -339,7 +369,7 @@ class ProjectTime(Resource):
             }
         )
 
-        super().__init__(__name__, "projects", **kwargs)
+        super().__init__(PREFIX, "projects", *args, **kwargs)
 
     def set_post_data(self):
         prefix = self.source_prefix
@@ -442,16 +472,11 @@ class ProjectTime(Resource):
         return data
 
 
-###########################################################################
-# Hooks
-###########################################################################
-class InvoiceHook(Webhook, Invoices):
-    def __init__(self, **kwargs):
-        methods = {("new", "invoice"): self.notify}
-        super().__init__(methods=methods, **kwargs)
+class Hooks(Webhook):
+    def __init__(self, *args, **kwargs):
+        super().__init__(PREFIX, *args, **kwargs)
 
     def process_value(self, value):
-        ok = True
         result = {}
 
         for event in value:
@@ -459,14 +484,7 @@ class InvoiceHook(Webhook, Invoices):
             method = self.methods.get(key)
 
             if method:
-                response = method(**event)
+                response = method(event["ResourceId"])
                 result[event["eventId"]] = response.get("response")
 
-                if not response["ok"]:
-                    ok = False
-
-        return {"status_code": 200 if ok else 400, "result": result}
-
-    def notify(self, resourceId=None, **kwargs):
-        data = self.get_notification_data(resourceId)
-        return Email().post(data=data)
+        return result
