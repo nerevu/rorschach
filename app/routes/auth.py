@@ -257,6 +257,8 @@ class Resource(BaseView):
         self.fields = kwargs.get("fields", [])
         self.map_factory = kwargs.get("map_factory", reg_mapper)
         self.entry_factory = kwargs.get("entry_factory")
+        self.get_response = kwargs.get("get_response")
+        self.patch_response = kwargs.get("patch_response")
         self.eof = False
 
         try:
@@ -702,7 +704,7 @@ class Resource(BaseView):
 
             dest_id = self.map_rid(rid, prefix=source.prefix)
             needs_update = not dest_id
-            ekwargs.update({"id": dest_id, "source_rid": rid})
+            ekwargs.update({"_id": dest_id, "source_rid": rid})
             dest_item = self.extract_model(**ekwargs)
 
             args = (source_item, source_name, rid)
@@ -714,7 +716,7 @@ class Resource(BaseView):
                 dest_id = self.id_func(*args, prefix=source.prefix)
 
                 if dest_id:
-                    dest_item = self.extract_model(id=dest_id, update_cache=True)
+                    dest_item = self.extract_model(dest_id, update_cache=True)
 
             self.dry_run = dry_run
 
@@ -812,26 +814,27 @@ class Resource(BaseView):
             status_code = 200 if result else 404
             ok = status_code == 200
             response = {"result": result, "ok": ok, "status_code": status_code}
-        elif self.api_url:
-            if self.id:
-                url = f"{self.api_url}/{self.id}"
-            elif source_name or source_rid:
+        elif self.get_response:
+            self.client.response = self.get_response()
+            response = get_response(None, self.client)
+        else:
+            try:
+                url = self.api_url
+            except AssertionError as err:
                 url = None
+                self.error_msg, status_code = err.args[0]
             else:
-                try:
-                    url = self.api_url
-                except AssertionError as err:
+                if self.id:
+                    url += f"/{self.id}"
+                elif source_name or source_rid:
                     url = None
-                    self.error_msg, status_code = err.args[0]
 
             if url:
-                rkwargs = {"headers": self.headers, "params": self.params, **app.config}
+                headers = {**self.headers, **kwargs.get("headers", {})}
+                rkwargs = {"headers": headers, "params": self.params, **app.config}
                 response = get_response(url, self.client, **rkwargs)
             else:
                 response = {"result": {}, "ok": False, "status_code": 404}
-        else:
-            self.client.response = self.get_response()
-            response = get_response(None, self.client)
 
         result = response.get("result")
 
@@ -976,7 +979,7 @@ class Resource(BaseView):
                 "ok": True,
                 "message": f"Disable dry_run mode to PATCH {self}.",
             }
-        elif not self.api_url:
+        elif self.patch_response:
             self.client.response = self.patch_response(**data)
             response = get_response(None, self.client)
 

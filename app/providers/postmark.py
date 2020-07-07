@@ -89,8 +89,8 @@ class Email(EmailLists):
 
         if kwargs.get("f"):
             f = kwargs["f"]
-            filename = kwargs.get("filename", str(f))
-            ext = splitext(filename)[0].lstrip(".")
+            filename = kwargs.get("filename", f.name)
+            ext = splitext(filename)[-1].lstrip(".")
             content_type = CTYPES[ext]
 
             self.attachments = [

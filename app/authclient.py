@@ -12,6 +12,7 @@ from functools import partial
 from json import JSONDecodeError
 from base64 import b64encode
 from pathlib import Path
+from tempfile import NamedTemporaryFile
 
 import gspread
 import requests
@@ -49,25 +50,15 @@ def _clear_cache():
     cache.delete(make_cache_key())
 
 
-class AuthClient(object):
-    def __init__(self, prefix, client_id=None, client_secret=None, **kwargs):
+class BaseClient(object):
+    def __init__(self, prefix, **kwargs):
         self.prefix = prefix
-        self.client_id = client_id
-        self.client_secret = client_secret
-        self.access_token = None
-        self.refresh_token = None
-        self.auth_type = "other"
+        self.auth = None
         self.oauth_version = kwargs.get("oauth_version")
         self.oauth1 = self.oauth_version == 1
         self.oauth2 = self.oauth_version == 2
-        self.scope = kwargs.get("scope", "")
         self.api_base_url = kwargs.get("api_base_url", "")
-        self.authorization_base_url = kwargs.get("authorization_base_url")
-        self.redirect_uri = kwargs.get("redirect_uri")
         self.domain = kwargs.get("domain")
-        self.token_url = kwargs.get("token_url")
-        self.account_id = kwargs.get("account_id")
-        self.state = kwargs.get("state")
         self.debug = kwargs.get("debug")
         self.username = kwargs.get("username")
         self.password = kwargs.get("password")
@@ -80,12 +71,31 @@ class AuthClient(object):
     def __repr__(self):
         return f"{self.prefix} {self.auth_type}"
 
-    @property
-    def expired(self):
-        return self.expires_at <= dt.now() + timedelta(seconds=EXPIRATION_BUFFER)
+
+class AuthClient(BaseClient):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.auth_type = "other"
+        self.verified = True
+        self.expired = False
 
 
-class MyAuth2Client(AuthClient):
+class OAuthClient(BaseClient):
+    def __init__(self, *args, client_id=None, client_secret=None, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.client_id = client_id
+        self.client_secret = client_secret
+        self.access_token = None
+        self.refresh_token = None
+        self.scope = kwargs.get("scope", "")
+        self.authorization_base_url = kwargs.get("authorization_base_url")
+        self.redirect_uri = kwargs.get("redirect_uri")
+        self.token_url = kwargs.get("token_url")
+        self.account_id = kwargs.get("account_id")
+        self.state = kwargs.get("state")
+
+
+class OAuth2Client(OAuthClient):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.auth_type = "oauth2"
@@ -120,6 +130,10 @@ class MyAuth2Client(AuthClient):
             else:
                 logger.warning(f"{self.prefix} not authorized. Attempting to renew...")
                 self.renew_token("init")
+
+    @property
+    def expired(self):
+        return self.expires_at <= dt.now() + timedelta(seconds=EXPIRATION_BUFFER)
 
     @property
     def oauth_kwargs(self):
@@ -300,7 +314,7 @@ class MyAuth2Client(AuthClient):
         self.realm_id = cache.get(f"{self.prefix}_realm_id")
 
 
-class MyAuth1Client(AuthClient):
+class OAuth1Client(AuthClient):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.auth_type = "oauth1"
@@ -321,6 +335,10 @@ class MyAuth1Client(AuthClient):
             except TokenRequestDenied as e:
                 self.error = str(e)
                 logger.error(f"Error authenticating: {self.error}", exc_info=True)
+
+    @property
+    def expired(self):
+        return self.expires_at <= dt.now() + timedelta(seconds=EXPIRATION_BUFFER)
 
     @property
     def resource_owner_kwargs(self):
@@ -438,18 +456,14 @@ class MyAuth1Client(AuthClient):
         self._init_credentials()
 
 
-class MyBasicAuthClient(AuthClient):
+class BasicAuthClient(AuthClient):
     def __init__(self, *args, username=None, password=None, **kwargs):
         super().__init__(*args, **kwargs)
         self.auth_type = "basic"
         self.auth = (username, password)
 
-    @property
-    def expired(self):
-        return False
 
-
-class MyServiceAuthClient(AuthClient):
+class ServiceAuthClient(AuthClient):
     def __init__(self, *args, keyfile_path=None, sheet_id=None, **kwargs):
         super().__init__(*args, **kwargs)
         p = Path(keyfile_path)
@@ -460,11 +474,6 @@ class MyServiceAuthClient(AuthClient):
         self.gc = gspread.authorize(credentials)
         self.worksheet_name = kwargs.get("worksheet_name")
         self.sheet_id = sheet_id
-        self.verified = True
-
-    @property
-    def expired(self):
-        return False
 
 
 def get_auth_client(prefix, state=None, **kwargs):
@@ -478,15 +487,15 @@ def get_auth_client(prefix, state=None, **kwargs):
 
         if auth_type == "oauth1":
             auth_kwargs["oauth_version"] = 1
-            MyAuthClient = MyAuth1Client
+            MyAuthClient = OAuth1Client
         elif auth_type == "oauth2":
             auth_kwargs["oauth_version"] = 2
-            MyAuthClient = MyAuth2Client
+            MyAuthClient = OAuth2Client
             auth_kwargs["state"] = state
         elif auth_type == "service":
-            MyAuthClient = MyServiceAuthClient
+            MyAuthClient = ServiceAuthClient
         elif auth_type == "basic":
-            MyAuthClient = MyBasicAuthClient
+            MyAuthClient = BasicAuthClient
         else:
             MyAuthClient = AuthClient
 
@@ -518,7 +527,7 @@ def get_response(url, client, params=None, **kwargs):
         response = {"message": "Client not authorized.", "status_code": 401}
     elif client.error:
         response = {"message": client.error, "status_code": 500}
-    elif client.oauth_version or client.auth:
+    elif url:
         params = params or {}
         data = kwargs.get("data", {})
         json = kwargs.get("json", {})
@@ -527,7 +536,7 @@ def get_response(url, client, params=None, **kwargs):
         all_headers = client.headers.get("all", {})
         method_headers = client.headers.get(method, {})
         client_headers = {**all_headers, **method_headers}
-        headers = {**HEADERS, **def_headers, **client_headers}
+        headers = {**HEADERS, **client_headers, **def_headers}
         requestor = client.oauth_session if client.oauth_version else requests
         verb = getattr(requestor, method)
 
@@ -549,7 +558,11 @@ def get_response(url, client, params=None, **kwargs):
         except AttributeError:
             pass
         except JSONDecodeError:
-            if result.status_code == success_code:
+            content_type = result.headers["Content-Type"]
+            is_json = content_type.endswith("json")
+            is_file = content_type.endswith("pdf")
+
+            if is_json and result.status_code == success_code:
                 status_code = 500
             else:
                 status_code = result.status_code
@@ -563,10 +576,17 @@ def get_response(url, client, params=None, **kwargs):
                 message = "Got HTML response."
             elif "oauth_problem_advice" in result.text:
                 message = parse_qs(result.text)["oauth_problem_advice"][0]
+            elif is_file:
+                f = NamedTemporaryFile(delete=False)
+                f.write(result.content)
+                message = f"saved file to {f.name}"
             else:
                 message = result.text
 
             response = {"message": message, "status_code": status_code}
+
+            if is_file:
+                response["result"] = {f.name}
         else:
             try:
                 # in case the json result is list
