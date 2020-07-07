@@ -87,14 +87,19 @@ class Config(object):
         "CHUNK_SIZE",
         "ROW_LIMIT",
         "ERR_LIMIT",
+        "ADMIN",
     }
 
     # Variables warnings
     REQUIRED_SETTINGS = []
     REQUIRED_PROD_SETTINGS = []
 
+    # Logging
+    MAILGUN_DOMAIN = getenv("MAILGUN_DOMAIN")
+    MAILGUN_SMTP_PASSWORD = getenv("MAILGUN_SMTP_PASSWORD")
+    REQUIRED_PROD_SETTINGS += ["MAILGUN_DOMAIN", "MAILGUN_SMTP_PASSWORD"]
+
     # Authentication
-    DEF_MG_DOMAIN = f"{getenv('MAILGUN_SANDBOX')}.mailgun.org"
     AUTHENTICATION = {
         "mailgun": {
             "auth_type": "basic",
@@ -102,10 +107,7 @@ class Config(object):
                 "api_base_url": "https://api.mailgun.net/v3",
                 "username": "api",
                 "password": getenv("MAILGUN_API_KEY"),
-                "domain": getenv("MAILGUN_DOMAIN", DEF_MG_DOMAIN),
-                "address": "820 SW Adams St. Peoria, IL 61602",
-                "company": "Nerevu Gropup, LLC",
-                "list_prefix": "blog",
+                "domain": MAILGUN_DOMAIN,
             },
         },
         # https://postmarkapp.com/developer/api/overview
@@ -189,19 +191,27 @@ class Config(object):
         },
     }
 
+    # Mailgun
+    REQUIRED_PROD_SETTINGS += [
+        "MAILGUN_API_KEY",
+        "MAILGUN_DOMAIN",
+        "MAILGUN_LIST_PREFIX",
+    ]
+
+    # Postmark
+    REQUIRED_PROD_SETTINGS += [
+        "POSTMARK_SERVER_TOKEN",
+        "POSTMARK_ACCOUNT_TOKEN",
+        "POSTMARK_TEMPLATE_ID",
+    ]
+
     # AWS
     REQUIRED_PROD_SETTINGS += [
         "AWS_ACCESS_KEY_ID",
         "AWS_SECRET_ACCESS_KEY",
         "AWS_REGION",
-        "CF_DISTRIBUTION_ID",
+        "CLOUDFRONT_DISTRIBUTION_ID",
     ]
-    AWS_ACCESS_KEY_ID = getenv("AWS_ACCESS_KEY_ID")
-    AWS_SECRET_ACCESS_KEY = getenv("AWS_SECRET_ACCESS_KEY")
-    AWS_REGION = getenv("AWS_REGION")
-    DISTRIBUTION_ID = getenv("CF_DISTRIBUTION_ID")
-    APP_CONFIG_WHITELIST.update(REQUIRED_PROD_SETTINGS)
-    APP_CONFIG_WHITELIST.add("DISTRIBUTION_ID")
 
     # Webhooks
     WEBHOOKS = {
@@ -219,9 +229,9 @@ class Config(object):
     RQ_DASHBOARD_REDIS_URL = (
         getenv("REDIS_URL") or getenv("REDISTOGO_URL") or __DEF_REDIS_URL__
     )
-    RQ_DASHBOARD_USERNAME = getenv("RQ_DASHBOARD_USERNAME")
-    RQ_DASHBOARD_PASSWORD = getenv("RQ_DASHBOARD_PASSWORD")
     RQ_DASHBOARD_DEBUG = False
+
+    APP_CONFIG_WHITELIST.update(REQUIRED_PROD_SETTINGS)
 
     # Change based on mode
     CACHE_DEFAULT_TIMEOUT = get_seconds(hours=24)

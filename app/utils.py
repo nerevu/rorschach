@@ -410,6 +410,13 @@ def parse_kwargs(app):
     return kwargs
 
 
+def gen_config(app):
+    with app.app_context():
+        for k, v in app.config.items():
+            if k in APP_CONFIG_WHITELIST:
+                yield (k.lower(), v)
+
+
 def parse_request():
     values = request.values or {}
     json = request.json or {}

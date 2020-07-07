@@ -21,7 +21,7 @@ from click import Choice
 from flask.cli import FlaskGroup, pass_script_info
 from flask.config import Config as FlaskConfig
 
-from config import __APP_NAME__, __AUTHOR_EMAIL__, Config
+from config import __APP_NAME__, Config
 
 from app import create_app, services
 from app.helpers import configure, get_collection, get_provider, get_class_members
@@ -36,6 +36,9 @@ xero_project_time = ProjectTime(dictify=True, dry_run=True)
 BASEDIR = p.dirname(__file__)
 DEF_WHERE = ["app", "manage.py", "config.py"]
 AUTHENTICATION = Config.AUTHENTICATION
+ADMIN = Config.ADMIN
+MAILGUN_DOMAIN = Config.MAILGUN_DOMAIN
+MAILGUN_SMTP_PASSWORD = Config.MAILGUN_SMTP_PASSWORD
 
 
 def gen_collection_names(prefixes):
@@ -48,10 +51,7 @@ def gen_collection_names(prefixes):
 
 COLLECTION_NAMES = set(gen_collection_names(AUTHENTICATION))
 
-hdlr_kwargs = {
-    "subject": f"{__APP_NAME__} notification",
-    "recipients": [__AUTHOR_EMAIL__],
-}
+hdlr_kwargs = {"subject": f"{__APP_NAME__} notification", "recipients": [ADMIN.email]}
 
 # mappings
 sync_results = xero_project_time.results
@@ -60,16 +60,17 @@ skipped_events = set()
 patched_events = set()
 unpatched_events = set()
 
-if getenv("MAILGUN_SMTP_PASSWORD"):
+if MAILGUN_DOMAIN and MAILGUN_SMTP_PASSWORD:
     # NOTE: Sandbox domains are restricted to authorized recipients only.
     # https://help.mailgun.com/hc/en-us/articles/217531258
-    def_username = f"postmaster@{getenv('MAILGUN_DOMAIN')}"
+    def_username = f"postmaster@{MAILGUN_DOMAIN}"
+
     mailgun_kwargs = {
         "host": getenv("MAILGUN_SMTP_SERVER", "smtp.mailgun.org"),
         "port": getenv("MAILGUN_SMTP_PORT", 587),
-        "sender": f"notifications@{getenv('MAILGUN_DOMAIN')}",
+        "sender": f"notifications@{MAILGUN_DOMAIN}",
         "username": getenv("MAILGUN_SMTP_LOGIN", def_username),
-        "password": getenv("MAILGUN_SMTP_PASSWORD"),
+        "password": MAILGUN_SMTP_PASSWORD,
     }
 
     hdlr_kwargs.update(mailgun_kwargs)

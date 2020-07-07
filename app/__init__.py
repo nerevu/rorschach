@@ -15,7 +15,7 @@
     ###########################################################################
 """
 from functools import partial
-from os import path as p
+from os import path as p, getenv
 from pathlib import Path
 from pickle import DEFAULT_PROTOCOL
 
@@ -99,6 +99,15 @@ def configure_cache(app):
     cache.set = partial(cache.set, timeout=timeout)
 
 
+def set_settings(app):
+    required_settings = app.config.get("REQUIRED_SETTINGS", [])
+    required_prod_settings = app.config.get("REQUIRED_PROD_SETTINGS", [])
+    settings = required_settings + required_prod_settings
+
+    for setting in settings:
+        app.config.setdefault(setting, getenv(setting))
+
+
 def check_settings(app):
     required_setting_missing = False
 
@@ -153,6 +162,7 @@ def create_app(script_info=None, **kwargs):
         else:
             logger.warning("Invalid command. Use `manage run` to start the server.")
 
+    set_settings(app)
     check_settings(app)
     app.register_blueprint(api)
     register_rq(app)

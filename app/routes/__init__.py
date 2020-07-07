@@ -17,6 +17,7 @@ from app.utils import (
     jsonify,
     parse_request,
     parse_kwargs,
+    gen_config,
     get_links,
     get_request_base,
 )
@@ -75,7 +76,7 @@ class ProviderMixin:
                         f"path:{self.path} doesn't match request:{request.path}"
                     )
             except RuntimeError:
-                self._kwargs = {}
+                self._kwargs = dict(gen_config(app))
 
         return self._kwargs
 
