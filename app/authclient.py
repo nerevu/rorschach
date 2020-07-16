@@ -516,7 +516,7 @@ def get_auth_client(prefix, state=None, **kwargs):
     return g.get(auth_client_name)
 
 
-def get_response(url, client, params=None, **kwargs):
+def get_response(url, client, params=None, renewed=False, hacked=False, **kwargs):
     ok = False
     unscoped = False
     success_code = kwargs.get("success_code", 200)
@@ -692,14 +692,14 @@ def get_response(url, client, params=None, **kwargs):
         except AttributeError:
             pass
 
-    if status_code == 401 and not kwargs.get("renewed"):
-        if unscoped:
-            logger.debug(f"Insufficient scope: {client.scope}.")
-        else:
-            logger.debug("Token expired!")
-
+    if status_code == 401 and not renewed:
+        msg = f"Insufficient scope: {client.scope}." if unscoped else "Token expired!"
+        logger.debug(msg)
         client.renew_token(401)
         response = get_response(url, client, params=params, renewed=True, **kwargs)
+    elif status_code == 400 and not hacked:
+        logger.debug("Applying authclient hack!")
+        response = get_response(url, client, params=params, hacked=True, **kwargs)
     else:
         try:
             response["links"] = get_links(app.url_map.iter_rules())
