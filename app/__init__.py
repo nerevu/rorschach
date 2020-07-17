@@ -15,7 +15,7 @@
     ###########################################################################
 """
 from functools import partial
-from os import path as p
+from os import path as p, getenv
 from pathlib import Path
 from pickle import DEFAULT_PROTOCOL
 
@@ -34,7 +34,7 @@ from app.helpers import configure
 from mezmorize.utils import get_cache_config, get_cache_type
 from meza.fntools import CustomEncoder
 
-__version__ = "0.22.0"
+__version__ = "0.23.0"
 __title__ = "Timero API"
 __package_name__ = "timero-api"
 __author__ = "Reuben Cummings"
@@ -52,13 +52,94 @@ cors = CORS()
 logger = gogo.Gogo(__name__, monolog=True).logger
 
 
+def register_rq(app):
+    username = app.config.get("RQ_DASHBOARD_USERNAME")
+    password = app.config.get("RQ_DASHBOARD_PASSWORD")
+
+    if username and password:
+        add_basic_auth(blueprint=rq, username=username, password=password)
+        logger.info(f"Creating RQ-dashboard login for {username}")
+
+    app.register_blueprint(rq, url_prefix="/dashboard")
+
+
+def configure_talisman(app):
+    from flask_talisman import Talisman
+
+    talisman_kwargs = {
+        k.replace("TALISMAN_", "").lower(): v
+        for k, v in app.config.items()
+        if k.startswith("TALISMAN_")
+    }
+
+    Talisman(app, **talisman_kwargs)
+
+
+def configure_cache(app):
+    if app.config.get("PROD_SERVER") or app.config.get("DEBUG_MEMCACHE"):
+        cache_type = get_cache_type(spread=False)
+        cache_dir = None
+    else:
+        cache_type = "filesystem"
+        parent_dir = Path(p.dirname(BASEDIR))
+        cache_dir = parent_dir.joinpath(".cache", f"v{DEFAULT_PROTOCOL}")
+
+    message = f"Set cache type to {cache_type}"
+    cache_config = get_cache_config(cache_type, CACHE_DIR=cache_dir, **app.config)
+
+    if cache_config["CACHE_TYPE"] == "filesystem":
+        message += f" in {cache_config['CACHE_DIR']}"
+
+    logger.debug(message)
+    cache.init_app(app, config=cache_config)
+
+    # TODO: keep until https://github.com/sh4nks/flask-caching/issues/113 is solved
+    DEF_TIMEOUT = app.config.get("CACHE_DEFAULT_TIMEOUT")
+    timeout = app.config.get("SET_TIMEOUT", DEF_TIMEOUT)
+    cache.set = partial(cache.set, timeout=timeout)
+
+
+def set_settings(app):
+    required_settings = app.config.get("REQUIRED_SETTINGS", [])
+    required_prod_settings = app.config.get("REQUIRED_PROD_SETTINGS", [])
+    settings = required_settings + required_prod_settings
+
+    for setting in settings:
+        app.config.setdefault(setting, getenv(setting))
+
+
+def check_settings(app):
+    required_setting_missing = False
+
+    for setting in app.config.get("REQUIRED_SETTINGS", []):
+        if not app.config.get(setting):
+            required_setting_missing = True
+            logger.error(f"App setting {setting} is missing!")
+
+    if app.config.get("PROD_SERVER"):
+        server_name = app.config.get("SERVER_NAME")
+
+        if server_name:
+            logger.info(f"SERVER_NAME is {server_name}.")
+        else:
+            logger.error("SERVER_NAME is not set!")
+
+        for setting in app.config.get("REQUIRED_PROD_SETTINGS", []):
+            if not app.config.get(setting):
+                required_setting_missing = True
+                logger.error(f"Production app setting {setting} is missing!")
+
+    if not required_setting_missing:
+        logger.info("All required app settings present!")
+
+    return required_setting_missing
+
+
 def create_app(script_info=None, **kwargs):
     app = Flask(__name__)
     app.url_map.strict_slashes = False
     cors.init_app(app)
     compress.init_app(app)
-
-    required_setting_missing = False
 
     @app.before_request
     def clear_trailing():
@@ -81,70 +162,15 @@ def create_app(script_info=None, **kwargs):
         else:
             logger.warning("Invalid command. Use `manage run` to start the server.")
 
-    server_name = app.config.get("SERVER_NAME")
-    username = app.config.get("RQ_DASHBOARD_USERNAME")
-    password = app.config.get("RQ_DASHBOARD_PASSWORD")
-
-    for setting in app.config.get("REQUIRED_SETTINGS", []):
-        if not app.config.get(setting):
-            required_setting_missing = True
-            logger.error(f"App setting {setting} is missing!")
-
-    if app.config.get("PROD_SERVER"):
-        if server_name:
-            logger.info(f"SERVER_NAME is {server_name}.")
-        else:
-            logger.error(f"SERVER_NAME is not set!")
-
-        for setting in app.config.get("REQUIRED_PROD_SETTINGS", []):
-            if not app.config.get(setting):
-                required_setting_missing = True
-                logger.error(f"App setting {setting} is missing!")
-
-    if not required_setting_missing:
-        logger.info(f"All required app settings present!")
-
+    set_settings(app)
+    check_settings(app)
     app.register_blueprint(api)
-
-    if username and password:
-        add_basic_auth(blueprint=rq, username=username, password=password)
-        logger.info(f"Creating RQ-dashboard login for {username}")
-
-    app.register_blueprint(rq, url_prefix=f"/dashboard")
+    register_rq(app)
 
     if app.config.get("TALISMAN"):
-        from flask_talisman import Talisman
+        configure_talisman(app)
 
-        talisman_kwargs = {
-            k.replace("TALISMAN_", "").lower(): v
-            for k, v in app.config.items()
-            if k.startswith("TALISMAN_")
-        }
-
-        Talisman(app, **talisman_kwargs)
-
-    if app.config.get("PROD_SERVER") or app.config.get("DEBUG_MEMCACHE"):
-        cache_type = get_cache_type(spread=False)
-        cache_dir = None
-    else:
-        cache_type = "filesystem"
-        parent_dir = Path(p.dirname(BASEDIR))
-        cache_dir = parent_dir.joinpath(".cache", f"v{DEFAULT_PROTOCOL}")
-
-    message = f"Set cache type to {cache_type}"
-    cache_config = get_cache_config(cache_type, CACHE_DIR=cache_dir, **app.config)
-
-    if cache_config["CACHE_TYPE"] == "filesystem":
-        message += f" in {cache_config['CACHE_DIR']}"
-
-    logger.debug(message)
-    cache.init_app(app, config=cache_config)
-
-    # TODO: keep until https://github.com/sh4nks/flask-caching/issues/113 is
-    # solved
-    DEF_TIMEOUT = app.config.get("CACHE_DEFAULT_TIMEOUT")
-    timeout = app.config.get("SET_TIMEOUT", DEF_TIMEOUT)
-    cache.set = partial(cache.set, timeout=timeout)
+    configure_cache(app)
 
     app.json_encoder = CustomEncoder
     return app

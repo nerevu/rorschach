@@ -1,5 +1,6 @@
 #!/usr/bin/env bash -uo pipefail
 
-manage store -p timely -c users --dictify
-manage store -p xero -c users --dictify
-manage store -p xero -c contacts --dictify
+manage store -P timely -c users --dictify
+manage store -P xero -c users --dictify
+manage store -P xero -c contacts --dictify
+manage store -P gsheets -c users --dictify

@@ -1,65 +1,5 @@
 [
   {
-    "dateEnteredUtc": "2020-04-01T21:55:36.9984263Z",
-    "dateUtc": "2020-03-30T12:00:00Z",
-    "day": "2020-03-30",
-    "description": "Fastmail",
-    "duration": 32,
-    "projectId": "f9d0e04b-f07c-423d-8975-418159180dab",
-    "status": "ACTIVE",
-    "taskId": "ed9d0041-3680-4011-a24a-a20e72210864",
-    "timeEntryId": "e2a6598a-84e5-4a43-ab47-675ab148138d",
-    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
-  },
-  {
-    "dateEnteredUtc": "2020-04-01T21:55:39.8600729Z",
-    "dateUtc": "2020-03-31T12:00:00Z",
-    "day": "2020-03-31",
-    "description": "Ad creation",
-    "duration": 363,
-    "projectId": "f9d0e04b-f07c-423d-8975-418159180dab",
-    "status": "ACTIVE",
-    "taskId": "ed9d0041-3680-4011-a24a-a20e72210864",
-    "timeEntryId": "7787f6f8-4c92-44a5-8392-fb2975ccc645",
-    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
-  },
-  {
-    "dateEnteredUtc": "2020-04-01T21:55:42.8911555Z",
-    "dateUtc": "2020-03-31T12:00:00Z",
-    "day": "2020-03-31",
-    "description": "State of IL Central Management Services (CMS)",
-    "duration": 11,
-    "projectId": "f9d0e04b-f07c-423d-8975-418159180dab",
-    "status": "ACTIVE",
-    "taskId": "ed9d0041-3680-4011-a24a-a20e72210864",
-    "timeEntryId": "c90a9a9e-e596-442d-8777-0df355ae5b20",
-    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
-  },
-  {
-    "dateEnteredUtc": "2020-04-01T21:55:54.5649138Z",
-    "dateUtc": "2020-03-31T12:00:00Z",
-    "day": "2020-03-31",
-    "description": "Nerevu • OmniFocus",
-    "duration": 18,
-    "projectId": "f9d0e04b-f07c-423d-8975-418159180dab",
-    "status": "ACTIVE",
-    "taskId": "ed9d0041-3680-4011-a24a-a20e72210864",
-    "timeEntryId": "e8a9617f-49a4-4bd9-a3c9-75c0e7503e59",
-    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
-  },
-  {
-    "dateEnteredUtc": "2020-04-01T21:55:55.5182516Z",
-    "dateUtc": "2020-03-31T12:00:00Z",
-    "day": "2020-03-31",
-    "description": "OmniFocus • Fastmail",
-    "duration": 11,
-    "projectId": "f9d0e04b-f07c-423d-8975-418159180dab",
-    "status": "ACTIVE",
-    "taskId": "ed9d0041-3680-4011-a24a-a20e72210864",
-    "timeEntryId": "6f2e4013-d798-458c-bf8c-ca3da7145fe4",
-    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
-  },
-  {
     "dateEnteredUtc": "2020-04-01T21:55:57.0452503Z",
     "dateUtc": "2020-04-01T12:00:00Z",
     "day": "2020-04-01",
@@ -597,6 +537,66 @@
     "status": "ACTIVE",
     "taskId": "ed9d0041-3680-4011-a24a-a20e72210864",
     "timeEntryId": "a2cb3d64-a86f-45da-9de2-fa70d4fbc4a0",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  },
+  {
+    "dateEnteredUtc": "2020-06-23T06:56:22.2755182Z",
+    "dateUtc": "2020-04-18T12:00:00Z",
+    "day": "2020-04-18",
+    "description": "OmniFocus • Finder",
+    "duration": 20,
+    "projectId": "f9d0e04b-f07c-423d-8975-418159180dab",
+    "status": "ACTIVE",
+    "taskId": "ed9d0041-3680-4011-a24a-a20e72210864",
+    "timeEntryId": "b98bc993-097d-4e5f-a61e-05f0b0a28448",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  },
+  {
+    "dateEnteredUtc": "2020-06-23T06:56:23.8224019Z",
+    "dateUtc": "2020-04-20T12:00:00Z",
+    "day": "2020-04-20",
+    "description": "Live Assistance • LinkedIn ProFinder",
+    "duration": 17,
+    "projectId": "f9d0e04b-f07c-423d-8975-418159180dab",
+    "status": "ACTIVE",
+    "taskId": "ed9d0041-3680-4011-a24a-a20e72210864",
+    "timeEntryId": "89dff24a-7349-49b5-9524-46e54879efb9",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  },
+  {
+    "dateEnteredUtc": "2020-06-23T06:56:27.2987633Z",
+    "dateUtc": "2020-04-21T12:00:00Z",
+    "day": "2020-04-21",
+    "description": "SCORE meeting",
+    "duration": 104,
+    "projectId": "f9d0e04b-f07c-423d-8975-418159180dab",
+    "status": "ACTIVE",
+    "taskId": "ed9d0041-3680-4011-a24a-a20e72210864",
+    "timeEntryId": "b9b08a4b-1b10-4f6e-8dc4-0048c637b11f",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  },
+  {
+    "dateEnteredUtc": "2020-06-23T06:56:29.1533101Z",
+    "dateUtc": "2020-04-21T12:00:00Z",
+    "day": "2020-04-21",
+    "description": "Nerevu • Income Statement • Databox • Nerevu Group, LLC - Income…",
+    "duration": 64,
+    "projectId": "f9d0e04b-f07c-423d-8975-418159180dab",
+    "status": "ACTIVE",
+    "taskId": "ed9d0041-3680-4011-a24a-a20e72210864",
+    "timeEntryId": "da2e99a2-1baf-492b-b782-9ab011df2b2e",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  },
+  {
+    "dateEnteredUtc": "2020-06-23T06:56:32.552717Z",
+    "dateUtc": "2020-04-21T12:00:00Z",
+    "day": "2020-04-21",
+    "description": "CAGE verification",
+    "duration": 87,
+    "projectId": "f9d0e04b-f07c-423d-8975-418159180dab",
+    "status": "ACTIVE",
+    "taskId": "ed9d0041-3680-4011-a24a-a20e72210864",
+    "timeEntryId": "7549fe90-778b-4398-a914-53b9d727e448",
     "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
   }
 ]

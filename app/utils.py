@@ -24,7 +24,9 @@ import pygogo as gogo
 from flask import make_response, request
 from dateutil.relativedelta import relativedelta
 
-from meza import fntools as ft, convert as cv
+from riko.dotdict import DotDict
+from meza.fntools import CustomEncoder
+from meza.convert import records2csv
 from config import Config
 
 from app import cache
@@ -33,7 +35,6 @@ logger = gogo.Gogo(__name__, monolog=True).logger
 
 ENCODING = "utf-8"
 EPOCH = dt(*gmtime(0)[:6])
-HEADERS = {"Accept": "application/json"}
 
 MIMETYPES = [
     "application/json",
@@ -57,10 +58,16 @@ AUTH_ROUTES = {
     ("status", "GET"): "status",
 }
 
+CTYPES = {
+    "pdf": "application/octet-stream",
+    "jpg": "image/jpeg",
+    "jpeg": "image/jpeg",
+    "txt": "text/plain",
+}
 
 get_hash = lambda text: md5(str(text).encode(ENCODING)).hexdigest()
 
-KEY_WHITELIST = Config.KEY_WHITELIST
+APP_CONFIG_WHITELIST = Config.APP_CONFIG_WHITELIST
 TODAY = date.today()
 YESTERDAY = TODAY - timedelta(days=1)
 
@@ -80,12 +87,14 @@ def responsify(mimetype, status_code=200, indent=2, sort_keys=True, **kwargs):
     """
     encoding = kwargs.get("encoding", ENCODING)
     options = {"indent": indent, "sort_keys": sort_keys, "ensure_ascii": False}
-    kwargs["status"] = responses[status_code]
 
     if mimetype.endswith("json"):
-        content = dumps(kwargs, cls=ft.CustomEncoder, **options)
+        kwargs["status"] = responses[status_code]
+        content = dumps(kwargs, cls=CustomEncoder, **options)
     elif mimetype.endswith("csv") and kwargs.get("result"):
-        content = cv.records2csv(kwargs["result"]).getvalue()
+        content = records2csv(kwargs["result"]).getvalue()
+    elif mimetype.endswith("html") and kwargs.get("html"):
+        content = kwargs["html"]
     else:
         content = ""
 
@@ -388,14 +397,24 @@ def get_links(rules):
 
 
 def parse_kwargs(app):
-    kwargs = {k: parse(v) for k, v in request.args.to_dict().items()}
+    form = request.form or {}
+    args = request.args.to_dict()
+    _kwargs = {**form, **args}
+    kwargs = {k: parse(v) for k, v in _kwargs.items()}
 
     with app.app_context():
         for k, v in app.config.items():
-            if k in KEY_WHITELIST:
+            if k in APP_CONFIG_WHITELIST:
                 kwargs.setdefault(k.lower(), v)
 
     return kwargs
+
+
+def gen_config(app):
+    with app.app_context():
+        for k, v in app.config.items():
+            if k in APP_CONFIG_WHITELIST:
+                yield (k.lower(), v)
 
 
 def parse_request():
@@ -429,6 +448,14 @@ def check_signature(digest="sha256", signature_header="", webhook_secret="", **k
         is_valid = False
 
     return is_valid
+
+
+def hash_text(**kwargs):
+    return get_hash("{email}:{list}:{secret}".format(**kwargs))
+
+
+def verify(hash="", **kwargs):
+    return hmac.compare_digest(hash, hash_text(**kwargs))
 
 
 def load_path(path, default=None):
@@ -470,3 +497,23 @@ def fetch_bool(message):
             logger.error(f"Invalid selection: {answer}.")
 
     return answer
+
+
+def extract_fields(record, *fields, **kwargs):
+    item = DotDict(record)
+
+    for field in fields:
+        if "[" in field:
+            split_field = field.split("[")
+            real_field = split_field[0]
+            pos = int(split_field[1].split("]")[0])
+            values = item.get(real_field, [])
+
+            try:
+                value = values[pos]
+            except IndexError:
+                value = None
+        else:
+            value = item.get(field)
+
+        yield (field, value)

@@ -1,0 +1,30 @@
+[
+  {
+    "name": "Development",
+    "row": 2
+  },
+  {
+    "name": "Maintenance",
+    "row": 3
+  },
+  {
+    "name": "Design",
+    "row": 4
+  },
+  {
+    "name": "Research",
+    "row": 5
+  },
+  {
+    "name": "Admin",
+    "row": 6
+  },
+  {
+    "name": "Marketing",
+    "row": 7
+  },
+  {
+    "name": "Instructing",
+    "row": 8
+  }
+]

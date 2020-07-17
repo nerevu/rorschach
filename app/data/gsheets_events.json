@@ -1,0 +1,1142 @@
+[
+  {
+    "billed": false,
+    "day": "2020-04-09",
+    "duration.total_minutes": 270,
+    "id": "austin-2",
+    "label_id": "research",
+    "note": "Learning about SQL Alchemy.",
+    "project.id": "wei-website",
+    "user.id": "austin"
+  },
+  {
+    "billed": false,
+    "day": "2020-04-09",
+    "duration.total_minutes": 240,
+    "id": "austin-3",
+    "label_id": "development",
+    "note": "Building data model.",
+    "project.id": "wei-website",
+    "user.id": "austin"
+  },
+  {
+    "billed": false,
+    "day": "2020-04-10",
+    "duration.total_minutes": 180,
+    "id": "austin-4",
+    "label_id": "development",
+    "note": "Building data model.",
+    "project.id": "wei-website",
+    "user.id": "austin"
+  },
+  {
+    "billed": false,
+    "day": "2020-04-11",
+    "duration.total_minutes": 90,
+    "id": "austin-5",
+    "label_id": "development",
+    "note": "Building data model.",
+    "project.id": "wei-website",
+    "user.id": "austin"
+  },
+  {
+    "billed": false,
+    "day": "2020-04-17",
+    "duration.total_minutes": 60,
+    "id": "austin-6",
+    "label_id": "admin",
+    "note": "Meeting with Reuben.",
+    "project.id": "internal",
+    "user.id": "austin"
+  },
+  {
+    "billed": false,
+    "day": "2020-04-17",
+    "duration.total_minutes": 120,
+    "id": "austin-7",
+    "label_id": "development",
+    "note": "Updating data model.",
+    "project.id": "wei-website",
+    "user.id": "austin"
+  },
+  {
+    "billed": false,
+    "day": "2020-04-18",
+    "duration.total_minutes": 120,
+    "id": "austin-8",
+    "label_id": "development",
+    "note": "Updating data model.",
+    "project.id": "wei-website",
+    "user.id": "austin"
+  },
+  {
+    "billed": false,
+    "day": "2020-04-21",
+    "duration.total_minutes": 60,
+    "id": "austin-9",
+    "label_id": "admin",
+    "note": "Logging hours.",
+    "project.id": "wei-website",
+    "user.id": "austin"
+  },
+  {
+    "billed": false,
+    "day": "2020-04-22",
+    "duration.total_minutes": 270,
+    "id": "austin-10",
+    "label_id": "development",
+    "note": "Updating colleges and programs.",
+    "project.id": "wei-website",
+    "user.id": "austin"
+  },
+  {
+    "billed": false,
+    "day": "2020-04-23",
+    "duration.total_minutes": 120,
+    "id": "austin-11",
+    "label_id": "development",
+    "note": "Finalizing JSON data files.",
+    "project.id": "wei-website",
+    "user.id": "austin"
+  },
+  {
+    "billed": false,
+    "day": "2020-04-27",
+    "duration.total_minutes": 60,
+    "id": "austin-12",
+    "label_id": "admin",
+    "note": "Meeting with Reuben.",
+    "project.id": "internal",
+    "user.id": "austin"
+  },
+  {
+    "billed": false,
+    "day": "2020-04-29",
+    "duration.total_minutes": 150,
+    "id": "austin-13",
+    "label_id": "development",
+    "note": "Setting up WebApp.",
+    "project.id": "wei-website",
+    "user.id": "austin"
+  },
+  {
+    "billed": false,
+    "day": "2020-04-30",
+    "duration.total_minutes": 210,
+    "id": "austin-14",
+    "label_id": "development",
+    "note": "Integrating employees field.",
+    "project.id": "wei-website",
+    "user.id": "austin"
+  },
+  {
+    "billed": false,
+    "day": "2020-05-01",
+    "duration.total_minutes": 120,
+    "id": "austin-15",
+    "label_id": "admin",
+    "note": "Meeting and updating handbook.",
+    "project.id": "internal",
+    "user.id": "austin"
+  },
+  {
+    "billed": false,
+    "day": "2020-05-02",
+    "duration.total_minutes": 300,
+    "id": "austin-16",
+    "label_id": "development",
+    "note": "Adding status check and updating data model.",
+    "project.id": "wei-website",
+    "user.id": "austin"
+  },
+  {
+    "billed": false,
+    "day": "2020-05-03",
+    "duration.total_minutes": 300,
+    "id": "austin-17",
+    "label_id": "development",
+    "note": "Updating data model.",
+    "project.id": "wei-website",
+    "user.id": "austin"
+  },
+  {
+    "billed": false,
+    "day": "2020-05-04",
+    "duration.total_minutes": 120,
+    "id": "austin-18",
+    "label_id": "development",
+    "note": "Updating data model.",
+    "project.id": "wei-website",
+    "user.id": "austin"
+  },
+  {
+    "billed": false,
+    "day": "2020-05-05",
+    "duration.total_minutes": 240,
+    "id": "austin-19",
+    "label_id": "development",
+    "note": "Updating data model.",
+    "project.id": "wei-website",
+    "user.id": "austin"
+  },
+  {
+    "billed": false,
+    "day": "2020-05-06",
+    "duration.total_minutes": 360,
+    "id": "austin-20",
+    "label_id": "development",
+    "note": "Adding employees field.",
+    "project.id": "wei-website",
+    "user.id": "austin"
+  },
+  {
+    "billed": false,
+    "day": "2020-05-08",
+    "duration.total_minutes": 120,
+    "id": "austin-21",
+    "label_id": "development",
+    "note": "Editing PRs.",
+    "project.id": "wei-website",
+    "user.id": "austin"
+  },
+  {
+    "billed": false,
+    "day": "2020-05-11",
+    "duration.total_minutes": 150,
+    "id": "austin-22",
+    "label_id": "development",
+    "note": "Status function.",
+    "project.id": "wei-website",
+    "user.id": "austin"
+  },
+  {
+    "billed": false,
+    "day": "2020-05-17",
+    "duration.total_minutes": 30,
+    "id": "austin-23",
+    "label_id": "admin",
+    "note": "Logging hours. Checking emails.",
+    "project.id": "internal",
+    "user.id": "austin"
+  },
+  {
+    "billed": false,
+    "day": "2020-05-17",
+    "duration.total_minutes": 180,
+    "id": "austin-24",
+    "label_id": "development",
+    "note": "Working on status function and PRs.",
+    "project.id": "wei-website",
+    "user.id": "austin"
+  },
+  {
+    "billed": false,
+    "day": "2020-05-18",
+    "duration.total_minutes": 240,
+    "id": "austin-25",
+    "label_id": "development",
+    "note": "Updating data model for V2 data.",
+    "project.id": "wei-website",
+    "user.id": "austin"
+  },
+  {
+    "billed": false,
+    "day": "2020-05-19",
+    "duration.total_minutes": 30,
+    "id": "austin-26",
+    "label_id": "admin",
+    "note": "Meeting with Reuben.",
+    "project.id": "wei-website",
+    "user.id": "austin"
+  },
+  {
+    "billed": false,
+    "day": "2020-05-20",
+    "duration.total_minutes": 270,
+    "id": "austin-27",
+    "label_id": "development",
+    "note": "Updating data model for V2 data.",
+    "project.id": "wei-website",
+    "user.id": "austin"
+  },
+  {
+    "billed": false,
+    "day": "2020-05-21",
+    "duration.total_minutes": 180,
+    "id": "austin-28",
+    "label_id": "development",
+    "note": "Adding employees field and urls.",
+    "project.id": "wei-website",
+    "user.id": "austin"
+  },
+  {
+    "billed": false,
+    "day": "2020-05-22",
+    "duration.total_minutes": 180,
+    "id": "austin-29",
+    "label_id": "development",
+    "note": "College logos added to data.",
+    "project.id": "wei-website",
+    "user.id": "austin"
+  },
+  {
+    "billed": false,
+    "day": "2020-05-23",
+    "duration.total_minutes": 180,
+    "id": "austin-30",
+    "label_id": "development",
+    "note": "Program URLs added to data.",
+    "project.id": "wei-website",
+    "user.id": "austin"
+  },
+  {
+    "billed": false,
+    "day": "2020-05-25",
+    "duration.total_minutes": 330,
+    "id": "austin-31",
+    "label_id": "development",
+    "note": "Correcting PRs and adding features.",
+    "project.id": "wei-website",
+    "user.id": "austin"
+  },
+  {
+    "billed": false,
+    "day": "2020-05-26",
+    "duration.total_minutes": 120,
+    "id": "austin-32",
+    "label_id": "admin",
+    "note": "Meeting with Reuben.",
+    "project.id": "wei-website",
+    "user.id": "austin"
+  },
+  {
+    "billed": false,
+    "day": "2020-05-27",
+    "duration.total_minutes": 180,
+    "id": "austin-33",
+    "label_id": "development",
+    "note": "Updating partner URLs and seeding articles.",
+    "project.id": "wei-website",
+    "user.id": "austin"
+  },
+  {
+    "billed": false,
+    "day": "2020-05-28",
+    "duration.total_minutes": 480,
+    "id": "austin-34",
+    "label_id": "development",
+    "note": "Adding program urls, and descriptions.",
+    "project.id": "wei-website",
+    "user.id": "austin"
+  },
+  {
+    "billed": false,
+    "day": "2020-05-29",
+    "duration.total_minutes": 60,
+    "id": "austin-35",
+    "label_id": "admin",
+    "note": "Meeting with Reuben.",
+    "project.id": "wei-website",
+    "user.id": "austin"
+  },
+  {
+    "billed": false,
+    "day": "2020-05-29",
+    "duration.total_minutes": 240,
+    "id": "austin-36",
+    "label_id": "development",
+    "note": "Adding program fields and student highlights.",
+    "project.id": "wei-website",
+    "user.id": "austin"
+  },
+  {
+    "billed": false,
+    "day": "2020-06-02",
+    "duration.total_minutes": 120,
+    "id": "austin-37",
+    "label_id": "development",
+    "note": "Writing WEI Ghost articles.",
+    "project.id": "wei-website",
+    "user.id": "austin"
+  },
+  {
+    "billed": false,
+    "day": "2020-06-05",
+    "duration.total_minutes": 180,
+    "id": "austin-38",
+    "label_id": "admin",
+    "note": "Finding a better GitGUI (GitKraken)",
+    "project.id": "internal",
+    "user.id": "austin"
+  },
+  {
+    "billed": false,
+    "day": "2020-06-05",
+    "duration.total_minutes": 90,
+    "id": "austin-39",
+    "label_id": "development",
+    "note": "Updating program information.",
+    "project.id": "wei-website",
+    "user.id": "austin"
+  },
+  {
+    "billed": false,
+    "day": "2020-06-06",
+    "duration.total_minutes": 300,
+    "id": "austin-40",
+    "label_id": "development",
+    "note": "Updating program information.",
+    "project.id": "wei-website",
+    "user.id": "austin"
+  },
+  {
+    "billed": false,
+    "day": "2020-06-07",
+    "duration.total_minutes": 150,
+    "id": "austin-41",
+    "label_id": "development",
+    "note": "Updating program information.",
+    "project.id": "wei-website",
+    "user.id": "austin"
+  },
+  {
+    "billed": false,
+    "day": "2020-06-08",
+    "duration.total_minutes": 90,
+    "id": "austin-42",
+    "label_id": "admin",
+    "note": "Administrative and meeting with Reuben.",
+    "project.id": "wei-website",
+    "user.id": "austin"
+  },
+  {
+    "billed": false,
+    "day": "2020-06-08",
+    "duration.total_minutes": 90,
+    "id": "austin-43",
+    "label_id": "development",
+    "note": "Cleaning program cross referencing code.",
+    "project.id": "wei-website",
+    "user.id": "austin"
+  },
+  {
+    "billed": false,
+    "day": "2020-06-09",
+    "duration.total_minutes": 240,
+    "id": "austin-44",
+    "label_id": "development",
+    "note": "Updating programs, adding employees, testing site.",
+    "project.id": "wei-website",
+    "user.id": "austin"
+  },
+  {
+    "billed": false,
+    "day": "2020-06-11",
+    "duration.total_minutes": 120,
+    "id": "austin-45",
+    "label_id": "development",
+    "note": "Adding new WEI success highlights.",
+    "project.id": "wei-website",
+    "user.id": "austin"
+  },
+  {
+    "billed": false,
+    "day": "2020-06-15",
+    "duration.total_minutes": 240,
+    "id": "austin-46",
+    "label_id": "instructing",
+    "note": "Meeting Reuben and writing admin posts.",
+    "project.id": "wei-website",
+    "user.id": "austin"
+  },
+  {
+    "billed": false,
+    "day": "2020-06-18",
+    "duration.total_minutes": 150,
+    "id": "austin-47",
+    "label_id": "instructing",
+    "note": "Finalizing WEI admin posts.",
+    "project.id": "wei-website",
+    "user.id": "austin"
+  },
+  {
+    "billed": false,
+    "day": "2020-04-27",
+    "duration.total_minutes": 191,
+    "id": "mitchell-2",
+    "label_id": "admin",
+    "note": "Setting up for first day...again :P",
+    "project.id": "internal",
+    "user.id": "mitchell"
+  },
+  {
+    "billed": false,
+    "day": "2020-04-28",
+    "duration.total_minutes": 60,
+    "id": "mitchell-3",
+    "label_id": "admin",
+    "note": "Setup/Read Manual",
+    "project.id": "internal",
+    "user.id": "mitchell"
+  },
+  {
+    "billed": false,
+    "day": "2020-04-28",
+    "duration.total_minutes": 126,
+    "id": "mitchell-4",
+    "label_id": "development",
+    "note": "Figuring out solutions for CKAN Issues (8-10)",
+    "project.id": "open-peoria",
+    "user.id": "mitchell"
+  },
+  {
+    "billed": false,
+    "day": "2020-04-29",
+    "duration.total_minutes": 60,
+    "id": "mitchell-5",
+    "label_id": "development",
+    "note": "Getting ssh set up for CKAN AWS site",
+    "project.id": "open-peoria",
+    "user.id": "mitchell"
+  },
+  {
+    "billed": false,
+    "day": "2020-04-29",
+    "duration.total_minutes": 125,
+    "id": "mitchell-6",
+    "label_id": "development",
+    "note": "Work on HTTPS",
+    "project.id": "open-peoria",
+    "user.id": "mitchell"
+  },
+  {
+    "billed": false,
+    "day": "2020-04-30",
+    "duration.total_minutes": 207,
+    "id": "mitchell-7",
+    "label_id": "development",
+    "note": "Get HTTPS Working",
+    "project.id": "open-peoria",
+    "user.id": "mitchell"
+  },
+  {
+    "billed": false,
+    "day": "2020-05-01",
+    "duration.total_minutes": 60,
+    "id": "mitchell-8",
+    "label_id": "research",
+    "note": "Watching videos on Apache Web Server and Nginx reverse proxy",
+    "project.id": "open-peoria",
+    "user.id": "mitchell"
+  },
+  {
+    "billed": false,
+    "day": "2020-05-01",
+    "duration.total_minutes": 245,
+    "id": "mitchell-9",
+    "label_id": "development",
+    "note": "Trying to upgrade CKAN. Stuck on DB restoration :( I will overcome!",
+    "project.id": "open-peoria",
+    "user.id": "mitchell"
+  },
+  {
+    "billed": false,
+    "day": "2020-05-04",
+    "duration.total_minutes": 180,
+    "id": "mitchell-10",
+    "label_id": "development",
+    "note": "Upgraded CKAN instance",
+    "project.id": "open-peoria",
+    "user.id": "mitchell"
+  },
+  {
+    "billed": false,
+    "day": "2020-05-04",
+    "duration.total_minutes": 60,
+    "id": "mitchell-11",
+    "label_id": "instructing",
+    "note": "Writing instructions for CKAN Upgrades",
+    "project.id": "open-peoria",
+    "user.id": "mitchell"
+  },
+  {
+    "billed": false,
+    "day": "2020-05-05",
+    "duration.total_minutes": 200,
+    "id": "mitchell-12",
+    "label_id": "development",
+    "note": "Getting HTTPS working for CKAN",
+    "project.id": "open-peoria",
+    "user.id": "mitchell"
+  },
+  {
+    "billed": false,
+    "day": "2020-05-05",
+    "duration.total_minutes": 40,
+    "id": "mitchell-13",
+    "label_id": "admin",
+    "note": "Meeting with Reuben",
+    "project.id": "internal",
+    "user.id": "mitchell"
+  },
+  {
+    "billed": false,
+    "day": "2020-05-05",
+    "duration.total_minutes": 30,
+    "id": "mitchell-14",
+    "label_id": "instructing",
+    "note": "Documentation for setting up HTTPS with CKAN",
+    "project.id": "open-peoria",
+    "user.id": "mitchell"
+  },
+  {
+    "billed": false,
+    "day": "2020-05-06",
+    "duration.total_minutes": 85,
+    "id": "mitchell-15",
+    "label_id": "instructing",
+    "note": "Writing and Testing Documentation for setting up HTTPS with CKAN",
+    "project.id": "open-peoria",
+    "user.id": "mitchell"
+  },
+  {
+    "billed": false,
+    "day": "2020-05-06",
+    "duration.total_minutes": 100,
+    "id": "mitchell-16",
+    "label_id": "development",
+    "note": "Getting setup and looking through code",
+    "project.id": "kazeeki",
+    "user.id": "mitchell"
+  },
+  {
+    "billed": false,
+    "day": "2020-05-07",
+    "duration.total_minutes": 142,
+    "id": "mitchell-17",
+    "label_id": "research",
+    "note": "Understanding Codebase",
+    "project.id": "kazeeki",
+    "user.id": "mitchell"
+  },
+  {
+    "billed": false,
+    "day": "2020-05-08",
+    "duration.total_minutes": 84,
+    "id": "mitchell-18",
+    "label_id": "development",
+    "note": "Checking validity of job feeds",
+    "project.id": "kazeeki",
+    "user.id": "mitchell"
+  },
+  {
+    "billed": false,
+    "day": "2020-05-11",
+    "duration.total_minutes": 72,
+    "id": "mitchell-19",
+    "label_id": "admin",
+    "note": "Meeting with Reuben",
+    "project.id": "internal",
+    "user.id": "mitchell"
+  },
+  {
+    "billed": false,
+    "day": "2020-05-11",
+    "duration.total_minutes": 82,
+    "id": "mitchell-20",
+    "label_id": "research",
+    "note": "Understanding Kazeeki & Riko code",
+    "project.id": "kazeeki",
+    "user.id": "mitchell"
+  },
+  {
+    "billed": false,
+    "day": "2020-05-12",
+    "duration.total_minutes": 160,
+    "id": "mitchell-21",
+    "label_id": "development",
+    "note": "Fixing Hackernews scraper",
+    "project.id": "kazeeki",
+    "user.id": "mitchell"
+  },
+  {
+    "billed": false,
+    "day": "2020-05-12",
+    "duration.total_minutes": 30,
+    "id": "mitchell-22",
+    "label_id": "research",
+    "note": "Understanding Riko codebase",
+    "project.id": "kazeeki",
+    "user.id": "mitchell"
+  },
+  {
+    "billed": false,
+    "day": "2020-05-13",
+    "duration.total_minutes": 130,
+    "id": "mitchell-23",
+    "label_id": "development",
+    "note": "Fixing Hackernews and PPH scrapers",
+    "project.id": "kazeeki",
+    "user.id": "mitchell"
+  },
+  {
+    "billed": false,
+    "day": "2020-05-14",
+    "duration.total_minutes": 192,
+    "id": "mitchell-24",
+    "label_id": "development",
+    "note": "Trying to fix PPH scraper. Having trouble with XPath",
+    "project.id": "kazeeki",
+    "user.id": "mitchell"
+  },
+  {
+    "billed": false,
+    "day": "2020-05-18",
+    "duration.total_minutes": 174,
+    "id": "mitchell-25",
+    "label_id": "development",
+    "note": "Debugging PPh scraper in Kazeeki with Reuben. We figured it out! =D",
+    "project.id": "kazeeki",
+    "user.id": "mitchell"
+  },
+  {
+    "billed": false,
+    "day": "2020-05-18",
+    "duration.total_minutes": 30,
+    "id": "mitchell-26",
+    "label_id": "admin",
+    "note": "Meeting with Reuben about general problems",
+    "project.id": "internal",
+    "user.id": "mitchell"
+  },
+  {
+    "billed": false,
+    "day": "2020-05-20",
+    "duration.total_minutes": 251,
+    "id": "mitchell-27",
+    "label_id": "development",
+    "note": "Getting PPH to upsert data",
+    "project.id": "kazeeki",
+    "user.id": "mitchell"
+  },
+  {
+    "billed": false,
+    "day": "2020-05-22",
+    "duration.total_minutes": 180,
+    "id": "mitchell-28",
+    "label_id": "development",
+    "note": "Fix PPH",
+    "project.id": "kazeeki",
+    "user.id": "mitchell"
+  },
+  {
+    "billed": false,
+    "day": "2020-05-26",
+    "duration.total_minutes": 64,
+    "id": "mitchell-29",
+    "label_id": "admin",
+    "note": "Meeting with Reuben",
+    "project.id": "internal",
+    "user.id": "mitchell"
+  },
+  {
+    "billed": false,
+    "day": "2020-05-26",
+    "duration.total_minutes": 146,
+    "id": "mitchell-30",
+    "label_id": "development",
+    "note": "Fix PPH",
+    "project.id": "kazeeki",
+    "user.id": "mitchell"
+  },
+  {
+    "billed": false,
+    "day": "2020-05-27",
+    "duration.total_minutes": 110,
+    "id": "mitchell-31",
+    "label_id": "development",
+    "note": "Fixing PPH still",
+    "project.id": "kazeeki",
+    "user.id": "mitchell"
+  },
+  {
+    "billed": false,
+    "day": "2020-05-27",
+    "duration.total_minutes": 10,
+    "id": "mitchell-32",
+    "label_id": "research",
+    "note": "Pre-Commit hook reading",
+    "project.id": "internal",
+    "user.id": "mitchell"
+  },
+  {
+    "billed": false,
+    "day": "2020-05-28",
+    "duration.total_minutes": 290,
+    "id": "mitchell-33",
+    "label_id": "development",
+    "note": "Fixing PPH scraper - but much closer now!",
+    "project.id": "kazeeki",
+    "user.id": "mitchell"
+  },
+  {
+    "billed": false,
+    "day": "2020-05-28",
+    "duration.total_minutes": 15,
+    "id": "mitchell-34",
+    "label_id": "development",
+    "note": "Fixing and testing bug with Riko ",
+    "project.id": "internal",
+    "user.id": "mitchell"
+  },
+  {
+    "billed": false,
+    "day": "2020-05-28",
+    "duration.total_minutes": 30,
+    "id": "mitchell-35",
+    "label_id": "research",
+    "note": "Testing/Learning more about Riko",
+    "project.id": "kazeeki",
+    "user.id": "mitchell"
+  },
+  {
+    "billed": false,
+    "day": "2020-05-29",
+    "duration.total_minutes": 255,
+    "id": "mitchell-36",
+    "label_id": "development",
+    "note": "Finishing up PPH Parser",
+    "project.id": "kazeeki",
+    "user.id": "mitchell"
+  },
+  {
+    "billed": false,
+    "day": "2020-06-01",
+    "duration.total_minutes": 191,
+    "id": "mitchell-37",
+    "label_id": "development",
+    "note": "Fix PPH and Riko skip_if stuff",
+    "project.id": "kazeeki",
+    "user.id": "mitchell"
+  },
+  {
+    "billed": false,
+    "day": "2020-06-01",
+    "duration.total_minutes": 79,
+    "id": "mitchell-38",
+    "label_id": "admin",
+    "note": "Meeting with Reuben",
+    "project.id": "internal",
+    "user.id": "mitchell"
+  },
+  {
+    "billed": false,
+    "day": "2020-06-01",
+    "duration.total_minutes": 32,
+    "id": "mitchell-39",
+    "label_id": "maintenance",
+    "note": "Updating Riko tests for Kazeeki",
+    "project.id": "internal",
+    "user.id": "mitchell"
+  },
+  {
+    "billed": false,
+    "day": "2020-06-02",
+    "duration.total_minutes": 214,
+    "id": "mitchell-40",
+    "label_id": "maintenance",
+    "note": "Updating Riko tests for Kazeeki",
+    "project.id": "internal",
+    "user.id": "mitchell"
+  },
+  {
+    "billed": false,
+    "day": "2020-06-03",
+    "duration.total_minutes": 20,
+    "id": "mitchell-41",
+    "label_id": "research",
+    "note": "Research OpenSource world and Riko History a little",
+    "project.id": "internal",
+    "user.id": "mitchell"
+  },
+  {
+    "billed": false,
+    "day": "2020-06-03",
+    "duration.total_minutes": 88,
+    "id": "mitchell-42",
+    "label_id": "maintenance",
+    "note": "Finish updating Riko tests for Kazeeki",
+    "project.id": "internal",
+    "user.id": "mitchell"
+  },
+  {
+    "billed": false,
+    "day": "2020-06-03",
+    "duration.total_minutes": 180,
+    "id": "mitchell-43",
+    "label_id": "development",
+    "note": "Looking into adding more sources (like reddit)",
+    "project.id": "kazeeki",
+    "user.id": "mitchell"
+  },
+  {
+    "billed": false,
+    "day": "2020-06-04",
+    "duration.total_minutes": 70,
+    "id": "mitchell-44",
+    "label_id": "development",
+    "note": "Adding reddit to Kazeeki",
+    "project.id": "kazeeki",
+    "user.id": "mitchell"
+  },
+  {
+    "billed": false,
+    "day": "2020-06-05",
+    "duration.total_minutes": 295,
+    "id": "mitchell-45",
+    "label_id": "development",
+    "note": "Knocking out issues",
+    "project.id": "open-peoria",
+    "user.id": "mitchell"
+  },
+  {
+    "billed": false,
+    "day": "2020-06-08",
+    "duration.total_minutes": 60,
+    "id": "mitchell-46",
+    "label_id": "admin",
+    "note": "Meeting with Reuben",
+    "project.id": "internal",
+    "user.id": "mitchell"
+  },
+  {
+    "billed": false,
+    "day": "2020-06-08",
+    "duration.total_minutes": 211,
+    "id": "mitchell-47",
+    "label_id": "maintenance",
+    "note": "Fix bugs in ClozeCart",
+    "project.id": "clozecart",
+    "user.id": "mitchell"
+  },
+  {
+    "billed": false,
+    "day": "2020-06-09",
+    "duration.total_minutes": 184,
+    "id": "mitchell-48",
+    "label_id": "development",
+    "note": "Fix Caching issues in ClozeCart",
+    "project.id": "clozecart",
+    "user.id": "mitchell"
+  },
+  {
+    "billed": false,
+    "day": "2020-06-10",
+    "duration.total_minutes": 15,
+    "id": "mitchell-49",
+    "label_id": "development",
+    "note": "Make sure issues will be fixed in ClozeCart",
+    "project.id": "clozecart",
+    "user.id": "mitchell"
+  },
+  {
+    "billed": false,
+    "day": "2020-06-10",
+    "duration.total_minutes": 114,
+    "id": "mitchell-50",
+    "label_id": "research",
+    "note": "Understanding the Covid19 datascraper",
+    "project.id": "covid-19",
+    "user.id": "mitchell"
+  },
+  {
+    "billed": false,
+    "day": "2020-06-10",
+    "duration.total_minutes": 105,
+    "id": "mitchell-51",
+    "label_id": "research",
+    "note": "Make sure issues will be fixed in ClozeCart, find examples of fixes",
+    "project.id": "clozecart",
+    "user.id": "mitchell"
+  },
+  {
+    "billed": false,
+    "day": "2020-06-11",
+    "duration.total_minutes": 100,
+    "id": "mitchell-52",
+    "label_id": "maintenance",
+    "note": "Investigating/Fixing issues with Julian's orders that aren't uploading",
+    "project.id": "clozecart",
+    "user.id": "mitchell"
+  },
+  {
+    "billed": false,
+    "day": "2020-06-12",
+    "duration.total_minutes": 10,
+    "id": "mitchell-53",
+    "label_id": "maintenance",
+    "note": "Add comments to Cloze issues",
+    "project.id": "clozecart",
+    "user.id": "mitchell"
+  },
+  {
+    "billed": false,
+    "day": "2020-06-12",
+    "duration.total_minutes": 257,
+    "id": "mitchell-54",
+    "label_id": "development",
+    "note": "Finished adding data to CKAN via the COVID19 scraper",
+    "project.id": "covid-19",
+    "user.id": "mitchell"
+  },
+  {
+    "billed": false,
+    "day": "2020-06-16",
+    "duration.total_minutes": 20,
+    "id": "mitchell-55",
+    "label_id": "development",
+    "note": "Check Riko tests",
+    "project.id": "internal",
+    "user.id": "mitchell"
+  },
+  {
+    "billed": false,
+    "day": "2020-06-16",
+    "duration.total_minutes": 90,
+    "id": "mitchell-56",
+    "label_id": "admin",
+    "note": "Meeting with Reuben",
+    "project.id": "internal",
+    "user.id": "mitchell"
+  },
+  {
+    "billed": false,
+    "day": "2020-06-17",
+    "duration.total_minutes": 237,
+    "id": "mitchell-57",
+    "label_id": "development",
+    "note": "Make sure ckan uploads are working correctly, other ckan issues",
+    "project.id": "covid-19",
+    "user.id": "mitchell"
+  },
+  {
+    "billed": false,
+    "day": "2020-06-18",
+    "duration.total_minutes": 140,
+    "id": "mitchell-58",
+    "label_id": "development",
+    "note": "Finish PR #2 getting covid data transfer to CKAN correct",
+    "project.id": "covid-19",
+    "user.id": "mitchell"
+  },
+  {
+    "billed": false,
+    "day": "2020-06-18",
+    "duration.total_minutes": 15,
+    "id": "mitchell-59",
+    "label_id": "research",
+    "note": "Brushing up on good development practices",
+    "project.id": "internal",
+    "user.id": "mitchell"
+  },
+  {
+    "billed": false,
+    "day": "2020-06-19",
+    "duration.total_minutes": 313,
+    "id": "mitchell-60",
+    "label_id": "research",
+    "note": "Investigating adding the Data API button",
+    "project.id": "covid-19",
+    "user.id": "mitchell"
+  },
+  {
+    "billed": false,
+    "day": "2020-06-19",
+    "duration.total_minutes": 105,
+    "id": "mitchell-61",
+    "label_id": "development",
+    "note": "Getting Datapusher to work",
+    "project.id": "covid-19",
+    "user.id": "mitchell"
+  },
+  {
+    "billed": false,
+    "day": "2020-06-22",
+    "duration.total_minutes": 50,
+    "id": "mitchell-62",
+    "label_id": "admin",
+    "note": "Meet with Reuben",
+    "project.id": "internal",
+    "user.id": "mitchell"
+  },
+  {
+    "billed": false,
+    "day": "2020-06-22",
+    "duration.total_minutes": 135,
+    "id": "mitchell-63",
+    "label_id": "development",
+    "note": "Converting JSON data to CSV",
+    "project.id": "covid-19",
+    "user.id": "mitchell"
+  },
+  {
+    "billed": false,
+    "day": "2020-06-23",
+    "duration.total_minutes": 310,
+    "id": "mitchell-64",
+    "label_id": "development",
+    "note": "Work on converting nested JSON to CSV for upload to CKAN",
+    "project.id": "covid-19",
+    "user.id": "mitchell"
+  },
+  {
+    "billed": false,
+    "day": "2020-06-24",
+    "duration.total_minutes": 272,
+    "id": "mitchell-65",
+    "label_id": "development",
+    "note": "Work on converting nested JSON to CSV for upload to CKAN",
+    "project.id": "covid-19",
+    "user.id": "mitchell"
+  },
+  {
+    "billed": false,
+    "day": "2020-06-26",
+    "duration.total_minutes": 120,
+    "id": "mitchell-66",
+    "label_id": "development",
+    "note": "Make sure converting json to csv works well",
+    "project.id": "covid-19",
+    "user.id": "mitchell"
+  },
+  {
+    "billed": false,
+    "day": "2020-06-26",
+    "duration.total_minutes": 156,
+    "id": "mitchell-67",
+    "label_id": "research",
+    "note": "Try updating ckan and getting all data to transfer.",
+    "project.id": "covid-19",
+    "user.id": "mitchell"
+  },
+  {
+    "billed": false,
+    "day": "2020-06-29",
+    "duration.total_minutes": 156,
+    "id": "mitchell-68",
+    "label_id": "development",
+    "note": "Test ckan upgrade, documentation",
+    "project.id": "covid-19",
+    "user.id": "mitchell"
+  },
+  {
+    "billed": false,
+    "day": "2020-06-29",
+    "duration.total_minutes": 56,
+    "id": "mitchell-69",
+    "label_id": "admin",
+    "note": "Meeting with Reuben",
+    "project.id": "internal",
+    "user.id": "mitchell"
+  }
+]

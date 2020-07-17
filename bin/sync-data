@@ -2,9 +2,7 @@
 
 bin/store-users
 bin/store-projects
-bin/store-timely-events
-bin/store-timely-tasks
-bin/store-xero-events
-bin/store-xero-tasks
+bin/store-events
+bin/store-tasks
 bin/store-xero-inventory
 bin/prune-mappings

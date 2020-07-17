@@ -82,73 +82,158 @@ class Config(object):
     API_URL_PREFIX = "/v1"
     SECRET_KEY = getenv("TIMERO_SECRET_KEY", urandom(24))
     CHROME_DRIVER_VERSIONS = [None] + list(range(81, 77, -1))
-    API_PREFIXES = ["TIMELY", "XERO"]
-    KEY_WHITELIST = {
+
+    APP_CONFIG_WHITELIST = {
         "CHUNK_SIZE",
         "ROW_LIMIT",
         "ERR_LIMIT",
-        "WEBHOOKS",
+        "ADMIN",
     }
 
     # Variables warnings
     REQUIRED_SETTINGS = []
     REQUIRED_PROD_SETTINGS = []
 
-    # https://app.timelyapp.com/777870/oauth_applications
-    TIMELY_ACCOUNT_ID = "777870"
-    TIMELY_CLIENT_ID = getenv("TIMELY_CLIENT_ID")
-    TIMELY_SECRET = getenv("TIMELY_SECRET")
-    TIMELY_API_BASE_URL = "https://api.timelyapp.com/1.1"
-    TIMELY_AUTHORIZATION_BASE_URL = f"{TIMELY_API_BASE_URL}/oauth/authorize"
-    TIMELY_TOKEN_URL = f"{TIMELY_API_BASE_URL}/oauth/token"
-    TIMELY_REFRESH_URL = TIMELY_TOKEN_URL
-    TIMELY_USERNAME = getenv("TIMELY_USERNAME")
-    TIMELY_PASSWORD = getenv("TIMELY_PASSWORD")
+    # Logging
+    MAILGUN_DOMAIN = getenv("MAILGUN_DOMAIN")
+    MAILGUN_SMTP_PASSWORD = getenv("MAILGUN_SMTP_PASSWORD")
+    REQUIRED_PROD_SETTINGS += ["MAILGUN_DOMAIN", "MAILGUN_SMTP_PASSWORD"]
 
-    # https://developer.xero.com/myapps/
-    XERO_API_BASE_URL = "https://api.xero.com"
-    XERO_OAUTH_VERSION = 2
-    XERO_USERNAME = getenv("XERO_USERNAME")
-    XERO_PASSWORD = getenv("XERO_PASSWORD")
+    # Authentication
+    AUTHENTICATION = {
+        "mailgun": {
+            "auth_type": "basic",
+            "basic": {
+                "api_base_url": "https://api.mailgun.net/v3",
+                "username": "api",
+                "password": getenv("MAILGUN_API_KEY"),
+                "domain": MAILGUN_DOMAIN,
+            },
+        },
+        # https://postmarkapp.com/developer/api/overview
+        "postmark": {
+            "auth_type": "token",
+            "token": {
+                "api_base_url": "https://api.postmarkapp.com",
+                "headers": {
+                    "all": {
+                        "X-Postmark-Server-Token": getenv("POSTMARK_SERVER_TOKEN"),
+                        "X-Postmark-Account-Token": getenv("POSTMARK_ACCOUNT_TOKEN"),
+                        "Content-Type": "application/json",
+                    },
+                },
+            },
+        },
+        "gsheets": {
+            "auth_type": "service",
+            "service": {
+                "keyfile_path": "internal-256716-b2f899ddbdc5.json",
+                "sheet_id": "1Q-0R_q5-dWeaIAktvxRirZGXJZmMxd8qjVTujauMdak",
+                "worksheet_name": "options",
+                "scope": [
+                    "https://spreadsheets.google.com/feeds",
+                    "https://www.googleapis.com/auth/drive",
+                ],
+            },
+        },
+        # https://app.timelyapp.com/777870/oauth_applications
+        "timely": {
+            "auth_type": "oauth2",
+            "oauth2": {
+                "api_base_url": "https://api.timelyapp.com/1.1",
+                "authorization_base_url": "https://api.timelyapp.com/1.1/oauth/authorize",
+                "token_url": "https://api.timelyapp.com/1.1/oauth/token",
+                "refresh_url": "https://api.timelyapp.com/1.1/oauth/token",
+                "redirect_uri": "urn:ietf:wg:oauth:2.0:oob",
+                "account_id": "777870",
+                "client_id": getenv("TIMELY_CLIENT_ID"),
+                "client_secret": getenv("TIMELY_SECRET"),
+                "username": getenv("TIMELY_USERNAME"),
+                "password": getenv("TIMELY_PASSWORD"),
+            },
+        },
+        # https://developer.xero.com/myapps/
+        "xero": {
+            "auth_type": "oauth2",
+            "oauth2": {
+                "api_base_url": "https://api.xero.com",
+                "authorization_base_url": "https://login.xero.com/identity/connect/authorize",
+                "token_url": "https://identity.xero.com/connect/token",
+                "refresh_url": "https://identity.xero.com/connect/token",
+                "redirect_uri": f"http://localhost:5000{API_URL_PREFIX}/xero-callback",
+                "domain": "projects",
+                "client_id": getenv("XERO_CLIENT_ID"),
+                "client_secret": getenv("XERO_SECRET"),
+                "username": getenv("XERO_USERNAME"),
+                "password": getenv("XERO_PASSWORD"),
+                "scope": [
+                    "projects",
+                    "offline_access",
+                    "accounting.transactions",
+                    "accounting.settings",
+                    "accounting.contacts",
+                    "accounting.attachments",
+                    "files",
+                    "assets",
+                ],
+            },
+            "oauth1": {
+                "api_base_url": "https://api.xero.com",
+                "request_url": "https://api.xero.com/oauth/RequestToken",
+                "authorization_base_url": "https://api.xero.com/oauth/Authorize",
+                "token_url": "https://api.xero.com/oauth/AccessToken",
+                "client_id": getenv("XERO_CONSUMER_KEY"),
+                "client_secret": getenv("XERO_CONSUMER_SECRET"),
+                "headers": {
+                    "post": {"Content-Type": "application/x-www-form-urlencoded"},
+                },
+            },
+        },
+    }
 
-    # oauth2
-    XERO_CLIENT_ID = getenv("XERO_CLIENT_ID")
-    XERO_SECRET = getenv("XERO_SECRET")
-    XERO_AUTHORIZATION_BASE_URL = "https://login.xero.com/identity/connect/authorize"
-    XERO_TOKEN_URL = "https://identity.xero.com/connect/token"
-    XERO_API_DOMAIN = "projects"
-    XERO_REFRESH_URL = XERO_TOKEN_URL
-    # XERO_AUTHENTICATE_REFRESH = False
-    XERO_SCOPES = [
-        "projects",
-        "offline_access",
-        "accounting.transactions",
-        "accounting.settings",
-        "accounting.contacts",
-        "accounting.attachments",
-        "files",
-        "assets",
+    # Mailgun
+    REQUIRED_PROD_SETTINGS += [
+        "MAILGUN_API_KEY",
+        "MAILGUN_DOMAIN",
+        "MAILGUN_LIST_PREFIX",
     ]
 
-    # oauth1
-    XERO_CONSUMER_KEY = getenv("XERO_CONSUMER_KEY")
-    XERO_CONSUMER_SECRET = getenv("XERO_CONSUMER_SECRET")
-    XERO_REQUEST_URL = f"{XERO_API_BASE_URL}/oauth/RequestToken"
-    XERO_AUTHORIZATION_BASE_URL_V1 = f"{XERO_API_BASE_URL}/oauth/Authorize"
-    XERO_TOKEN_URL_V1 = f"{XERO_API_BASE_URL}/oauth/AccessToken"
+    # Postmark
+    REQUIRED_PROD_SETTINGS += [
+        "POSTMARK_SERVER_TOKEN",
+        "POSTMARK_ACCOUNT_TOKEN",
+        "POSTMARK_TEMPLATE_ID",
+    ]
+
+    # AWS
+    REQUIRED_PROD_SETTINGS += [
+        "AWS_ACCESS_KEY_ID",
+        "AWS_SECRET_ACCESS_KEY",
+        "AWS_REGION",
+        "CLOUDFRONT_DISTRIBUTION_ID",
+    ]
+
+    # Webhooks
+    WEBHOOKS = {
+        "xero": {
+            "signature_header": "x-xero-signature",
+            "webhook_secret": getenv("XERO_WEBHOOK_SECRET"),
+            "digest": "sha256",
+            "b64_encode": True,
+            "payload_key": "events",
+        },
+    }
 
     # RQ
     REQUIRED_PROD_SETTINGS += ["RQ_DASHBOARD_USERNAME", "RQ_DASHBOARD_PASSWORD"]
     RQ_DASHBOARD_REDIS_URL = (
         getenv("REDIS_URL") or getenv("REDISTOGO_URL") or __DEF_REDIS_URL__
     )
-    RQ_DASHBOARD_USERNAME = getenv("RQ_DASHBOARD_USERNAME")
-    RQ_DASHBOARD_PASSWORD = getenv("RQ_DASHBOARD_PASSWORD")
     RQ_DASHBOARD_DEBUG = False
 
+    APP_CONFIG_WHITELIST.update(REQUIRED_PROD_SETTINGS)
+
     # Change based on mode
-    TIMELY_REDIRECT_URI = "urn:ietf:wg:oauth:2.0:oob"
-    XERO_REDIRECT_URI = f"http://localhost:5000{API_URL_PREFIX}/xero-callback"
     CACHE_DEFAULT_TIMEOUT = get_seconds(hours=24)
     CHUNK_SIZE = 256
     ROW_LIMIT = 32
@@ -190,12 +275,12 @@ class Production(Config):
 class Heroku(Production):
     HEROKU = True
     DOMAIN = "herokuapp.com"
-    TIMELY_REDIRECT_URI = (
-        f"https://{__SUB_DOMAIN__}.{DOMAIN}{Config.API_URL_PREFIX}/timely-callback"
-    )
-    XERO_REDIRECT_URI = (
-        f"https://{__SUB_DOMAIN__}.{DOMAIN}{Config.API_URL_PREFIX}/xero-callback"
-    )
+    Config.AUTHENTICATION["timely"]["oauth2"][
+        "redirect_uri"
+    ] = f"https://{__SUB_DOMAIN__}.{DOMAIN}{Config.API_URL_PREFIX}/timely-callback"
+    Config.AUTHENTICATION["xero"]["oauth2"][
+        "redirect_uri"
+    ] = f"https://{__SUB_DOMAIN__}.{DOMAIN}{Config.API_URL_PREFIX}/xero-callback"
 
     if __PROD_SERVER__:
         SERVER_NAME = f"{__SUB_DOMAIN__}.{DOMAIN}"
@@ -204,12 +289,13 @@ class Heroku(Production):
 
 class Custom(Production):
     DOMAIN = "nerevu.com"
-    TIMELY_REDIRECT_URI = (
-        f"https://{__SUB_DOMAIN__}.{DOMAIN}{Config.API_URL_PREFIX}/timely-callback"
-    )
-    XERO_REDIRECT_URI = (
-        f"https://{__SUB_DOMAIN__}.{DOMAIN}{Config.API_URL_PREFIX}/xero-callback"
-    )
+    AUTHENTICATION = Config.AUTHENTICATION
+    AUTHENTICATION["timely"]["oauth2"][
+        "redirect_uri"
+    ] = f"https://{__SUB_DOMAIN__}.{DOMAIN}{Config.API_URL_PREFIX}/timely-callback"
+    AUTHENTICATION["xero"]["oauth2"][
+        "redirect_uri"
+    ] = f"https://{__SUB_DOMAIN__}.{DOMAIN}{Config.API_URL_PREFIX}/xero-callback"
 
     if __PROD_SERVER__:
         SERVER_NAME = f"{__SUB_DOMAIN__}.{DOMAIN}"
@@ -233,12 +319,13 @@ class Development(Config):
 
 class Ngrok(Development):
     # Xero localhost callbacks work fine
-    XERO_REDIRECT_URI = (
-        f"https://nerevu-api.ngrok.io{Config.API_URL_PREFIX}/xero-callback"
-    )
-    TIMELY_REDIRECT_URI = (
-        f"https://nerevu-api.ngrok.io{Config.API_URL_PREFIX}/timely-callback"
-    )
+    AUTHENTICATION = Config.AUTHENTICATION
+    AUTHENTICATION["xero"]["oauth2"][
+        "redirect_uri"
+    ] = f"https://nerevu-api.ngrok.io{Config.API_URL_PREFIX}/xero-callback"
+    AUTHENTICATION["timely"]["oauth2"][
+        "redirect_uri"
+    ] = f"https://nerevu-api.ngrok.io{Config.API_URL_PREFIX}/timely-callback"
 
 
 class Test(Config):

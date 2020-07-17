@@ -158,5 +158,15 @@
     "name": "R&D",
     "projectId": "c799cd2f-9371-4917-bde2-a8981385be34",
     "status": "INPROGRESS"
+  },
+  {
+    "name": "ClozeCart",
+    "projectId": "34a6629c-6902-4436-881c-b909a285b8bd",
+    "status": "INPROGRESS"
+  },
+  {
+    "name": "Internal",
+    "projectId": "f9d0e04b-f07c-423d-8975-418159180dab",
+    "status": "INPROGRESS"
   }
 ]

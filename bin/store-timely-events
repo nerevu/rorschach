@@ -1,7 +1,0 @@
-#!/usr/bin/env bash -uo pipefail
-
-manage store -p timely -c time --dictify
-
-for PROJECT in $(jq -r '.[] | .id' app/data/timely_projects.json); do
-    manage store -p timely -c projecttime --rid="${PROJECT}"
-done

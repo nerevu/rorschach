@@ -45,10 +45,7 @@ def get_def_chromedriver_path(version=None):
     return chromedriver_path
 
 
-# get system specific chromedriver (currently version 78)
-def get_chromedriver_path():
-    chromedriver_path = None
-
+def get_os():
     if platform.startswith("freebsd"):
         operating_system = "freebsd"
     elif platform.startswith("linux"):
@@ -61,7 +58,15 @@ def get_chromedriver_path():
         operating_system = "cygwin"
     elif platform.startswith("darwin"):
         operating_system = "mac"
+    else:
+        operating_system = "other"
 
+    return operating_system
+
+
+# get system specific chromedriver (currently version 78)
+def get_chromedriver_path(operating_system):
+    chromedriver_path = None
     unixlike = operating_system in {"mac", "linux"}
 
     if unixlike:
@@ -98,82 +103,70 @@ def find_element_loop(browser, selector, count=1, max_retries=3):
     return elem
 
 
-def headless_auth(redirect_url, prefix):
-    # selectors
-    if prefix == "TIMELY":
+def _headless_auth(redirect_url, prefix, chrome_path=None):
+    if prefix == "timely":
         username_css = "input#email"
         password_css = "input#password"
         signin_css = '[type="submit"]'
-    elif prefix == "XERO":
+    elif prefix == "xero":
         username_css = 'input[type="email"]'
         password_css = 'input[type="password"]'
         signin_css = 'button[name="button"]'
 
-    # start a browser
+    options = Options()
+    options.headless = True
+    browser = webdriver.Chrome(executable_path=chrome_path, chrome_options=options)
+
+    # navigate to auth page
+    browser.get(redirect_url)
+    browser.implicitly_wait(3)
+
+    #######################################################
+    # TODO: Check to see if this is required when logging
+    # in without a headless browser (might remember creds).
+
+    username = browser.find_element_by_css_selector(username_css)
+    username.clear()
+    username.send_keys(app.config[f"{prefix}_USERNAME"])
+
+    password = browser.find_element_by_css_selector(password_css)
+    password.clear()
+    password.send_keys(app.config[f"{prefix}_PASSWORD"])
+
+    sign_in = browser.find_element_by_css_selector(signin_css)
+
+    # TODO: why does it stall here for timero??
+    sign_in.click()
+
+    #######################################################
+
+    if prefix == "xero":
+        allow_access = find_element_loop(browser, 'button[value="yes"]')
+        allow_access.click()
+        connect = find_element_loop(browser, 'button[value="true"]')
+        connect.click()
+
+    browser.close()
+
+
+def headless_auth(redirect_url, prefix):
+    authenticated = False
+    operating_system = get_os()
+    chrome_path = get_chromedriver_path(operating_system)
+
     try:
-        options = Options()
+        _headless_auth(redirect_url, prefix, chrome_path=chrome_path)
     except TypeError:
-        options = None
-    else:
-        options.headless = True
-
-    chrome_path = get_chromedriver_path()
-
-    try:
-        browser = webdriver.Chrome(executable_path=chrome_path, chrome_options=options)
-    except AttributeError:
         logger.error("selenium not installed!")
     except WebDriverException as e:
         if "executable needs to be in PATH" in str(e):
             logger.error(f"chromedriver executable not found in {chrome_path}!")
         else:
             logger.error(e)
+    except AttributeError as e:
+        logger.error(e)
     else:
-        # navigate to auth page
-        browser.get(redirect_url)
-        browser.implicitly_wait(3)  # seconds waited for elements
-
-        #######################################################
-        # TODO: Check to see if this is required when logging
-        # in without a headless browser (might remember creds).
-
-        # add username
-        username = browser.find_element_by_css_selector(username_css)
-        username.clear()
-        username.send_keys(app.config[f"{prefix}_USERNAME"])
-
-        # add password
-        password = browser.find_element_by_css_selector(password_css)
-        password.clear()
-        password.send_keys(app.config[f"{prefix}_PASSWORD"])
-
-        # click sign in
-        signIn = browser.find_element_by_css_selector(signin_css)
-
-        # TODO: why does it stall here for timero??
-        signIn.click()
         authenticated = True
-
-        #######################################################
-
-        if prefix == "XERO":
-            # allow access button
-            access = find_element_loop(browser, 'button[value="yes"]')
-
-            if access:
-                access.click()
-
-                # connect button
-                connect = find_element_loop(browser, 'button[value="true"]')
-            else:
-                connect = None
-
-            if connect:
-                connect.click()
-                authenticated = True
-            else:
-                authenticated = False
-
-        browser.close()
+    finally:
         cache.set(f"{prefix}_restore_client", authenticated)
         cache.set(f"{prefix}_headless_auth_failed", not authenticated)

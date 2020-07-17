@@ -5,24 +5,37 @@
 
     Timely / Xero mappings
 """
-REUBEN = 933370
-ADITYA = 1281455
-MITCHELL = 1281876
-CONSULTANTS = [ADITYA, MITCHELL]
-TEAM = [REUBEN] + CONSULTANTS
+REUBEN_TIMELY = 933370
+ADITYA_TIMELY = 1281455
+MITCHELL_TIMELY = 1281876
+MITCHELL_GSHEETS = "mitchell"
+AUSTIN_GSHEETS = "austin"
+LEVEL_1 = [AUSTIN_GSHEETS]
+LEVEL_2 = [ADITYA_TIMELY, MITCHELL_TIMELY, MITCHELL_GSHEETS]
+LEVEL_3 = []
+LEVEL_4 = []
+LEVEL_5 = [REUBEN_TIMELY]
+TEAM = LEVEL_1 + LEVEL_2 + LEVEL_3 + LEVEL_4 + LEVEL_5
 
-USERS = {REUBEN: [REUBEN], ADITYA: CONSULTANTS, MITCHELL: CONSULTANTS}
+USERS = {
+    REUBEN_TIMELY: LEVEL_5,
+    ADITYA_TIMELY: LEVEL_2,
+    MITCHELL_TIMELY: LEVEL_2,
+    MITCHELL_GSHEETS: LEVEL_2,
+    AUSTIN_GSHEETS: LEVEL_1,
+}
+
 POSITIONS = {
-    "Creative Director": [REUBEN],
-    "Technical Director": [REUBEN],
-    "Partner": [REUBEN],
-    "Senior Designer": [],
-    "Senior Consultant": [],
-    "Principal Developer": [],
-    "Junior Developer": [],
-    "Senior Developer": [],
-    "Consultant": CONSULTANTS,
-    "Developer": CONSULTANTS,
+    "Creative Director": LEVEL_5,
+    "Technical Director": LEVEL_5,
+    "Partner": LEVEL_5,
+    "Principal Developer": LEVEL_4,
+    "Senior Designer": LEVEL_3,
+    "Senior Consultant": LEVEL_3,
+    "Senior Developer": LEVEL_3,
+    "Consultant": LEVEL_2,
+    "Developer": LEVEL_2,
+    "Junior Developer": LEVEL_1,
     "Pro-Bono": TEAM,
     "Non-Billable": TEAM,
 }
@@ -63,9 +76,9 @@ def task_mapper(mapping, *args, proj_pair=None, user=None):
         projects = {pair.get(arg, {}).get("project") for arg in args}
         project_match = projects == proj_pair
 
-        # Timely tasks apply to all users whereas Xero tasks are user and project
-        # specific. Only implementing Timely -> Xero for now
-        users = set(pair.get(args[0], []).get("users"))
+        # Xero tasks are user and project specific.
+        # Only converting to Xero for now (not from Xero).
+        users = set(pair.get(args[0], {}).get("users", []))
 
         if project_match and user in users:
             yield tuple(pair[arg]["task"] for arg in args)
@@ -73,10 +86,17 @@ def task_mapper(mapping, *args, proj_pair=None, user=None):
 
 def gen_task_mapping(mapping, *args, user_mappings=None, project_mappings=None):
     for projects in project_mappings:
-        proj0, proj1 = projects[args[0]], projects[args[1]]
+        proj0, proj1 = map(projects.get, args)
+
+        if proj0 is None or proj1 is None:
+            continue
 
         for users in user_mappings:
             user = users.get(args[0])
+
+            if not user:
+                continue
+
             kwargs = {"proj_pair": {proj0, proj1}, "user": user}
 
             for task_ids in task_mapper(mapping, *args, **kwargs):
