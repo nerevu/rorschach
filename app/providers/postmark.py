@@ -28,7 +28,12 @@ class Domains(Resource):
 class Templates(Resource):
     def __init__(self, *args, **kwargs):
         kwargs.update(
-            {"subkey": "Templates", "id_field": "TemplateId", "name_field": "Name", "options": "count=100&offset=0"}
+            {
+                "subkey": "Templates",
+                "id_field": "TemplateId",
+                "name_field": "Name",
+                "options": "count=100&offset=0",
+            }
         )
         super().__init__(PREFIX, "templates", *args, **kwargs)
 
@@ -54,7 +59,7 @@ class Email(Resource):
     def set_post_data(self, email, name="", subject="", text="", html="", **kwargs):
         assert email, ("You must provide an email address.", 400)
         self.recipient = f"{name} <{email}>" if name else email
-        self.copied_recipient = kwargs.get('copied_email', '')
+        self.copied_recipient = kwargs.get("copied_email", "")
 
         self.tag = kwargs.get("tag")
         self.metadata = kwargs.get("metadata", {})
@@ -118,7 +123,7 @@ class Email(Resource):
                     "TextBody": self.text,
                 }
 
-                message += f'  subject: {self.subject}\n'
+                message += f"  subject: {self.subject}\n"
 
             message += f"  from: {self.sender}\n  to: {self.recipient}\n"
 
