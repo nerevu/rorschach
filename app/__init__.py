@@ -34,7 +34,7 @@ from app.helpers import configure
 from mezmorize.utils import get_cache_config, get_cache_type
 from meza.fntools import CustomEncoder
 
-__version__ = "0.22.0"
+__version__ = "0.23.0"
 __title__ = "Timero API"
 __package_name__ = "timero-api"
 __author__ = "Reuben Cummings"
