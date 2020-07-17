@@ -469,11 +469,11 @@ def sync(source_prefix, **kwargs):
 @click.option("-m", "--recipient-name", help="The recipient's name")
 @click.option("-d", "--dry-run/--no-dry-run", help="Perform a dry run", default=False)
 @click.option(
-    "-p", "--no-prompt/--prompt", help="Prompt before sending email", default=True
+    "-p", "--prompt/--no-prompt", help="Prompt before sending email", default=False
 )
 def notify(invoice_id, **kwargs):
     """Send Xero invoice notification"""
-    response = actions.send_charge_notification(invoice_id, **kwargs)
+    response = actions.send_notification(invoice_id, **kwargs)
 
     try:
         log(**response, exit_on_completion=True)

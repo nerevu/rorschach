@@ -156,8 +156,8 @@ class EmailTemplate(Resource):
         self.recipient_name = kwargs.get("recipient_name")
         self.recipient_email = kwargs.get("recipient_email")
 
-    def get_line_item(self, **kwargs):
-        item_price = Decimal(kwargs["LineAmount"]) + Decimal(kwargs["DiscountAmount"])
+    def get_line_item(self, LineAmount=0, DiscountAmount=0, **kwargs):
+        item_price = Decimal(LineAmount) + Decimal(DiscountAmount)
         line_item = {
             "description": kwargs["Description"],
             "item_price": str(Decimal(item_price).quantize(TWOPLACES)),
@@ -197,9 +197,11 @@ class EmailTemplate(Resource):
             "discount": str(Decimal(invoice["TotalDiscount"]).quantize(TWOPLACES)),
             "address": address,
         }
+        def_name = "{FirstName} {LastName}".format(**customer)
+
         result = {
             "model": model,
-            "name": self.recipient_name or customer["FirstName"],
+            "name": def_name if self.recipient_name is None else self.recipient_name,
             "email": self.recipient_email or customer["EmailAddress"],
             "filename": "Nerevu Invoice {invoice_num}.pdf".format(**model),
             "pdf": invoices.extract_model(headers={"Accept": "application/pdf"}),

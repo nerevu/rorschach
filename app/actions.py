@@ -17,14 +17,13 @@ logger = gogo.Gogo(__name__, monolog=True).logger
 
 
 def add_xero_time(source_prefix, project_id=None, position=None, **kwargs):
-    dry_run = kwargs.get("dry_run")
-
     xero_time = ProjectTime(
         dictify=True,
         dry_run=dry_run,
         event_pos=position,
         source_project_id=project_id,
         source_prefix=source_prefix,
+        **kwargs,
     )
 
     data = xero_time.get_post_data()
@@ -49,9 +48,9 @@ def add_xero_time(source_prefix, project_id=None, position=None, **kwargs):
     return json
 
 
-def mark_billed(source_prefix, rid, dry_run=False, **kwargs):
+def mark_billed(source_prefix, rid, **kwargs):
     provider = get_provider(source_prefix)
-    time = provider.Time(dictify=True, dry_run=dry_run, rid=rid)
+    time = provider.Time(dictify=True, rid=rid, **kwargs)
     data = time.get_patch_data()
     response = time.patch(**data)
     json = response.json
@@ -73,13 +72,14 @@ def mark_billed(source_prefix, rid, dry_run=False, **kwargs):
     return json
 
 
-def send_charge_notification(invoice_id, **kwargs):
+def send_notification(invoice_id, prompt=False, **kwargs):
     email_template = EmailTemplate(rid=invoice_id, **kwargs)
     template_data = email_template.extract_model()
-    template_data["f"] = open(template_data["pdf"][0], mode="rb")
+    pdf_path = template_data["pdf"][0]
+    template_data["f"] = open(pdf_path, mode="rb")
     email = Email(**kwargs)
     data = email.get_post_data(**template_data)
-    answer = fetch_bool("Send email?") if kwargs.get("prompt") else "y"
+    answer = fetch_bool("Send email?") if prompt else "y"
 
     if answer == "y":
         breakpoint()
