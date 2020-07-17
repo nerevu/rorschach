@@ -21,7 +21,6 @@ logger = gogo.Gogo(__name__, monolog=True).logger
 def add_xero_time(source_prefix, project_id=None, position=None, **kwargs):
     xero_time = ProjectTime(
         dictify=True,
-        dry_run=dry_run,
         event_pos=position,
         source_project_id=project_id,
         source_prefix=source_prefix,
