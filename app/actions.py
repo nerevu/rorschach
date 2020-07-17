@@ -5,6 +5,8 @@
 
     Provides misc syncing actions
 """
+from pathlib import Path
+
 import pygogo as gogo
 
 from app.helpers import get_provider
@@ -93,6 +95,7 @@ def send_notification(invoice_id, prompt=False, **kwargs):
             "status_code": 400,
         }
 
+    Path(pdf_path).unlink(missing_ok=True)
     return json
 
 
