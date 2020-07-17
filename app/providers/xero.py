@@ -19,7 +19,6 @@ from app.routes.auth import Resource, process_result
 
 logger = gogo.Gogo(__name__, monolog=True).logger
 
-TWOPLACES = Decimal(10) ** -2
 PREFIX = __name__.split(".")[-1]
 
 
@@ -50,6 +49,19 @@ def get_user_name(user_id, prefix=None):
 def parse_date(date_str):
     year, month, day = map(int, date_str.split("T")[0].split("-"))
     return date(year, month, day).strftime("%b %-d, %Y")
+
+
+def gen_address(City='', Region='', PostalCode='', **kwargs):
+    for k, v in kwargs.items():
+        if v and k.startswith('AddressLine'):
+            yield v
+
+    last_line = f"{City}, {Region}" if City and Region else City or Region
+
+    if PostalCode:
+        last_line += f" {PostalCode}"
+
+    yield last_line
 
 
 ###########################################################################
@@ -155,12 +167,13 @@ class EmailTemplate(Resource):
         super().__init__(PREFIX, "Invoices", *args, **kwargs)
         self.recipient_name = kwargs.get("recipient_name")
         self.recipient_email = kwargs.get("recipient_email")
+        self.copied_email = kwargs.get("copied_email")
 
     def get_line_item(self, LineAmount=0, DiscountAmount=0, **kwargs):
         item_price = Decimal(LineAmount) + Decimal(DiscountAmount)
         line_item = {
             "description": kwargs["Description"],
-            "item_price": str(Decimal(item_price).quantize(TWOPLACES)),
+            "item_price": "{:,.2f}".format(item_price),
         }
         return line_item
 
@@ -170,14 +183,18 @@ class EmailTemplate(Resource):
         invoice_num = invoice["InvoiceNumber"]
         items = [self.get_line_item(**item) for item in invoice["LineItems"]]
         customer = invoice["Contact"]
-        charge_date = parse_date(invoice["DueDateString"])
+        due_date = parse_date(invoice["DueDateString"])
         invoice_date = parse_date(invoice["DateString"])
-        subtotal = invoice["AmountDue"] + invoice["TotalDiscount"]
+        due = Decimal(invoice["AmountDue"])
+        discount = Decimal(invoice.get("TotalDiscount", 0))
+        subtotal = due + discount
 
         try:
-            address = next(x for x in customer["Addresses"] if x.get("AddressLine1"))
+            _address = next(x for x in customer["Addresses"] if x.get("AddressLine1"))
         except StopIteration:
-            address = {}
+            address = []
+        else:
+            address = list(gen_address(**_address))
 
         online_invoices = OnlineInvoices(rid=self.id)
         online_invoice = online_invoices.extract_model()
@@ -185,24 +202,33 @@ class EmailTemplate(Resource):
         model = {
             "contact_name": customer["FirstName"],
             "reference": invoice["Reference"],
-            "charge": str(Decimal(invoice["AmountDue"]).quantize(TWOPLACES)),
+            "due": "{:,.2f}".format(due),
             "currency": invoice["CurrencyCode"],
-            "charge_date": charge_date,
+            "due_date": due_date,
             "link": online_invoice[online_invoices.id_field],
             "customer_name": customer["Name"],
             "invoice_num": invoice_num,
             "invoice_date": invoice_date,
             "items": items,
-            "subtotal": str(Decimal(subtotal).quantize(TWOPLACES)),
-            "discount": str(Decimal(invoice["TotalDiscount"]).quantize(TWOPLACES)),
+            "subtotal": "{:,.2f}".format(subtotal),
+            "discount": "{:,.2f}".format(discount) if discount else '',
             "address": address,
         }
+
+        contacts = customer.get('ContactPersons', [])
+
+        try:
+            copied_email = next(x['EmailAddress'] for x in contacts if x.get("IncludeInEmails"))
+        except StopIteration:
+            copied_email = ''
+
         def_name = "{FirstName} {LastName}".format(**customer)
 
         result = {
             "model": model,
             "name": def_name if self.recipient_name is None else self.recipient_name,
             "email": self.recipient_email or customer["EmailAddress"],
+            "copied_email": copied_email if self.copied_email is None else self.copied_email,
             "filename": "Nerevu Invoice {invoice_num}.pdf".format(**model),
             "pdf": invoices.extract_model(headers={"Accept": "application/pdf"}),
             "metadata": {"client-id": customer["ContactID"]},

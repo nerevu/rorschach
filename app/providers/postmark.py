@@ -45,9 +45,17 @@ class Email(Resource):
         def_template_id = self.kwargs.get("postmark_template_id")
         self.template_id = template_id or def_template_id
 
+    @property
+    def template_name(self):
+        templates = Templates(rid=self.template_id)
+        template = templates.extract_model()
+        return template[templates.name_field]
+
     def set_post_data(self, email, name="", subject="", text="", html="", **kwargs):
         assert email, ("You must provide an email address.", 400)
         self.recipient = f"{name} <{email}>" if name else email
+        self.copied_recipient = kwargs.get('copied_email', '')
+
         self.tag = kwargs.get("tag")
         self.metadata = kwargs.get("metadata", {})
         model = kwargs.get("model")
@@ -90,6 +98,7 @@ class Email(Resource):
             email_data = {
                 "From": self.sender,
                 "To": self.recipient,
+                "Cc": self.copied_recipient,
                 "Tag": self.tag,
                 "TrackOpens": True,
                 "TrackLinks": "None",
@@ -97,11 +106,11 @@ class Email(Resource):
                 "Metadata": self.metadata,
             }
 
-            message = "Got email data for "
+            message = "Retrieved email data\n"
 
             if self.template_id:
                 updates = {"TemplateId": self.template_id, "TemplateModel": self.model}
-                message += f"template {self.template_id} "
+                message += f"  template: {self.template_name}\n"
             else:
                 updates = {
                     "Subject": self.subject,
@@ -109,9 +118,13 @@ class Email(Resource):
                     "TextBody": self.text,
                 }
 
-                message += f'subject "{self.subject}" '
+                message += f'  subject: {self.subject}\n'
 
-            message += f"to {self.recipient} from {self.sender}"
+            message += f"  from: {self.sender}\n  to: {self.recipient}\n"
+
+            if self.copied_recipient:
+                message += f"  cc: {self.copied_recipient}\n"
+
             email_data.update(updates)
             logger.debug(message)
 
