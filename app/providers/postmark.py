@@ -28,7 +28,7 @@ class Domains(Resource):
 class Templates(Resource):
     def __init__(self, *args, **kwargs):
         kwargs.update(
-            {"subkey": "Templates", "id_field": "TemplateId", "name_field": "Name"}
+            {"subkey": "Templates", "id_field": "TemplateId", "name_field": "Name", "options": "count=100&offset=0"}
         )
         super().__init__(PREFIX, "templates", *args, **kwargs)
 

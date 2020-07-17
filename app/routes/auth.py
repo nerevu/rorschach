@@ -513,7 +513,7 @@ class Resource(BaseView):
             elif not self.eof:
                 assert self.rid, (f"No {self} {self.resource} id provided!", 404)
 
-        if self.options and url:
+        if self.options and url and not self.id:
             url += f"?{self.options}"
 
         if self.dry_run:
@@ -846,7 +846,7 @@ class Resource(BaseView):
         elif response["ok"]:
             if self.subkey:
                 try:
-                    result = result.get(self.subkey, {})
+                    result = result.get(self.subkey, result)
                 except AttributeError:
                     pass
 
