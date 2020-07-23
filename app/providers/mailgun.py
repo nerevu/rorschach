@@ -27,7 +27,7 @@ class Domains(Resource):
 
 class EmailLists(Resource):
     def __init__(self, *args, list_prefix=None, **kwargs):
-        kwargs["ignore_domain"] = True
+        kwargs.update({"ignore_domain": True, "id_field": "address", "subkey": "list"})
         super().__init__(PREFIX, "lists", *args, **kwargs)
 
         def_list_prefix = self.kwargs.get("mailgun_list_prefix")
@@ -43,15 +43,21 @@ class EmailLists(Resource):
         self._list_prefix = value
 
         if self.list_prefix:
-            self.rid = f"{self.list_prefix}@{self.client.domain}"
+            self.rid = f"{self.list_prefix}@{self.domain}"
+
+    @property
+    def list_name(self):
+        email_list = self.extract_model()
+        return email_list[self.name_field]
 
 
 class EmailListMembers(EmailLists):
     def __init__(self, *args, **kwargs):
         kwargs["subresource"] = "members"
         super().__init__(*args, **kwargs)
+        self.subkey = "items" if self.rid else "list"
 
-    def get_post_data(self, email, **kwargs):
+    def get_post_data(self, email=None, **kwargs):
         if email:
             member_data = {"subscribed": True, "address": email}
         else:
@@ -67,9 +73,8 @@ class Email(Resource):
         kwargs["id_field"] = "MessageID"
         super().__init__(PREFIX, "messages", *args, **kwargs)
 
-        self.lists = EmailLists()
-        email_list = self.lists.extract_model()
-        self.list_name = email_list[self.lists.name_field]
+        self.lists = EmailLists(**kwargs)
+        self.list_name = self.lists.list_name
         self.admin_email = f"owner@{self.client.domain}"
         self.admin_name = app.config["ADMIN"].name
 
@@ -124,10 +129,11 @@ class Email(Resource):
         html = "<html><p>Hello, please confirm that you want to subscribe to "
         html += f'{self.list_name} by <a href="{url}">clicking here</a>.</p></html>'
         response = self.post(email, subject, html=html, tags=["signup"])
+        json = response.json
 
-        if response["ok"]:
+        if json["ok"]:
             message = f"{self.emails.list_prefix} list subscription confirmation sent "
             message += f"to {self.email}."
-            response["message"] = message
+            json["message"] = message
 
-        return response
+        return json

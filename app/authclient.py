@@ -51,8 +51,10 @@ def _clear_cache():
 
 
 class BaseClient(object):
-    def __init__(self, prefix, **kwargs):
+    def __init__(self, prefix, json_data=True, **kwargs):
         self.prefix = prefix
+        self.json_data = json_data
+        self.data_key = "json" if self.json_data else "data"
         self.auth = None
         self.oauth_version = kwargs.get("oauth_version")
         self.oauth1 = self.oauth_version == 1
@@ -62,7 +64,7 @@ class BaseClient(object):
         self.debug = kwargs.get("debug")
         self.username = kwargs.get("username")
         self.password = kwargs.get("password")
-        self.data_key = kwargs.get("data_key", "json")
+        self.dump_data = kwargs.get("dump_data")
         self.headers = kwargs.get("headers", {})
         self.auth_params = kwargs.get("auth_params", {})
         self.created_at = None
@@ -268,16 +270,16 @@ class OAuth2Client(OAuthClient):
         # TODO: this used to be AuthClientError. What will it be now?
         # https://developer.intuit.com/app/developer/qbo/docs/develop/authentication-and-authorization/oauth-2.0#revoke-token-disconnect
         try:
-            response = {
+            json = {
                 "status_code": 404,
                 "message": "This endpoint is not yet implemented.",
             }
         except Exception:
             message = "Can't revoke authentication rights because the app is"
             message += " not currently authenticated."
-            response = {"status_code": 400, "message": message}
+            json = {"status_code": 400, "message": message}
 
-        return response
+        return json
 
     def save(self):
         try:
@@ -481,9 +483,14 @@ def get_auth_client(prefix, state=None, **kwargs):
     auth_client_name = f"{prefix}_auth_client"
 
     if auth_client_name not in g:
-        authentication = kwargs["AUTHENTICATION"][prefix.lower()]
-        auth_type = authentication["auth_type"]
-        auth_kwargs = authentication[auth_type]
+        authentication = kwargs["AUTHENTICATION"].get(prefix.lower())
+
+        if authentication:
+            auth_type = authentication["auth_type"]
+            auth_kwargs = authentication[auth_type]
+        else:
+            auth_type = ""
+            auth_kwargs = {}
 
         if auth_type == "oauth1":
             auth_kwargs["oauth_version"] = 1
@@ -516,17 +523,17 @@ def get_auth_client(prefix, state=None, **kwargs):
     return g.get(auth_client_name)
 
 
-def get_response(url, client, params=None, renewed=False, hacked=False, **kwargs):
+def get_json_response(url, client, params=None, renewed=False, hacked=False, **kwargs):
     ok = False
     unscoped = False
     success_code = kwargs.get("success_code", 200)
 
     if client.expired:
-        response = {"message": "Token Expired.", "status_code": 401}
+        json = {"message": "Token Expired.", "status_code": 401}
     elif not client.verified:
-        response = {"message": "Client not authorized.", "status_code": 401}
+        json = {"message": "Client not authorized.", "status_code": 401}
     elif client.error:
-        response = {"message": client.error, "status_code": 500}
+        json = {"message": client.error, "status_code": 500}
     elif url:
         params = params or {}
         data = kwargs.get("data", {})
@@ -548,7 +555,7 @@ def get_response(url, client, params=None, renewed=False, hacked=False, **kwargs
         except TokenExpiredError:
             ok = unscoped = False
             result = None
-            response = {"message": "Token Expired", "status_code": 401}
+            json = {"message": "Token Expired", "status_code": 401}
         else:
             unscoped = result.headers.get("WWW-Authenticate") == "insufficient_scope"
             ok = result.ok
@@ -562,7 +569,7 @@ def get_response(url, client, params=None, renewed=False, hacked=False, **kwargs
             is_json = content_type.endswith("json")
             is_file = content_type.endswith("pdf")
 
-            if is_json and result.status_code == success_code:
+            if is_json and 200 <= result.status_code < 300:
                 status_code = 500
             else:
                 status_code = result.status_code
@@ -583,10 +590,10 @@ def get_response(url, client, params=None, renewed=False, hacked=False, **kwargs
             else:
                 message = result.text
 
-            response = {"message": message, "status_code": status_code}
+            json = {"message": message, "status_code": status_code}
 
             if is_file:
-                response["result"] = {f.name}
+                json["result"] = {f.name}
         else:
             try:
                 # in case the json result is list
@@ -605,28 +612,26 @@ def get_response(url, client, params=None, renewed=False, hacked=False, **kwargs
                 fault = item["fault"]
 
                 if fault.get("type") == "AUTHENTICATION":
-                    response = {"message": "Client not authorized.", "status_code": 401}
+                    json = {"message": "Client not authorized.", "status_code": 401}
                 elif fault.get("error"):
                     error = fault["error"][0]
                     detail = error.get("detail", "")
 
                     if detail.startswith("Token expired"):
-                        response = {"message": "Token Expired.", "status_code": 401}
+                        json = {"message": "Token Expired.", "status_code": 401}
 
                     err_message = error["message"]
-                    _response = dict(
-                        pair.split("=") for pair in err_message.split("; ")
-                    )
-                    _message = _response["message"]
+                    _json = dict(pair.split("=") for pair in err_message.split("; "))
+                    _message = _json["message"]
                     message = f"{_message}: {detail}" if detail else _message
-                    response = {
+                    json = {
                         "message": message,
-                        "status_code": int(_response["statusCode"]),
+                        "status_code": int(_json["statusCode"]),
                     }
                 else:
-                    response = {"message": fault.get("type"), "status_code": 500}
+                    json = {"message": fault.get("type"), "status_code": 500}
             elif ok:
-                response = {"result": json}
+                json = {"result": json}
             else:
                 message_keys = ["message", "Message", "detail", "error"]
 
@@ -647,12 +652,12 @@ def get_response(url, client, params=None, renewed=False, hacked=False, **kwargs
                         f"{k}: {', '.join(e['Message'] for e in v)}" for k, v in items
                     )
 
-                if result.status_code == success_code:
+                if 200 <= result.status_code < 300:
                     status_code = 500
                 else:
                     status_code = result.status_code
 
-                response = {"message": message, "status_code": status_code}
+                json = {"message": message, "status_code": status_code}
 
         if not ok and kwargs.get("debug"):
             header_names = ["Authorization", "Accept", "Content-Type"]
@@ -674,11 +679,12 @@ def get_response(url, client, params=None, renewed=False, hacked=False, **kwargs
             if parsed:
                 logger.debug({k: v[0] for k, v in parsed.items()})
     else:
-        response = client.response
-        ok = response.get("status_code", success_code) == success_code
+        json = client.json
+        status_code = json.get("status_code", success_code)
+        ok = 200 <= status_code < 300
 
-    status_code = response.get("status_code", success_code)
-    response["ok"] = ok
+    status_code = json.get("status_code", success_code)
+    json["ok"] = ok
 
     if not ok:
         try:
@@ -696,22 +702,22 @@ def get_response(url, client, params=None, renewed=False, hacked=False, **kwargs
         msg = f"Insufficient scope: {client.scope}." if unscoped else "Token expired!"
         logger.debug(msg)
         client.renew_token(401)
-        response = get_response(url, client, params=params, renewed=True, **kwargs)
+        json = get_json_response(url, client, params=params, renewed=True, **kwargs)
     elif status_code == 400 and not hacked:
         logger.debug("Applying authclient hack!")
-        response = get_response(url, client, params=params, hacked=True, **kwargs)
+        json = get_json_response(url, client, params=params, hacked=True, **kwargs)
     else:
         try:
-            response["links"] = get_links(app.url_map.iter_rules())
+            json["links"] = get_links(app.url_map.iter_rules())
         except RuntimeError:
             pass
 
     if not ok and kwargs.get("debug"):
-        message = response.get("message", "")
+        message = json.get("message", "")
         logger.error(f"Error requesting {url}")
         logger.error(f"Server returned {status_code}: {message}")
 
-    return response
+    return json
 
 
 def get_redirect_url(prefix):
@@ -722,10 +728,10 @@ def get_redirect_url(prefix):
     in the redirect URL. We will use that to obtain an access token.
     """
     query = urlparse(request.url).query
-    response = dict(parse_qsl(query), **request.args)
-    state = response.get("state") or session.get(f"{prefix}_state")
-    realm_id = response.get("realm_id") or session.get(f"{prefix}_realm_id")
-    valid = all(map(response.get, ["oauth_token", "oauth_verifier", "org"]))
+    json = dict(parse_qsl(query), **request.args)
+    state = json.get("state") or session.get(f"{prefix}_state")
+    realm_id = json.get("realm_id") or session.get(f"{prefix}_realm_id")
+    valid = all(map(json.get, ["oauth_token", "oauth_verifier", "org"]))
     client = get_auth_client(prefix, state=state, realm_id=realm_id, **app.config)
 
     if state or valid:
@@ -742,9 +748,9 @@ def get_redirect_url(prefix):
 
     if prefix == "xero" and client.oauth2:
         api_url = f"{client.api_base_url}/connections"
-        response = get_response(api_url, client, **app.config)
+        json = get_json_response(api_url, client, **app.config)
         # https://developer.xero.com/documentation/oauth2/auth-flow
-        result = response.get("result")
+        result = json.get("result")
         tenant_id = result[0].get("tenantId") if result else None
 
         if tenant_id:
@@ -752,7 +758,7 @@ def get_redirect_url(prefix):
             client.save()
             logger.debug(f"Set Xero tenantId to {client.tenant_id}.")
         else:
-            client.error = response.get("message", "No tenantId found.")
+            client.error = json.get("message", "No tenantId found.")
 
     return redirect_url, client
 
@@ -761,11 +767,11 @@ def callback(prefix):
     redirect_url, client = get_redirect_url(prefix)
 
     if client.error:
-        response = {
+        json = {
             "message": client.error,
             "status_code": 401,
             "links": get_links(app.url_map.iter_rules()),
         }
-        return jsonify(**response)
+        return jsonify(**json)
     else:
         return redirect(redirect_url)

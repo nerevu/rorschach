@@ -27,11 +27,10 @@ def configure(flask_config, **kwargs):
         flask_config.from_envvar("APP_SETTINGS", silent=True)
 
 
-get_class_members = lambda module: getmembers(module, isclass)
+def get_member(module, member_name, classes_only=True):
+    predicate = isclass if classes_only else None
 
-
-def get_member(module, member_name):
-    for member in get_class_members(module):
+    for member in getmembers(module, predicate):
         if member[0].lower() == member_name.lower():
             return member[1]
 

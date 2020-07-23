@@ -214,7 +214,7 @@ class Projects(GSheets):
     def __init__(self, *args, **kwargs):
         super().__init__("projects", *args, **kwargs)
 
-    def get_response(self):
+    def get_json_response(self):
         self.worksheet_name = "client projects"
         records = self.worksheet.get_all_records()
 
@@ -238,7 +238,7 @@ class Users(GSheets):
     def __init__(self, *args, **kwargs):
         super().__init__("users", *args, **kwargs)
 
-    def get_response(self):
+    def get_json_response(self):
         result = [
             {"id": "austin", "name": "Austin Dial"},
             {"id": "mitchell", "name": "Mitchell Sotto"},
@@ -254,7 +254,7 @@ class Contacts(GSheets):
     def __init__(self, *args, **kwargs):
         super().__init__("contacts", *args, **kwargs)
 
-    def get_response(self):
+    def get_json_response(self):
         result = self.worksheet.col_values(1)[1:]
 
         if self.id:
@@ -267,7 +267,7 @@ class Tasks(GSheets):
     def __init__(self, *args, **kwargs):
         super().__init__("tasks", *args, **kwargs)
 
-    def get_response(self):
+    def get_json_response(self):
         result = [
             {"name": v, "row": pos + 2, "id": slugify(v)}
             for (pos, v) in enumerate(self.worksheet.col_values(3)[1:])
@@ -321,7 +321,7 @@ class Time(GSheets):
 
         return data
 
-    def get_response(self):
+    def get_json_response(self):
         self.worksheet_name = "austin (time)"
         austin_records = self.worksheet.get_all_records()
         austin_time = [
@@ -354,7 +354,7 @@ class Time(GSheets):
 class ProjectTasks(GSheets):
     def __init__(self, *args, **kwargs):
         kwargs["fields"] = ["id", "name"]
-        self.get_response = Tasks().get_response
+        self.get_json_response = Tasks().get_json_response
         super().__init__("projects", *args, **kwargs)
 
 
@@ -373,7 +373,7 @@ class ProjectTime(GSheets):
 
         super().__init__("projects", *args, **kwargs)
 
-    def get_response(self):
+    def get_json_response(self):
         if self.rid:
             self.worksheet_name = "austin (time)"
             austin_records = self.worksheet.get_all_records()
@@ -397,30 +397,17 @@ class ProjectTime(GSheets):
             if self.id:
                 result = select_by_id(result, self.id, self.id_field)
 
-            response = {"result": result}
+            json = {"result": result}
         else:
-            response = {
+            json = {
                 "result": [],
                 "message": f"No {self} {self.resource} id provided!",
                 "status_code": 404,
             }
 
-        return response
+        return json
 
 
 class Hooks(Webhook):
     def __init__(self, *args, **kwargs):
         super().__init__(PREFIX, *args, **kwargs)
-
-    def process_value(self, value):
-        result = {}
-
-        for event in value:
-            key = (event["eventType"].lower(), event["eventCategory"].lower())
-            method = self.methods.get(key)
-
-            if method:
-                response = method(self.prefix, event["ResourceId"])
-                result[event["eventId"]] = response.get("response")
-
-        return result

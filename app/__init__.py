@@ -34,11 +34,11 @@ from app.helpers import configure
 from mezmorize.utils import get_cache_config, get_cache_type
 from meza.fntools import CustomEncoder
 
-__version__ = "0.23.0"
-__title__ = "Timero API"
-__package_name__ = "timero-api"
+__version__ = "0.24.0"
+__title__ = "Nerevu API"
+__package_name__ = "api"
 __author__ = "Reuben Cummings"
-__description__ = "API for the Timero Timely-Xero sync webapp"
+__description__ = "Nerevu monolith API"
 __email__ = "rcummings@nerevu.com"
 __license__ = "MIT"
 __copyright__ = "Copyright 2019 Nerevu Group"

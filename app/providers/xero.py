@@ -51,9 +51,9 @@ def parse_date(date_str):
     return date(year, month, day).strftime("%b %-d, %Y")
 
 
-def gen_address(City='', Region='', PostalCode='', **kwargs):
+def gen_address(City="", Region="", PostalCode="", **kwargs):
     for k, v in kwargs.items():
-        if v and k.startswith('AddressLine'):
+        if v and k.startswith("AddressLine"):
             yield v
 
     last_line = f"{City}, {Region}" if City and Region else City or Region
@@ -163,7 +163,7 @@ class OnlineInvoices(Resource):
 
 class EmailTemplate(Resource):
     def __init__(self, *args, **kwargs):
-        kwargs["get_response"] = self.get_response
+        kwargs["get_json_response"] = self.get_json_response
         super().__init__(PREFIX, "Invoices", *args, **kwargs)
         self.recipient_name = kwargs.get("recipient_name")
         self.recipient_email = kwargs.get("recipient_email")
@@ -177,7 +177,7 @@ class EmailTemplate(Resource):
         }
         return line_item
 
-    def get_response(self):
+    def get_json_response(self):
         invoices = Invoices(rid=self.id)
         invoice = invoices.extract_model()
         invoice_num = invoice["InvoiceNumber"]
@@ -211,16 +211,16 @@ class EmailTemplate(Resource):
             "invoice_date": invoice_date,
             "items": items,
             "subtotal": "{:,.2f}".format(subtotal),
-            "discount": "{:,.2f}".format(discount) if discount else '',
+            "discount": "{:,.2f}".format(discount) if discount else "",
             "address": address,
         }
 
-        contacts = customer.get('ContactPersons', [])
+        contacts = customer.get("ContactPersons", [])
 
         try:
-            copied_email = next(x['EmailAddress'] for x in contacts if x.get("IncludeInEmails"))
+            cced = next(x["EmailAddress"] for x in contacts if x.get("IncludeInEmails"))
         except StopIteration:
-            copied_email = ''
+            cced = ""
 
         def_name = "{FirstName} {LastName}".format(**customer)
 
@@ -228,7 +228,7 @@ class EmailTemplate(Resource):
             "model": model,
             "name": def_name if self.recipient_name is None else self.recipient_name,
             "email": self.recipient_email or customer["EmailAddress"],
-            "copied_email": copied_email if self.copied_email is None else self.copied_email,
+            "copied_email": cced if self.copied_email is None else self.copied_email,
             "filename": "Nerevu Invoice {invoice_num}.pdf".format(**model),
             "pdf": invoices.extract_model(headers={"Accept": "application/pdf"}),
             "metadata": {"client-id": customer["ContactID"]},
@@ -509,10 +509,10 @@ class Hooks(Webhook):
 
         for event in value:
             key = (event["eventType"].lower(), event["eventCategory"].lower())
-            method = self.methods.get(key)
+            action = self.get_action(key)
 
-            if method:
-                response = method(event["ResourceId"])
-                result[event["eventId"]] = response.get("response")
+            if action:
+                json = action(event["ResourceId"])
+                result[event["eventId"]] = json.get("response")
 
         return result

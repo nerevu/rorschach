@@ -28,7 +28,7 @@ PREFIX = Config.API_URL_PREFIX
 
 
 class ProviderMixin:
-    def __init__(self, prefix=""):
+    def __init__(self, prefix="", **kwargs):
         self.prefix = prefix
         self.lowered = self.prefix.lower()
         self.is_timely = self.prefix == "timely"
@@ -76,7 +76,9 @@ class ProviderMixin:
                         f"path:{self.path} doesn't match request:{request.path}"
                     )
             except RuntimeError:
-                self._kwargs = dict(gen_config(app))
+                self._kwargs = {}
+
+            self._kwargs.update(dict(gen_config(app)))
 
         return self._kwargs
 
@@ -88,13 +90,13 @@ class Memoization(ProviderMixin, MethodView):
     def get(self):
         base_url = get_request_base()
 
-        response = {
+        json = {
             "description": "Deletes a cache url",
             "links": get_links(app.url_map.iter_rules()),
             "message": f"The {request.method}:{base_url} route is not yet complete.",
         }
 
-        return jsonify(**response)
+        return jsonify(**json)
 
     def delete(self, path=None):
         if path:
@@ -105,5 +107,5 @@ class Memoization(ProviderMixin, MethodView):
             cache.clear()
             message = "Caches cleared!"
 
-        response = {"links": get_links(app.url_map.iter_rules()), "message": message}
-        return jsonify(**response)
+        json = {"links": get_links(app.url_map.iter_rules()), "message": message}
+        return jsonify(**json)

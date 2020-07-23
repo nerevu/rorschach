@@ -28,7 +28,7 @@ load_dotenv(p.join(PARENT_DIR, ".env"))
 db_env_list = ["DATABASE_URL", "REDIS_URL", "MEMCACHIER_SERVERS", "REDISTOGO_URL"]
 
 __USER__ = "reubano"
-__APP_NAME__ = "timero"
+__APP_NAME__ = "api"
 __PROD_SERVER__ = any(map(getenv, db_env_list))
 __DEF_HOST__ = "127.0.0.1"
 __DEF_REDIS_PORT__ = 6379
@@ -80,7 +80,7 @@ class Config(object):
     SEND_FILE_MAX_AGE_DEFAULT = ROUTE_TIMEOUT
     EMPTY_TIMEOUT = ROUTE_TIMEOUT * 10
     API_URL_PREFIX = "/v1"
-    SECRET_KEY = getenv("TIMERO_SECRET_KEY", urandom(24))
+    SECRET = getenv(f"{__APP_NAME__}_SECRET".upper(), urandom(24))
     CHROME_DRIVER_VERSIONS = [None] + list(range(81, 77, -1))
 
     APP_CONFIG_WHITELIST = {
@@ -88,6 +88,7 @@ class Config(object):
         "ROW_LIMIT",
         "ERR_LIMIT",
         "ADMIN",
+        "SECRET",
     }
 
     # Variables warnings
@@ -108,6 +109,7 @@ class Config(object):
                 "username": "api",
                 "password": getenv("MAILGUN_API_KEY"),
                 "domain": MAILGUN_DOMAIN,
+                "json_data": False,
             },
         },
         # https://postmarkapp.com/developer/api/overview
@@ -221,6 +223,25 @@ class Config(object):
             "digest": "sha256",
             "b64_encode": True,
             "payload_key": "events",
+            "activities": {("new", "invoice"): "send_notification"},
+        },
+        "heroku": {
+            "signature_header": "Heroku-Webhook-Hmac-SHA256",
+            "webhook_secret": getenv("HEROKU_WEBHOOK_SECRET"),
+            "digest": "sha256",
+            "b64_encode": True,
+            "payload_key": "action",
+            "ignore_signature": True,
+            "methods": ["POST", "GET"],
+            "activities": {"update": "invalidate_cf_distribution"},
+        },
+        "timely": {
+            "payload_key": "",
+            "activities": {("new", "event"): "add_xero_time"},
+        },
+        "gsheets": {
+            "payload_key": "",
+            "activities": {("new", "row"): "add_xero_time"},
         },
     }
 

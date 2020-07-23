@@ -10,8 +10,8 @@ from pathlib import Path
 import pygogo as gogo
 
 from app.helpers import get_provider
-from app.providers.aws import Distribution
 from app.utils import fetch_bool
+from app.providers.aws import Distribution
 from app.providers.postmark import Email
 from app.providers.xero import ProjectTime, EmailTemplate
 
@@ -21,7 +21,6 @@ logger = gogo.Gogo(__name__, monolog=True).logger
 def add_xero_time(source_prefix, project_id=None, position=None, **kwargs):
     xero_time = ProjectTime(
         dictify=True,
-        dry_run=dry_run,
         event_pos=position,
         source_project_id=project_id,
         source_prefix=source_prefix,
@@ -84,7 +83,6 @@ def send_notification(invoice_id, prompt=False, **kwargs):
     answer = fetch_bool("Send email?") if prompt else "y"
 
     if answer == "y":
-        breakpoint()
         response = email.post(**data)
         json = response.json
         json["message"] = json["result"]["Message"]
@@ -99,7 +97,14 @@ def send_notification(invoice_id, prompt=False, **kwargs):
     return json
 
 
-def invalidate_cf_distribution(*args, **kwargs):
-    distribution = Distribution(*args, **kwargs)
-    response = distribution.invalidate(**kwargs)
-    return response.json
+def invalidate_cf_distribution(action, **kwargs):
+    distribution = Distribution(**kwargs)
+    json = distribution.invalidate(**kwargs)
+
+    status_code = json["ResponseMetadata"]["HTTPStatusCode"]
+    json = {
+        "message": json["Invalidation"]["Status"],
+        "ok": status_code == 201,
+        "status_code": status_code,
+    }
+    return json

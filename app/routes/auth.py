@@ -28,7 +28,7 @@ from meza.fntools import listize, remove_keys
 
 from app import cache
 from app.routes import ProviderMixin
-from app.authclient import get_auth_client, get_response, callback
+from app.authclient import get_auth_client, get_json_response, callback
 from app.utils import jsonify, get_links, fetch_bool, extract_fields
 from app.mappings import reg_mapper
 from app.helpers import singularize, get_collection
@@ -91,12 +91,16 @@ class BaseView(ProviderMixin, MethodView):
         if self._dry_run:
             self.client = None
             self.data_key = None
+            self.json_data = True
+            self.dump_data = False
             self._params = {}
             self.domain = None
             def_start = def_end - timedelta(days=Config.REPORT_DAYS)
         else:
             self.client = get_auth_client(self.prefix, **app.config)
             self.data_key = self.client.data_key
+            self.json_data = self.client.json_data
+            self.dump_data = self.client.dump_data
             self._params = {**kwargs.get("params", {}), **self.client.auth_params}
             self.domain = kwargs.get("domain", self.client.domain)
             def_start = def_end - timedelta(days=app.config["REPORT_DAYS"])
@@ -160,16 +164,16 @@ class Auth(BaseView):
 
         # Step 2: User authorization, this happens on the provider.
         if self.client.verified and not self.client.expired:
-            response = get_response(self.status_url, self.client, **app.config)
+            json = get_json_response(self.status_url, self.client, **app.config)
 
             if self.is_xero and not self.client.tenant_id:
                 # TODO: figure out why this keeps getting cleared
-                self.client.tenant_id = response["result"][0].get("tenantId")
+                self.client.tenant_id = json["result"][0].get("tenantId")
 
                 if self.client.tenant_id:
                     self.client.save()
 
-            response.update(
+            json.update(
                 {
                     "token": self.client.token,
                     "state": self.client.state,
@@ -177,7 +181,7 @@ class Auth(BaseView):
                     "tenant_id": self.client.tenant_id,
                 }
             )
-            result = jsonify(**response)
+            result = jsonify(**json)
         else:
             if self.client.oauth1:
                 # clear previously cached token
@@ -196,8 +200,8 @@ class Auth(BaseView):
 
     def delete(self, base=None):
         # TODO: find out where this was implemented
-        response = {"status_code": 200, "message": self.client.revoke_token()}
-        return jsonify(**response)
+        json = {"status_code": 200, "message": self.client.revoke_token()}
+        return jsonify(**json)
 
 
 class Resource(BaseView):
@@ -257,7 +261,7 @@ class Resource(BaseView):
         self.fields = kwargs.get("fields", [])
         self.map_factory = kwargs.get("map_factory", reg_mapper)
         self.entry_factory = kwargs.get("entry_factory")
-        self.get_response = kwargs.get("get_response")
+        self.get_json_response = kwargs.get("get_json_response")
         self.patch_response = kwargs.get("patch_response")
         self.eof = False
 
@@ -813,10 +817,10 @@ class Resource(BaseView):
 
             status_code = 200 if result else 404
             ok = status_code == 200
-            response = {"result": result, "ok": ok, "status_code": status_code}
-        elif self.get_response:
-            self.client.response = self.get_response()
-            response = get_response(None, self.client)
+            json = {"result": result, "ok": ok, "status_code": status_code}
+        elif self.get_json_response:
+            self.client.json = self.get_json_response()
+            json = get_json_response(None, self.client)
         else:
             try:
                 url = self.api_url
@@ -832,18 +836,18 @@ class Resource(BaseView):
             if url:
                 headers = {**self.headers, **kwargs.get("headers", {})}
                 rkwargs = {"headers": headers, "params": self.params, **app.config}
-                response = get_response(url, self.client, **rkwargs)
+                json = get_json_response(url, self.client, **rkwargs)
             else:
-                response = {"result": {}, "ok": False, "status_code": 404}
+                json = {"result": {}, "ok": False, "status_code": 404}
 
-        result = response.get("result")
+        result = json.get("result")
 
         if self.dry_run:
             result = listize(result)
 
             if self.filterer and not self.id:
                 result = list(filter(self.filterer, result))
-        elif response["ok"]:
+        elif json["ok"]:
             if self.subkey:
                 try:
                     result = result.get(self.subkey, result)
@@ -870,10 +874,10 @@ class Resource(BaseView):
 
         if self.error_msg:
             logger.error(self.error_msg)
-            response["message"] = self.error_msg
+            json["message"] = self.error_msg
 
-        response["result"] = result
-        return jsonify(**response)
+        json["result"] = result
+        return jsonify(**json)
 
     def post(self, **kwargs):
         """ Create an API Resource.
@@ -908,26 +912,26 @@ class Resource(BaseView):
             data = {singularize(self.resource): data}
 
         if self.dry_run:
-            response = {
+            json = {
                 "result": data,
                 "ok": True,
                 "message": f"Disable dry_run mode to POST {self}.",
             }
         else:
-            rkwargs[self.data_key] = dumps(data) if self.data_key == "data" else data
-            response = get_response(self.api_url, self.client, **rkwargs)
+            rkwargs[self.data_key] = dumps(data) if self.dump_data else data
+            json = get_json_response(self.api_url, self.client, **rkwargs)
 
         if self.error_msg:
             logger.error(self.error_msg)
-            response["message"] = self.error_msg
+            json["message"] = self.error_msg
 
         if not self.dry_run:
             try:
-                response["links"] = get_links(app.url_map.iter_rules())
+                json["links"] = get_links(app.url_map.iter_rules())
             except RuntimeError:
                 pass
 
-        return jsonify(**response)
+        return jsonify(**json)
 
     def patch(self, _id=None, rid=None, **kwargs):
         """ Upate an API Resource.
@@ -963,41 +967,41 @@ class Resource(BaseView):
         values = remove_keys(self.values, black_list)
         data = {**values, **kwargs}
         data[self.id_field] = self.id
-        response = {}
+        json = {}
 
         if not self.id:
             self.error_msg = f"No {self} ID given!"
-            response = {"status_code": 404}
+            json = {"status_code": 404}
 
         if self.is_timely:
             rkwargs["method"] = "put"
             data = {singularize(self.resource): data}
 
         if self.dry_run:
-            response = {
+            json = {
                 "result": data,
                 "ok": True,
                 "message": f"Disable dry_run mode to PATCH {self}.",
             }
         elif self.patch_response:
             self.client.response = self.patch_response(**data)
-            response = get_response(None, self.client)
+            json = get_json_response(None, self.client)
 
-        if not response:
+        if not json:
             url = f"{self.api_url}/{self.id}"
-            rkwargs[self.data_key] = dumps(data) if self.data_key == "data" else data
-            response = get_response(url, self.client, **rkwargs)
+            rkwargs[self.data_key] = dumps(data) if self.dump_data else data
+            json = get_json_response(url, self.client, **rkwargs)
 
-        response["id"] = self.id
+        json["id"] = self.id
 
         if not self.dry_run:
             try:
-                response["links"] = get_links(app.url_map.iter_rules())
+                json["links"] = get_links(app.url_map.iter_rules())
             except RuntimeError:
                 pass
 
         if self.error_msg:
             logger.error(self.error_msg)
-            response["message"] = self.error_msg
+            json["message"] = self.error_msg
 
-        return jsonify(**response)
+        return jsonify(**json)
