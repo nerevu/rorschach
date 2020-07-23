@@ -12,6 +12,7 @@ from itertools import count, chain
 from json.decoder import JSONDecodeError
 from sys import exit
 from traceback import print_exception
+from inspect import getmembers, isclass
 
 import pygogo as gogo
 import click
@@ -24,7 +25,7 @@ from flask.config import Config as FlaskConfig
 from config import __APP_NAME__, Config
 
 from app import create_app, actions
-from app.helpers import configure, get_collection, get_provider, get_class_members
+from app.helpers import configure, get_collection, get_provider
 from app.authclient import get_auth_client, get_response
 from app.routes.auth import store as _store
 from app.providers.xero import ProjectTime, ProjectTasks
@@ -45,7 +46,7 @@ def gen_collection_names(prefixes):
     for prefix in prefixes:
         provider = get_provider(prefix)
 
-        for member in get_class_members(provider):
+        for member in getmembers(provider, isclass):
             yield member[0]
 
 

@@ -10,8 +10,8 @@ from pathlib import Path
 import pygogo as gogo
 
 from app.helpers import get_provider
-from app.providers.aws import Distribution
 from app.utils import fetch_bool
+from app.providers.aws import Distribution
 from app.providers.postmark import Email
 from app.providers.xero import ProjectTime, EmailTemplate
 
@@ -83,7 +83,6 @@ def send_notification(invoice_id, prompt=False, **kwargs):
     answer = fetch_bool("Send email?") if prompt else "y"
 
     if answer == "y":
-        breakpoint()
         response = email.post(**data)
         json = response.json
         json["message"] = json["result"]["Message"]
@@ -98,7 +97,14 @@ def send_notification(invoice_id, prompt=False, **kwargs):
     return json
 
 
-def invalidate_cf_distribution(*args, **kwargs):
-    distribution = Distribution(*args, **kwargs)
+def invalidate_cf_distribution(action, **kwargs):
+    distribution = Distribution(**kwargs)
     response = distribution.invalidate(**kwargs)
-    return response.json
+
+    status_code = response["ResponseMetadata"]["HTTPStatusCode"]
+    json = {
+        "message": response["Invalidation"]["Status"],
+        "ok": status_code == 201,
+        "status_code": status_code,
+    }
+    return json

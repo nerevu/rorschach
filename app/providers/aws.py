@@ -41,30 +41,31 @@ class Cloudfront(AWS):
 
 class Distribution(Cloudfront):
     items = [
-        "/icons/*.svg",
+        "/*.svg",
+        "/*.json",
         "/images*",
         "/favicon.*",
-        "/*.json",
     ]
 
     def __init__(self, *args, distribution_id=None, **kwargs):
-        def_distribution_id = self.kwargs.get("cloudfront_distribution_id")
-
         kwargs.update(
             {
                 "id_field": "distribution_id",
                 "sub_resource": "distribution",
-                "subresource_id": distribution_id or def_distribution_id,
+                "subresource_id": distribution_id,
             }
         )
 
         super().__init__(*args, **kwargs)
 
+        if not self.subresource_id:
+            self.subresource_id = self.kwargs.get("cloudfront_distribution_id")
+
     # https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/
     # cloudfront.html#CloudFront.Client.create_invalidation
     def invalidate(self, **kwargs):
         return self.client.create_invalidation(
-            DistributionId=self.id,
+            DistributionId=self.subresource_id,
             InvalidationBatch={
                 "Paths": {"Quantity": 4, "Items": self.items},
                 "CallerReference": dt.utcnow().isoformat(),
@@ -75,7 +76,3 @@ class Distribution(Cloudfront):
 class Hooks(Webhook):
     def __init__(self, *args, **kwargs):
         super().__init__(PREFIX, *args, **kwargs)
-
-    def process_value(self, value):
-        method = self.METHODS.get(value)
-        return method(value) if method else {}

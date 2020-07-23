@@ -483,9 +483,14 @@ def get_auth_client(prefix, state=None, **kwargs):
     auth_client_name = f"{prefix}_auth_client"
 
     if auth_client_name not in g:
-        authentication = kwargs["AUTHENTICATION"][prefix.lower()]
-        auth_type = authentication["auth_type"]
-        auth_kwargs = authentication[auth_type]
+        authentication = kwargs["AUTHENTICATION"].get(prefix.lower())
+
+        if authentication:
+            auth_type = authentication["auth_type"]
+            auth_kwargs = authentication[auth_type]
+        else:
+            auth_type = ""
+            auth_kwargs = {}
 
         if auth_type == "oauth1":
             auth_kwargs["oauth_version"] = 1

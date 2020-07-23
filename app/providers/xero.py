@@ -509,10 +509,10 @@ class Hooks(Webhook):
 
         for event in value:
             key = (event["eventType"].lower(), event["eventCategory"].lower())
-            method = self.methods.get(key)
+            action = self.get_action(key)
 
-            if method:
-                response = method(event["ResourceId"])
+            if action:
+                response = action(event["ResourceId"])
                 result[event["eventId"]] = response.get("response")
 
         return result

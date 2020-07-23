@@ -9,17 +9,17 @@ Live Site:
 Endpoints:
     Visit the live site for a list of all available endpoints
 """
-from flask import request
+import hmac
+
+from base64 import b64encode
+
+from flask import request, current_app as app
 from flask.views import MethodView
 
 import pygogo as gogo
 
-from config import Config
-
 from app.routes import ProviderMixin
-from app.utils import responsify, check_signature
-
-WEBHOOKS = Config.WEBHOOKS
+from app.utils import responsify, get_links, jsonify
 
 # https://requests-oauthlib.readthedocs.io/en/latest/index.html
 # https://oauth-pythonclient.readthedocs.io/en/latest/index.html
@@ -30,32 +30,60 @@ logger = gogo.Gogo(__name__, monolog=True).logger
 # METHODVIEW ROUTES
 ###########################################################################
 class Webhook(ProviderMixin, MethodView):
-    def __init__(self, *args, methods=None, **kwargs):
+    def __init__(self, *args, actions=None, digest="sha256", **kwargs):
         super().__init__(*args, **kwargs)
-        self.methods = methods or {}
+        self.actions = actions or {}
+        self.digest = digest
+        self.payload_key = kwargs.get("payload_key")
+        self.signature_header = kwargs.get("signature_header")
+        self.webhook_secret = kwargs.get("webhook_secret")
+        self.split_signature = kwargs.get("split_signature")
+        self.b64_encode = kwargs.get("b64_encode")
+        self.ignore_signature = kwargs.get("ignore_signature")
+
+    # https://github.com/bloomberg/python-github-webhook
+    # https://github.com/carlos-jenkins/python-github-webhooks
+    # https://github.com/nickfrostatx/flask-hookserver
+    def verified(self):
+        if self.ignore_signature:
+            is_valid = True
+        elif not self.payload_key:
+            is_valid = False
+        elif self.signature_header and self.webhook_secret:
+            signature = request.headers.get(self.signature_header).encode("utf-8")
+
+            if self.split_signature:
+                signature = signature.split("=")[1]
+
+            secret = self.webhook_secret.encode("utf-8")
+
+            if self.b64_encode:
+                mac_digest = hmac.digest(secret, request.data, self.digest)
+                calculated_hmac = b64encode(mac_digest)
+            else:
+                mac = hmac.new(secret, request.data, self.digest)
+                calculated_hmac = mac.hexdigest()
+
+            is_valid = hmac.compare_digest(calculated_hmac, signature)
+        else:
+            is_valid = False
+
+        return is_valid
+
+    def process_value(self, value):
+        action = self.actions.get(value)
+        return action(value) if action else {}
+
+    def get(self):
+        response = {"description": f"The {self.prefix} webhook."}
 
         try:
-            self.webhook_kwargs = WEBHOOKS[self.prefix.lower()]
-        except IndexError:
-            logger.error(f"Invalid provider: {self.prefix}")
-            self.payload_key = None
-        else:
-            self.payload_key = self.webhook_kwargs["payload_key"]
+            response["links"] = get_links(app.url_map.iter_rules())
+        except RuntimeError:
+            pass
 
-    @property
-    def verified(self):
-        return self.payload_key and check_signature(**self.webhook_kwargs)
+        return jsonify(**response)
 
-    # def get(self):
-    #     response = {"description": f"The {self.prefix} webhook."}
-    #
-    #     try:
-    #         response["links"] = get_links(app.url_map.iter_rules())
-    #     except RuntimeError:
-    #         pass
-    #
-    #     return jsonify(**response)
-    #
     def post(self):
         """ Respond to a Webhook post.
         """

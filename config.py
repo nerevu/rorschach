@@ -223,6 +223,25 @@ class Config(object):
             "digest": "sha256",
             "b64_encode": True,
             "payload_key": "events",
+            "activities": {("new", "invoice"): "send_notification"},
+        },
+        "heroku": {
+            "signature_header": "Heroku-Webhook-Hmac-SHA256",
+            "webhook_secret": getenv("HEROKU_WEBHOOK_SECRET"),
+            "digest": "sha256",
+            "b64_encode": True,
+            "payload_key": "action",
+            "ignore_signature": True,
+            "methods": ["POST", "GET"],
+            "activities": {"update": "invalidate_cf_distribution"},
+        },
+        "timely": {
+            "payload_key": "",
+            "activities": {("new", "event"): "add_xero_time"},
+        },
+        "gsheets": {
+            "payload_key": "",
+            "activities": {("new", "row"): "add_xero_time"},
         },
     }
 

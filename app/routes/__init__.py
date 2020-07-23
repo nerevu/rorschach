@@ -28,7 +28,7 @@ PREFIX = Config.API_URL_PREFIX
 
 
 class ProviderMixin:
-    def __init__(self, prefix=""):
+    def __init__(self, prefix="", **kwargs):
         self.prefix = prefix
         self.lowered = self.prefix.lower()
         self.is_timely = self.prefix == "timely"
@@ -76,7 +76,9 @@ class ProviderMixin:
                         f"path:{self.path} doesn't match request:{request.path}"
                     )
             except RuntimeError:
-                self._kwargs = dict(gen_config(app))
+                self._kwargs = {}
+
+            self._kwargs.update(dict(gen_config(app)))
 
         return self._kwargs
 

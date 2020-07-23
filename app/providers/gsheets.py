@@ -411,16 +411,3 @@ class ProjectTime(GSheets):
 class Hooks(Webhook):
     def __init__(self, *args, **kwargs):
         super().__init__(PREFIX, *args, **kwargs)
-
-    def process_value(self, value):
-        result = {}
-
-        for event in value:
-            key = (event["eventType"].lower(), event["eventCategory"].lower())
-            method = self.methods.get(key)
-
-            if method:
-                response = method(self.prefix, event["ResourceId"])
-                result[event["eventId"]] = response.get("response")
-
-        return result

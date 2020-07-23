@@ -10,7 +10,6 @@ import hmac
 
 from json import load, loads, dumps
 from ast import literal_eval
-from base64 import b64encode
 from datetime import datetime as dt, date, timedelta
 from time import gmtime
 from functools import wraps, partial
@@ -422,32 +421,6 @@ def parse_request():
     json = request.json or {}
     kwargs = {**values, **json}
     return {k: parse(v) for k, v in kwargs.items()}
-
-
-# https://github.com/bloomberg/python-github-webhook
-# https://github.com/carlos-jenkins/python-github-webhooks
-# https://github.com/nickfrostatx/flask-hookserver
-def check_signature(digest="sha256", signature_header="", webhook_secret="", **kwargs):
-    if signature_header and webhook_secret:
-        signature = request.headers.get(signature_header).encode("utf-8")
-
-        if kwargs.get("split_signature"):
-            signature = signature.split("=")[1]
-
-        secret = webhook_secret.encode("utf-8")
-
-        if kwargs.get("b64_encode"):
-            mac_digest = hmac.digest(secret, request.data, digest)
-            calculated_hmac = b64encode(mac_digest)
-        else:
-            mac = hmac.new(secret, request.data, digest)
-            calculated_hmac = mac.hexdigest()
-
-        is_valid = hmac.compare_digest(calculated_hmac, signature)
-    else:
-        is_valid = False
-
-    return is_valid
 
 
 def hash_text(**kwargs):

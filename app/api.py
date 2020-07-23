@@ -19,9 +19,9 @@ from app.utils import (
     get_links,
 )
 
-from app import actions, providers
+from app import actions
 from app.routes import auth, Memoization, subscription
-from app.helpers import get_collection
+from app.helpers import get_collection, get_member
 
 logger = gogo.Gogo(__name__, monolog=True).logger
 blueprint = Blueprint("API", __name__)
@@ -30,6 +30,7 @@ fake = Faker()
 ROUTE_TIMEOUT = Config.ROUTE_TIMEOUT
 PREFIX = Config.API_URL_PREFIX
 AUTHENTICATION = Config.AUTHENTICATION
+WEBHOOKS = Config.WEBHOOKS
 
 
 ###########################################################################
@@ -57,38 +58,6 @@ def ipsum():
         "result": fake.sentence(),
     }
 
-    return jsonify(**response)
-
-
-@blueprint.route(f"{PREFIX}/hooks/xero", methods=["POST"])
-def xero_hooks():
-    methods = {("new", "invoice"): actions.send_charge_notification}
-    hooks = providers.xero.Hooks(methods=methods)
-    response = hooks.post()
-    return jsonify(**response)
-
-
-@blueprint.route(f"{PREFIX}/hooks/timely", methods=["POST"])
-def timely_hooks():
-    methods = {("new", "event"): actions.add_xero_time}
-    hooks = providers.timely.Hooks(methods=methods)
-    response = hooks.post()
-    return jsonify(**response)
-
-
-@blueprint.route(f"{PREFIX}/hooks/gsheets", methods=["POST"])
-def gsheets_hooks():
-    methods = {("new", "row"): actions.add_xero_time}
-    hooks = providers.gsheets.Hooks(methods=methods)
-    response = hooks.post()
-    return jsonify(**response)
-
-
-@blueprint.route(f"{PREFIX}/hooks/aws", methods=["POST"])
-def aws_hooks():
-    methods = {"update": actions.invalidate_cf_distribution}
-    hooks = providers.aws.Hooks(methods=methods)
-    response = hooks.post()
     return jsonify(**response)
 
 
@@ -161,3 +130,21 @@ for name, options in method_views.items():
             url += f"/<{param}>"
 
         add_rule(url, view_func=view_func, methods=methods)
+
+
+def gen_actions(activities=None, **kwargs):
+    _actions = activities or {}
+
+    for key, action_name in _actions.items():
+        member = get_member(actions, action_name, classes_only=False)
+        yield (key, member)
+
+
+for provider, options in WEBHOOKS.items():
+    view = get_collection(provider, "Hooks")
+    _actions = dict(gen_actions(**options))
+    route_name = f"{provider}-hooks".lower()
+    view_func = view.as_view(route_name, actions=_actions, **options)
+    methods = options.get("methods", ["POST"])
+    url = f"{PREFIX}/{route_name}"
+    add_rule(url, view_func=view_func, methods=methods)
