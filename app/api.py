@@ -40,25 +40,25 @@ WEBHOOKS = Config.WEBHOOKS
 @blueprint.route(PREFIX)
 @cache_header(ROUTE_TIMEOUT, key_prefix=make_cache_key)
 def home():
-    response = {
+    json = {
         "description": "Returns API documentation",
         "message": "Welcome to the Nerevu API!",
         "links": get_links(app.url_map.iter_rules()),
     }
 
-    return jsonify(**response)
+    return jsonify(**json)
 
 
 @blueprint.route(f"{PREFIX}/ipsum")
 @cache_header(ROUTE_TIMEOUT, key_prefix=make_cache_key)
 def ipsum():
-    response = {
+    json = {
         "description": "Displays a random sentence",
         "links": get_links(app.url_map.iter_rules()),
         "result": fake.sentence(),
     }
 
-    return jsonify(**response)
+    return jsonify(**json)
 
 
 add_rule = blueprint.add_url_rule

@@ -26,7 +26,7 @@ from config import __APP_NAME__, Config
 
 from app import create_app, actions
 from app.helpers import configure, get_collection, get_provider
-from app.authclient import get_auth_client, get_response
+from app.authclient import get_auth_client, get_json_response
 from app.routes.auth import store as _store
 from app.providers.xero import ProjectTime, ProjectTasks
 
@@ -339,13 +339,13 @@ def test_oauth(method=None, resource=None, project_id=None, **kwargs):
     if method == "post":
         kwargs[PAYLOAD[key]] = data
 
-    response = get_response(url, xero, **kwargs)
+    json = get_json_response(url, xero, **kwargs)
 
-    if response.get("message"):
-        print(response["message"])
+    if json.get("message"):
+        print(json["message"])
 
-    if response.get("result"):
-        print(response["result"])
+    if json.get("result"):
+        print(json["result"])
 
 
 @manager.command()
@@ -476,10 +476,10 @@ def sync(source_prefix, **kwargs):
 )
 def notify(invoice_id, **kwargs):
     """Send Xero invoice notification"""
-    response = actions.send_notification(invoice_id, **kwargs)
+    json = actions.send_notification(invoice_id, **kwargs)
 
     try:
-        log(**response, exit_on_completion=True)
+        log(**json, exit_on_completion=True)
     except Exception:
         pass
 

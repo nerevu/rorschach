@@ -75,14 +75,14 @@ class Webhook(ProviderMixin, MethodView):
         return action(value) if action else {}
 
     def get(self):
-        response = {"description": f"The {self.prefix} webhook."}
+        json = {"description": f"The {self.prefix} webhook."}
 
         try:
-            response["links"] = get_links(app.url_map.iter_rules())
+            json["links"] = get_links(app.url_map.iter_rules())
         except RuntimeError:
             pass
 
-        return jsonify(**response)
+        return jsonify(**json)
 
     def post(self):
         """ Respond to a Webhook post.
@@ -95,12 +95,12 @@ class Webhook(ProviderMixin, MethodView):
 
             if value is not None:
                 mimetype = "text/plain"
-                response = {"status_code": 200, "result": self.process_value(value)}
+                json = {"status_code": 200, "result": self.process_value(value)}
             else:
-                response = {"message": "Invalid payload", "status_code": 400}
+                json = {"message": "Invalid payload", "status_code": 400}
         elif self.payload_key:
-            response = {"message": "Invalid signature", "status_code": 401}
+            json = {"message": "Invalid signature", "status_code": 401}
         else:
-            response = {"message": "Missing payload key", "status_code": 401}
+            json = {"message": "Missing payload key", "status_code": 401}
 
-        return responsify(mimetype, **response)
+        return responsify(mimetype, **json)

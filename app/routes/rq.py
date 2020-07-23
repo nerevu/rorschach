@@ -36,7 +36,7 @@ JOB_STATUSES = {
 }
 
 
-def get_response(job):
+def get_json_response(job):
     with app.test_request_context():
         if job:
             job_status = job.get_status()
@@ -58,14 +58,14 @@ def get_response(job):
         return {"ok": job_status != "failed", "result": result}
 
 
-def get_response_by_id(job_id):
+def get_json_response_by_id(job_id):
     """ Displays a job result.
 
     Args:
         job_id (str): The job id.
     """
     job = q.fetch_job(job_id)
-    return get_response(job)
+    return get_json_response(job)
 
 
 def _expensive(*args, **kwargs):
@@ -75,11 +75,11 @@ def _expensive(*args, **kwargs):
 def expensive(*args, enqueue=False, **kwargs):
     if enqueue:
         job = q.enqueue(_expensive, *args, **kwargs)
-        response = get_response(job)
+        json = get_json_response(job)
     else:
-        response = _expensive(*args, **kwargs)
+        json = _expensive(*args, **kwargs)
 
-    return response
+    return json
 
 
 class Expensive(MethodView):
@@ -94,11 +94,11 @@ class Expensive(MethodView):
     def post(self):
         """ Create work
         """
-        response = expensive("arg", **self.kwargs)
-        return jsonify(**response)
+        json = expensive("arg", **self.kwargs)
+        return jsonify(**json)
 
     def get(self):
         """ Retrieve work
         """
-        response = expensive("arg", **self.kwargs)
-        return jsonify(**response)
+        json = expensive("arg", **self.kwargs)
+        return jsonify(**json)

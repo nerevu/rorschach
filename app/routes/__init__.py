@@ -90,13 +90,13 @@ class Memoization(ProviderMixin, MethodView):
     def get(self):
         base_url = get_request_base()
 
-        response = {
+        json = {
             "description": "Deletes a cache url",
             "links": get_links(app.url_map.iter_rules()),
             "message": f"The {request.method}:{base_url} route is not yet complete.",
         }
 
-        return jsonify(**response)
+        return jsonify(**json)
 
     def delete(self, path=None):
         if path:
@@ -107,5 +107,5 @@ class Memoization(ProviderMixin, MethodView):
             cache.clear()
             message = "Caches cleared!"
 
-        response = {"links": get_links(app.url_map.iter_rules()), "message": message}
-        return jsonify(**response)
+        json = {"links": get_links(app.url_map.iter_rules()), "message": message}
+        return jsonify(**json)

@@ -99,11 +99,11 @@ def send_notification(invoice_id, prompt=False, **kwargs):
 
 def invalidate_cf_distribution(action, **kwargs):
     distribution = Distribution(**kwargs)
-    response = distribution.invalidate(**kwargs)
+    json = distribution.invalidate(**kwargs)
 
-    status_code = response["ResponseMetadata"]["HTTPStatusCode"]
+    status_code = json["ResponseMetadata"]["HTTPStatusCode"]
     json = {
-        "message": response["Invalidation"]["Status"],
+        "message": json["Invalidation"]["Status"],
         "ok": status_code == 201,
         "status_code": status_code,
     }
