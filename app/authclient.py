@@ -51,8 +51,10 @@ def _clear_cache():
 
 
 class BaseClient(object):
-    def __init__(self, prefix, **kwargs):
+    def __init__(self, prefix, json_data=True, **kwargs):
         self.prefix = prefix
+        self.json_data = json_data
+        self.data_key = "json" if self.json_data else "data"
         self.auth = None
         self.oauth_version = kwargs.get("oauth_version")
         self.oauth1 = self.oauth_version == 1
@@ -62,7 +64,7 @@ class BaseClient(object):
         self.debug = kwargs.get("debug")
         self.username = kwargs.get("username")
         self.password = kwargs.get("password")
-        self.data_key = kwargs.get("data_key", "json")
+        self.dump_data = kwargs.get("dump_data")
         self.headers = kwargs.get("headers", {})
         self.auth_params = kwargs.get("auth_params", {})
         self.created_at = None

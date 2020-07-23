@@ -80,7 +80,7 @@ class Config(object):
     SEND_FILE_MAX_AGE_DEFAULT = ROUTE_TIMEOUT
     EMPTY_TIMEOUT = ROUTE_TIMEOUT * 10
     API_URL_PREFIX = "/v1"
-    SECRET_KEY = getenv("TIMERO_SECRET_KEY", urandom(24))
+    SECRET = getenv(f"{__APP_NAME__}_SECRET".upper(), urandom(24))
     CHROME_DRIVER_VERSIONS = [None] + list(range(81, 77, -1))
 
     APP_CONFIG_WHITELIST = {
@@ -88,6 +88,7 @@ class Config(object):
         "ROW_LIMIT",
         "ERR_LIMIT",
         "ADMIN",
+        "SECRET",
     }
 
     # Variables warnings
@@ -108,6 +109,7 @@ class Config(object):
                 "username": "api",
                 "password": getenv("MAILGUN_API_KEY"),
                 "domain": MAILGUN_DOMAIN,
+                "json_data": False,
             },
         },
         # https://postmarkapp.com/developer/api/overview

@@ -91,12 +91,16 @@ class BaseView(ProviderMixin, MethodView):
         if self._dry_run:
             self.client = None
             self.data_key = None
+            self.json_data = True
+            self.dump_data = False
             self._params = {}
             self.domain = None
             def_start = def_end - timedelta(days=Config.REPORT_DAYS)
         else:
             self.client = get_auth_client(self.prefix, **app.config)
             self.data_key = self.client.data_key
+            self.json_data = self.client.json_data
+            self.dump_data = self.client.dump_data
             self._params = {**kwargs.get("params", {}), **self.client.auth_params}
             self.domain = kwargs.get("domain", self.client.domain)
             def_start = def_end - timedelta(days=app.config["REPORT_DAYS"])
@@ -914,7 +918,7 @@ class Resource(BaseView):
                 "message": f"Disable dry_run mode to POST {self}.",
             }
         else:
-            rkwargs[self.data_key] = dumps(data) if self.data_key == "data" else data
+            rkwargs[self.data_key] = dumps(data) if self.dump_data else data
             response = get_response(self.api_url, self.client, **rkwargs)
 
         if self.error_msg:
@@ -985,7 +989,7 @@ class Resource(BaseView):
 
         if not response:
             url = f"{self.api_url}/{self.id}"
-            rkwargs[self.data_key] = dumps(data) if self.data_key == "data" else data
+            rkwargs[self.data_key] = dumps(data) if self.dump_data else data
             response = get_response(url, self.client, **rkwargs)
 
         response["id"] = self.id
