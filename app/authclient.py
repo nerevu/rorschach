@@ -569,7 +569,7 @@ def get_response(url, client, params=None, renewed=False, hacked=False, **kwargs
             is_json = content_type.endswith("json")
             is_file = content_type.endswith("pdf")
 
-            if is_json and result.status_code == success_code:
+            if is_json and 200 <= result.status_code < 300:
                 status_code = 500
             else:
                 status_code = result.status_code
@@ -654,7 +654,7 @@ def get_response(url, client, params=None, renewed=False, hacked=False, **kwargs
                         f"{k}: {', '.join(e['Message'] for e in v)}" for k, v in items
                     )
 
-                if result.status_code == success_code:
+                if 200 <= result.status_code < 300:
                     status_code = 500
                 else:
                     status_code = result.status_code
@@ -682,7 +682,8 @@ def get_response(url, client, params=None, renewed=False, hacked=False, **kwargs
                 logger.debug({k: v[0] for k, v in parsed.items()})
     else:
         response = client.response
-        ok = response.get("status_code", success_code) == success_code
+        status_code = response.get("status_code", success_code)
+        ok = 200 <= status_code < 300
 
     status_code = response.get("status_code", success_code)
     response["ok"] = ok
