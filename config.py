@@ -28,7 +28,7 @@ load_dotenv(p.join(PARENT_DIR, ".env"))
 db_env_list = ["DATABASE_URL", "REDIS_URL", "MEMCACHIER_SERVERS", "REDISTOGO_URL"]
 
 __USER__ = "reubano"
-__APP_NAME__ = "timero"
+__APP_NAME__ = "api"
 __PROD_SERVER__ = any(map(getenv, db_env_list))
 __DEF_HOST__ = "127.0.0.1"
 __DEF_REDIS_PORT__ = 6379

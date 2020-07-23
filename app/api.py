@@ -42,7 +42,7 @@ WEBHOOKS = Config.WEBHOOKS
 def home():
     response = {
         "description": "Returns API documentation",
-        "message": "Welcome to the Timero API!",
+        "message": "Welcome to the Nerevu API!",
         "links": get_links(app.url_map.iter_rules()),
     }
 
