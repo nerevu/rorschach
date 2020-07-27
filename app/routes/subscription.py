@@ -17,7 +17,7 @@ import pygogo as gogo
 from config import Config
 
 from app.routes import ProviderMixin
-from app.utils import responsify, jsonify, verify
+from app.utils import responsify, verify
 from app.providers.mailgun import Email, EmailLists, EmailListMembers
 
 WEBHOOKS = Config.WEBHOOKS
