@@ -27,6 +27,11 @@ WEBHOOKS = Config.WEBHOOKS
 logger = gogo.Gogo(__name__, monolog=True).logger
 
 
+def get_html(ok=False, message="", **kwargs):
+    heading = f"<h1>{'Success!' if ok else 'Error.'}</h1>"
+    return f"<html>{heading}<h2>{message}</h2></html>"
+
+
 ###########################################################################
 # METHODVIEW ROUTES
 ###########################################################################
@@ -58,9 +63,7 @@ class Subscription(ProviderMixin, MethodView):
             mimetype = "application/json"
         else:
             mimetype = "text/html"
-            ok = json.get("ok")
-            heading = f"<h1>{'Success!' if ok else 'Error.'}</h1>"
-            json["html"] = f"<html>{heading}<h2>{json['message']}</h2></html>"
+            json["html"] = get_html(**json)
 
         return responsify(mimetype, **json)
 
@@ -80,7 +83,6 @@ class Subscription(ProviderMixin, MethodView):
             mimetype = "application/json"
         else:
             mimetype = "text/html"
-            heading = f"<h1>{'Success!' if json['ok'] else 'Error.'}</h1>"
-            json["html"] = f"<html>{heading}<h2>{json['message']}</h2></html>"
+            json["html"] = get_html(**json)
 
         return responsify(mimetype, **json)
