@@ -198,7 +198,6 @@ class Config(object):
     # Mailgun
     REQUIRED_PROD_SETTINGS += [
         "MAILGUN_API_KEY",
-        "MAILGUN_DOMAIN",
         "MAILGUN_LIST_PREFIX",
     ]
 
