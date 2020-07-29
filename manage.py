@@ -474,8 +474,12 @@ def check():
 @click.option("-w", "--where", help="Requirement file", default=None)
 def test(where):
     """Run nose tests"""
-    cmd = "nosetests -xvw %s" % where if where else "nosetests -xv"
-    return call(cmd, shell=True)
+    extra = where.split(" ") if where else DEF_WHERE
+
+    try:
+        check_call(["black"] + extra)
+    except CalledProcessError as e:
+        exit(e.returncode)
 
 
 @manager.command()
