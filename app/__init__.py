@@ -34,7 +34,7 @@ from app.helpers import configure
 from mezmorize.utils import get_cache_config, get_cache_type
 from meza.fntools import CustomEncoder
 
-__version__ = "0.24.0"
+__version__ = "0.25.0"
 __title__ = "Nerevu API"
 __package_name__ = "api"
 __author__ = "Reuben Cummings"
