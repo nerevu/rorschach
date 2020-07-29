@@ -19,12 +19,12 @@ import click
 
 from flask import current_app as app
 from click import Choice
-from flask.cli import FlaskGroup, pass_script_info
+from flask.cli import FlaskGroup, pass_script_info, with_appcontext
 from flask.config import Config as FlaskConfig
 
 from config import Config
 
-from app import create_app, actions
+from app import create_app, actions, check_settings
 from app.helpers import configure, get_collection, get_provider, email_hdlr
 from app.authclient import get_auth_client, get_json_response
 from app.routes.auth import store as _store
@@ -471,14 +471,20 @@ def check():
 
 @manager.command()
 @click.option("-w", "--where", help="Requirement file", default=None)
+@with_appcontext
 def test(where):
     """Run nose tests"""
     extra = where.split(" ") if where else DEF_WHERE
+    return_code = 0
 
     try:
         check_call(["black"] + extra)
     except CalledProcessError as e:
-        exit(e.returncode)
+        return_code = e.returncode
+    else:
+        return_code = 1 if check_settings(app) else 0
+
+    exit(return_code)
 
 
 @manager.command()

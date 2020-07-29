@@ -41,6 +41,8 @@ __SUB_DOMAIN__ = f"{__APP_NAME__}{__END__}"
 __AUTHOR__ = "Reuben Cummings"
 __AUTHOR_EMAIL__ = "rcummings@nerevu.com"
 
+SECRET_ENV = f"{__APP_NAME__}_SECRET".upper()
+
 Admin = namedtuple("Admin", ["name", "email"])
 get_path = lambda name: f"file://{p.join(PARENT_DIR, 'data', name)}"
 logger = gogo.Gogo(__name__, monolog=True).logger
@@ -82,7 +84,7 @@ class Config(object):
     SEND_FILE_MAX_AGE_DEFAULT = ROUTE_TIMEOUT
     EMPTY_TIMEOUT = ROUTE_TIMEOUT * 10
     API_URL_PREFIX = "/v1"
-    SECRET = getenv(f"{__APP_NAME__}_SECRET".upper(), urandom(24))
+    SECRET = getenv(SECRET_ENV, urandom(24))
     CHROME_DRIVER_VERSIONS = [None] + list(range(81, 77, -1))
 
     APP_CONFIG_WHITELIST = {
@@ -95,7 +97,7 @@ class Config(object):
 
     # Variables warnings
     REQUIRED_SETTINGS = []
-    REQUIRED_PROD_SETTINGS = []
+    REQUIRED_PROD_SETTINGS = [SECRET_ENV]
 
     # Logging
     MAILGUN_DOMAIN = getenv("MAILGUN_DOMAIN")
@@ -245,6 +247,11 @@ class Config(object):
             "activities": {("new", "row"): "add_xero_time"},
         },
     }
+
+    REQUIRED_PROD_SETTINGS += [
+        "XERO_WEBHOOK_SECRET",
+        "HEROKU_WEBHOOK_SECRET",
+    ]
 
     # RQ
     REQUIRED_PROD_SETTINGS += ["RQ_DASHBOARD_USERNAME", "RQ_DASHBOARD_PASSWORD"]
