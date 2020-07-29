@@ -134,6 +134,10 @@ def check_settings(app):
     if not required_setting_missing:
         logger.info("All required app settings present!")
 
+    for setting in app.config.get("OPTIONAL_SETTINGS", []):
+        if not app.config.get(setting):
+            logger.warning(f"Optional app setting {setting} is missing!")
+
     return required_setting_missing
 
 

@@ -97,6 +97,7 @@ class Config(object):
 
     # Variables warnings
     REQUIRED_SETTINGS = []
+    OPTIONAL_SETTINGS = []
     REQUIRED_PROD_SETTINGS = [SECRET_ENV]
 
     # Logging
@@ -200,12 +201,16 @@ class Config(object):
     # Mailgun
     REQUIRED_PROD_SETTINGS += [
         "MAILGUN_API_KEY",
+    ]
+    OPTIONAL_SETTINGS += [
         "MAILGUN_LIST_PREFIX",
     ]
 
     # Postmark
     REQUIRED_PROD_SETTINGS += [
         "POSTMARK_SERVER_TOKEN",
+    ]
+    OPTIONAL_SETTINGS += [
         "POSTMARK_ACCOUNT_TOKEN",
         "POSTMARK_TEMPLATE_ID",
     ]
@@ -261,6 +266,7 @@ class Config(object):
     RQ_DASHBOARD_DEBUG = False
 
     APP_CONFIG_WHITELIST.update(REQUIRED_PROD_SETTINGS)
+    APP_CONFIG_WHITELIST.update(OPTIONAL_SETTINGS)
 
     # Change based on mode
     CACHE_DEFAULT_TIMEOUT = get_seconds(hours=24)
