@@ -63,6 +63,7 @@ class Config(object):
     DEBUG_QB_CLIENT = False
     PARALLEL = False
     OAUTHLIB_INSECURE_TRANSPORT = False
+    PROD_SERVER = __PROD_SERVER__
     HEROKU_PR_NUMBER = getenv("HEROKU_PR_NUMBER")
 
     # see http://bootswatch.com/3/ for available swatches
@@ -312,7 +313,6 @@ class Heroku(Production):
 
     if __PROD_SERVER__:
         SERVER_NAME = f"{SUB_DOMAIN}.{DOMAIN}"
-        logger.info(f"SERVER_NAME is {SERVER_NAME}")
 
 
 class Custom(Production):
@@ -333,7 +333,6 @@ class Custom(Production):
 
     if __PROD_SERVER__:
         SERVER_NAME = f"{SUB_DOMAIN}.{DOMAIN}"
-        logger.info(f"SERVER_NAME is {SERVER_NAME}")
 
 
 class Development(Config):

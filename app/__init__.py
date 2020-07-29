@@ -128,6 +128,8 @@ def check_settings(app):
             if not app.config.get(setting):
                 required_setting_missing = True
                 logger.error(f"Production app setting {setting} is missing!")
+    else:
+        logger.info("Production server not detected.")
 
     if not required_setting_missing:
         logger.info("All required app settings present!")
