@@ -159,7 +159,6 @@ def help(ctx):
     type=Choice(["timely", "gsheets"], case_sensitive=False),
     default="timely",
 )
-@manager.command()
 @click.option(
     "-c",
     "--collection",
