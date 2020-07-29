@@ -17,14 +17,20 @@ import pygogo as gogo
 from config import Config
 
 from app.routes import ProviderMixin
-from app.utils import responsify, jsonify, verify
+from app.helpers import email_hdlr
+from app.utils import responsify, verify
 from app.providers.mailgun import Email, EmailLists, EmailListMembers
 
 WEBHOOKS = Config.WEBHOOKS
 
 # https://requests-oauthlib.readthedocs.io/en/latest/index.html
 # https://oauth-pythonclient.readthedocs.io/en/latest/index.html
-logger = gogo.Gogo(__name__, monolog=True).logger
+logger = gogo.Gogo(__name__, monolog=True, low_level="info", low_hdlr=email_hdlr).logger
+
+
+def get_html(ok=False, message="", **kwargs):
+    heading = f"<h1>{'Success!' if ok else 'Error.'}</h1>"
+    return f"<html>{heading}<h2>{message}</h2></html>"
 
 
 ###########################################################################
@@ -48,6 +54,7 @@ class Subscription(ProviderMixin, MethodView):
 
             if json["ok"]:
                 json["message"] = f"Thanks for subscribing {email} to {list_name}."
+                logger.info("{email} subscribed to {list_name}!")
             else:
                 json["status_code"] = response.status_code
         else:
@@ -58,9 +65,7 @@ class Subscription(ProviderMixin, MethodView):
             mimetype = "application/json"
         else:
             mimetype = "text/html"
-            ok = json.get("ok")
-            heading = f"<h1>{'Success!' if ok else 'Error.'}</h1>"
-            json["html"] = f"<html>{heading}<h2>{json['message']}</h2></html>"
+            json["html"] = get_html(**json)
 
         return responsify(mimetype, **json)
 
@@ -80,7 +85,6 @@ class Subscription(ProviderMixin, MethodView):
             mimetype = "application/json"
         else:
             mimetype = "text/html"
-            heading = f"<h1>{'Success!' if json['ok'] else 'Error.'}</h1>"
-            json["html"] = f"<html>{heading}<h2>{json['message']}</h2></html>"
+            json["html"] = get_html(**json)
 
         return responsify(mimetype, **json)

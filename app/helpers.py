@@ -7,12 +7,39 @@
 """
 from inspect import getmembers, isclass
 from importlib import import_module
+from os import getenv
 
 import inflect
+import pygogo as gogo
 import config
+
+from config import Config, __APP_NAME__
 
 p = inflect.engine()
 singularize = p.singular_noun
+
+ADMIN = Config.ADMIN
+MAILGUN_DOMAIN = Config.MAILGUN_DOMAIN
+MAILGUN_SMTP_PASSWORD = Config.MAILGUN_SMTP_PASSWORD
+
+hkwargs = {"subject": f"{__APP_NAME__} notification", "recipients": [ADMIN.email]}
+
+if MAILGUN_DOMAIN and MAILGUN_SMTP_PASSWORD:
+    # NOTE: Sandbox domains are restricted to authorized recipients only.
+    # https://help.mailgun.com/hc/en-us/articles/217531258
+    def_username = f"postmaster@{MAILGUN_DOMAIN}"
+
+    mkwargs = {
+        "host": getenv("MAILGUN_SMTP_SERVER", "smtp.mailgun.org"),
+        "port": getenv("MAILGUN_SMTP_PORT", 587),
+        "sender": f"notifications@{MAILGUN_DOMAIN}",
+        "username": getenv("MAILGUN_SMTP_LOGIN", def_username),
+        "password": MAILGUN_SMTP_PASSWORD,
+    }
+
+    hkwargs.update(mkwargs)
+
+email_hdlr = gogo.handlers.email_hdlr(**hkwargs)
 
 
 def configure(flask_config, **kwargs):

@@ -1,0 +1,22 @@
+language: python
+
+python:
+  - "3.8"
+
+cache:
+  directories:
+    - ~/.cache/pip
+
+notifications:
+  email:
+    on_success: always
+
+before_install:
+  - sudo apt-get update
+
+install:
+  - pip install -r dev-requirements.txt
+  - pip install -r base-requirements.txt
+
+script:
+  - manage test

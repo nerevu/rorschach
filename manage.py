@@ -5,7 +5,7 @@
 """ A script to manage development tasks """
 import sys
 
-from os import path as p, getenv, environ
+from os import path as p, environ
 from subprocess import call, check_call, CalledProcessError
 from urllib.parse import urlparse
 from itertools import count, chain
@@ -22,10 +22,10 @@ from click import Choice
 from flask.cli import FlaskGroup, pass_script_info
 from flask.config import Config as FlaskConfig
 
-from config import __APP_NAME__, Config
+from config import Config
 
 from app import create_app, actions
-from app.helpers import configure, get_collection, get_provider
+from app.helpers import configure, get_collection, get_provider, email_hdlr
 from app.authclient import get_auth_client, get_json_response
 from app.routes.auth import store as _store
 from app.providers.xero import ProjectTime, ProjectTasks
@@ -37,9 +37,6 @@ xero_project_time = ProjectTime(dictify=True, dry_run=True)
 BASEDIR = p.dirname(__file__)
 DEF_WHERE = ["app", "manage.py", "config.py"]
 AUTHENTICATION = Config.AUTHENTICATION
-ADMIN = Config.ADMIN
-MAILGUN_DOMAIN = Config.MAILGUN_DOMAIN
-MAILGUN_SMTP_PASSWORD = Config.MAILGUN_SMTP_PASSWORD
 
 
 def gen_collection_names(prefixes):
@@ -52,7 +49,6 @@ def gen_collection_names(prefixes):
 
 COLLECTION_NAMES = set(gen_collection_names(AUTHENTICATION))
 
-hdlr_kwargs = {"subject": f"{__APP_NAME__} notification", "recipients": [ADMIN.email]}
 
 # mappings
 sync_results = xero_project_time.results
@@ -61,23 +57,7 @@ skipped_events = set()
 patched_events = set()
 unpatched_events = set()
 
-if MAILGUN_DOMAIN and MAILGUN_SMTP_PASSWORD:
-    # NOTE: Sandbox domains are restricted to authorized recipients only.
-    # https://help.mailgun.com/hc/en-us/articles/217531258
-    def_username = f"postmaster@{MAILGUN_DOMAIN}"
-
-    mailgun_kwargs = {
-        "host": getenv("MAILGUN_SMTP_SERVER", "smtp.mailgun.org"),
-        "port": getenv("MAILGUN_SMTP_PORT", 587),
-        "sender": f"notifications@{MAILGUN_DOMAIN}",
-        "username": getenv("MAILGUN_SMTP_LOGIN", def_username),
-        "password": MAILGUN_SMTP_PASSWORD,
-    }
-
-    hdlr_kwargs.update(mailgun_kwargs)
-
-high_hdlr = gogo.handlers.email_hdlr(**hdlr_kwargs)
-logger = gogo.Gogo(__name__, high_hdlr=high_hdlr).logger
+logger = gogo.Gogo(__name__, high_hdlr=email_hdlr).logger
 
 
 def save_results(dry_run=False, **kwargs):
@@ -494,8 +474,12 @@ def check():
 @click.option("-w", "--where", help="Requirement file", default=None)
 def test(where):
     """Run nose tests"""
-    cmd = "nosetests -xvw %s" % where if where else "nosetests -xv"
-    return call(cmd, shell=True)
+    extra = where.split(" ") if where else DEF_WHERE
+
+    try:
+        check_call(["black"] + extra)
+    except CalledProcessError as e:
+        exit(e.returncode)
 
 
 @manager.command()

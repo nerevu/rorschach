@@ -1,0 +1,19 @@
+{
+  "name": "nerevu-api",
+  "description": "Nerevu's God API",
+  "environments": {
+    "test": {
+      "scripts": {
+        "test-setup": "pip install -r dev-requirements.txt",
+        "test": "manage -m Heroku test"
+      }
+    }
+  },
+  "addons": [
+    "logentries:le_tryit",
+    "papertrail:choklad",
+    "memcachier:dev",
+    "librato:development",
+    "heroku-redis:hobby-dev"
+  ]
+}
