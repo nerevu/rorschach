@@ -6,6 +6,12 @@
       "scripts": {
         "test-setup": "pip install -r dev-requirements.txt",
         "test": "manage -m Heroku test"
+      },
+      "formation": {
+        "test": {
+          "quantity": 1,
+          "size": "standard-1x"
+        }
       }
     }
   },
@@ -13,6 +19,7 @@
     "logentries:le_tryit",
     "papertrail:choklad",
     "memcachier:dev",
+    "mailgun:starter",
     "librato:development",
     "heroku-redis:hobby-dev"
   ]

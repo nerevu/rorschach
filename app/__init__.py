@@ -34,7 +34,7 @@ from app.helpers import configure
 from mezmorize.utils import get_cache_config, get_cache_type
 from meza.fntools import CustomEncoder
 
-__version__ = "0.25.0"
+__version__ = "0.26.0"
 __title__ = "Nerevu API"
 __package_name__ = "api"
 __author__ = "Reuben Cummings"
@@ -128,9 +128,15 @@ def check_settings(app):
             if not app.config.get(setting):
                 required_setting_missing = True
                 logger.error(f"Production app setting {setting} is missing!")
+    else:
+        logger.info("Production server not detected.")
 
     if not required_setting_missing:
         logger.info("All required app settings present!")
+
+    for setting in app.config.get("OPTIONAL_SETTINGS", []):
+        if not app.config.get(setting):
+            logger.warning(f"Optional app setting {setting} is missing!")
 
     return required_setting_missing
 

@@ -54,7 +54,7 @@ class Subscription(ProviderMixin, MethodView):
 
             if json["ok"]:
                 json["message"] = f"Thanks for subscribing {email} to {list_name}."
-                logger.info("{email} subscribed to {list_name}!")
+                logger.info(f"{email} subscribed to {list_name}!")
             else:
                 json["status_code"] = response.status_code
         else:

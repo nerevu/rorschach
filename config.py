@@ -24,7 +24,7 @@ from dotenv import load_dotenv
 PARENT_DIR = p.abspath(p.dirname(__file__))
 DAYS_PER_MONTH = 30
 
-load_dotenv(p.join(PARENT_DIR, ".env"))
+load_dotenv(p.join(PARENT_DIR, ".env"), override=True)
 db_env_list = ["DATABASE_URL", "REDIS_URL", "MEMCACHIER_SERVERS", "REDISTOGO_URL"]
 
 __USER__ = "reubano"
@@ -41,6 +41,10 @@ __SUB_DOMAIN__ = f"{__APP_NAME__}{__END__}"
 __AUTHOR__ = "Reuben Cummings"
 __AUTHOR_EMAIL__ = "rcummings@nerevu.com"
 
+SECRET_ENV = f"{__APP_NAME__}_SECRET".upper()
+HEROKU_PR_NUMBER = getenv("HEROKU_PR_NUMBER")
+HEROKU_TEST_RUN_ID = getenv("HEROKU_TEST_RUN_ID")
+
 Admin = namedtuple("Admin", ["name", "email"])
 get_path = lambda name: f"file://{p.join(PARENT_DIR, 'data', name)}"
 logger = gogo.Gogo(__name__, monolog=True).logger
@@ -55,15 +59,29 @@ def get_seconds(seconds=0, months=0, **kwargs):
     return int(seconds)
 
 
+def get_server_name(heroku=False):
+    if HEROKU_PR_NUMBER:
+        DOMAIN = "herokuapp.com"
+        HEROKU_APP_NAME = getenv("HEROKU_APP_NAME")
+        SUB_DOMAIN = f"{HEROKU_APP_NAME}-pr-{HEROKU_PR_NUMBER}"
+    elif heroku or HEROKU_TEST_RUN_ID:
+        DOMAIN = "herokuapp.com"
+        SUB_DOMAIN = f"nerevu-{__SUB_DOMAIN__}"
+    else:
+        DOMAIN = "nerevu.com"
+        SUB_DOMAIN = __SUB_DOMAIN__
+
+    return f"{SUB_DOMAIN}.{DOMAIN}"
+
+
 class Config(object):
-    HEROKU = False
     DEBUG = False
     TESTING = False
     DEBUG_MEMCACHE = True
     DEBUG_QB_CLIENT = False
     PARALLEL = False
     OAUTHLIB_INSECURE_TRANSPORT = False
-    HEROKU_PR_NUMBER = getenv("HEROKU_PR_NUMBER")
+    PROD_SERVER = __PROD_SERVER__
 
     # see http://bootswatch.com/3/ for available swatches
     FLASK_ADMIN_SWATCH = "cerulean"
@@ -81,7 +99,7 @@ class Config(object):
     SEND_FILE_MAX_AGE_DEFAULT = ROUTE_TIMEOUT
     EMPTY_TIMEOUT = ROUTE_TIMEOUT * 10
     API_URL_PREFIX = "/v1"
-    SECRET = getenv(f"{__APP_NAME__}_SECRET".upper(), urandom(24))
+    SECRET = getenv(SECRET_ENV, urandom(24))
     CHROME_DRIVER_VERSIONS = [None] + list(range(81, 77, -1))
 
     APP_CONFIG_WHITELIST = {
@@ -94,7 +112,8 @@ class Config(object):
 
     # Variables warnings
     REQUIRED_SETTINGS = []
-    REQUIRED_PROD_SETTINGS = []
+    OPTIONAL_SETTINGS = []
+    REQUIRED_PROD_SETTINGS = [SECRET_ENV]
 
     # Logging
     MAILGUN_DOMAIN = getenv("MAILGUN_DOMAIN")
@@ -197,13 +216,17 @@ class Config(object):
     # Mailgun
     REQUIRED_PROD_SETTINGS += [
         "MAILGUN_API_KEY",
-        "MAILGUN_DOMAIN",
+    ]
+    OPTIONAL_SETTINGS += [
         "MAILGUN_LIST_PREFIX",
+        "MAILGUN_PUBLIC_KEY",
     ]
 
     # Postmark
     REQUIRED_PROD_SETTINGS += [
         "POSTMARK_SERVER_TOKEN",
+    ]
+    OPTIONAL_SETTINGS += [
         "POSTMARK_ACCOUNT_TOKEN",
         "POSTMARK_TEMPLATE_ID",
     ]
@@ -246,6 +269,11 @@ class Config(object):
         },
     }
 
+    REQUIRED_PROD_SETTINGS += [
+        "XERO_WEBHOOK_SECRET",
+        "HEROKU_WEBHOOK_SECRET",
+    ]
+
     # RQ
     REQUIRED_PROD_SETTINGS += ["RQ_DASHBOARD_USERNAME", "RQ_DASHBOARD_PASSWORD"]
     RQ_DASHBOARD_REDIS_URL = (
@@ -253,7 +281,9 @@ class Config(object):
     )
     RQ_DASHBOARD_DEBUG = False
 
+    APP_CONFIG_WHITELIST.update(REQUIRED_SETTINGS)
     APP_CONFIG_WHITELIST.update(REQUIRED_PROD_SETTINGS)
+    APP_CONFIG_WHITELIST.update(OPTIONAL_SETTINGS)
 
     # Change based on mode
     CACHE_DEFAULT_TIMEOUT = get_seconds(hours=24)
@@ -295,45 +325,25 @@ class Production(Config):
 
 
 class Heroku(Production):
-    HEROKU = True
-    DOMAIN = "herokuapp.com"
-
-    if Config.HEROKU_PR_NUMBER:
-        HEROKU_APP_NAME = getenv("HEROKU_APP_NAME")
-        SUB_DOMAIN = f"{HEROKU_APP_NAME}-pr-{Config.HEROKU_PR_NUMBER}"
-    else:
-        SUB_DOMAIN = f"nerevu-{__SUB_DOMAIN__}"
-
-    API_URL = f"https://{SUB_DOMAIN}.{DOMAIN}{Config.API_URL_PREFIX}"
-
+    server_name = get_server_name(True)
+    API_URL = f"https://{server_name}{Config.API_URL_PREFIX}"
     AUTHENTICATION = Config.AUTHENTICATION
     AUTHENTICATION["timely"]["oauth2"]["redirect_uri"] = f"{API_URL}/timely-callback"
     AUTHENTICATION["xero"]["oauth2"]["redirect_uri"] = f"{API_URL}/xero-callback"
 
     if __PROD_SERVER__:
-        SERVER_NAME = f"{SUB_DOMAIN}.{DOMAIN}"
-        logger.info(f"SERVER_NAME is {SERVER_NAME}")
+        SERVER_NAME = server_name
 
 
 class Custom(Production):
-    if Config.HEROKU_PR_NUMBER:
-        HEROKU = True
-        DOMAIN = "herokuapp.com"
-        HEROKU_APP_NAME = getenv("HEROKU_APP_NAME")
-        SUB_DOMAIN = f"{HEROKU_APP_NAME}-pr-{Config.HEROKU_PR_NUMBER}"
-    else:
-        DOMAIN = "nerevu.com"
-        SUB_DOMAIN = __SUB_DOMAIN__
-
-    API_URL = f"https://{SUB_DOMAIN}.{DOMAIN}{Config.API_URL_PREFIX}"
-
+    server_name = get_server_name()
+    API_URL = f"https://{server_name}{Config.API_URL_PREFIX}"
     AUTHENTICATION = Config.AUTHENTICATION
     AUTHENTICATION["timely"]["oauth2"]["redirect_uri"] = f"{API_URL}/timely-callback"
     AUTHENTICATION["xero"]["oauth2"]["redirect_uri"] = f"{API_URL}/xero-callback"
 
     if __PROD_SERVER__:
-        SERVER_NAME = f"{SUB_DOMAIN}.{DOMAIN}"
-        logger.info(f"SERVER_NAME is {SERVER_NAME}")
+        SERVER_NAME = server_name
 
 
 class Development(Config):
