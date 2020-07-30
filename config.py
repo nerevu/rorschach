@@ -219,6 +219,7 @@ class Config(object):
     ]
     OPTIONAL_SETTINGS += [
         "MAILGUN_LIST_PREFIX",
+        "MAILGUN_PUBLIC_KEY",
     ]
 
     # Postmark
