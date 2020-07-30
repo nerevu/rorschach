@@ -42,6 +42,8 @@ __AUTHOR__ = "Reuben Cummings"
 __AUTHOR_EMAIL__ = "rcummings@nerevu.com"
 
 SECRET_ENV = f"{__APP_NAME__}_SECRET".upper()
+HEROKU_PR_NUMBER = getenv("HEROKU_PR_NUMBER")
+HEROKU_TEST_RUN_ID = getenv("HEROKU_TEST_RUN_ID")
 
 Admin = namedtuple("Admin", ["name", "email"])
 get_path = lambda name: f"file://{p.join(PARENT_DIR, 'data', name)}"
@@ -57,8 +59,22 @@ def get_seconds(seconds=0, months=0, **kwargs):
     return int(seconds)
 
 
+def get_server_name(heroku=False):
+    if HEROKU_PR_NUMBER:
+        DOMAIN = "herokuapp.com"
+        HEROKU_APP_NAME = getenv("HEROKU_APP_NAME")
+        SUB_DOMAIN = f"{HEROKU_APP_NAME}-pr-{HEROKU_PR_NUMBER}"
+    elif heroku or HEROKU_TEST_RUN_ID:
+        DOMAIN = "herokuapp.com"
+        SUB_DOMAIN = f"nerevu-{__SUB_DOMAIN__}"
+    else:
+        DOMAIN = "nerevu.com"
+        SUB_DOMAIN = __SUB_DOMAIN__
+
+    return f"{SUB_DOMAIN}.{DOMAIN}"
+
+
 class Config(object):
-    HEROKU = False
     DEBUG = False
     TESTING = False
     DEBUG_MEMCACHE = True
@@ -66,7 +82,6 @@ class Config(object):
     PARALLEL = False
     OAUTHLIB_INSECURE_TRANSPORT = False
     PROD_SERVER = __PROD_SERVER__
-    HEROKU_PR_NUMBER = getenv("HEROKU_PR_NUMBER")
 
     # see http://bootswatch.com/3/ for available swatches
     FLASK_ADMIN_SWATCH = "cerulean"
@@ -309,43 +324,25 @@ class Production(Config):
 
 
 class Heroku(Production):
-    HEROKU = True
-    DOMAIN = "herokuapp.com"
-
-    if Config.HEROKU_PR_NUMBER:
-        HEROKU_APP_NAME = getenv("HEROKU_APP_NAME")
-        SUB_DOMAIN = f"{HEROKU_APP_NAME}-pr-{Config.HEROKU_PR_NUMBER}"
-    else:
-        SUB_DOMAIN = f"nerevu-{__SUB_DOMAIN__}"
-
-    API_URL = f"https://{SUB_DOMAIN}.{DOMAIN}{Config.API_URL_PREFIX}"
-
+    server_name = get_server_name(True)
+    API_URL = f"https://{server_name}{Config.API_URL_PREFIX}"
     AUTHENTICATION = Config.AUTHENTICATION
     AUTHENTICATION["timely"]["oauth2"]["redirect_uri"] = f"{API_URL}/timely-callback"
     AUTHENTICATION["xero"]["oauth2"]["redirect_uri"] = f"{API_URL}/xero-callback"
 
     if __PROD_SERVER__:
-        SERVER_NAME = f"{SUB_DOMAIN}.{DOMAIN}"
+        SERVER_NAME = server_name
 
 
 class Custom(Production):
-    if Config.HEROKU_PR_NUMBER:
-        HEROKU = True
-        DOMAIN = "herokuapp.com"
-        HEROKU_APP_NAME = getenv("HEROKU_APP_NAME")
-        SUB_DOMAIN = f"{HEROKU_APP_NAME}-pr-{Config.HEROKU_PR_NUMBER}"
-    else:
-        DOMAIN = "nerevu.com"
-        SUB_DOMAIN = __SUB_DOMAIN__
-
-    API_URL = f"https://{SUB_DOMAIN}.{DOMAIN}{Config.API_URL_PREFIX}"
-
+    server_name = get_server_name()
+    API_URL = f"https://{server_name}{Config.API_URL_PREFIX}"
     AUTHENTICATION = Config.AUTHENTICATION
     AUTHENTICATION["timely"]["oauth2"]["redirect_uri"] = f"{API_URL}/timely-callback"
     AUTHENTICATION["xero"]["oauth2"]["redirect_uri"] = f"{API_URL}/xero-callback"
 
     if __PROD_SERVER__:
-        SERVER_NAME = f"{SUB_DOMAIN}.{DOMAIN}"
+        SERVER_NAME = server_name
 
 
 class Development(Config):
