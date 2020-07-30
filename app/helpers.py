@@ -27,13 +27,11 @@ hkwargs = {"subject": f"{__APP_NAME__} notification", "recipients": [ADMIN.email
 if MAILGUN_DOMAIN and MAILGUN_SMTP_PASSWORD:
     # NOTE: Sandbox domains are restricted to authorized recipients only.
     # https://help.mailgun.com/hc/en-us/articles/217531258
-    def_username = f"postmaster@{MAILGUN_DOMAIN}"
-
     mkwargs = {
         "host": getenv("MAILGUN_SMTP_SERVER", "smtp.mailgun.org"),
         "port": getenv("MAILGUN_SMTP_PORT", 587),
         "sender": f"notifications@{MAILGUN_DOMAIN}",
-        "username": getenv("MAILGUN_SMTP_LOGIN", def_username),
+        "username": getenv("MAILGUN_SMTP_LOGIN", f"postmaster@{MAILGUN_DOMAIN}"),
         "password": MAILGUN_SMTP_PASSWORD,
     }
 
