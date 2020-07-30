@@ -19,6 +19,7 @@
     "logentries:le_tryit",
     "papertrail:choklad",
     "memcachier:dev",
+    "mailgun:starter",
     "librato:development",
     "heroku-redis:hobby-dev"
   ]
