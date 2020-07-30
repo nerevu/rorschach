@@ -24,7 +24,7 @@ from dotenv import load_dotenv
 PARENT_DIR = p.abspath(p.dirname(__file__))
 DAYS_PER_MONTH = 30
 
-load_dotenv(p.join(PARENT_DIR, ".env"))
+load_dotenv(p.join(PARENT_DIR, ".env"), override=True)
 db_env_list = ["DATABASE_URL", "REDIS_URL", "MEMCACHIER_SERVERS", "REDISTOGO_URL"]
 
 __USER__ = "reubano"
