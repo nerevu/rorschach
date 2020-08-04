@@ -31,6 +31,7 @@ from config import Config
 from app import cache
 
 logger = gogo.Gogo(__name__, monolog=True).logger
+logger.propagate = False
 
 ENCODING = "utf-8"
 EPOCH = dt(*gmtime(0)[:6])

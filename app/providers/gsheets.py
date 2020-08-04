@@ -19,6 +19,7 @@ from app.routes.webhook import Webhook
 from meza.fntools import chunk
 
 logger = gogo.Gogo(__name__, monolog=True).logger
+logger.propagate = False
 
 PREFIX = __name__.split(".")[-1]
 # DEF_START_ROW = Config.DEF_START_ROW

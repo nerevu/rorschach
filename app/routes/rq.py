@@ -21,10 +21,11 @@ q = Queue(connection=conn)
 blueprint = Blueprint("API", __name__)
 
 logger = gogo.Gogo(__name__, monolog=True).logger
+logger.propagate = False
 
 # these don't change based on mode, so no need to do app.config['...']
 PREFIX = Config.API_URL_PREFIX
-
+FAILURE_TTL = Config.FAILURE_TTL
 
 JOB_STATUSES = {
     "deferred": 202,
@@ -73,8 +74,10 @@ def _expensive(*args, **kwargs):
 
 
 def expensive(*args, enqueue=False, **kwargs):
+    failure_ttl = kwargs.pop("failure_ttl", FAILURE_TTL)
+
     if enqueue:
-        job = q.enqueue(_expensive, *args, **kwargs)
+        job = q.enqueue(_expensive, *args, **kwargs, failure_ttl=failure_ttl)
         json = get_json_response(job)
     else:
         json = _expensive(*args, **kwargs)

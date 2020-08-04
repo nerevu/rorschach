@@ -5,15 +5,22 @@
 
     Provides misc helper functions
 """
+import pdb
+
 from inspect import getmembers, isclass
 from importlib import import_module
 from os import getenv
+from traceback import print_exception, format_exc
+from json.decoder import JSONDecodeError
+from logging import Formatter
 
 import inflect
 import pygogo as gogo
 import config
 
+from flask import current_app as app, has_request_context, request
 from config import Config, __APP_NAME__
+from pygogo.formatters import DATEFMT
 
 p = inflect.engine()
 singularize = p.singular_noun
@@ -79,3 +86,47 @@ def get_collection(prefix, collection="", **kwargs):
         Collection = None
 
     return Collection
+
+
+def log(message=None, ok=True, r=None, exit_on_completion=False, **kwargs):
+    if r is not None:
+        ok = r.ok
+
+        try:
+            message = r.json().get("message")
+        except JSONDecodeError:
+            message = r.text
+
+    if message and ok:
+        app.logger.info(message)
+    elif message:
+        try:
+            app.logger.error(message)
+        except ConnectionRefusedError:
+            app.logger.info("Connect refused. Make sure an SMTP server is running.")
+            app.logger.info("Try running `sudo postfix start`.")
+            app.logger.info(message)
+
+    if exit_on_completion:
+        exit(0 if ok else 1)
+
+
+def exception_hook(etype, value=None, tb=None, debug=False, callback=None, **kwargs):
+    if debug:
+        print_exception(etype, value, tb)
+        pdb.post_mortem(tb)
+    else:
+        message = format_exc() if kwargs.get("use_tb") else etype
+        log(message, ok=False)
+
+    callback() if callback else None
+
+
+# https://flask.palletsprojects.com/en/1.1.x/logging/#injecting-request-information
+class RequestFormatter(Formatter):
+    def format(self, record):
+        record.url = request.url if has_request_context() else None
+        return super().format(record)
+
+flask_format = "[%(levelname)s %(asctime)s] via %(url)s in %(module)s:%(lineno)s: %(message)s"
+flask_formatter = RequestFormatter(flask_format, datefmt=DATEFMT)

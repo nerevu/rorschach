@@ -36,6 +36,7 @@ from app.helpers import singularize, get_collection
 from riko.dotdict import DotDict
 
 logger = gogo.Gogo(__name__, monolog=True).logger
+logger.propagate = False
 
 APP_DIR = Path(__file__).parents[1]
 DATA_DIR = APP_DIR.joinpath("data")

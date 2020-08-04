@@ -48,6 +48,7 @@ HEROKU_TEST_RUN_ID = getenv("HEROKU_TEST_RUN_ID")
 Admin = namedtuple("Admin", ["name", "email"])
 get_path = lambda name: f"file://{p.join(PARENT_DIR, 'data', name)}"
 logger = gogo.Gogo(__name__, monolog=True).logger
+logger.propagate = False
 
 
 def get_seconds(seconds=0, months=0, **kwargs):
@@ -93,6 +94,7 @@ class Config(object):
     ROUTE_DEBOUNCE = get_seconds(5)
     ROUTE_TIMEOUT = get_seconds(0)
     SET_TIMEOUT = get_seconds(days=30)
+    FAILURE_TTL = get_seconds(hours=1)
     REPORT_MONTHS = 3
     LRU_CACHE_SIZE = 128
     REPORT_DAYS = REPORT_MONTHS * DAYS_PER_MONTH

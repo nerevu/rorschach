@@ -24,6 +24,7 @@ from app.routes import auth, Memoization, subscription
 from app.helpers import get_collection, get_member
 
 logger = gogo.Gogo(__name__, monolog=True).logger
+logger.propagate = False
 blueprint = Blueprint("API", __name__)
 fake = Faker()
 

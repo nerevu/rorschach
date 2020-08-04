@@ -29,6 +29,7 @@ else:
 CHROME_DRIVER_VERSIONS = Config.CHROME_DRIVER_VERSIONS
 
 logger = gogo.Gogo(__name__, monolog=True).logger
+logger.propagate = False
 
 
 def get_def_chromedriver_path(version=None):

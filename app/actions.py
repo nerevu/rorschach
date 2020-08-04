@@ -16,6 +16,7 @@ from app.providers.postmark import Email
 from app.providers.xero import ProjectTime, EmailTemplate
 
 logger = gogo.Gogo(__name__, monolog=True).logger
+logger.propagate = False
 
 
 def add_xero_time(source_prefix, project_id=None, position=None, **kwargs):

@@ -38,6 +38,7 @@ from app.utils import uncache_header, make_cache_key, jsonify, get_links
 from app.headless import headless_auth
 
 logger = gogo.Gogo(__name__, monolog=True).logger
+logger.propagate = False
 
 SET_TIMEOUT = Config.SET_TIMEOUT
 OAUTH_EXPIRY_SECONDS = 3600
