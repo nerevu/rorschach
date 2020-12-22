@@ -91,11 +91,6 @@ def expensive(*args, enqueue=False, **kwargs):
 
 class Expensive(MethodView):
     def __init__(self):
-        """ Reports
-
-        Kwargs:
-            date (str): Date of the report to save.
-        """
         self.kwargs = parse_kwargs(app)
 
     def post(self):
