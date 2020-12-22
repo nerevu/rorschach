@@ -5,7 +5,7 @@
 
     Provides additional housekeeping endpoints
 """
-from flask import Blueprint, current_app as app, redirect, request
+from flask import Blueprint, redirect, request
 from werkzeug.exceptions import HTTPException
 
 from app.helpers import exception_hook

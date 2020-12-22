@@ -181,6 +181,6 @@ def create_app(script_info=None, **kwargs):
 
 
 # put at bottom to avoid circular reference errors
-from app.api import blueprint as api  # noqa
-from app.housekeeping import blueprint as housekeeping  # noqa
+from app.routes.api import blueprint as api  # noqa
+from app.routes.housekeeping import blueprint as housekeeping  # noqa
 from rq_dashboard import blueprint as rq  # noqa
