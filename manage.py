@@ -22,6 +22,7 @@ from flask.cli import FlaskGroup, pass_script_info, with_appcontext
 from flask.config import Config as FlaskConfig
 
 from config import Config
+from worker import initialize
 
 from app import create_app, actions, check_settings
 from app.helpers import configure, get_collection, get_provider, email_hdlr, exception_hook, log
@@ -483,6 +484,20 @@ def lint(where, strict):
         check_call(args) if strict else None
     except CalledProcessError as e:
         exit(e.returncode)
+
+
+@manager.command()
+@click.option(
+    "-l",
+    "--listen",
+    help="priorities to listen to",
+    multiple=True,
+    type=Choice(["high", "default", "low"]),
+    default=["high", "default", "low"],
+)
+def work(listen):
+    """Starts rq listening for work requests"""
+    initialize(listen)
 
 
 @manager.command()
