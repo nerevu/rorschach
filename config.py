@@ -17,8 +17,6 @@ from os import getenv, urandom, path as p
 from datetime import timedelta
 from collections import namedtuple
 
-import pygogo as gogo
-
 from dotenv import load_dotenv
 from mezmorize.utils import get_cache_config, get_cache_type
 
@@ -47,8 +45,6 @@ Admin = namedtuple("Admin", ["name", "email"])
 cache_type = get_cache_type(cache="redis")
 redis_config = get_cache_config(cache_type)
 get_path = lambda name: f"file://{p.join(PARENT_DIR, 'data', name)}"
-logger = gogo.Gogo(__name__, monolog=True).logger
-logger.propagate = False
 
 
 def get_seconds(seconds=0, months=0, **kwargs):

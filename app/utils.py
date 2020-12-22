@@ -143,9 +143,7 @@ def make_cache_key(*args, **kwargs):
         (obj): Flask request url
     """
     mimetype = get_mimetype(request)
-    cache_key = f"{mimetype}:{request.full_path}"
-    logger.debug(cache_key)
-    return cache_key
+    return f"{mimetype}:{request.full_path}"
 
 
 def fmt_elapsed(elapsed):
