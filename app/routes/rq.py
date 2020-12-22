@@ -10,16 +10,20 @@ import pygogo as gogo
 from flask import Blueprint, current_app as app, url_for
 
 from flask.views import MethodView
-from rq import Queue
+from rq import Queue, get_current_job
 
 from config import Config
 from app.utils import jsonify, parse_kwargs
 from app.connection import conn
 
 if conn:
+    from rq.registry import FailedJobRegistry
+
     queue = Queue(connection=conn)
+    registry = FailedJobRegistry(queue=queue)
 else:
     queue = None
+    registry = None
 
 # https://requests-oauthlib.readthedocs.io/en/latest/index.html
 blueprint = Blueprint("API", __name__)
@@ -103,4 +107,42 @@ class Expensive(MethodView):
         """ Retrieve work
         """
         json = expensive("arg", **self.kwargs)
+        return jsonify(**json)
+
+
+class Result(MethodView):
+    def __init__(self):
+        self.kwargs = parse_kwargs(app)
+
+    def get(self, jid=None):
+        """ Retrieve job status
+
+        Kwargs:
+            jid (str): The job id.
+        """
+        if jid:
+            json = get_json_response_by_id(jid)
+        else:
+            if conn:
+                current_job = get_current_job()
+                current_job_info = get_json_response(current_job)
+                failed_jobs = registry.get_jids()
+                queued_jobs = queue.jids
+            else:
+                current_job_info = {}
+                failed_jobs = []
+                queued_jobs = []
+
+            result = {
+                "current_job": current_job_info,
+                "failed_jobs": failed_jobs,
+                "queued_jobs": queued_jobs,
+            }
+
+            json = {
+                "description": "Checks the `queue` or `job` status",
+                "links": list(get_links()),
+                "result": result,
+            }
+
         return jsonify(**json)
