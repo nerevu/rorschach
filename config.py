@@ -363,13 +363,11 @@ class Development(Config):
 
 class Ngrok(Development):
     # Xero localhost callbacks work fine
+    server_name = "nerevu-api.ngrok.io"
+    API_URL = f"https://{server_name}{Config.API_URL_PREFIX}"
     AUTHENTICATION = Config.AUTHENTICATION
-    AUTHENTICATION["xero"]["oauth2"][
-        "redirect_uri"
-    ] = f"https://nerevu-api.ngrok.io{Config.API_URL_PREFIX}/xero-callback"
-    AUTHENTICATION["timely"]["oauth2"][
-        "redirect_uri"
-    ] = f"https://nerevu-api.ngrok.io{Config.API_URL_PREFIX}/timely-callback"
+    AUTHENTICATION["timely"]["oauth2"]["redirect_uri"] = f"{API_URL}/timely-callback"
+    AUTHENTICATION["xero"]["oauth2"]["redirect_uri"] = f"{API_URL}/xero-callback"
 
 
 class Test(Config):
