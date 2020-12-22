@@ -187,10 +187,10 @@ def cache_header(max_age, **ckwargs):
     Otherwise, caching headers are set to expire in now + max_age seconds
 
     Examples:
-    >>> @app.route('/map')
-    >>> @cache_header(60)
-    >>> def index():
-    ...     return render_template('index.html')
+        >>> @app.route('/map')
+        ... @cache_header(60)
+        ... def index():
+        ...     return render_template('index.html')
 
     """
 
@@ -376,8 +376,8 @@ def gen_links(rules):
     Yields: (dict)
 
     Examples:
-    >>> gen_links(rules)
-    {"rel": "data", "href": f"https://alegna-api.nerevu.com/v1/data", "method": "GET"}
+        >>> gen_links(rules)
+        {"rel": "data", "href": f"https://alegna-api.nerevu.com/v1/data", "method": "GET"}
     """
     url_root = get_url_root()
 
