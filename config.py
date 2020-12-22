@@ -20,6 +20,7 @@ from collections import namedtuple
 import pygogo as gogo
 
 from dotenv import load_dotenv
+from mezmorize.utils import get_cache_config, get_cache_type
 
 PARENT_DIR = p.abspath(p.dirname(__file__))
 
@@ -30,9 +31,6 @@ __USER__ = "reubano"
 __APP_NAME__ = "api"
 __PROD_SERVER__ = any(map(getenv, db_env_list))
 __DEF_HOST__ = "127.0.0.1"
-__DEF_REDIS_PORT__ = 6379
-__DEF_REDIS_HOST__ = getenv("REDIS_PORT_6379_TCP_ADDR", __DEF_HOST__)
-__DEF_REDIS_URL__ = "redis://{}:{}".format(__DEF_REDIS_HOST__, __DEF_REDIS_PORT__)
 
 __STAG_SERVER__ = getenv("STAGE")
 __END__ = "-stage" if __STAG_SERVER__ else ""
@@ -46,6 +44,8 @@ HEROKU_PR_NUMBER = getenv("HEROKU_PR_NUMBER")
 HEROKU_TEST_RUN_ID = getenv("HEROKU_TEST_RUN_ID")
 
 Admin = namedtuple("Admin", ["name", "email"])
+cache_type = get_cache_type(cache="redis")
+redis_config = get_cache_config(cache_type)
 get_path = lambda name: f"file://{p.join(PARENT_DIR, 'data', name)}"
 logger = gogo.Gogo(__name__, monolog=True).logger
 logger.propagate = False
@@ -278,9 +278,7 @@ class Config(object):
 
     # RQ
     REQUIRED_PROD_SETTINGS += ["RQ_DASHBOARD_USERNAME", "RQ_DASHBOARD_PASSWORD"]
-    RQ_DASHBOARD_REDIS_URL = (
-        getenv("REDIS_URL") or getenv("REDISTOGO_URL") or __DEF_REDIS_URL__
-    )
+    RQ_DASHBOARD_REDIS_URL = redis_config.get("CACHE_REDIS_URL")
     RQ_DASHBOARD_DEBUG = False
 
     APP_CONFIG_WHITELIST.update(REQUIRED_SETTINGS)
