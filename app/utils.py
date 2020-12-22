@@ -205,14 +205,14 @@ def cache_header(max_age, **ckwargs):
             if max_age:
                 response.cache_control.public = True
                 extra = timedelta(seconds=max_age)
+                response.expires = response.last_modified + extra
             else:
                 response.headers["Pragma"] = "no-cache"
                 response.cache_control.must_revalidate = True
                 response.cache_control.no_cache = True
                 response.cache_control.no_store = True
-                extra = timedelta(0)
+                response.expires = "-1"
 
-            response.expires = (response.last_modified or dt.utcnow()) + extra
             return response.make_conditional(request)
 
         return wrapper
