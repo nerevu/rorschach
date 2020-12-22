@@ -16,8 +16,12 @@ from config import Config
 from app.utils import jsonify, parse_kwargs
 from app.connection import conn
 
+if conn:
+    queue = Queue(connection=conn)
+else:
+    queue = None
+
 # https://requests-oauthlib.readthedocs.io/en/latest/index.html
-q = Queue(connection=conn)
 blueprint = Blueprint("API", __name__)
 
 logger = gogo.Gogo(__name__, monolog=True).logger
@@ -42,30 +46,30 @@ def get_json_response(job):
         if job:
             job_status = job.get_status()
             job_result = job.result
-            job_id = job.id
+            jid = job.id
         else:
             job_status = "job not found"
             job_result = {}
-            job_id = 0
+            jid = 0
 
         result = {
             "status_code": JOB_STATUSES[job_status],
-            "job_id": job_id,
+            "jid": jid,
             "job_status": job_status,
             "job_result": job_result,
-            "url": url_for(".result", job_id=job_id, _external=True),
+            "url": url_for(".result", jid=jid, _external=True),
         }
 
         return {"ok": job_status != "failed", "result": result}
 
 
-def get_json_response_by_id(job_id):
+def get_json_response_by_id(jid):
     """ Displays a job result.
 
     Args:
-        job_id (str): The job id.
+        jid (str): The job id.
     """
-    job = q.fetch_job(job_id)
+    job = queue.fetch_job(jid)
     return get_json_response(job)
 
 
@@ -77,7 +81,7 @@ def expensive(*args, enqueue=False, **kwargs):
     failure_ttl = kwargs.pop("failure_ttl", FAILURE_TTL)
 
     if enqueue:
-        job = q.enqueue(_expensive, *args, **kwargs, failure_ttl=failure_ttl)
+        job = queue.enqueue(_expensive, *args, **kwargs, failure_ttl=failure_ttl)
         json = get_json_response(job)
     else:
         json = _expensive(*args, **kwargs)
