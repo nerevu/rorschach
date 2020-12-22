@@ -123,7 +123,7 @@ for name, options in method_views.items():
             continue
 
         route_name = f"{provider}-{name}".lower() if provider else name
-        view_func = view.as_view(route_name)
+        view_func = view.as_view(route_name, prefix=provider)
         methods = options.get("methods", ["GET"])
         url = f"{PREFIX}/{route_name}"
 

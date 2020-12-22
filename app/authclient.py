@@ -130,6 +130,7 @@ class OAuth2Client(OAuthClient):
         else:
             if self.verified:
                 logger.info(f"{self.prefix} successfully authenticated!")
+                cache.set(f"{self.prefix}_headless_auth", False)
             else:
                 logger.warning(f"{self.prefix} not authorized. Attempting to renew...")
                 self.renew_token("init")

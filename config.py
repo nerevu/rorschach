@@ -97,8 +97,8 @@ class Config(object):
     SEND_FILE_MAX_AGE_DEFAULT = ROUTE_TIMEOUT
     EMPTY_TIMEOUT = ROUTE_TIMEOUT * 10
     API_URL_PREFIX = "/v1"
-    SECRET = getenv(SECRET_ENV, urandom(24))
-    CHROME_DRIVER_VERSIONS = [None] + list(range(81, 77, -1))
+    SECRET_KEY = SECRET = getenv(SECRET_ENV, urandom(24))
+    CHROME_DRIVER_VERSIONS = [None] + list(range(87, 77, -1))
 
     APP_CONFIG_WHITELIST = {
         "CHUNK_SIZE",
@@ -106,6 +106,7 @@ class Config(object):
         "ERR_LIMIT",
         "ADMIN",
         "SECRET",
+        "SECRET_KEY",
     }
 
     # Variables warnings
@@ -210,6 +211,11 @@ class Config(object):
             },
         },
     }
+
+    OPTIONAL_SETTINGS += [
+        "XERO_USERNAME",
+        "XERO_PASSWORD",
+    ]
 
     # Mailgun
     REQUIRED_PROD_SETTINGS += [

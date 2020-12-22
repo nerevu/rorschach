@@ -101,9 +101,10 @@ def configure_cache(app):
 
 
 def set_settings(app):
+    optional_settings = app.config.get("OPTIONAL_SETTINGS", [])
     required_settings = app.config.get("REQUIRED_SETTINGS", [])
     required_prod_settings = app.config.get("REQUIRED_PROD_SETTINGS", [])
-    settings = required_settings + required_prod_settings
+    settings = optional_settings + required_settings + required_prod_settings
 
     for setting in settings:
         app.config.setdefault(setting, getenv(setting))
