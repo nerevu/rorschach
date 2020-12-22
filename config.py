@@ -22,7 +22,6 @@ import pygogo as gogo
 from dotenv import load_dotenv
 
 PARENT_DIR = p.abspath(p.dirname(__file__))
-DAYS_PER_MONTH = 30
 
 load_dotenv(p.join(PARENT_DIR, ".env"), override=True)
 db_env_list = ["DATABASE_URL", "REDIS_URL", "MEMCACHIER_SERVERS", "REDISTOGO_URL"]
@@ -41,6 +40,7 @@ __SUB_DOMAIN__ = f"{__APP_NAME__}{__END__}"
 __AUTHOR__ = "Reuben Cummings"
 __AUTHOR_EMAIL__ = "rcummings@nerevu.com"
 
+DAYS_PER_MONTH = 30
 SECRET_ENV = f"{__APP_NAME__}_SECRET".upper()
 HEROKU_PR_NUMBER = getenv("HEROKU_PR_NUMBER")
 HEROKU_TEST_RUN_ID = getenv("HEROKU_TEST_RUN_ID")
