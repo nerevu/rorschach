@@ -10,7 +10,7 @@ import pdb
 from inspect import getmembers, isclass
 from importlib import import_module
 from os import getenv
-from traceback import print_exception, format_exc
+from traceback import format_exc
 from json.decoder import JSONDecodeError
 from logging import Formatter
 
@@ -112,12 +112,11 @@ def log(message=None, ok=True, r=None, exit_on_completion=False, **kwargs):
 
 
 def exception_hook(etype, value=None, tb=None, debug=False, callback=None, **kwargs):
+    message = format_exc() if kwargs.get("use_tb") else etype
+    log(message, ok=False)
+
     if debug:
-        print_exception(etype, value, tb)
         pdb.post_mortem(tb)
-    else:
-        message = format_exc() if kwargs.get("use_tb") else etype
-        log(message, ok=False)
 
     callback() if callback else None
 
