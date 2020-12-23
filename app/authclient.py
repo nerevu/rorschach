@@ -747,6 +747,7 @@ def get_redirect_url(prefix):
     if prefix == "xero" and client.oauth2:
         api_url = f"{client.api_base_url}/connections"
         json = get_json_response(api_url, client, **app.config)
+
         # https://developer.xero.com/documentation/oauth2/auth-flow
         result = json.get("result")
         tenant_id = result[0].get("tenantId") if result else None

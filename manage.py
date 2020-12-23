@@ -25,7 +25,14 @@ from config import Config
 from worker import initialize
 
 from app import create_app, actions, check_settings
-from app.helpers import configure, get_collection, get_provider, email_hdlr, exception_hook, log
+from app.helpers import (
+    configure,
+    get_collection,
+    get_provider,
+    email_hdlr,
+    exception_hook,
+    log,
+)
 from app.authclient import get_auth_client, get_json_response
 from app.routes.auth import store as _store
 from app.providers.xero import ProjectTime, ProjectTasks
