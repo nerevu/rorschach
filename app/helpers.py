@@ -24,6 +24,8 @@ from pygogo.formatters import DATEFMT
 
 p = inflect.engine()
 singularize = p.singular_noun
+logger = gogo.Gogo(__name__, monolog=True).logger
+logger.propagate = False
 
 ADMIN = Config.ADMIN
 MAILGUN_DOMAIN = Config.MAILGUN_DOMAIN
@@ -89,6 +91,8 @@ def get_collection(prefix, collection="", **kwargs):
 
 
 def log(message=None, ok=True, r=None, exit_on_completion=False, **kwargs):
+    _logger = app.logger if has_request_context() else logger
+
     if r is not None:
         ok = r.ok
 
@@ -98,17 +102,19 @@ def log(message=None, ok=True, r=None, exit_on_completion=False, **kwargs):
             message = r.text
 
     if message and ok:
-        app.logger.info(message)
+        _logger.info(message)
     elif message:
         try:
-            app.logger.error(message)
+            _logger.error(message)
         except ConnectionRefusedError:
-            app.logger.info("Connect refused. Make sure an SMTP server is running.")
-            app.logger.info("Try running `sudo postfix start`.")
-            app.logger.info(message)
+            _logger.info("Connect refused. Make sure an SMTP server is running.")
+            _logger.info("Try running `sudo postfix start`.")
+            _logger.info(message)
 
     if exit_on_completion:
         exit(0 if ok else 1)
+    else:
+        return ok
 
 
 def exception_hook(etype, value=None, tb=None, debug=False, callback=None, **kwargs):
@@ -124,8 +130,11 @@ def exception_hook(etype, value=None, tb=None, debug=False, callback=None, **kwa
 # https://flask.palletsprojects.com/en/1.1.x/logging/#injecting-request-information
 class RequestFormatter(Formatter):
     def format(self, record):
-        record.url = request.url if has_request_context() else None
+        record.url = request.url if has_request_context() else "n/a"
         return super().format(record)
 
-flask_format = "[%(levelname)s %(asctime)s] via %(url)s in %(module)s:%(lineno)s: %(message)s"
+
+flask_format = (
+    "[%(levelname)s %(asctime)s] via %(url)s in %(module)s:%(lineno)s: %(message)s"
+)
 flask_formatter = RequestFormatter(flask_format, datefmt=DATEFMT)
