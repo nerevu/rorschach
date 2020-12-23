@@ -7,7 +7,6 @@
 """
 from pathlib import Path
 from subprocess import check_output, CalledProcessError
-from datetime import time
 from time import sleep
 from sys import platform
 

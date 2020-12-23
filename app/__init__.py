@@ -18,15 +18,13 @@ from functools import partial
 from os import path as p, getenv
 from pathlib import Path
 from pickle import DEFAULT_PROTOCOL
-from logging import WARNING, INFO, DEBUG
+from logging import WARNING, DEBUG
 
 from flask import Flask
 from flask.logging import default_handler
 from flask_cors import CORS
 from flask_caching import Cache
 from flask_compress import Compress
-
-import pygogo as gogo
 
 from rq_dashboard import default_settings
 from rq_dashboard.cli import add_basic_auth

@@ -67,6 +67,7 @@ To create a symlink:
 
 - Open a Command Prompt (right click and `Run as Administrator`)
 - run the following code with the correct paths
+
     ```bash
     mklink "C:\{path_to_project}\\.env" "C:\{path_to_nerevu_dropbox}\Security\{username}\nerevu-api-env"
     ```
@@ -77,6 +78,7 @@ You can read more about symlinks [here](https://www.maketecheasier.com/create-sy
 
 - Open a Terminal
 - run the following code with the correct paths to create a soft link
+
     ```bash
     ln -s /{path_to_nerevu_dropbox}/Security/{username}/nerevu-api-env /{path_to_project}/.env
     ```
