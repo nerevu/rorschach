@@ -83,33 +83,29 @@ class AuthClient(BaseClient):
         self.expired = False
 
 
-class OAuthClient(BaseClient):
+class OAuth2Client(BaseClient):
     def __init__(self, *args, client_id=None, client_secret=None, **kwargs):
         super().__init__(*args, **kwargs)
+        self.auth_type = "oauth2"
         self.client_id = client_id
         self.client_secret = client_secret
         self.access_token = None
         self.refresh_token = None
+        self.oauth_session = None
+
         self.scope = kwargs.get("scope", "")
         self.authorization_base_url = kwargs.get("authorization_base_url")
+        self.refresh_url = kwargs["refresh_url"]
+        self.revoke_url = kwargs.get("revoke_url")
         self.redirect_uri = kwargs.get("redirect_uri")
         self.token_url = kwargs.get("token_url")
         self.account_id = kwargs.get("account_id")
         self.state = kwargs.get("state")
-
-
-class OAuth2Client(OAuthClient):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.auth_type = "oauth2"
-        self.refresh_url = kwargs["refresh_url"]
-        self.revoke_url = kwargs.get("revoke_url")
         self.tenant_id = kwargs.get("tenant_id", "")
         self.realm_id = kwargs.get("realm_id")
         self.extra = {"client_id": self.client_id, "client_secret": self.client_secret}
         self.expires_at = dt.now()
         self.expires_in = 0
-        self.oauth_session = None
         self.restore()
         self._init_credentials()
 
