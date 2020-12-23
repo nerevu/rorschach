@@ -9,6 +9,7 @@ from pathlib import Path
 
 import pygogo as gogo
 
+from app.authclient import get_json_response
 from app.helpers import get_provider
 from app.utils import fetch_bool
 from app.providers.aws import Distribution
@@ -16,6 +17,7 @@ from app.providers.postmark import Email
 from app.providers.xero import ProjectTime, EmailTemplate
 
 logger = gogo.Gogo(__name__, monolog=True).logger
+logger.propagate = False
 
 
 def add_xero_time(source_prefix, project_id=None, position=None, **kwargs):
@@ -75,25 +77,34 @@ def mark_billed(source_prefix, rid, **kwargs):
 
 def send_notification(invoice_id, prompt=False, **kwargs):
     email_template = EmailTemplate(rid=invoice_id, **kwargs)
-    template_data = email_template.extract_model()
-    pdf_path = template_data["pdf"][0]
-    template_data["f"] = open(pdf_path, mode="rb")
-    email = Email(**kwargs)
-    data = email.get_post_data(**template_data)
-    answer = fetch_bool("Send email?") if prompt else "y"
+    client = email_template.client
+
+    if client.verified:
+        template_data = email_template.extract_model()
+        pdf_path = template_data["pdf"][0]
+        template_data["f"] = open(pdf_path, mode="rb")
+        email = Email(**kwargs)
+        data = email.get_post_data(**template_data)
+        answer = fetch_bool("Send email?") if prompt else "y"
+    else:
+        answer = "n"
 
     if answer == "y":
         response = email.post(**data)
         json = response.json
         json["message"] = json["result"]["Message"]
-    else:
+    elif client.verified:
         json = {
             "message": "You canceled the notification.",
             "ok": False,
             "status_code": 400,
         }
+    else:
+        json = get_json_response(None, email_template.client, **kwargs)
 
-    Path(pdf_path).unlink(missing_ok=True)
+    if client.verified:
+        Path(pdf_path).unlink(missing_ok=True)
+
     return json
 
 

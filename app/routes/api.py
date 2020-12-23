@@ -24,6 +24,7 @@ from app.routes import auth, Memoization, subscription
 from app.helpers import get_collection, get_member
 
 logger = gogo.Gogo(__name__, monolog=True).logger
+logger.propagate = False
 blueprint = Blueprint("API", __name__)
 fake = Faker()
 
@@ -122,7 +123,7 @@ for name, options in method_views.items():
             continue
 
         route_name = f"{provider}-{name}".lower() if provider else name
-        view_func = view.as_view(route_name)
+        view_func = view.as_view(route_name, prefix=provider)
         methods = options.get("methods", ["GET"])
         url = f"{PREFIX}/{route_name}"
 

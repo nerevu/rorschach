@@ -5,18 +5,27 @@
 
     Provides misc helper functions
 """
+import pdb
+
 from inspect import getmembers, isclass
 from importlib import import_module
 from os import getenv
+from traceback import format_exc
+from json.decoder import JSONDecodeError
+from logging import Formatter
 
 import inflect
 import pygogo as gogo
 import config
 
+from flask import current_app as app, has_request_context, request
 from config import Config, __APP_NAME__
+from pygogo.formatters import DATEFMT
 
 p = inflect.engine()
 singularize = p.singular_noun
+logger = gogo.Gogo(__name__, monolog=True).logger
+logger.propagate = False
 
 ADMIN = Config.ADMIN
 MAILGUN_DOMAIN = Config.MAILGUN_DOMAIN
@@ -79,3 +88,53 @@ def get_collection(prefix, collection="", **kwargs):
         Collection = None
 
     return Collection
+
+
+def log(message=None, ok=True, r=None, exit_on_completion=False, **kwargs):
+    _logger = app.logger if has_request_context() else logger
+
+    if r is not None:
+        ok = r.ok
+
+        try:
+            message = r.json().get("message")
+        except JSONDecodeError:
+            message = r.text
+
+    if message and ok:
+        _logger.info(message)
+    elif message:
+        try:
+            _logger.error(message)
+        except ConnectionRefusedError:
+            _logger.info("Connect refused. Make sure an SMTP server is running.")
+            _logger.info("Try running `sudo postfix start`.")
+            _logger.info(message)
+
+    if exit_on_completion:
+        exit(0 if ok else 1)
+    else:
+        return ok
+
+
+def exception_hook(etype, value=None, tb=None, debug=False, callback=None, **kwargs):
+    message = format_exc() if kwargs.get("use_tb") else etype
+    log(message, ok=False)
+
+    if debug:
+        pdb.post_mortem(tb)
+
+    callback() if callback else None
+
+
+# https://flask.palletsprojects.com/en/1.1.x/logging/#injecting-request-information
+class RequestFormatter(Formatter):
+    def format(self, record):
+        record.url = request.url if has_request_context() else "n/a"
+        return super().format(record)
+
+
+flask_format = (
+    "[%(levelname)s %(asctime)s] via %(url)s in %(module)s:%(lineno)s: %(message)s"
+)
+flask_formatter = RequestFormatter(flask_format, datefmt=DATEFMT)

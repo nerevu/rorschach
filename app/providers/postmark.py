@@ -14,6 +14,7 @@ from app.utils import CTYPES
 from app.routes.auth import Resource
 
 logger = gogo.Gogo(__name__, monolog=True).logger
+logger.propagate = False
 
 PREFIX = __name__.split(".")[-1]
 

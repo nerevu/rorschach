@@ -8,6 +8,7 @@
 from pathlib import Path
 from subprocess import check_output, CalledProcessError
 from datetime import time
+from time import sleep
 from sys import platform
 
 import pygogo as gogo
@@ -29,6 +30,7 @@ else:
 CHROME_DRIVER_VERSIONS = Config.CHROME_DRIVER_VERSIONS
 
 logger = gogo.Gogo(__name__, monolog=True).logger
+logger.propagate = False
 
 
 def get_def_chromedriver_path(version=None):
@@ -89,12 +91,12 @@ def get_chromedriver_path(operating_system):
     return chromedriver_path
 
 
-def find_element_loop(browser, selector, count=1, max_retries=3):
+def find_element_loop(browser, selector, count=0, max_retries=10):
     try:
         elem = browser.find_element_by_css_selector(selector)
     except NoSuchElementException:
         if count < max_retries:
-            time.sleep(0.5)
+            sleep(0.5)
             kwargs = {"count": count + 1, "max_retries": max_retries}
             elem = find_element_loop(browser, selector, **kwargs)
         else:
@@ -105,13 +107,13 @@ def find_element_loop(browser, selector, count=1, max_retries=3):
 
 def _headless_auth(redirect_url, prefix, chrome_path=None):
     if prefix == "timely":
-        username_css = "input#email"
-        password_css = "input#password"
-        signin_css = '[type="submit"]'
+        username_selector = "#email"
+        password_selector = "#password"
+        signin_selector = '[type="submit"]'
     elif prefix == "xero":
-        username_css = 'input[type="email"]'
-        password_css = 'input[type="password"]'
-        signin_css = 'button[name="button"]'
+        username_selector = "#xl-form-email"
+        password_selector = "#xl-form-password"
+        signin_selector = "#xl-form-submit"
 
     options = Options()
     options.headless = True
@@ -124,27 +126,42 @@ def _headless_auth(redirect_url, prefix, chrome_path=None):
     #######################################################
     # TODO: Check to see if this is required when logging
     # in without a headless browser (might remember creds).
+    username = browser.find_element_by_css_selector(username_selector)
 
-    username = browser.find_element_by_css_selector(username_css)
-    username.clear()
-    username.send_keys(app.config[f"{prefix}_USERNAME"])
+    if username:
+        username.clear()
+        username.send_keys(app.config[f"{prefix}_USERNAME".upper()])
+    else:
+        logger.error(f"Selector '{username_selector}' not found!")
 
-    password = browser.find_element_by_css_selector(password_css)
-    password.clear()
-    password.send_keys(app.config[f"{prefix}_PASSWORD"])
+    password = browser.find_element_by_css_selector(password_selector)
 
-    sign_in = browser.find_element_by_css_selector(signin_css)
+    if password:
+        password.clear()
+        password.send_keys(app.config[f"{prefix}_PASSWORD".upper()])
+    else:
+        logger.error(f"Selector '{password_selector}' not found!")
+
+    sign_in = browser.find_element_by_css_selector(signin_selector)
 
     # TODO: why does it stall here for timero??
-    sign_in.click()
-
+    sign_in.click() if sign_in else logger.error(
+        f"Selector '{signin_selector}' not found!"
+    )
     #######################################################
 
     if prefix == "xero":
-        allow_access = find_element_loop(browser, 'button[value="yes"]')
-        allow_access.click()
-        connect = find_element_loop(browser, 'button[value="true"]')
-        connect.click()
+        connect_selector = "#approveButton"
+        connect = find_element_loop(browser, connect_selector)
+        connect.click() if connect else logger.error(
+            f"Selector '{connect_selector}' not found!"
+        )
+
+        access_selector = "#approveButton"
+        access = find_element_loop(browser, access_selector)
+        access.click() if access else logger.error(
+            f"Selector '{access_selector}' not found!"
+        )
 
     browser.close()
 

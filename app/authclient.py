@@ -38,6 +38,7 @@ from app.utils import uncache_header, make_cache_key, jsonify, get_links
 from app.headless import headless_auth
 
 logger = gogo.Gogo(__name__, monolog=True).logger
+logger.propagate = False
 
 SET_TIMEOUT = Config.SET_TIMEOUT
 OAUTH_EXPIRY_SECONDS = 3600
@@ -82,33 +83,29 @@ class AuthClient(BaseClient):
         self.expired = False
 
 
-class OAuthClient(BaseClient):
+class OAuth2Client(BaseClient):
     def __init__(self, *args, client_id=None, client_secret=None, **kwargs):
         super().__init__(*args, **kwargs)
+        self.auth_type = "oauth2"
         self.client_id = client_id
         self.client_secret = client_secret
         self.access_token = None
         self.refresh_token = None
+        self.oauth_session = None
+
         self.scope = kwargs.get("scope", "")
         self.authorization_base_url = kwargs.get("authorization_base_url")
+        self.refresh_url = kwargs["refresh_url"]
+        self.revoke_url = kwargs.get("revoke_url")
         self.redirect_uri = kwargs.get("redirect_uri")
         self.token_url = kwargs.get("token_url")
         self.account_id = kwargs.get("account_id")
         self.state = kwargs.get("state")
-
-
-class OAuth2Client(OAuthClient):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.auth_type = "oauth2"
-        self.refresh_url = kwargs["refresh_url"]
-        self.revoke_url = kwargs.get("revoke_url")
         self.tenant_id = kwargs.get("tenant_id", "")
         self.realm_id = kwargs.get("realm_id")
         self.extra = {"client_id": self.client_id, "client_secret": self.client_secret}
         self.expires_at = dt.now()
         self.expires_in = 0
-        self.oauth_session = None
         self.restore()
         self._init_credentials()
 
@@ -129,6 +126,7 @@ class OAuth2Client(OAuthClient):
         else:
             if self.verified:
                 logger.info(f"{self.prefix} successfully authenticated!")
+                cache.set(f"{self.prefix}_headless_auth", False)
             else:
                 logger.warning(f"{self.prefix} not authorized. Attempting to renew...")
                 self.renew_token("init")
@@ -749,6 +747,7 @@ def get_redirect_url(prefix):
     if prefix == "xero" and client.oauth2:
         api_url = f"{client.api_base_url}/connections"
         json = get_json_response(api_url, client, **app.config)
+
         # https://developer.xero.com/documentation/oauth2/auth-flow
         result = json.get("result")
         tenant_id = result[0].get("tenantId") if result else None

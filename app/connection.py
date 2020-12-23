@@ -6,7 +6,14 @@
     Provides the redis connection
 """
 import redis
+import pygogo as gogo
 
 from config import Config
 
-conn = redis.from_url(Config.RQ_DASHBOARD_REDIS_URL)
+logger = gogo.Gogo(__name__, monolog=True).logger
+
+try:
+    conn = redis.from_url(Config.RQ_DASHBOARD_REDIS_URL)
+except Exception as err:
+    logger.error(err)
+    conn = None

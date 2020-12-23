@@ -9,10 +9,9 @@ from os import path as p, environ
 from subprocess import call, check_call, CalledProcessError
 from urllib.parse import urlparse
 from itertools import count, chain
-from json.decoder import JSONDecodeError
 from sys import exit
-from traceback import print_exception
 from inspect import getmembers, isclass
+from functools import partial
 
 import pygogo as gogo
 import click
@@ -23,9 +22,17 @@ from flask.cli import FlaskGroup, pass_script_info, with_appcontext
 from flask.config import Config as FlaskConfig
 
 from config import Config
+from worker import initialize
 
 from app import create_app, actions, check_settings
-from app.helpers import configure, get_collection, get_provider, email_hdlr
+from app.helpers import (
+    configure,
+    get_collection,
+    get_provider,
+    email_hdlr,
+    exception_hook,
+    log,
+)
 from app.authclient import get_auth_client, get_json_response
 from app.routes.auth import store as _store
 from app.providers.xero import ProjectTime, ProjectTasks
@@ -58,6 +65,7 @@ patched_events = set()
 unpatched_events = set()
 
 logger = gogo.Gogo(__name__, high_hdlr=email_hdlr).logger
+logger.propagate = False
 
 
 def save_results(dry_run=False, **kwargs):
@@ -76,38 +84,7 @@ def save_results(dry_run=False, **kwargs):
         xero_project_time.results = sync_results
 
 
-def info(_type, value, tb):
-    import pdb
-
-    print_exception(_type, value, tb)
-    save_results()
-    pdb.post_mortem(tb)
-
-
-sys.excepthook = info
-
-
-def log(message=None, ok=True, r=None, exit_on_completion=False, **kwargs):
-    if r is not None:
-        ok = r.ok
-
-        try:
-            message = r.json().get("message")
-        except JSONDecodeError:
-            message = r.text
-
-    if message and ok:
-        logger.info(message)
-    elif message:
-        try:
-            logger.error(message)
-        except ConnectionRefusedError:
-            logger.info("Connect refused. Make sure an SMTP server is running.")
-            logger.info("Try running `sudo postfix start`.")
-            logger.info(message)
-
-    if exit_on_completion:
-        exit(0 if ok else 1)
+sys.excepthook = partial(exception_hook, debug=True)
 
 
 def gen_collections(collection):
@@ -342,6 +319,7 @@ def test_oauth(method=None, resource=None, project_id=None, **kwargs):
 @click.option("-d", "--dry-run/--no-dry-run", help="Perform a dry run", default=False)
 def sync(source_prefix, **kwargs):
     """Sync Timely/GSheets events with Xero time entries"""
+    sys.excepthook = partial(exception_hook, debug=True, callback=save_results)
     provider = get_provider(source_prefix)
     message = f"{source_prefix} Project {kwargs['project_id']}"
     logger.info(f"\n{message}")
@@ -513,6 +491,20 @@ def lint(where, strict):
         check_call(args) if strict else None
     except CalledProcessError as e:
         exit(e.returncode)
+
+
+@manager.command()
+@click.option(
+    "-l",
+    "--listen",
+    help="priorities to listen to",
+    multiple=True,
+    type=Choice(["high", "default", "low"]),
+    default=["high", "default", "low"],
+)
+def work(listen):
+    """Starts rq listening for work requests"""
+    initialize(listen)
 
 
 @manager.command()

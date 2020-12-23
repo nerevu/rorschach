@@ -17,12 +17,10 @@ from os import getenv, urandom, path as p
 from datetime import timedelta
 from collections import namedtuple
 
-import pygogo as gogo
-
 from dotenv import load_dotenv
+from mezmorize.utils import get_cache_config, get_cache_type
 
 PARENT_DIR = p.abspath(p.dirname(__file__))
-DAYS_PER_MONTH = 30
 
 load_dotenv(p.join(PARENT_DIR, ".env"), override=True)
 db_env_list = ["DATABASE_URL", "REDIS_URL", "MEMCACHIER_SERVERS", "REDISTOGO_URL"]
@@ -31,9 +29,6 @@ __USER__ = "reubano"
 __APP_NAME__ = "api"
 __PROD_SERVER__ = any(map(getenv, db_env_list))
 __DEF_HOST__ = "127.0.0.1"
-__DEF_REDIS_PORT__ = 6379
-__DEF_REDIS_HOST__ = getenv("REDIS_PORT_6379_TCP_ADDR", __DEF_HOST__)
-__DEF_REDIS_URL__ = "redis://{}:{}".format(__DEF_REDIS_HOST__, __DEF_REDIS_PORT__)
 
 __STAG_SERVER__ = getenv("STAGE")
 __END__ = "-stage" if __STAG_SERVER__ else ""
@@ -41,13 +36,15 @@ __SUB_DOMAIN__ = f"{__APP_NAME__}{__END__}"
 __AUTHOR__ = "Reuben Cummings"
 __AUTHOR_EMAIL__ = "rcummings@nerevu.com"
 
+DAYS_PER_MONTH = 30
 SECRET_ENV = f"{__APP_NAME__}_SECRET".upper()
 HEROKU_PR_NUMBER = getenv("HEROKU_PR_NUMBER")
 HEROKU_TEST_RUN_ID = getenv("HEROKU_TEST_RUN_ID")
 
 Admin = namedtuple("Admin", ["name", "email"])
+cache_type = get_cache_type(cache="redis")
+redis_config = get_cache_config(cache_type)
 get_path = lambda name: f"file://{p.join(PARENT_DIR, 'data', name)}"
-logger = gogo.Gogo(__name__, monolog=True).logger
 
 
 def get_seconds(seconds=0, months=0, **kwargs):
@@ -93,14 +90,15 @@ class Config(object):
     ROUTE_DEBOUNCE = get_seconds(5)
     ROUTE_TIMEOUT = get_seconds(0)
     SET_TIMEOUT = get_seconds(days=30)
+    FAILURE_TTL = get_seconds(hours=1)
     REPORT_MONTHS = 3
     LRU_CACHE_SIZE = 128
     REPORT_DAYS = REPORT_MONTHS * DAYS_PER_MONTH
     SEND_FILE_MAX_AGE_DEFAULT = ROUTE_TIMEOUT
     EMPTY_TIMEOUT = ROUTE_TIMEOUT * 10
     API_URL_PREFIX = "/v1"
-    SECRET = getenv(SECRET_ENV, urandom(24))
-    CHROME_DRIVER_VERSIONS = [None] + list(range(81, 77, -1))
+    SECRET_KEY = SECRET = getenv(SECRET_ENV, urandom(24))
+    CHROME_DRIVER_VERSIONS = [None] + list(range(87, 77, -1))
 
     APP_CONFIG_WHITELIST = {
         "CHUNK_SIZE",
@@ -108,6 +106,7 @@ class Config(object):
         "ERR_LIMIT",
         "ADMIN",
         "SECRET",
+        "SECRET_KEY",
     }
 
     # Variables warnings
@@ -213,6 +212,11 @@ class Config(object):
         },
     }
 
+    OPTIONAL_SETTINGS += [
+        "XERO_USERNAME",
+        "XERO_PASSWORD",
+    ]
+
     # Mailgun
     REQUIRED_PROD_SETTINGS += [
         "MAILGUN_API_KEY",
@@ -276,9 +280,7 @@ class Config(object):
 
     # RQ
     REQUIRED_PROD_SETTINGS += ["RQ_DASHBOARD_USERNAME", "RQ_DASHBOARD_PASSWORD"]
-    RQ_DASHBOARD_REDIS_URL = (
-        getenv("REDIS_URL") or getenv("REDISTOGO_URL") or __DEF_REDIS_URL__
-    )
+    RQ_DASHBOARD_REDIS_URL = redis_config.get("CACHE_REDIS_URL")
     RQ_DASHBOARD_DEBUG = False
 
     APP_CONFIG_WHITELIST.update(REQUIRED_SETTINGS)
@@ -363,13 +365,11 @@ class Development(Config):
 
 class Ngrok(Development):
     # Xero localhost callbacks work fine
+    server_name = "nerevu-api.ngrok.io"
+    API_URL = f"https://{server_name}{Config.API_URL_PREFIX}"
     AUTHENTICATION = Config.AUTHENTICATION
-    AUTHENTICATION["xero"]["oauth2"][
-        "redirect_uri"
-    ] = f"https://nerevu-api.ngrok.io{Config.API_URL_PREFIX}/xero-callback"
-    AUTHENTICATION["timely"]["oauth2"][
-        "redirect_uri"
-    ] = f"https://nerevu-api.ngrok.io{Config.API_URL_PREFIX}/timely-callback"
+    AUTHENTICATION["timely"]["oauth2"]["redirect_uri"] = f"{API_URL}/timely-callback"
+    AUTHENTICATION["xero"]["oauth2"]["redirect_uri"] = f"{API_URL}/xero-callback"
 
 
 class Test(Config):

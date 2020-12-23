@@ -23,6 +23,7 @@ from app.utils import (
 )
 
 logger = gogo.Gogo(__name__, monolog=True).logger
+logger.propagate = False
 
 PREFIX = Config.API_URL_PREFIX
 

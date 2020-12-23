@@ -36,6 +36,7 @@ from app.helpers import singularize, get_collection
 from riko.dotdict import DotDict
 
 logger = gogo.Gogo(__name__, monolog=True).logger
+logger.propagate = False
 
 APP_DIR = Path(__file__).parents[1]
 DATA_DIR = APP_DIR.joinpath("data")
@@ -114,15 +115,12 @@ class BaseView(ProviderMixin, MethodView):
 
 
 class Callback(BaseView):
-    def __init__(self, prefix):
-        super().__init__(prefix)
-
     def get(self):
         return callback(self.prefix)
 
 
 class Auth(BaseView):
-    def __init__(self, prefix):
+    def __init__(self, prefix=None):
         super().__init__(prefix)
 
         if self.client.oauth1:
@@ -229,7 +227,7 @@ class Resource(BaseView):
 
         return name
 
-    def __init__(self, prefix, resource=None, **kwargs):
+    def __init__(self, prefix=None, resource=None, **kwargs):
         """ An API Resource.
 
         Args:

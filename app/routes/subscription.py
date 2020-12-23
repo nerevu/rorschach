@@ -26,6 +26,7 @@ WEBHOOKS = Config.WEBHOOKS
 # https://requests-oauthlib.readthedocs.io/en/latest/index.html
 # https://oauth-pythonclient.readthedocs.io/en/latest/index.html
 logger = gogo.Gogo(__name__, monolog=True, low_level="info", low_hdlr=email_hdlr).logger
+logger.propagate = False
 
 
 def get_html(ok=False, message="", **kwargs):

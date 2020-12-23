@@ -18,6 +18,7 @@ from app.routes.webhook import Webhook
 from app.routes.auth import Resource, process_result
 
 logger = gogo.Gogo(__name__, monolog=True).logger
+logger.propagate = False
 
 PREFIX = __name__.split(".")[-1]
 

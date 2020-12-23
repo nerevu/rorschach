@@ -31,6 +31,7 @@ from config import Config
 from app import cache
 
 logger = gogo.Gogo(__name__, monolog=True).logger
+logger.propagate = False
 
 ENCODING = "utf-8"
 EPOCH = dt(*gmtime(0)[:6])
@@ -62,6 +63,8 @@ CTYPES = {
     "jpg": "image/jpeg",
     "jpeg": "image/jpeg",
     "txt": "text/plain",
+    "csv": "text/csv",
+    "json": "application/json",
 }
 
 get_hash = lambda text: md5(str(text).encode(ENCODING)).hexdigest()
@@ -142,9 +145,7 @@ def make_cache_key(*args, **kwargs):
         (obj): Flask request url
     """
     mimetype = get_mimetype(request)
-    cache_key = f"{mimetype}:{request.full_path}"
-    logger.debug(cache_key)
-    return cache_key
+    return f"{mimetype}:{request.full_path}"
 
 
 def fmt_elapsed(elapsed):
@@ -186,10 +187,10 @@ def cache_header(max_age, **ckwargs):
     Otherwise, caching headers are set to expire in now + max_age seconds
 
     Examples:
-    >>> @app.route('/map')
-    >>> @cache_header(60)
-    >>> def index():
-    ...     return render_template('index.html')
+        >>> @app.route('/map')
+        ... @cache_header(60)
+        ... def index():
+        ...     return render_template('index.html')
 
     """
 
@@ -204,14 +205,14 @@ def cache_header(max_age, **ckwargs):
             if max_age:
                 response.cache_control.public = True
                 extra = timedelta(seconds=max_age)
+                response.expires = response.last_modified + extra
             else:
                 response.headers["Pragma"] = "no-cache"
                 response.cache_control.must_revalidate = True
                 response.cache_control.no_cache = True
                 response.cache_control.no_store = True
-                extra = timedelta(0)
+                response.expires = "-1"
 
-            response.expires = (response.last_modified or dt.utcnow()) + extra
             return response.make_conditional(request)
 
         return wrapper
@@ -375,8 +376,8 @@ def gen_links(rules):
     Yields: (dict)
 
     Examples:
-    >>> gen_links(rules)
-    {"rel": "data", "href": f"https://alegna-api.nerevu.com/v1/data", "method": "GET"}
+        >>> gen_links(rules)
+        {"rel": "data", "href": f"https://alegna-api.nerevu.com/v1/data", "method": "GET"}
     """
     url_root = get_url_root()
 

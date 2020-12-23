@@ -24,6 +24,7 @@ from app.utils import responsify, get_links, jsonify
 # https://requests-oauthlib.readthedocs.io/en/latest/index.html
 # https://oauth-pythonclient.readthedocs.io/en/latest/index.html
 logger = gogo.Gogo(__name__, monolog=True).logger
+logger.propagate = False
 
 
 ###########################################################################

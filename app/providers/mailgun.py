@@ -15,6 +15,7 @@ from app.utils import hash_text
 from app.routes.auth import Resource
 
 logger = gogo.Gogo(__name__, monolog=True).logger
+logger.propagate = False
 
 PREFIX = __name__.split(".")[-1]
 
