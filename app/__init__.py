@@ -36,7 +36,7 @@ from app.helpers import configure, email_hdlr, flask_formatter
 from mezmorize.utils import get_cache_config, get_cache_type
 from meza.fntools import CustomEncoder
 
-__version__ = "0.26.0"
+__version__ = "0.27.0"
 __title__ = "Nerevu API"
 __package_name__ = "api"
 __author__ = "Reuben Cummings"
