@@ -171,6 +171,9 @@ class Config(object):
                 "client_secret": getenv("TIMELY_SECRET"),
                 "username": getenv("TIMELY_USERNAME"),
                 "password": getenv("TIMELY_PASSWORD"),
+                "username_selector": "#email",
+                "password_selector": "#password",
+                "sign_in_selector": '[type="submit"]',
             },
         },
         # https://developer.xero.com/myapps/
@@ -196,6 +199,14 @@ class Config(object):
                     "accounting.attachments",
                     "files",
                     "assets",
+                ],
+                "username_selector": "#xl-form-email",
+                "password_selector": "#xl-form-password",
+                "sign_in_selector": "#xl-form-submit",
+                "headless_elements": [
+                    {"selector": "#approveButton", "description": "connect"},
+                    {"selector": "#approveButton", "description": "allow access"},
+                    {"selector": "#approveButton", "description": "select org"},
                 ],
             },
             "oauth1": {

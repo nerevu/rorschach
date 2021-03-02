@@ -104,6 +104,14 @@ class OAuth2Client(BaseClient):
         self.tenant_id = kwargs.get("tenant_id", "")
         self.realm_id = kwargs.get("realm_id")
         self.extra = {"client_id": self.client_id, "client_secret": self.client_secret}
+        self.username_selector = kwargs.get("username_selector")
+        self.password_selector = kwargs.get("password_selector")
+        self.username = kwargs.get("username")
+        self.password = kwargs.get("password")
+        self.sign_in_selector = kwargs.get("sign_in_selector")
+        self.headless_elements = kwargs.get("headless_elements") or []
+        self.tried_headless_auth = False
+        self.failed_headless_auth = False
         self.expires_at = dt.now()
         self.expires_in = 0
         self.restore()
@@ -126,14 +134,44 @@ class OAuth2Client(BaseClient):
         else:
             if self.verified:
                 logger.info(f"{self.prefix} successfully authenticated!")
-                cache.set(f"{self.prefix}_headless_auth", False)
             else:
                 logger.warning(f"{self.prefix} not authorized. Attempting to renew...")
                 self.renew_token("init")
 
     @property
+    def failed_or_tried_headless(self):
+        return self.failed_headless_auth or self.tried_headless_auth
+
+    @property
+    def headless_status(self):
+        return "failed" if self.failed_headless_auth else "succeeded"
+
+    @property
+    def restore_from_headless(self):
+        return self.tried_headless_auth and not self.failed_headless_auth
+
+    @property
+    def can_headlessly_auth(self):
+        auth_info = self.username and self.password
+        selectors = (
+            self.username_selector and self.password_selector and self.sign_in_selector
+        )
+        return auth_info and selectors and not self.failed_or_tried_headless
+
+    @property
     def expired(self):
         return self.expires_at <= dt.now() + timedelta(seconds=EXPIRATION_BUFFER)
+
+    @property
+    def headless_kwargs(self):
+        return {
+            "username_selector": self.username_selector,
+            "password_selector": self.password_selector,
+            "username": self.username,
+            "password": self.password,
+            "sign_in_selector": self.sign_in_selector,
+            "elements": self.headless_elements,
+        }
 
     @property
     def oauth_kwargs(self):
@@ -221,15 +259,13 @@ class OAuth2Client(BaseClient):
 
     def renew_token(self, source):
         logger.debug(f"renew {self} from {source}")
-        failed = cache.get(f"{self.prefix}_headless_auth_failed")
-        has_performed_headless_auth = cache.get(f"{self.prefix}_headless_auth")
-        failed_or_tried = failed or has_performed_headless_auth
 
         if self.refresh_token:
             logger.info(f"Renewing token using {self.refresh_url}…")
             args = (self.refresh_url, self.refresh_token)
 
             if self.prefix == "xero":
+                # TODO: can't requests fill this in automatically?
                 # https://developer.xero.com/documentation/oauth2/auth-flow
                 authorization = f"{self.client_id}:{self.client_secret}"
                 encoded = b64encode(authorization.encode("utf-8")).decode("utf-8")
@@ -253,12 +289,21 @@ class OAuth2Client(BaseClient):
                 else:
                     self.error = f"Failed to renew {self}!"
                     logger.error(self.error)
-        elif self.username and self.password and not failed_or_tried:
-            logger.info(f"Attempting to renew {self} using headless browser")
-            cache.set(f"{self.prefix}_headless_auth", True)
-            headless_auth(self.authorization_url[0], self.prefix)
+        elif self.can_headlessly_auth:
+            logger.info(f"Attempting to renew {self} using headless authentication")
+            url = self.authorization_url[0]
+            self.failed_headless_auth = headless_auth(
+                url, self.prefix, **self.headless_kwargs
+            )
+            self.tried_headless_auth = True
         else:
             error = f"No {self.prefix} refresh token present. Please re-authenticate!"
+
+            if self.tried_headless_auth:
+                error += (
+                    f" Previous headless authentication attempt {self.headless_status}."
+                )
+
             logger.error(error)
             self.error = error
 
@@ -280,6 +325,7 @@ class OAuth2Client(BaseClient):
         return json
 
     def save(self):
+        logger.debug(f"saving {self}")
         try:
             def_state = session.get(f"{self.prefix}_state")
         except RuntimeError:
@@ -297,6 +343,7 @@ class OAuth2Client(BaseClient):
         cache.set(f"{self.prefix}_realm_id", self.realm_id)
 
     def restore(self):
+        logger.debug(f"restoring {self}")
         try:
             def_state = session.get(f"{self.prefix}_state")
         except RuntimeError:
@@ -420,6 +467,7 @@ class OAuth1Client(AuthClient):
             self.token = token
 
     def save(self):
+        logger.debug(f"saving {self}")
         cache.set(f"{self.prefix}_oauth_token", self.oauth_token)
         cache.set(f"{self.prefix}_oauth_token_secret", self.oauth_token_secret)
         cache.set(f"{self.prefix}_created_at", self.created_at)
@@ -431,6 +479,7 @@ class OAuth1Client(AuthClient):
         cache.set(f"{self.prefix}_verified", self.verified)
 
     def restore(self):
+        logger.debug(f"restoring {self}")
         def_expires_at = dt.now() + timedelta(seconds=int(OAUTH_EXPIRY_SECONDS))
 
         self.oauth_token = cache.get(f"{self.prefix}_oauth_token")
@@ -477,7 +526,6 @@ class ServiceAuthClient(AuthClient):
 
 
 def get_auth_client(prefix, state=None, **kwargs):
-    cache.set(f"{prefix}_headless_auth_failed", False)
     auth_client_name = f"{prefix}_auth_client"
 
     if auth_client_name not in g:
@@ -506,10 +554,10 @@ def get_auth_client(prefix, state=None, **kwargs):
 
         client = MyAuthClient(prefix, **auth_kwargs)
 
-        # if cache.get(f"{prefix}_restore_from_headless"):
-        #     client.restore()
-        #     client.renew_token()
-        #     cache.set(f"{prefix}_restore_from_headless", False)
+        if client.restore_from_headless:
+            logger.debug("restoring client from headless session")
+            client.restore()
+            client.renew_token("headless")
 
         setattr(g, auth_client_name, client)
 
