@@ -526,7 +526,9 @@ def get_json_response(url, client, params=None, renewed=False, hacked=False, **k
     unscoped = False
     success_code = kwargs.get("success_code", 200)
 
-    if client.expired:
+    if not client:
+        json = {"message": "No client.", "status_code": 407}
+    elif client.expired:
         json = {"message": "Token Expired.", "status_code": 401}
     elif not client.verified:
         json = {"message": "Client not authorized.", "status_code": 401}

@@ -79,7 +79,7 @@ def send_notification(invoice_id, prompt=False, **kwargs):
     email_template = EmailTemplate(rid=invoice_id, **kwargs)
     client = email_template.client
 
-    if client.verified:
+    if client and client.verified:
         template_data = email_template.extract_model()
         pdf_path = template_data["pdf"][0]
         template_data["f"] = open(pdf_path, mode="rb")
@@ -93,7 +93,7 @@ def send_notification(invoice_id, prompt=False, **kwargs):
         response = email.post(**data)
         json = response.json
         json["message"] = json["result"]["Message"]
-    elif client.verified:
+    elif client and client.verified:
         json = {
             "message": "You canceled the notification.",
             "ok": False,
@@ -102,7 +102,7 @@ def send_notification(invoice_id, prompt=False, **kwargs):
     else:
         json = get_json_response(None, email_template.client, **kwargs)
 
-    if client.verified:
+    if client and client.verified:
         Path(pdf_path).unlink(missing_ok=True)
 
     return json
