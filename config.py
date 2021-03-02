@@ -216,6 +216,8 @@ class Config(object):
                 "token_url": "https://api.xero.com/oauth/AccessToken",
                 "client_id": getenv("XERO_CONSUMER_KEY"),
                 "client_secret": getenv("XERO_CONSUMER_SECRET"),
+                "username": getenv("XERO_USERNAME"),
+                "password": getenv("XERO_PASSWORD"),
                 "headers": {
                     "post": {"Content-Type": "application/x-www-form-urlencoded"},
                 },
