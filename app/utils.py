@@ -185,6 +185,8 @@ def cache_header(max_age, **ckwargs):
 
     If max_age is 0, caching will be disabled.
     Otherwise, caching headers are set to expire in now + max_age seconds
+    If round_to_minute is True, then it will always expire at the start of a
+    minute (seconds = 0)
 
     Examples:
         >>> @app.route('/map')

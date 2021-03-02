@@ -120,7 +120,7 @@ def check_settings(app):
         server_name = app.config.get("SERVER_NAME")
 
         if server_name:
-            app.logger.info(f"SERVER_NAME is {server_name}.")
+            app.logger.info(f"SERVER_NAME from init is {server_name}.")
         else:
             app.logger.error("SERVER_NAME is not set!")
 
