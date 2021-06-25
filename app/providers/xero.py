@@ -11,6 +11,7 @@ from decimal import Decimal
 
 import pygogo as gogo
 
+from app import providers
 from app.utils import fetch_choice
 from app.helpers import get_collection, get_provider
 from app.mappings import USERS, NAMES, POSITIONS, gen_task_mapping
@@ -65,19 +66,24 @@ def gen_address(City="", Region="", PostalCode="", **kwargs):
     yield last_line
 
 
+class Xero(Resource):
+    def __init__(self, *args, **kwargs):
+        super().__init__(PREFIX, *args, **kwargs)
+
+
 ###########################################################################
 # Resources
 ###########################################################################
-class Status(Resource):
+class Status(providers.Status):
     def __init__(self, *args, **kwargs):
-        super().__init__(PREFIX, "status", *args, **kwargs)
+        super().__init__(PREFIX, **kwargs)
 
 
-class Projects(Resource):
+class Projects(Xero):
     def __init__(self, *args, **kwargs):
         fields = ["projectId", "name", "status"]
         kwargs.update({"fields": fields, "id_field": "projectId", "subkey": "items"})
-        super().__init__(PREFIX, "projects", *args, **kwargs)
+        super().__init__(*args, resource="projects", **kwargs)
 
     def get_post_data(self, project, project_name, rid, **kwargs):
         client = project["client"]
@@ -98,11 +104,11 @@ class Projects(Resource):
         return project_data
 
 
-class Users(Resource):
+class Users(Xero):
     def __init__(self, *args, **kwargs):
         fields = ["userId", "name"]
         kwargs.update({"fields": fields, "id_field": "userId", "subkey": "items"})
-        super().__init__(PREFIX, "projectsusers", *args, **kwargs)
+        super().__init__(*args, resource="projectsusers", **kwargs)
 
     def id_func(self, user, user_name, rid, prefix=None):
         matching = list(enumerate(x["name"] for x in self))
@@ -120,7 +126,7 @@ class Users(Resource):
         return xero_user_id
 
 
-class Contacts(Resource):
+class Contacts(Xero):
     def __init__(self, *args, **kwargs):
         kwargs.update(
             {
@@ -130,7 +136,7 @@ class Contacts(Resource):
                 "domain": "api",
             }
         )
-        super().__init__(PREFIX, "Contacts", *args, **kwargs)
+        super().__init__(*args, resource="Contacts", **kwargs)
 
 
 class Invoices(Resource):
@@ -145,7 +151,7 @@ class Invoices(Resource):
             }
         )
 
-        super().__init__(PREFIX, "Invoices", *args, **kwargs)
+        super().__init__(*args, resource="Invoices", **kwargs)
 
 
 class OnlineInvoices(Resource):
@@ -159,13 +165,13 @@ class OnlineInvoices(Resource):
             }
         )
 
-        super().__init__(PREFIX, "Invoices", *args, **kwargs)
+        super().__init__(*args, resource="Invoices", **kwargs)
 
 
-class EmailTemplate(Resource):
+class EmailTemplate(Xero):
     def __init__(self, *args, **kwargs):
         kwargs["get_json_response"] = self.get_json_response
-        super().__init__(PREFIX, "Invoices", *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.recipient_name = kwargs.get("recipient_name")
         self.recipient_email = kwargs.get("recipient_email")
         self.copied_email = kwargs.get("copied_email")
@@ -238,7 +244,7 @@ class EmailTemplate(Resource):
         return {"result": result}
 
 
-class Inventory(Resource):
+class Inventory(Xero):
     def __init__(self, *args, **kwargs):
         kwargs.update(
             {
@@ -250,7 +256,7 @@ class Inventory(Resource):
             }
         )
 
-        super().__init__(PREFIX, "Items", *args, **kwargs)
+        super().__init__(*args, resource="Items", **kwargs)
 
     def get_matching_xero_postions(self, user_id, task_name, user_name=None):
         trunc_name = task_name.split(" ")[0]
@@ -266,7 +272,7 @@ class Inventory(Resource):
         ]
 
 
-class ProjectTasks(Resource):
+class ProjectTasks(Xero):
     def __init__(self, *args, **kwargs):
         # TODO: filter by active xero tasks
         kwargs.update(
@@ -281,7 +287,7 @@ class ProjectTasks(Resource):
             }
         )
 
-        super().__init__(PREFIX, "projects", *args, **kwargs)
+        super().__init__(*args, resource="projects", **kwargs)
 
     def get_task_entry(self, rid, source_rid, prefix=None):
         (project_id, user_id, label_id) = source_rid
@@ -381,8 +387,8 @@ class ProjectTasks(Resource):
         return xero_task_id
 
 
-class ProjectTime(Resource):
-    def __init__(self, source_prefix="timely", *args, **kwargs):
+class ProjectTime(Xero):
+    def __init__(self, *args, source_prefix="timely", **kwargs):
         self.source_prefix = source_prefix
         self.event_pos = int(kwargs.pop("event_pos", 0))
         self.event_id = kwargs.pop("event_id", None)
@@ -398,7 +404,7 @@ class ProjectTime(Resource):
             }
         )
 
-        super().__init__(PREFIX, "projects", *args, **kwargs)
+        super().__init__(*args, resource="projects", **kwargs)
 
     def set_post_data(self):
         prefix = self.source_prefix

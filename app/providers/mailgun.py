@@ -20,16 +20,24 @@ logger.propagate = False
 PREFIX = __name__.split(".")[-1]
 
 
-class Domains(Resource):
+class Mailgun(Resource):
+    def __init__(self, *args, **kwargs):
+        super().__init__(PREFIX, *args, **kwargs)
+
+
+###########################################################################
+# Resources
+###########################################################################
+class Domains(Mailgun):
     def __init__(self, *args, **kwargs):
         kwargs.update({"subkey": "domain", "ignore_domain": True})
-        super().__init__(PREFIX, "domains", *args, **kwargs)
+        super().__init__(*args, resource="domains", **kwargs)
 
 
-class EmailLists(Resource):
+class EmailLists(Mailgun):
     def __init__(self, *args, list_prefix=None, **kwargs):
         kwargs.update({"ignore_domain": True, "id_field": "address", "subkey": "list"})
-        super().__init__(PREFIX, "lists", *args, **kwargs)
+        super().__init__(*args, resource="lists", **kwargs)
 
         def_list_prefix = self.kwargs.get("mailgun_list_prefix")
         self._list_prefix = None
@@ -69,10 +77,10 @@ class EmailListMembers(EmailLists):
         return member_data
 
 
-class Email(Resource):
+class Email(Mailgun):
     def __init__(self, *args, **kwargs):
         kwargs["id_field"] = "MessageID"
-        super().__init__(PREFIX, "messages", *args, **kwargs)
+        super().__init__(*args, resource="messages", **kwargs)
 
         self.lists = EmailLists(**kwargs)
         self.list_name = self.lists.list_name

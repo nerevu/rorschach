@@ -21,6 +21,7 @@ logger.propagate = False
 
 
 def add_xero_time(source_prefix, project_id=None, position=None, **kwargs):
+    """Creates Xero time entries from Timely"""
     xero_time = ProjectTime(
         dictify=True,
         event_pos=position,
@@ -52,6 +53,7 @@ def add_xero_time(source_prefix, project_id=None, position=None, **kwargs):
 
 
 def mark_billed(source_prefix, rid, **kwargs):
+    """Marks Xero and Timely time as billed"""
     provider = get_provider(source_prefix)
     time = provider.Time(dictify=True, rid=rid, **kwargs)
     data = time.get_patch_data()
@@ -76,6 +78,7 @@ def mark_billed(source_prefix, rid, **kwargs):
 
 
 def send_notification(invoice_id, prompt=False, **kwargs):
+    """Sends an invoice email notification to Xero clients via Postmark"""
     email_template = EmailTemplate(rid=invoice_id, **kwargs)
     client = email_template.client
 

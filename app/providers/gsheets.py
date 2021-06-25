@@ -204,16 +204,16 @@ class GSheets(Resource):
 
 
 ###########################################################################
-# METHODVIEW ROUTES
+# Resources
 ###########################################################################
 class Status(GSheets):
     def __init__(self, *args, **kwargs):
-        super().__init__("status", *args, **kwargs)
+        super().__init__(*args, resource="status", **kwargs)
 
 
 class Projects(GSheets):
     def __init__(self, *args, **kwargs):
-        super().__init__("projects", *args, **kwargs)
+        super().__init__(*args, resource="projects", **kwargs)
 
     def get_json_response(self):
         self.worksheet_name = "client projects"
@@ -237,7 +237,7 @@ class Projects(GSheets):
 
 class Users(GSheets):
     def __init__(self, *args, **kwargs):
-        super().__init__("users", *args, **kwargs)
+        super().__init__(*args, resource="users", **kwargs)
 
     def get_json_response(self):
         result = [
@@ -253,7 +253,7 @@ class Users(GSheets):
 
 class Contacts(GSheets):
     def __init__(self, *args, **kwargs):
-        super().__init__("contacts", *args, **kwargs)
+        super().__init__(*args, resource="contacts", **kwargs)
 
     def get_json_response(self):
         result = self.worksheet.col_values(1)[1:]
@@ -266,7 +266,7 @@ class Contacts(GSheets):
 
 class Tasks(GSheets):
     def __init__(self, *args, **kwargs):
-        super().__init__("tasks", *args, **kwargs)
+        super().__init__(*args, resource="tasks", **kwargs)
 
     def get_json_response(self):
         result = [
@@ -297,7 +297,7 @@ class Time(GSheets):
         processor = events_processor
         filterer = events_filterer
         kwargs.update({"fields": fields, "processor": processor, "filterer": filterer})
-        super().__init__("events", *args, **kwargs)
+        super().__init__(*args, resource="events", **kwargs)
 
     def set_patch_data(self):
         assert self.rid, ("No 'rid' given!", 500)
@@ -356,7 +356,7 @@ class ProjectTasks(GSheets):
     def __init__(self, *args, **kwargs):
         kwargs["fields"] = ["id", "name"]
         self.get_json_response = Tasks().get_json_response
-        super().__init__("projects", *args, **kwargs)
+        super().__init__(*args, resource="projects", **kwargs)
 
 
 class ProjectTime(GSheets):
@@ -372,7 +372,7 @@ class ProjectTime(GSheets):
             }
         )
 
-        super().__init__("projects", *args, **kwargs)
+        super().__init__(*args, resource="projects", **kwargs)
 
     def get_json_response(self):
         if self.rid:

@@ -7,6 +7,8 @@
 """
 import pygogo as gogo
 
+from functools import partial, wraps
+
 from flask import Blueprint, current_app as app
 from faker import Faker
 
@@ -123,7 +125,7 @@ for name, options in method_views.items():
             continue
 
         route_name = f"{provider}-{name}".lower() if provider else name
-        view_func = view.as_view(route_name, prefix=provider)
+        view_func = view.as_view(route_name, provider)
         methods = options.get("methods", ["GET"])
         url = f"{PREFIX}/{route_name}"
 
@@ -134,11 +136,16 @@ for name, options in method_views.items():
 
 
 def gen_actions(activities=None, **kwargs):
-    _actions = activities or {}
+    activities = activities or []
 
-    for key, action_name in _actions.items():
-        member = get_member(actions, action_name, classes_only=False)
-        yield (key, member)
+    for activity in activities:
+        action = get_member(actions, activity["action"], classes_only=False)
+
+        if activity.get("kwargs"):
+            wrapped = partial(action, **activity["kwargs"])
+            action = wraps(action)(wrapped)
+
+        yield (activity["name"], action)
 
 
 for provider, options in WEBHOOKS.items():
@@ -146,6 +153,7 @@ for provider, options in WEBHOOKS.items():
     _actions = dict(gen_actions(**options))
     route_name = f"{provider}-hooks".lower()
     view_func = view.as_view(route_name, actions=_actions, **options)
-    methods = options.get("methods", ["POST"])
     url = f"{PREFIX}/{route_name}"
+    methods = ["GET", "POST"]
     add_rule(url, view_func=view_func, methods=methods)
+    add_rule(f"{url}/<string:activity_name>", view_func=view_func, methods=methods)
