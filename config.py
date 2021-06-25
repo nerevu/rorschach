@@ -268,7 +268,23 @@ class Config(object):
             "digest": "sha256",
             "b64_encode": True,
             "payload_key": "events",
-            "activities": {("new", "invoice"): "send_notification"},
+            "activities": [
+                {
+                    "name": "new_invoice",
+                    "action": "send_invoice_notification",
+                    "kwargs": {
+                        "sender_email": "billing@nerevu.com",
+                        "sender_name": "Nerevu Billing Team",
+                        "recipient_email": None,
+                        "recipient_name": None,
+                        "copied_email": None,
+                        "template_id": 9956182,
+                        "debug": False,
+                        "dry_run": False,
+                        "prompt": False,
+                    },
+                }
+            ],
         },
         "heroku": {
             "signature_header": "Heroku-Webhook-Hmac-SHA256",
@@ -277,16 +293,60 @@ class Config(object):
             "b64_encode": True,
             "payload_key": "action",
             "ignore_signature": True,
-            "methods": ["POST", "GET"],
-            "activities": {"update": "invalidate_cf_distribution"},
+            "activities": [{"name": "update", "action": "invalidate_cf_distribution"}],
         },
-        "timely": {
-            "payload_key": "",
-            "activities": {("new", "event"): "add_xero_time"},
-        },
-        "gsheets": {
-            "payload_key": "",
-            "activities": {("new", "row"): "add_xero_time"},
+        "timely": {"activities": [{"name": "new_event", "action": "add_xero_time"}]},
+        "gsheets": {"activities": [{"name": "new_row", "action": "add_xero_time"}]},
+        "nerevu": {
+            "payload_key": "resourceId",
+            "ignore_signature": True,
+            "activities": [
+                {
+                    "name": "new_invoice",
+                    "action": "send_invoice_notification",
+                    "kwargs": {
+                        "sender_email": "billing@nerevu.com",
+                        "sender_name": "Nerevu Billing Team",
+                        "recipient_email": "rcummings@nerevu.com",
+                        "recipient_name": "Reuben Cummings",
+                        "copied_email": "rcummings@nerevu.com",
+                        "template_id": 12058975,
+                        "debug": True,
+                        "dry_run": False,
+                        "prompt": True,
+                    },
+                },
+                {
+                    "name": "new_charge",
+                    "action": "send_invoice_notification",
+                    "kwargs": {
+                        "sender_email": "billing@nerevu.com",
+                        "sender_name": "Nerevu Billing Team",
+                        "recipient_email": "rcummings@nerevu.com",
+                        "recipient_name": "Reuben Cummings",
+                        "copied_email": "rcummings@nerevu.com",
+                        "template_id": 16342429,
+                        "debug": True,
+                        "dry_run": False,
+                        "prompt": True,
+                    },
+                },
+                {
+                    "name": "new_payment",
+                    "action": "send_payment_notification",
+                    "kwargs": {
+                        "sender_email": "billing@nerevu.com",
+                        "sender_name": "Nerevu Billing Team",
+                        "recipient_email": "rcummings@nerevu.com",
+                        "recipient_name": "Reuben Cummings",
+                        "copied_email": "rcummings@nerevu.com",
+                        "template_id": 9956182,
+                        "debug": True,
+                        "dry_run": False,
+                        "prompt": True,
+                    },
+                },
+            ],
         },
     }
 

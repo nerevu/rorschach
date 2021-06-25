@@ -448,9 +448,14 @@ def gen_config(app):
 
 
 def parse_request():
-    values = request.values or {}
-    json = request.json or {}
-    kwargs = {**values, **json}
+    args = request.args or {}
+    form = request.form or {}
+
+    if form and "json" not in get_mimetype():
+        form = loads(list(form)[0])
+
+    json = request.get_json(force=True, silent=True) or {}
+    kwargs = {**args, **form, **json}
     return {k: parse(v) for k, v in kwargs.items()}
 
 

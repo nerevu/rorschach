@@ -14,14 +14,10 @@ from flask.views import MethodView
 
 import pygogo as gogo
 
-from config import Config
-
 from app.routes import ProviderMixin
 from app.helpers import email_hdlr
 from app.utils import responsify, verify
 from app.providers.mailgun import Email, EmailLists, EmailListMembers
-
-WEBHOOKS = Config.WEBHOOKS
 
 # https://requests-oauthlib.readthedocs.io/en/latest/index.html
 # https://oauth-pythonclient.readthedocs.io/en/latest/index.html

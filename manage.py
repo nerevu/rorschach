@@ -44,6 +44,11 @@ xero_project_time = ProjectTime(dictify=True, dry_run=True)
 BASEDIR = p.dirname(__file__)
 DEF_WHERE = ["app", "manage.py", "config.py"]
 AUTHENTICATION = Config.AUTHENTICATION
+ACTIONS = {
+    "invoice": actions.send_invoice_notification,
+    "charge": actions.send_invoice_notification,
+    "payment": actions.send_invoice_notification,
+}
 
 
 def gen_collection_names(prefixes):
@@ -413,7 +418,14 @@ def sync(source_prefix, **kwargs):
 
 
 @manager.command()
-@click.argument("invoice-id")
+@click.argument("resource-id")
+@click.option(
+    "-a",
+    "--activity",
+    type=Choice(["invoice", "charge", "payment"], case_sensitive=False),
+    help="The activity to perform.",
+    default="invoice",
+)
 @click.option(
     "-e",
     "--sender-email",
@@ -432,9 +444,10 @@ def sync(source_prefix, **kwargs):
 @click.option(
     "-p", "--prompt/--no-prompt", help="Prompt before sending email", default=False
 )
-def notify(invoice_id, **kwargs):
+def notify(resource_id, activity, **kwargs):
     """Send Xero invoice notification"""
-    json = actions.send_notification(invoice_id, **kwargs)
+    action = ACTIONS[activity]
+    json = action(resource_id, **kwargs)
 
     try:
         log(**json, exit_on_completion=True)
