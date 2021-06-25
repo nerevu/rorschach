@@ -736,7 +736,20 @@ def get_json_response(url, client, params=None, renewed=False, hacked=False, **k
     status_code = json.get("status_code", success_code)
     json["ok"] = ok
 
-    if not ok:
+    if status_code == 401 and not renewed:
+        msg = f"Insufficient scope: {client.scope}." if unscoped else "Token expired!"
+        logger.debug(msg)
+        client.renew_token(401)
+        json = get_json_response(url, client, params=params, renewed=True, **kwargs)
+    elif status_code == 400 and not hacked:
+        logger.debug("Applying authclient hack!")
+        json = get_json_response(url, client, params=params, hacked=True, **kwargs)
+    elif ok:
+        try:
+            json["links"] = get_links(app.url_map.iter_rules())
+        except RuntimeError:
+            pass
+    else:
         try:
 
             @after_this_request
@@ -748,24 +761,13 @@ def get_json_response(url, client, params=None, renewed=False, hacked=False, **k
         except AttributeError:
             pass
 
-    if status_code == 401 and not renewed:
-        msg = f"Insufficient scope: {client.scope}." if unscoped else "Token expired!"
-        logger.debug(msg)
-        client.renew_token(401)
-        json = get_json_response(url, client, params=params, renewed=True, **kwargs)
-    elif status_code == 400 and not hacked:
-        logger.debug("Applying authclient hack!")
-        json = get_json_response(url, client, params=params, hacked=True, **kwargs)
-    else:
-        try:
-            json["links"] = get_links(app.url_map.iter_rules())
-        except RuntimeError:
-            pass
+        if kwargs.get("debug"):
+            message = json.get("message", "")
 
-    if not ok and kwargs.get("debug"):
-        message = json.get("message", "")
-        logger.error(f"Error requesting {url}")
-        logger.error(f"Server returned {status_code}: {message}")
+            if url:
+                logger.error(f"Error requesting {url}")
+
+            logger.error(f"Server returned {status_code}: {message}")
 
     return json
 
