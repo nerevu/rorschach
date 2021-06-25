@@ -110,6 +110,7 @@ class OAuth2Client(BaseClient):
         self.password = kwargs.get("password")
         self.sign_in_selector = kwargs.get("sign_in_selector")
         self.headless_elements = kwargs.get("headless_elements") or []
+        self.debug = kwargs.get("debug")
         self.tried_headless_auth = False
         self.failed_headless_auth = False
         self.expires_at = dt.now()
@@ -171,6 +172,7 @@ class OAuth2Client(BaseClient):
             "password": self.password,
             "sign_in_selector": self.sign_in_selector,
             "elements": self.headless_elements,
+            "debug": self.debug,
         }
 
     @property

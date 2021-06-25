@@ -427,6 +427,7 @@ def sync(source_prefix, **kwargs):
 @click.option("-m", "--recipient-name", help="The recipient's name")
 @click.option("-c", "--copied-email", help="The cc'd email address")
 @click.option("-t", "--template-id", help="The Postmark template ID")
+@click.option("-e", "--debug", help="Debug mode", is_flag=True)
 @click.option("-d", "--dry-run/--no-dry-run", help="Perform a dry run", default=False)
 @click.option(
     "-p", "--prompt/--no-prompt", help="Prompt before sending email", default=False
