@@ -37,6 +37,7 @@ __AUTHOR__ = "Reuben Cummings"
 __AUTHOR_EMAIL__ = "rcummings@nerevu.com"
 
 DAYS_PER_MONTH = 30
+DAYS_PER_YEAR = 365
 SECRET_ENV = f"{__APP_NAME__}_SECRET".upper()
 HEROKU_PR_NUMBER = getenv("HEROKU_PR_NUMBER")
 HEROKU_TEST_RUN_ID = getenv("HEROKU_TEST_RUN_ID")
@@ -47,11 +48,14 @@ redis_config = get_cache_config(cache_type)
 get_path = lambda name: f"file://{p.join(PARENT_DIR, 'data', name)}"
 
 
-def get_seconds(seconds=0, months=0, **kwargs):
+def get_seconds(seconds=0, months=0, years=0, **kwargs):
     seconds = timedelta(seconds=seconds, **kwargs).total_seconds()
 
     if months:
         seconds += timedelta(DAYS_PER_MONTH).total_seconds() * months
+
+    if years:
+        seconds += timedelta(DAYS_PER_YEAR).total_seconds() * years
 
     return int(seconds)
 
