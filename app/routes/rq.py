@@ -13,7 +13,7 @@ from flask.views import MethodView
 from rq import Queue, get_current_job
 
 from config import Config
-from app.utils import jsonify, parse_kwargs
+from app.utils import jsonify, parse_kwargs, get_links
 from app.connection import conn
 
 if conn:
@@ -141,7 +141,7 @@ class Result(MethodView):
 
             json = {
                 "description": "Checks the `queue` or `job` status",
-                "links": list(get_links()),
+                "links": list(get_links(app.url_map.iter_rules())),
                 "result": result,
             }
 

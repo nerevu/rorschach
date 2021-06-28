@@ -35,7 +35,7 @@ class AWS(Resource):
 
 class Cloudfront(AWS):
     def __init__(self, *args, **kwargs):
-        super().__init__("cloudfront", *args, **kwargs)
+        super().__init__(*args, resource="cloudfront", **kwargs)
         self.client = self.session.client(self.resource)
 
 

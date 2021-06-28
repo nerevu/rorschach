@@ -7,14 +7,11 @@
 """
 from pathlib import Path
 from subprocess import check_output, CalledProcessError
-from datetime import time
 from time import sleep
 from sys import platform
 
 import pygogo as gogo
 
-from flask import current_app as app
-from app import cache
 from config import Config
 
 try:
@@ -105,18 +102,25 @@ def find_element_loop(browser, selector, count=0, max_retries=10):
     return elem
 
 
-def _headless_auth(redirect_url, prefix, chrome_path=None):
-    if prefix == "timely":
-        username_selector = "#email"
-        password_selector = "#password"
-        signin_selector = '[type="submit"]'
-    elif prefix == "xero":
-        username_selector = "#xl-form-email"
-        password_selector = "#xl-form-password"
-        signin_selector = "#xl-form-submit"
+def save_page(browser, page_name, with_html=True):
+    logger.debug(f"taking screenshot of {page_name}...")
+    browser.save_screenshot(f"{page_name}.png")
 
+    with open(f"{page_name}.html", "w") as f:
+        print(f"saving html of {page_name}...")
+        f.write(browser.page_source)
+
+
+def _headless_auth(redirect_url, prefix, username=None, password=None, **kwargs):
     options = Options()
     options.headless = True
+    chrome_path = kwargs["chrome_path"]
+    username_selector = kwargs["username_selector"]
+    password_selector = kwargs["password_selector"]
+    sign_in_selector = kwargs["sign_in_selector"]
+    elements = kwargs.get("elements") or []
+    debug = kwargs.get("debug")
+
     browser = webdriver.Chrome(executable_path=chrome_path, chrome_options=options)
 
     # navigate to auth page
@@ -126,53 +130,63 @@ def _headless_auth(redirect_url, prefix, chrome_path=None):
     #######################################################
     # TODO: Check to see if this is required when logging
     # in without a headless browser (might remember creds).
-    username = browser.find_element_by_css_selector(username_selector)
+    username_element = browser.find_element_by_css_selector(username_selector)
 
-    if username:
-        username.clear()
-        username.send_keys(app.config[f"{prefix}_USERNAME".upper()])
+    if username_element and username:
+        username_element.clear()
+        username_element.send_keys(username)
     else:
-        logger.error(f"Selector '{username_selector}' not found!")
+        if not username:
+            logger.error("No username supplied!")
 
-    password = browser.find_element_by_css_selector(password_selector)
+        if not username_element:
+            logger.error(f"Selector '{username_selector}' not found!")
 
-    if password:
-        password.clear()
-        password.send_keys(app.config[f"{prefix}_PASSWORD".upper()])
+    password_element = browser.find_element_by_css_selector(password_selector)
+
+    if password_element and password:
+        password_element.clear()
+        password_element.send_keys(password)
     else:
-        logger.error(f"Selector '{password_selector}' not found!")
+        if not password:
+            logger.error("No password supplied!")
 
-    sign_in = browser.find_element_by_css_selector(signin_selector)
+        if not password_selector:
+            logger.error(f"Selector '{password_selector}' not found!")
+
+    if debug:
+        save_page(browser, "1 - login")
+
+    sign_in = browser.find_element_by_css_selector(sign_in_selector)
 
     # TODO: why does it stall here for timero??
-    sign_in.click() if sign_in else logger.error(
-        f"Selector '{signin_selector}' not found!"
-    )
+    error_msg = f"Selector '{sign_in_selector}' not found!"
+    sign_in.click() if sign_in else logger.error(error_msg)
+
+    if debug:
+        save_page(browser, "2 - logged in")
     #######################################################
 
-    if prefix == "xero":
-        connect_selector = "#approveButton"
-        connect = find_element_loop(browser, connect_selector)
-        connect.click() if connect else logger.error(
-            f"Selector '{connect_selector}' not found!"
-        )
+    for pos, element in enumerate(elements):
+        selector = element["selector"]
+        el = find_element_loop(browser, selector)
+        error_msg = "'{description}' selector '{selector}' not found!"
+        el.click() if el else logger.error(error_msg.format(**element))
 
-        access_selector = "#approveButton"
-        access = find_element_loop(browser, access_selector)
-        access.click() if access else logger.error(
-            f"Selector '{access_selector}' not found!"
-        )
+        if debug:
+            save_page(browser, "{0} - {description}".format(pos + 3, **element))
 
+    # TODO: Error if there are any button elements on the page
     browser.close()
 
 
-def headless_auth(redirect_url, prefix):
-    authenticated = False
+def headless_auth(redirect_url, prefix, **kwargs):
+    failed = True
     operating_system = get_os()
     chrome_path = get_chromedriver_path(operating_system)
 
     try:
-        _headless_auth(redirect_url, prefix, chrome_path=chrome_path)
+        _headless_auth(redirect_url, prefix, chrome_path=chrome_path, **kwargs)
     except TypeError:
         logger.error("selenium not installed!")
     except WebDriverException as e:
@@ -183,7 +197,10 @@ def headless_auth(redirect_url, prefix):
     except AttributeError as e:
         logger.error(e)
     else:
-        authenticated = True
+        failed = False
+        logger.debug("Headless auth succeeded!")
     finally:
-        cache.set(f"{prefix}_restore_client", authenticated)
-        cache.set(f"{prefix}_headless_auth_failed", not authenticated)
+        if failed:
+            logger.error("Headless auth failed!")
+
+        return failed

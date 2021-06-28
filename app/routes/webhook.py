@@ -19,7 +19,7 @@ from flask.views import MethodView
 import pygogo as gogo
 
 from app.routes import ProviderMixin
-from app.utils import responsify, get_links, jsonify
+from app.utils import get_links, jsonify, parse_request
 
 # https://requests-oauthlib.readthedocs.io/en/latest/index.html
 # https://oauth-pythonclient.readthedocs.io/en/latest/index.html
@@ -41,6 +41,7 @@ class Webhook(ProviderMixin, MethodView):
         self.split_signature = kwargs.get("split_signature")
         self.b64_encode = kwargs.get("b64_encode")
         self.ignore_signature = kwargs.get("ignore_signature")
+        self.activities = kwargs.get("activities", {})
 
     # https://github.com/bloomberg/python-github-webhook
     # https://github.com/carlos-jenkins/python-github-webhooks
@@ -71,13 +72,35 @@ class Webhook(ProviderMixin, MethodView):
 
         return is_valid
 
-    def process_value(self, value):
-        action = self.actions.get(value)
-        return action(value) if action else {}
+    def process_value(self, value, activity_name=None, **kwargs):
+        action = self.actions.get(activity_name or value)
+        return action(value, **kwargs) if action else {}
 
-    def get(self):
-        json = {"description": f"The {self.prefix} webhook."}
+    def get(self, activity_name=None):
+        json = {
+            "description": f"The {self.prefix} webhook.",
+            "payload_key": self.payload_key,
+        }
+        action = self.actions.get(activity_name) if activity_name else None
 
+        if activity_name and action:
+            json["description"] = action.__doc__
+            json["activity"] = activity_name
+            json["action"] = action.__name__
+            json["kwargs"] = {}
+
+            for x in self.activities:
+                if x["name"] == activity_name:
+                    json["kwargs"].update(x.get("kwargs", {}))
+                    break
+
+            json["kwargs"].update(parse_request())
+
+        elif activity_name:
+            json["description"] = f"Activity {activity_name} doesn't exist!"
+            json["status_code"] = 404
+        else:
+            json["activities"] = list(self.actions)
         try:
             json["links"] = get_links(app.url_map.iter_rules())
         except RuntimeError:
@@ -85,23 +108,23 @@ class Webhook(ProviderMixin, MethodView):
 
         return jsonify(**json)
 
-    def post(self):
+    def post(self, activity_name=None):
         """ Respond to a Webhook post.
         """
-        mimetype = "application/json"
-
         if self.verified:
-            payload = request.get_json(force=True, silent=True) or {}
-            value = payload.get(self.payload_key)
+            payload = parse_request()
+            value = payload.get(self.payload_key) if self.payload_key else payload
 
-            if value is not None:
-                mimetype = "text/plain"
-                json = {"status_code": 200, "result": self.process_value(value)}
+            if value is None:
+                message = f"Invalid payload! Ensure key {self.payload_key} is present"
+                json = {"message": message, "status_code": 400}
             else:
-                json = {"message": "Invalid payload", "status_code": 400}
+                json = self.process_value(value, activity_name, **payload)
         elif self.payload_key:
-            json = {"message": "Invalid signature", "status_code": 401}
+            json = {"message": "Invalid signature!", "status_code": 401}
         else:
-            json = {"message": "Missing payload key", "status_code": 401}
+            json = {"message": "Missing payload key!", "status_code": 401}
 
-        return responsify(mimetype, **json)
+        json.pop("links", None)
+        json.pop("Attachments", None)
+        return jsonify(**json)

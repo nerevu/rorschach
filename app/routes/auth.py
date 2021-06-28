@@ -120,7 +120,7 @@ class Callback(BaseView):
 
 
 class Auth(BaseView):
-    def __init__(self, prefix=None):
+    def __init__(self, prefix):
         super().__init__(prefix)
 
         if self.client.oauth1:
@@ -227,7 +227,7 @@ class Resource(BaseView):
 
         return name
 
-    def __init__(self, prefix=None, resource=None, **kwargs):
+    def __init__(self, prefix, resource=None, **kwargs):
         """ An API Resource.
 
         Args:

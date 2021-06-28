@@ -37,6 +37,7 @@ __AUTHOR__ = "Reuben Cummings"
 __AUTHOR_EMAIL__ = "rcummings@nerevu.com"
 
 DAYS_PER_MONTH = 30
+DAYS_PER_YEAR = 365
 SECRET_ENV = f"{__APP_NAME__}_SECRET".upper()
 HEROKU_PR_NUMBER = getenv("HEROKU_PR_NUMBER")
 HEROKU_TEST_RUN_ID = getenv("HEROKU_TEST_RUN_ID")
@@ -47,11 +48,14 @@ redis_config = get_cache_config(cache_type)
 get_path = lambda name: f"file://{p.join(PARENT_DIR, 'data', name)}"
 
 
-def get_seconds(seconds=0, months=0, **kwargs):
+def get_seconds(seconds=0, months=0, years=0, **kwargs):
     seconds = timedelta(seconds=seconds, **kwargs).total_seconds()
 
     if months:
         seconds += timedelta(DAYS_PER_MONTH).total_seconds() * months
+
+    if years:
+        seconds += timedelta(DAYS_PER_YEAR).total_seconds() * years
 
     return int(seconds)
 
@@ -171,6 +175,9 @@ class Config(object):
                 "client_secret": getenv("TIMELY_SECRET"),
                 "username": getenv("TIMELY_USERNAME"),
                 "password": getenv("TIMELY_PASSWORD"),
+                "username_selector": "#email",
+                "password_selector": "#password",
+                "sign_in_selector": '[type="submit"]',
             },
         },
         # https://developer.xero.com/myapps/
@@ -197,6 +204,14 @@ class Config(object):
                     "files",
                     "assets",
                 ],
+                "username_selector": "#xl-form-email",
+                "password_selector": "#xl-form-password",
+                "sign_in_selector": "#xl-form-submit",
+                "headless_elements": [
+                    {"selector": "#approveButton", "description": "connect"},
+                    {"selector": "#approveButton", "description": "allow access"},
+                    {"selector": "#approveButton", "description": "select org"},
+                ],
             },
             "oauth1": {
                 "api_base_url": "https://api.xero.com",
@@ -205,6 +220,8 @@ class Config(object):
                 "token_url": "https://api.xero.com/oauth/AccessToken",
                 "client_id": getenv("XERO_CONSUMER_KEY"),
                 "client_secret": getenv("XERO_CONSUMER_SECRET"),
+                "username": getenv("XERO_USERNAME"),
+                "password": getenv("XERO_PASSWORD"),
                 "headers": {
                     "post": {"Content-Type": "application/x-www-form-urlencoded"},
                 },
@@ -251,7 +268,23 @@ class Config(object):
             "digest": "sha256",
             "b64_encode": True,
             "payload_key": "events",
-            "activities": {("new", "invoice"): "send_notification"},
+            "activities": [
+                {
+                    "name": "new_invoice",
+                    "action": "send_invoice_notification",
+                    "kwargs": {
+                        "sender_email": "billing@nerevu.com",
+                        "sender_name": "Nerevu Billing Team",
+                        "recipient_email": None,
+                        "recipient_name": None,
+                        "copied_email": None,
+                        "template_id": 9956182,
+                        "debug": False,
+                        "dry_run": False,
+                        "prompt": False,
+                    },
+                }
+            ],
         },
         "heroku": {
             "signature_header": "Heroku-Webhook-Hmac-SHA256",
@@ -260,16 +293,60 @@ class Config(object):
             "b64_encode": True,
             "payload_key": "action",
             "ignore_signature": True,
-            "methods": ["POST", "GET"],
-            "activities": {"update": "invalidate_cf_distribution"},
+            "activities": [{"name": "update", "action": "invalidate_cf_distribution"}],
         },
-        "timely": {
-            "payload_key": "",
-            "activities": {("new", "event"): "add_xero_time"},
-        },
-        "gsheets": {
-            "payload_key": "",
-            "activities": {("new", "row"): "add_xero_time"},
+        "timely": {"activities": [{"name": "new_event", "action": "add_xero_time"}]},
+        "gsheets": {"activities": [{"name": "new_row", "action": "add_xero_time"}]},
+        "nerevu": {
+            "payload_key": "resourceId",
+            "ignore_signature": True,
+            "activities": [
+                {
+                    "name": "new_invoice",
+                    "action": "send_invoice_notification",
+                    "kwargs": {
+                        "sender_email": "billing@nerevu.com",
+                        "sender_name": "Nerevu Billing Team",
+                        "recipient_email": "rcummings@nerevu.com",
+                        "recipient_name": "Reuben Cummings",
+                        "copied_email": "rcummings@nerevu.com",
+                        "template_id": 12058975,
+                        "debug": True,
+                        "dry_run": False,
+                        "prompt": True,
+                    },
+                },
+                {
+                    "name": "new_charge",
+                    "action": "send_invoice_notification",
+                    "kwargs": {
+                        "sender_email": "billing@nerevu.com",
+                        "sender_name": "Nerevu Billing Team",
+                        "recipient_email": "rcummings@nerevu.com",
+                        "recipient_name": "Reuben Cummings",
+                        "copied_email": "rcummings@nerevu.com",
+                        "template_id": 16342429,
+                        "debug": True,
+                        "dry_run": False,
+                        "prompt": True,
+                    },
+                },
+                {
+                    "name": "new_payment",
+                    "action": "send_payment_notification",
+                    "kwargs": {
+                        "sender_email": "billing@nerevu.com",
+                        "sender_name": "Nerevu Billing Team",
+                        "recipient_email": "rcummings@nerevu.com",
+                        "recipient_name": "Reuben Cummings",
+                        "copied_email": "rcummings@nerevu.com",
+                        "template_id": 9956182,
+                        "debug": True,
+                        "dry_run": False,
+                        "prompt": True,
+                    },
+                },
+            ],
         },
     }
 

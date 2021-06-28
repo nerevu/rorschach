@@ -9,6 +9,7 @@ from itertools import chain
 
 import pygogo as gogo
 
+from app import providers
 from app.mappings import POSITIONS
 from app.routes.auth import Resource, process_result
 from app.routes.webhook import Webhook
@@ -70,27 +71,32 @@ def get_position_user_ids(xero_task_name):
     return user_ids
 
 
-###########################################################################
-# METHODVIEW ROUTES
-###########################################################################
-class Status(Resource):
+class Timely(Resource):
     def __init__(self, *args, **kwargs):
-        super().__init__(PREFIX, "status", *args, **kwargs)
+        super().__init__(PREFIX, *args, **kwargs)
 
 
-class Projects(Resource):
+###########################################################################
+# Resources
+###########################################################################
+class Status(providers.Status):
+    def __init__(self, *args, **kwargs):
+        super().__init__(PREFIX, **kwargs)
+
+
+class Projects(Timely):
     def __init__(self, *args, **kwargs):
         kwargs["fields"] = ["id", "name", "active", "billable", "client", "budget"]
-        super().__init__(PREFIX, "projects", *args, **kwargs)
+        super().__init__(*args, resource="projects", **kwargs)
 
 
-class Users(Resource):
+class Users(Timely):
     def __init__(self, *args, **kwargs):
         kwargs["fields"] = ["id", "name"]
-        super().__init__(PREFIX, "users", *args, **kwargs)
+        super().__init__(*args, resource="users", **kwargs)
 
 
-class Tasks(Resource):
+class Tasks(Timely):
     def __init__(self, *args, **kwargs):
 
         kwargs.update(
@@ -100,14 +106,14 @@ class Tasks(Resource):
                 "rid_hook": self.hook,
             }
         )
-        super().__init__(PREFIX, "labels", *args, **kwargs)
+        super().__init__(*args, resource="labels", **kwargs)
 
     def hook(self):
         if self.rid:
             self.processor = process_result
 
 
-class Time(Resource):
+class Time(Timely):
     def __init__(self, *args, **kwargs):
         fields = [
             "id",
@@ -123,7 +129,7 @@ class Time(Resource):
         processor = events_processor
         filterer = events_filterer
         kwargs.update({"fields": fields, "processor": processor, "filterer": filterer})
-        super().__init__(PREFIX, "events", *args, **kwargs)
+        super().__init__(*args, resource="events", **kwargs)
 
     def set_patch_data(self):
         assert self.rid, ("No 'rid' given!", 500)
@@ -157,7 +163,7 @@ class Time(Resource):
         return data
 
 
-class ProjectTasks(Resource):
+class ProjectTasks(Timely):
     def __init__(self, *args, **kwargs):
         kwargs.update(
             {
@@ -167,7 +173,7 @@ class ProjectTasks(Resource):
                 "id_hook": self.hook,
             }
         )
-        super().__init__(PREFIX, "projects", *args, **kwargs)
+        super().__init__(*args, resource="projects", **kwargs)
 
     def project_tasks_processor(self, result, fields, **kwargs):
         tasks = Tasks(dictify=True)
@@ -181,7 +187,7 @@ class ProjectTasks(Resource):
             self.processor = self.project_tasks_processor
 
 
-class ProjectTime(Resource):
+class ProjectTime(Timely):
     def __init__(self, *args, **kwargs):
         kwargs.update(
             {
@@ -192,7 +198,7 @@ class ProjectTime(Resource):
             }
         )
 
-        super().__init__(PREFIX, "projects", *args, **kwargs)
+        super().__init__(*args, resource="projects", **kwargs)
 
 
 class Hooks(Webhook):

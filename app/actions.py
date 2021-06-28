@@ -9,18 +9,21 @@ from pathlib import Path
 
 import pygogo as gogo
 
+from flask import has_request_context
+
 from app.authclient import get_json_response
 from app.helpers import get_provider
 from app.utils import fetch_bool
 from app.providers.aws import Distribution
 from app.providers.postmark import Email
-from app.providers.xero import ProjectTime, EmailTemplate
+from app.providers.xero import ProjectTime, InvoiceEmailTemplate, PaymentEmailTemplate
 
 logger = gogo.Gogo(__name__, monolog=True).logger
 logger.propagate = False
 
 
 def add_xero_time(source_prefix, project_id=None, position=None, **kwargs):
+    """Creates Xero time entries from Timely"""
     xero_time = ProjectTime(
         dictify=True,
         event_pos=position,
@@ -52,6 +55,7 @@ def add_xero_time(source_prefix, project_id=None, position=None, **kwargs):
 
 
 def mark_billed(source_prefix, rid, **kwargs):
+    """Marks Xero and Timely time as billed"""
     provider = get_provider(source_prefix)
     time = provider.Time(dictify=True, rid=rid, **kwargs)
     data = time.get_patch_data()
@@ -75,37 +79,68 @@ def mark_billed(source_prefix, rid, **kwargs):
     return json
 
 
-def send_notification(invoice_id, prompt=False, **kwargs):
-    email_template = EmailTemplate(rid=invoice_id, **kwargs)
+def send_notification(template, resource_id, prompt=False, **kwargs):
+    """Sends an email notification to Xero clients via Postmark"""
+    email_template = template(rid=resource_id, **kwargs)
     client = email_template.client
+    json = None
+    pdf_path = None
 
-    if client.verified:
-        template_data = email_template.extract_model()
-        pdf_path = template_data["pdf"][0]
-        template_data["f"] = open(pdf_path, mode="rb")
-        email = Email(**kwargs)
-        data = email.get_post_data(**template_data)
-        answer = fetch_bool("Send email?") if prompt else "y"
+    if client and client.verified:
+        try:
+            template_data = email_template.extract_model()
+        except AssertionError as err:
+            message, status_code = err.args[0]
+            json = {"message": message, "ok": False, "status_code": status_code}
+        else:
+            pdf_path = template_data["pdf"][0]
+            template_data["f"] = open(pdf_path, mode="rb")
+            email = Email(**kwargs)
+            data = email.get_post_data(**template_data)
+
+            if prompt:
+                answer = "n" if has_request_context else fetch_bool("Send email?")
+            else:
+                answer = "y"
     else:
         answer = "n"
 
-    if answer == "y":
+    if json:
+        pass
+    elif answer == "y":
         response = email.post(**data)
         json = response.json
         json["message"] = json["result"]["Message"]
-    elif client.verified:
-        json = {
-            "message": "You canceled the notification.",
-            "ok": False,
-            "status_code": 400,
-        }
+    elif client and client.verified:
+        if has_request_context:
+            json = data
+        else:
+            json = {
+                "message": "You canceled the notification.",
+                "ok": False,
+                "status_code": 400,
+            }
     else:
-        json = get_json_response(None, email_template.client, **kwargs)
+        try:
+            json = get_json_response(None, email_template.client, **kwargs)
+        except AssertionError as err:
+            message, status_code = err.args[0]
+            json = {"message": message, "ok": False, "status_code": status_code}
 
-    if client.verified:
+    if client and client.verified and pdf_path:
         Path(pdf_path).unlink(missing_ok=True)
 
     return json
+
+
+def send_invoice_notification(invoice_id, **kwargs):
+    """Sends an invoice email notification to Xero clients via Postmark"""
+    return send_notification(InvoiceEmailTemplate, invoice_id, **kwargs)
+
+
+def send_payment_notification(payment_id, **kwargs):
+    """Sends a payment email notification to Xero clients via Postmark"""
+    return send_notification(PaymentEmailTemplate, payment_id, **kwargs)
 
 
 def invalidate_cf_distribution(action, **kwargs):

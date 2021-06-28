@@ -10,7 +10,7 @@ import pdb
 from inspect import getmembers, isclass
 from importlib import import_module
 from os import getenv
-from traceback import format_exc
+from traceback import format_exception
 from json.decoder import JSONDecodeError
 from logging import Formatter
 
@@ -46,7 +46,22 @@ if MAILGUN_DOMAIN and MAILGUN_SMTP_PASSWORD:
 
     hkwargs.update(mkwargs)
 
+
+def handleLoggingError(record=None, message=None, reason="Logging error."):
+    message = message or record.getMessage()
+    print(f"{reason} Make sure an SMTP server is running.")
+    print("Try running `sudo postfix start`.")
+    # # if this still doesn't work, try sending test email
+    # echo "Postfix test" | mail -s "Test  Postfix" rcummings@nerevu.com
+    # # check mail queue
+    # mailq
+    # # make sure postfix is correctly configured, clear queue, and try again
+    # # see ~/dotfiles/fastmail.cf
+    # postsuper -d ALL
+
+
 email_hdlr = gogo.handlers.email_hdlr(**hkwargs)
+email_hdlr.handleError = handleLoggingError
 
 
 def configure(flask_config, **kwargs):
@@ -107,9 +122,7 @@ def log(message=None, ok=True, r=None, exit_on_completion=False, **kwargs):
         try:
             _logger.error(message)
         except ConnectionRefusedError:
-            _logger.info("Connect refused. Make sure an SMTP server is running.")
-            _logger.info("Try running `sudo postfix start`.")
-            _logger.info(message)
+            handleLoggingError(message=message, reason="SMTP connect refused.")
 
     if exit_on_completion:
         exit(0 if ok else 1)
@@ -117,8 +130,15 @@ def log(message=None, ok=True, r=None, exit_on_completion=False, **kwargs):
         return ok
 
 
-def exception_hook(etype, value=None, tb=None, debug=False, callback=None, **kwargs):
-    message = format_exc() if kwargs.get("use_tb") else etype
+def exception_hook(etype, value, tb, debug=False, callback=None, **kwargs):
+    exception = format_exception(etype, value, tb)
+
+    try:
+        info, error = exception[-2:]
+    except ValueError:
+        info, error = "", exception[0]
+
+    message = f"Exception in:\n{info}\n{error}"
     log(message, ok=False)
 
     if debug:

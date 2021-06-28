@@ -20,13 +20,13 @@ from subprocess import call
 
 import pygogo as gogo
 
-from flask import make_response, request
+from flask import make_response, request, has_request_context
 from dateutil.relativedelta import relativedelta
 
 from riko.dotdict import DotDict
 from meza.fntools import CustomEncoder
 from meza.convert import records2csv
-from config import Config
+from config import Config, get_seconds
 
 from app import cache
 
@@ -144,7 +144,7 @@ def make_cache_key(*args, **kwargs):
     Returns:
         (obj): Flask request url
     """
-    mimetype = get_mimetype(request)
+    mimetype = get_mimetype()
     return f"{mimetype}:{request.full_path}"
 
 
@@ -176,42 +176,70 @@ def fmt_elapsed(elapsed):
             yield "%d %s" % (value, attr[:-1] if value == 1 else attr)
 
 
+def delete_cache(*args, cache_key=None, **kwargs):
+    if cache_key or has_request_context():
+        cache_key = cache_key or make_cache_key(False, *args, **kwargs)
+
+        if len(cache_key.split(":")) < 3:
+            # remove all downstream keys since they are also stale, e.g., all pages of
+            # a paginated route
+            cache.clear()
+            logger.info("All caches cleared!")
+        else:
+            cache.delete(cache_key)
+            logger.info(f"Deleted cache for {cache_key}!")
+    else:
+        cache.clear()
+        logger.info("All caches cleared!")
+
+
 # https://gist.github.com/glenrobertson/954da3acec84606885f5
 # http://stackoverflow.com/a/23115561/408556
 # https://github.com/pallets/flask/issues/637
-def cache_header(max_age, **ckwargs):
+def cache_header(max_age, versioned=False, refresh_period=0, **ckwargs):
     """
     Add Flask cache response headers based on max_age in seconds.
 
     If max_age is 0, caching will be disabled.
     Otherwise, caching headers are set to expire in now + max_age seconds
 
-    Examples:
-        >>> @app.route('/map')
-        ... @cache_header(60)
-        ... def index():
-        ...     return render_template('index.html')
+    Example usage:
+
+    @app.route('/map')
+    @cache_header(60)
+    def index():
+        return render_template('index.html')
 
     """
 
     def decorator(view):
-        f = cache.cached(max_age, **ckwargs)(view)
+        _max_age = get_seconds(years=1) if (max_age and versioned) else max_age
+        f = cache.cached(_max_age, **ckwargs)(view)
 
         @wraps(f)
         def wrapper(*args, **wkwargs):
             response = f(*args, **wkwargs)
-            response.cache_control.max_age = max_age
+            response.cache_control.max_age = _max_age
+            response.cache_control.s_maxage = get_seconds(years=1)
 
-            if max_age:
-                response.cache_control.public = True
-                extra = timedelta(seconds=max_age)
-                response.expires = response.last_modified + extra
+            if versioned:
+                response.cache_control.immutable = True
             else:
-                response.headers["Pragma"] = "no-cache"
+                # because some browsers don't respect the spec and treat no-cache like
+                # it was no-store (I'm looking at you chrome!)
                 response.cache_control.must_revalidate = True
-                response.cache_control.no_cache = True
-                response.cache_control.no_store = True
-                response.expires = "-1"
+
+            if _max_age and request.method == "GET":
+                extra = timedelta(seconds=_max_age)
+                response.expires = (response.last_modified or dt.utcnow()) + extra
+                response.cache_control.public = True
+                response.add_etag()
+
+                if refresh_period:
+                    # TODO: set stale-while-revalidate and stale-if-error
+                    pass
+            else:
+                response = _uncache_header(response)
 
             return response.make_conditional(request)
 
@@ -220,22 +248,24 @@ def cache_header(max_age, **ckwargs):
     return decorator
 
 
-def uncache_header(response):
+def _uncache_header(response, *args, **kwargs):
     """
     Removes Flask cache response headers
     """
+    response.cache_control.no_store = True
     response.cache_control.max_age = 0
     response.cache_control.public = False
-    response.headers["Pragma"] = "no-cache"
-    response.cache_control.must_revalidate = True
-    response.cache_control.no_cache = True
-    response.cache_control.no_store = True
     response.expires = response.last_modified or dt.utcnow()
     return response
 
 
+def uncache_header(response, *args, **kwargs):
+    delete_cache(*args, **kwargs)
+    return _uncache_header(response, *args, **kwargs)
+
+
 # http://flask.pocoo.org/snippets/45/
-def get_mimetype(request):
+def get_mimetype():
     best = request.accept_mimetypes.best_match(MIMETYPES)
 
     if not best:
@@ -418,9 +448,14 @@ def gen_config(app):
 
 
 def parse_request():
-    values = request.values or {}
-    json = request.json or {}
-    kwargs = {**values, **json}
+    args = request.args or {}
+    form = request.form or {}
+
+    if form and "json" not in get_mimetype():
+        form = loads(list(form)[0])
+
+    json = request.get_json(force=True, silent=True) or {}
+    kwargs = {**args, **form, **json}
     return {k: parse(v) for k, v in kwargs.items()}
 
 
