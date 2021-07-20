@@ -101,6 +101,7 @@ class Config(object):
     SEND_FILE_MAX_AGE_DEFAULT = ROUTE_TIMEOUT
     EMPTY_TIMEOUT = ROUTE_TIMEOUT * 10
     API_URL_PREFIX = "/v1"
+    API_URL = f"http://localhost:5000{API_URL_PREFIX}"
     SECRET_KEY = SECRET = getenv(SECRET_ENV, urandom(24))
     CHROME_DRIVER_VERSIONS = [None] + list(range(87, 77, -1))
 
@@ -169,7 +170,7 @@ class Config(object):
                 "authorization_base_url": "https://api.timelyapp.com/1.1/oauth/authorize",
                 "token_url": "https://api.timelyapp.com/1.1/oauth/token",
                 "refresh_url": "https://api.timelyapp.com/1.1/oauth/token",
-                "redirect_uri": "urn:ietf:wg:oauth:2.0:oob",
+                "redirect_uri": "/timely-callback",
                 "account_id": "777870",
                 "client_id": getenv("TIMELY_CLIENT_ID"),
                 "client_secret": getenv("TIMELY_SECRET"),
@@ -188,7 +189,7 @@ class Config(object):
                 "authorization_base_url": "https://login.xero.com/identity/connect/authorize",
                 "token_url": "https://identity.xero.com/connect/token",
                 "refresh_url": "https://identity.xero.com/connect/token",
-                "redirect_uri": f"http://localhost:5000{API_URL_PREFIX}/xero-callback",
+                "redirect_uri": "/xero-callback",
                 "domain": "projects",
                 "client_id": getenv("XERO_CLIENT_ID"),
                 "client_secret": getenv("XERO_SECRET"),
@@ -406,9 +407,6 @@ class Production(Config):
 class Heroku(Production):
     server_name = get_server_name(True)
     API_URL = f"https://{server_name}{Config.API_URL_PREFIX}"
-    AUTHENTICATION = Config.AUTHENTICATION
-    AUTHENTICATION["timely"]["oauth2"]["redirect_uri"] = f"{API_URL}/timely-callback"
-    AUTHENTICATION["xero"]["oauth2"]["redirect_uri"] = f"{API_URL}/xero-callback"
 
     if __PROD_SERVER__:
         SERVER_NAME = server_name
@@ -417,9 +415,6 @@ class Heroku(Production):
 class Custom(Production):
     server_name = get_server_name()
     API_URL = f"https://{server_name}{Config.API_URL_PREFIX}"
-    AUTHENTICATION = Config.AUTHENTICATION
-    AUTHENTICATION["timely"]["oauth2"]["redirect_uri"] = f"{API_URL}/timely-callback"
-    AUTHENTICATION["xero"]["oauth2"]["redirect_uri"] = f"{API_URL}/xero-callback"
 
     if __PROD_SERVER__:
         SERVER_NAME = server_name
@@ -441,12 +436,8 @@ class Development(Config):
 
 
 class Ngrok(Development):
-    # Xero localhost callbacks work fine
     server_name = "nerevu-api.ngrok.io"
     API_URL = f"https://{server_name}{Config.API_URL_PREFIX}"
-    AUTHENTICATION = Config.AUTHENTICATION
-    AUTHENTICATION["timely"]["oauth2"]["redirect_uri"] = f"{API_URL}/timely-callback"
-    AUTHENTICATION["xero"]["oauth2"]["redirect_uri"] = f"{API_URL}/xero-callback"
 
 
 class Test(Config):

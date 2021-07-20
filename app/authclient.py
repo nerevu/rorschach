@@ -527,7 +527,7 @@ class ServiceAuthClient(AuthClient):
         self.sheet_id = sheet_id
 
 
-def get_auth_client(prefix, state=None, **kwargs):
+def get_auth_client(prefix, state=None, API_URL="", **kwargs):
     auth_client_name = f"{prefix}_auth_client"
 
     if auth_client_name not in g:
@@ -553,6 +553,11 @@ def get_auth_client(prefix, state=None, **kwargs):
             MyAuthClient = BasicAuthClient
         else:
             MyAuthClient = AuthClient
+
+        redirect_uri = auth_kwargs.get("redirect_uri") or ""
+
+        if redirect_uri.startswith("/") and API_URL:
+            auth_kwargs["redirect_uri"] = f"{API_URL}{redirect_uri}"
 
         client = MyAuthClient(prefix, **auth_kwargs)
 
