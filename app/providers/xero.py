@@ -203,9 +203,9 @@ class Invoices(Xero):
 
         try:
             cced = next(
-                x["EmailAddress"] for x in contacts
-                if x.get("IncludeInEmails") and
-                x["EmailAddress"] != email
+                x["EmailAddress"]
+                for x in contacts
+                if x.get("IncludeInEmails") and x["EmailAddress"] != email
             )
         except StopIteration:
             cced = ""
@@ -271,9 +271,11 @@ class InvoiceEmailTemplate(EmailTemplate):
 
         online_invoices = OnlineInvoices(rid=self.id)
         online_invoice = online_invoices.extract_model()
+        def_name = "{FirstName} {LastName}".format(**customer)
+        name = def_name if self.recipient_name is None else self.recipient_name
 
         model = {
-            "contact_name": customer["FirstName"],
+            "contact_name": name.split(" ")[0],
             "reference": invoice["Reference"],
             "due": "{:,.2f}".format(due),
             "currency": invoice["CurrencyCode"],
@@ -288,11 +290,9 @@ class InvoiceEmailTemplate(EmailTemplate):
             "address": address,
         }
 
-        def_name = "{FirstName} {LastName}".format(**customer)
-
         result = {
             "model": model,
-            "name": def_name if self.recipient_name is None else self.recipient_name,
+            "name": name,
             "email": email,
             "copied_email": cced if self.copied_email is None else self.copied_email,
             "filename": "Nerevu Invoice {invoice_num}.pdf".format(**model),
@@ -329,9 +329,11 @@ class PaymentEmailTemplate(EmailTemplate):
 
         online_invoices = OnlineInvoices(rid=invoice_id)
         online_invoice = online_invoices.extract_model()
+        def_name = "{FirstName} {LastName}".format(**customer)
+        name = def_name if self.recipient_name is None else self.recipient_name
 
         model = {
-            "contact_name": customer["FirstName"],
+            "contact_name": name.split(" ")[0],
             "reference": invoice["Reference"],
             "paid": "{:,.2f}".format(paid),
             "currency": invoice["CurrencyCode"],
@@ -344,11 +346,9 @@ class PaymentEmailTemplate(EmailTemplate):
             "address": address,
         }
 
-        def_name = "{FirstName} {LastName}".format(**customer)
-
         result = {
             "model": model,
-            "name": def_name if self.recipient_name is None else self.recipient_name,
+            "name": name,
             "email": email,
             "copied_email": cced if self.copied_email is None else self.copied_email,
             "filename": "Nerevu Payment (Invoice {invoice_num}).pdf".format(**model),
