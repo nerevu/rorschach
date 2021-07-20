@@ -198,11 +198,15 @@ class Invoices(Xero):
 
         return address
 
-    def get_cc(self, ContactPersons=None, **customer):
+    def get_cc(self, email, ContactPersons=None, **customer):
         contacts = ContactPersons or []
 
         try:
-            cced = next(x["EmailAddress"] for x in contacts if x.get("IncludeInEmails"))
+            cced = next(
+                x["EmailAddress"] for x in contacts
+                if x.get("IncludeInEmails") and
+                x["EmailAddress"] != email
+            )
         except StopIteration:
             cced = ""
 
@@ -257,7 +261,8 @@ class InvoiceEmailTemplate(EmailTemplate):
         items = [self.get_line_item(**item) for item in invoice["LineItems"]]
         customer = invoice["Contact"]
         address = invoices.get_address(**customer)
-        cced = invoices.get_cc(**customer)
+        email = self.recipient_email or customer["EmailAddress"]
+        cced = invoices.get_cc(email, **customer)
         due_date = parse_date(invoice["DueDateString"])
         invoice_date = parse_date(invoice["DateString"])
         due = Decimal(invoice["AmountDue"])
@@ -288,7 +293,7 @@ class InvoiceEmailTemplate(EmailTemplate):
         result = {
             "model": model,
             "name": def_name if self.recipient_name is None else self.recipient_name,
-            "email": self.recipient_email or customer["EmailAddress"],
+            "email": email,
             "copied_email": cced if self.copied_email is None else self.copied_email,
             "filename": "Nerevu Invoice {invoice_num}.pdf".format(**model),
             "pdf": invoices.extract_model(headers={"Accept": "application/pdf"}),
@@ -317,7 +322,8 @@ class PaymentEmailTemplate(EmailTemplate):
         invoice_num = invoice[invoices.name_field]
         customer = invoice["Contact"]
         address = invoices.get_address(**customer)
-        cced = invoices.get_cc(**customer)
+        email = self.recipient_email or customer["EmailAddress"]
+        cced = invoices.get_cc(email, **customer)
         remaining = Decimal(invoice["AmountDue"])
         previous = paid + remaining
 
@@ -343,7 +349,7 @@ class PaymentEmailTemplate(EmailTemplate):
         result = {
             "model": model,
             "name": def_name if self.recipient_name is None else self.recipient_name,
-            "email": self.recipient_email or customer["EmailAddress"],
+            "email": email,
             "copied_email": cced if self.copied_email is None else self.copied_email,
             "filename": "Nerevu Payment (Invoice {invoice_num}).pdf".format(**model),
             "pdf": invoices.extract_model(headers={"Accept": "application/pdf"}),
