@@ -561,7 +561,12 @@ def get_auth_client(prefix, state=None, API_URL="", **kwargs):
 
         client = MyAuthClient(prefix, **auth_kwargs)
 
-        if client.restore_from_headless:
+        try:
+            restore_from_headless = client.restore_from_headless
+        except AttributeError:
+            restore_from_headless = False
+
+        if restore_from_headless:
             logger.debug("restoring client from headless session")
             client.restore()
             client.renew_token("headless")
