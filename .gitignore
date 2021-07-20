@@ -20,6 +20,7 @@ _mailinglist
 .cache/
 docs/_build/
 app.db
+screenshots/*
 
 # Coverage reports
 htmlcov/
