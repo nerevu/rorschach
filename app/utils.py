@@ -127,7 +127,12 @@ def parse(string):
         >>> parse('{"key": "value"}')
         {'key': 'value'}
     """
-    if string.lower() in {"true", "false"}:
+    try:
+        bool_string = string.lower() in {"true", "false"}
+    except AttributeError:
+        bool_string = False
+
+    if bool_string:
         parsed = loads(string.lower())
     else:
         try:
