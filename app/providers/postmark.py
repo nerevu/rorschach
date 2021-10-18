@@ -69,6 +69,7 @@ class Email(Postmark):
         assert email, ("You must provide an email address.", 400)
         self.recipient = f"{name} <{email}>" if name else email
         self.copied_recipient = kwargs.get("copied_email", "")
+        self.blind_copied_recipient = kwargs.get("blind_copied_email", "")
 
         self.tag = kwargs.get("tag")
         self.metadata = kwargs.get("metadata", {})
@@ -113,6 +114,7 @@ class Email(Postmark):
                 "From": self.sender,
                 "To": self.recipient,
                 "Cc": self.copied_recipient,
+                "Bcc": self.blind_copied_recipient,
                 "Tag": self.tag,
                 "TrackOpens": True,
                 "TrackLinks": "None",
@@ -138,6 +140,9 @@ class Email(Postmark):
 
             if self.copied_recipient:
                 message += f"  cc: {self.copied_recipient}\n"
+
+            if self.blind_copied_recipient:
+                message += f"  bcc: {self.blind_copied_recipient}\n"
 
             email_data.update(updates)
             logger.debug(message)

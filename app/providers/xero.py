@@ -234,6 +234,7 @@ class EmailTemplate(Xero):
         self.recipient_name = kwargs.get("recipient_name")
         self.recipient_email = kwargs.get("recipient_email")
         self.copied_email = kwargs.get("copied_email")
+        self.blind_copied_email = kwargs.get("blind_copied_email")
 
 
 class InvoiceEmailTemplate(EmailTemplate):
@@ -295,6 +296,7 @@ class InvoiceEmailTemplate(EmailTemplate):
             "name": name,
             "email": email,
             "copied_email": cced if self.copied_email is None else self.copied_email,
+            "blind_copied_email": self.blind_copied_email,
             "filename": "Nerevu Invoice {invoice_num}.pdf".format(**model),
             "pdf": invoices.extract_model(headers={"Accept": "application/pdf"}),
             "metadata": {"client-id": customer["ContactID"]},
@@ -351,6 +353,7 @@ class PaymentEmailTemplate(EmailTemplate):
             "name": name,
             "email": email,
             "copied_email": cced if self.copied_email is None else self.copied_email,
+            "blind_copied_email": self.blind_copied_email,
             "filename": "Nerevu Payment (Invoice {invoice_num}).pdf".format(**model),
             "pdf": invoices.extract_model(headers={"Accept": "application/pdf"}),
             "metadata": {"client-id": customer["ContactID"]},
