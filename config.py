@@ -269,23 +269,7 @@ class Config(object):
             "digest": "sha256",
             "b64_encode": True,
             "payload_key": "events",
-            "activities": [
-                {
-                    "name": "new_invoice",
-                    "action": "send_invoice_notification",
-                    "kwargs": {
-                        "sender_email": "billing@nerevu.com",
-                        "sender_name": "Nerevu Billing Team",
-                        "recipient_email": None,
-                        "recipient_name": None,
-                        "copied_email": None,
-                        "template_id": 9956182,
-                        "debug": False,
-                        "dry_run": False,
-                        "prompt": False,
-                    },
-                }
-            ],
+            "activities": [],
         },
         "heroku": {
             "signature_header": "Heroku-Webhook-Hmac-SHA256",
