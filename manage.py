@@ -143,21 +143,21 @@ def help(ctx):
 )
 @click.option(
     "-c",
-    "--collection",
+    "--collection-name",
     type=Choice(COLLECTION_NAMES, case_sensitive=False),
     default="users",
 )
-def prune(source_prefix, collection, **kwargs):
+def prune(source_prefix, collection_name, **kwargs):
     """Remove duplicated and outdated mappings entries"""
     provider = get_provider(source_prefix)
     added_names = set()
-    collection = collection.lower()
-    is_tasks = collection == "projecttasks"
+    collection_name = collection_name.lower()
+    is_tasks = collection_name == "projecttasks"
 
     project_tasks = provider.ProjectTasks(dictify=True, dry_run=True)
-    XeroCollection = get_collection("xero", collection)
+    XeroCollection = get_collection("xero", collection_name)
     mappings = XeroCollection(dictify=True, dry_run=True).mappings
-    COLLECTIONS = dict(gen_collections(collection))
+    COLLECTIONS = dict(gen_collections(collection_name))
 
     def gen_items():
         # if there are dupes, keep the most recent
