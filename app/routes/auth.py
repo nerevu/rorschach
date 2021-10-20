@@ -41,7 +41,6 @@ logger.propagate = False
 APP_DIR = Path(__file__).parents[1]
 DATA_DIR = APP_DIR.joinpath("data")
 MAPPINGS_DIR = APP_DIR.joinpath("mappings")
-PREFIX = Config.API_URL_PREFIX
 
 
 def process_result(result, fields=None, black_list=None, **kwargs):
@@ -57,9 +56,9 @@ def process_result(result, fields=None, black_list=None, **kwargs):
     return result
 
 
-def store(prefix, collection_name, *args, **kwargs):
+def store(prefix, collection_name, **kwargs):
     Collection = get_collection(prefix, collection_name)
-    collection = Collection(prefix, *args, **kwargs)
+    collection = Collection(prefix, **kwargs)
     response = collection.get(update_cache=True)
     json = response.json
 
@@ -70,7 +69,7 @@ def store(prefix, collection_name, *args, **kwargs):
 
 
 class BaseView(ProviderMixin, MethodView):
-    def __init__(self, prefix, **kwargs):
+    def __init__(self, prefix=None, **kwargs):
         super().__init__(prefix)
 
         self.START_PARMS = {
@@ -249,12 +248,12 @@ class Resource(BaseView):
             >>> kwargs = {"options": options}
             >>> qb_transactions = Resource("qb", "TransactionList", **kwargs)
         """
+        super().__init__(prefix, **kwargs)
         self.resource = resource
         self.subresource = kwargs.get("subresource", "")
         self.subresource_id = kwargs.get("subresource_id")
         self.lowered_resource = self.resource.lower()
         self.lowered_subresource = self.subresource.lower()
-        super().__init__(prefix, **kwargs)
 
         self.fields = kwargs.get("fields", [])
         self.map_factory = kwargs.get("map_factory", reg_mapper)

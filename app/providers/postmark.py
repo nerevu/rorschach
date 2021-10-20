@@ -20,22 +20,22 @@ PREFIX = __name__.split(".")[-1]
 
 
 class Postmark(Resource):
-    def __init__(self, *args, **kwargs):
-        super().__init__(PREFIX, *args, **kwargs)
+    def __init__(self, prefix=PREFIX, **kwargs):
+        super().__init__(prefix, **kwargs)
 
 
 ###########################################################################
 # Resources
 ###########################################################################
 class Domains(Postmark):
-    def __init__(self, *args, **kwargs):
+    def __init__(self, prefix=PREFIX, **kwargs):
         kwargs.update({"subkey": "Domains", "id_field": "ID", "name_field": "Name"})
         kwargs["subkey"] = "Domains"
-        super().__init__(*args, resource="domains", **kwargs)
+        super().__init__(prefix, resource="domains", **kwargs)
 
 
 class Templates(Postmark):
-    def __init__(self, *args, **kwargs):
+    def __init__(self, prefix=PREFIX, **kwargs):
         kwargs.update(
             {
                 "subkey": "Templates",
@@ -44,13 +44,13 @@ class Templates(Postmark):
                 "options": "count=100&offset=0",
             }
         )
-        super().__init__(*args, resource="templates", **kwargs)
+        super().__init__(prefix, resource="templates", **kwargs)
 
 
 class Email(Postmark):
-    def __init__(self, *args, template_id=None, **kwargs):
+    def __init__(self, prefix=PREFIX, template_id=None, **kwargs):
         kwargs.update({"id_field": "MessageID", "name_field": "To"})
-        super().__init__(*args, resource="email", **kwargs)
+        super().__init__(prefix, resource="email", **kwargs)
         admin = self.kwargs["admin"]
         sender_name = kwargs.get("sender_name") or admin.name
         sender_email = kwargs.get("sender_email") or admin.email

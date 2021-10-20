@@ -17,5 +17,5 @@ logger.propagate = False
 # Resources
 ###########################################################################
 class Status(Resource):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, resource="status", **kwargs)
+    def __init__(self, prefix, **kwargs):
+        super().__init__(prefix, resource="status", **kwargs)

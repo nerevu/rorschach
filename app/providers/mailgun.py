@@ -21,23 +21,23 @@ PREFIX = __name__.split(".")[-1]
 
 
 class Mailgun(Resource):
-    def __init__(self, *args, **kwargs):
-        super().__init__(PREFIX, *args, **kwargs)
+    def __init__(self, prefix=PREFIX, **kwargs):
+        super().__init__(prefix, **kwargs)
 
 
 ###########################################################################
 # Resources
 ###########################################################################
 class Domains(Mailgun):
-    def __init__(self, *args, **kwargs):
+    def __init__(self, prefix=PREFIX, **kwargs):
         kwargs.update({"subkey": "domain", "ignore_domain": True})
-        super().__init__(*args, resource="domains", **kwargs)
+        super().__init__(prefix, resource="domains", **kwargs)
 
 
 class EmailLists(Mailgun):
-    def __init__(self, *args, list_prefix=None, **kwargs):
+    def __init__(self, prefix=PREFIX, list_prefix=None, **kwargs):
         kwargs.update({"ignore_domain": True, "id_field": "address", "subkey": "list"})
-        super().__init__(*args, resource="lists", **kwargs)
+        super().__init__(prefix, resource="lists", **kwargs)
 
         def_list_prefix = self.kwargs.get("mailgun_list_prefix")
         self._list_prefix = None
@@ -61,9 +61,9 @@ class EmailLists(Mailgun):
 
 
 class EmailListMembers(EmailLists):
-    def __init__(self, *args, **kwargs):
+    def __init__(self, prefix=PREFIX, **kwargs):
         kwargs["subresource"] = "members"
-        super().__init__(*args, **kwargs)
+        super().__init__(prefix, **kwargs)
         self.subkey = "items" if self.rid else "list"
 
     def get_post_data(self, email=None, **kwargs):
@@ -78,9 +78,9 @@ class EmailListMembers(EmailLists):
 
 
 class Email(Mailgun):
-    def __init__(self, *args, **kwargs):
+    def __init__(self, prefix=PREFIX, **kwargs):
         kwargs["id_field"] = "MessageID"
-        super().__init__(*args, resource="messages", **kwargs)
+        super().__init__(prefix, resource="messages", **kwargs)
 
         self.lists = EmailLists(**kwargs)
         self.list_name = self.lists.list_name

@@ -29,8 +29,8 @@ PREFIX = Config.API_URL_PREFIX
 
 
 class ProviderMixin:
-    def __init__(self, prefix=None, **kwargs):
-        self.prefix = prefix
+    def __init__(self, prefix, **kwargs):
+        self.prefix = prefix or ""
         self.lowered = self.prefix.lower()
         self.is_timely = self.prefix == "timely"
         self.is_xero = self.prefix == "xero"

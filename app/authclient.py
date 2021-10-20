@@ -76,26 +76,33 @@ class BaseClient(object):
 
 
 class AuthClient(BaseClient):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def __init__(self, prefix=None, **kwargs):
+        super().__init__(prefix, **kwargs)
         self.auth_type = "other"
         self.verified = True
         self.expired = False
 
 
 class OAuth2Client(BaseClient):
-    def __init__(self, *args, client_id=None, client_secret=None, **kwargs):
-        super().__init__(*args, **kwargs)
+    def __init__(
+        self,
+        prefix=None,
+        client_id=None,
+        client_secret=None,
+        refresh_url=None,
+        **kwargs,
+    ):
+        super().__init__(prefix, **kwargs)
         self.auth_type = "oauth2"
         self.client_id = client_id
         self.client_secret = client_secret
+        self.refresh_url = refresh_url
         self.access_token = None
         self.refresh_token = None
         self.oauth_session = None
 
         self.scope = kwargs.get("scope", "")
         self.authorization_base_url = kwargs.get("authorization_base_url")
-        self.refresh_url = kwargs["refresh_url"]
         self.revoke_url = kwargs.get("revoke_url")
         self.redirect_uri = kwargs.get("redirect_uri")
         self.token_url = kwargs.get("token_url")
@@ -364,8 +371,8 @@ class OAuth2Client(BaseClient):
 
 
 class OAuth1Client(AuthClient):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def __init__(self, prefix=None, **kwargs):
+        super().__init__(prefix, **kwargs)
         self.auth_type = "oauth1"
         self.request_url = kwargs["request_url"]
         self.verified = False
@@ -508,15 +515,15 @@ class OAuth1Client(AuthClient):
 
 
 class BasicAuthClient(AuthClient):
-    def __init__(self, *args, username=None, password=None, **kwargs):
-        super().__init__(*args, **kwargs)
+    def __init__(self, prefix=None, username=None, password=None, **kwargs):
+        super().__init__(prefix, **kwargs)
         self.auth_type = "basic"
         self.auth = (username, password)
 
 
 class ServiceAuthClient(AuthClient):
-    def __init__(self, *args, keyfile_path=None, sheet_id=None, **kwargs):
-        super().__init__(*args, **kwargs)
+    def __init__(self, prefix=None, keyfile_path=None, sheet_id=None, **kwargs):
+        super().__init__(prefix, **kwargs)
         p = Path(keyfile_path)
         credentials = ServiceAccountCredentials.from_json_keyfile_name(
             p.resolve(), self.scope
