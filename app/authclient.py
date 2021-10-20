@@ -272,7 +272,6 @@ class OAuth2Client(BaseClient):
             self.error = ""
 
         self.token = token
-
         return token
 
     def update_token(self, token):
@@ -349,6 +348,7 @@ class OAuth2Client(BaseClient):
 
     def save(self):
         logger.debug(f"saving {self}")
+
         try:
             def_state = session.get(f"{self.prefix}_state")
         except RuntimeError:
