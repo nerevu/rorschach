@@ -2,35 +2,28 @@
   {
     "name": "1 Hour Research (Consultant)",
     "projectId": "15ff819d-6d69-406c-98c5-ed9ab9163779",
-    "rate.value": 0.0,
+    "rate.value": 68.0,
     "status": "ACTIVE",
     "taskId": "cbd8f1be-d627-446b-8f0a-8cfc01adef85"
   },
   {
     "name": "1 Hour Development (Developer)",
     "projectId": "15ff819d-6d69-406c-98c5-ed9ab9163779",
-    "rate.value": 0.0,
+    "rate.value": 68.0,
     "status": "ACTIVE",
     "taskId": "98929c61-8a38-4c32-8557-8f83f24f3d93"
   },
   {
-    "name": "1 Hour Consulting (Consultant)",
-    "projectId": "15ff819d-6d69-406c-98c5-ed9ab9163779",
-    "rate.value": 0.0,
-    "status": "ACTIVE",
-    "taskId": "aa0c83d1-684c-4587-ae96-65082d936473"
-  },
-  {
     "name": "1 Hour Design (Creative Director)",
     "projectId": "15ff819d-6d69-406c-98c5-ed9ab9163779",
-    "rate.value": 0.0,
+    "rate.value": 130.0,
     "status": "ACTIVE",
     "taskId": "6c6c3b7c-ac65-4045-97dc-84ec7964c049"
   },
   {
     "name": "1 Hour Research (Partner)",
     "projectId": "15ff819d-6d69-406c-98c5-ed9ab9163779",
-    "rate.value": 0.0,
+    "rate.value": 130.0,
     "status": "ACTIVE",
     "taskId": "59cc68a0-359d-4a8f-aecf-5274b98a3793"
   },
@@ -51,14 +44,14 @@
   {
     "name": "1 Hour Development (Technical Director)",
     "projectId": "15ff819d-6d69-406c-98c5-ed9ab9163779",
-    "rate.value": 0.0,
+    "rate.value": 150.0,
     "status": "ACTIVE",
     "taskId": "434e06ff-b033-4528-afe4-33c0ed3280a4"
   },
   {
     "name": "1 Hour Consulting (Partner)",
     "projectId": "15ff819d-6d69-406c-98c5-ed9ab9163779",
-    "rate.value": 0.0,
+    "rate.value": 150.0,
     "status": "ACTIVE",
     "taskId": "d476ebf4-5b32-4b15-bd79-135489cee0be"
   },

@@ -12,26 +12,5 @@
     "rate.value": 0.0,
     "status": "ACTIVE",
     "taskId": "1ccdeb65-f040-4b45-9a3c-be36aa50a1a5"
-  },
-  {
-    "name": "Deep Fryer",
-    "projectId": "f9d0e04b-f07c-423d-8975-418159180dab",
-    "rate.value": 99.99,
-    "status": "ACTIVE",
-    "taskId": "9e767fbe-7ac6-4dd0-95e1-d7dbe2f7fee0"
-  },
-  {
-    "name": "Deep Fryer",
-    "projectId": "f9d0e04b-f07c-423d-8975-418159180dab",
-    "rate.value": 99.99,
-    "status": "ACTIVE",
-    "taskId": "8d38f51e-b79d-4bc3-850a-9576cbee49fb"
-  },
-  {
-    "name": "1 Hour Internal Work (Non-Billable)",
-    "projectId": "f9d0e04b-f07c-423d-8975-418159180dab",
-    "rate.value": 0.0,
-    "status": "ACTIVE",
-    "taskId": "ed9d0041-3680-4011-a24a-a20e72210864"
   }
 ]

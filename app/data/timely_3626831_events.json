@@ -1,0 +1,52 @@
+[
+  {
+    "billed": false,
+    "day": "2021-08-06",
+    "duration.total_minutes": 15,
+    "id": 198406388,
+    "label_id": 1339640,
+    "note": "Accounting Consulting support services for IEMA | Fastmail",
+    "project.id": 3626831,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2021-08-04",
+    "duration.total_minutes": 206,
+    "id": 198405985,
+    "label_id": 1339640,
+    "note": "Accounting Consulting Support Services RFP FINAL 7 28.docx • Cummings, Reuben - Resume (complete).pages • IEMA Projects 2 by Nerevu Group.pages • Resume vC.doc [Compatibility Mode] • Accounting Consulting support services for IEMA | Fastmail • IEMA Related Projects by Nerevu Group.pages • Respons...",
+    "project.id": 3626831,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2021-08-01",
+    "duration.total_minutes": 99,
+    "id": 196454336,
+    "label_id": 1339640,
+    "note": "Accounting Consulting Support Services RFP FINAL 7 28.docx • Fwd: RFP-93549 - Accounting Consulting support services for IEMA | Fastmail • Airtable • Calendar • Resource Task Entry Form",
+    "project.id": 3626831,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2021-07-30",
+    "duration.total_minutes": 30,
+    "id": 195516100,
+    "label_id": 1339640,
+    "note": "Phone call, Peoria, IL to Springfield, IL • Facebook • peoria_limited-jul.pdf",
+    "project.id": 3626831,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2021-07-29",
+    "duration.total_minutes": 39,
+    "id": 195516048,
+    "label_id": 1339640,
+    "note": "Microsoft Access 2016 - Tutorial for Beginners [+ General Overview]* • Microsoft Access 2016: Macros • Microsoft Access - Modules and User Defined Functions 01 • Accounting Consulting Support Services RFP FINAL 7 28.docx • BidBuy • Finder • Welcome!",
+    "project.id": 3626831,
+    "user.id": 933370
+  }
+]

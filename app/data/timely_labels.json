@@ -27,7 +27,7 @@
   {
     "billable": true,
     "id": 1344449,
-    "name": "Research (specific: via blogs, documentation, company sites, etc.)"
+    "name": "Research (specific: via blogs, documentation, advisors, company sites, etc.)"
   },
   {
     "billable": false,
@@ -37,7 +37,7 @@
   {
     "billable": false,
     "id": 1339639,
-    "name": "Admin (meetings, time tracking, email, calendar, organizing, paperwork, etc.)"
+    "name": "Admin (time tracking, email, calendar, organizing, paperwork, etc.)"
   },
   {
     "billable": false,
@@ -52,17 +52,17 @@
   {
     "billable": false,
     "id": 1344451,
-    "name": "Evaluating (selecting internal tools and services)"
+    "name": "Evaluating (selecting tools and services)"
   },
   {
     "billable": false,
     "id": 1344452,
-    "name": "Marketing/PR (blogging, social media, etc.)"
+    "name": "Marketing/PR (blogging, social media, ads, etc.)"
   },
   {
     "billable": false,
     "id": 1344464,
-    "name": "Learning (general: via articles, books, tutorials, courses, etc.)"
+    "name": "Learning (general: via articles, books, mentor/advisor sessions, tutorials, courses, etc.)"
   },
   {
     "billable": false,
@@ -72,7 +72,7 @@
   {
     "billable": false,
     "id": 1344521,
-    "name": "HR (benefits, contracts, payroll, etc.)"
+    "name": "HR (benefits, contracts, payroll, hiring, etc.)"
   },
   {
     "billable": false,
@@ -87,6 +87,11 @@
   {
     "billable": false,
     "id": 1469676,
-    "name": "Market Research (obvious...)"
+    "name": "Market Research (talking to customers/competitors/partners)"
+  },
+  {
+    "billable": false,
+    "id": 2173031,
+    "name": "Meetings (staff meetings, interviews, etc.)"
   }
 ]

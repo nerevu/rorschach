@@ -1,12 +1,5 @@
 [
   {
-    "name": "1 Hour Development (Developer)",
-    "projectId": "34a6629c-6902-4436-881c-b909a285b8bd",
-    "rate.value": 68.0,
-    "status": "ACTIVE",
-    "taskId": "a7c9d6b3-b3ba-4c9f-9181-04fff9317036"
-  },
-  {
     "name": "1 Hour Research (Consultant)",
     "projectId": "34a6629c-6902-4436-881c-b909a285b8bd",
     "rate.value": 68.0,
@@ -14,10 +7,17 @@
     "taskId": "977fd631-be38-4462-a215-bd7eda8901e9"
   },
   {
-    "name": "1 Hour Development (Developer)",
+    "name": "1 Hour Client Work (Non-Billable)",
     "projectId": "34a6629c-6902-4436-881c-b909a285b8bd",
-    "rate.value": 68.0,
+    "rate.value": 0.0,
     "status": "ACTIVE",
-    "taskId": "a7c9d6b3-b3ba-4c9f-9181-04fff9317036"
+    "taskId": "78ffc022-c213-46ea-94a3-b26cc810137d"
+  },
+  {
+    "name": "1 Hour Development (Technical Director)",
+    "projectId": "34a6629c-6902-4436-881c-b909a285b8bd",
+    "rate.value": 130.0,
+    "status": "ACTIVE",
+    "taskId": "e20c1924-eeec-4afe-aac7-450dbf1799d1"
   }
 ]

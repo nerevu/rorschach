@@ -1,1 +1,212 @@
-[]
+[
+  {
+    "billed": false,
+    "day": "2021-08-11",
+    "duration.total_minutes": 20,
+    "id": 196222221,
+    "label_id": 1339639,
+    "note": "• Set up Bitwarden, Gusto, Fastmail\n• Began to go through the Nerevu Employee Handbook",
+    "project.id": 2954247,
+    "user.id": 2014349
+  },
+  {
+    "billed": false,
+    "day": "2021-08-12",
+    "duration.total_minutes": 28,
+    "id": 196225694,
+    "label_id": 1339639,
+    "note": "•  Headshot + Bio",
+    "project.id": 2954247,
+    "user.id": 2014349
+  },
+  {
+    "billed": false,
+    "day": "2021-09-21",
+    "duration.total_minutes": 96,
+    "id": 202320740,
+    "label_id": 1340560,
+    "note": "Airtable • Nerevu • Fastmail • Bitwarden Web Vault",
+    "project.id": 2954247,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2021-09-08",
+    "duration.total_minutes": 41,
+    "id": 202310117,
+    "label_id": 1344521,
+    "note": "Mass.gov • Complete Form I-9 for remote employees • Gusto",
+    "project.id": 2954247,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2021-09-07",
+    "duration.total_minutes": 36,
+    "id": 202309891,
+    "label_id": 1339636,
+    "note": "Authy Desktop • Gusto • Bitwarden • Bitwarden Web Vault",
+    "project.id": 2954247,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2021-09-06",
+    "duration.total_minutes": 165,
+    "id": 202305786,
+    "label_id": 1339636,
+    "note": "Bitwarden Web Vault • Authy vs Google Authenticator? : degoogle • Authy Desktop • Authy • Ars Technica • Bitwarden • Finder",
+    "project.id": 2954247,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2021-09-30",
+    "duration.total_minutes": 150,
+    "id": 201421945,
+    "label_id": 1344464,
+    "note": "Stories that Stick",
+    "project.id": 2954247,
+    "user.id": 2014908
+  },
+  {
+    "billed": false,
+    "day": "2021-09-29",
+    "duration.total_minutes": 120,
+    "id": 201421442,
+    "label_id": 1344464,
+    "note": "Stories that Stick",
+    "project.id": 2954247,
+    "user.id": 2014908
+  },
+  {
+    "billed": false,
+    "day": "2021-09-28",
+    "duration.total_minutes": 120,
+    "id": 201419638,
+    "label_id": 1344464,
+    "note": "Read stories that stick ",
+    "project.id": 2954247,
+    "user.id": 2014908
+  },
+  {
+    "billed": false,
+    "day": "2021-09-27",
+    "duration.total_minutes": 60,
+    "id": 200724479,
+    "label_id": 1344464,
+    "note": "Downloaded and began Stories that Stick via Hoopla (free through library network)",
+    "project.id": 2954247,
+    "user.id": 2014908
+  },
+  {
+    "billed": false,
+    "day": "2021-09-24",
+    "duration.total_minutes": 60,
+    "id": 200577888,
+    "label_id": 1339639,
+    "note": "Calendar Set-up ",
+    "project.id": 2954247,
+    "user.id": 2014908
+  },
+  {
+    "billed": false,
+    "day": "2021-09-22",
+    "duration.total_minutes": 180,
+    "id": 200577873,
+    "label_id": 1344464,
+    "note": "GTD - Finished and continued Fastmail changes",
+    "project.id": 2954247,
+    "user.id": 2014908
+  },
+  {
+    "billed": false,
+    "day": "2021-09-09",
+    "duration.total_minutes": 15,
+    "id": 199108718,
+    "label_id": 1339639,
+    "note": "Set up 2FA (https://bitwarden.com/help/article/setup-two-step-login-authenticator/)",
+    "project.id": 2954247,
+    "user.id": 2014908
+  },
+  {
+    "billed": false,
+    "day": "2021-09-08",
+    "duration.total_minutes": 20,
+    "id": 199084506,
+    "label_id": 1339639,
+    "note": "Bio ",
+    "project.id": 2954247,
+    "user.id": 2014908
+  },
+  {
+    "billed": false,
+    "day": "2021-09-09",
+    "duration.total_minutes": 60,
+    "id": 199083872,
+    "label_id": 0,
+    "note": "Meeting with Reuben",
+    "project.id": 2954247,
+    "user.id": 2014908
+  },
+  {
+    "billed": false,
+    "day": "2021-08-18",
+    "duration.total_minutes": 35,
+    "id": 198413734,
+    "label_id": 2173031,
+    "note": "Dialpad Meetings",
+    "project.id": 2954247,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2021-08-17",
+    "duration.total_minutes": 24,
+    "id": 198411482,
+    "label_id": 1339639,
+    "note": "WEI Folder - Master Password | Fastmail • Calendar • Your Google Account password for Nerevu Group, LLC has been reset by your administrator | Fastmail • Admin Console",
+    "project.id": 2954247,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2021-08-16",
+    "duration.total_minutes": 101,
+    "id": 198411078,
+    "label_id": 2173031,
+    "note": "Dialpad Meetings • Airtable • Timely • Admin Console",
+    "project.id": 2954247,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2021-08-13",
+    "duration.total_minutes": 142,
+    "id": 198410978,
+    "label_id": 1339639,
+    "note": "Fastmail • Jake Hamann • Airtable • nvALT • Interview questions template — Cheer Up Marketing",
+    "project.id": 2954247,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2021-08-12",
+    "duration.total_minutes": 312,
+    "id": 198408987,
+    "label_id": 1339639,
+    "note": "Data Hub • HubSpot Case Study Templates • Case Studies • Download Now • Admin Console • Airtable • Timely • Finder • Google Drive Help • ExpertDashboard • nvALT • OmniFocus",
+    "project.id": 2954247,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2021-08-11",
+    "duration.total_minutes": 127,
+    "id": 198408873,
+    "label_id": 1339639,
+    "note": "Airtable • Calendar • Cloze • Fastmail • Gusto • OmniFocus • Welcome to the Nerevu Employee Handbook! — Nerevu Handbook 1.0.0 documentation • Timely",
+    "project.id": 2954247,
+    "user.id": 933370
+  }
+]

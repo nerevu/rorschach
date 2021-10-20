@@ -1,0 +1,172 @@
+[
+  {
+    "billed": false,
+    "day": "2021-09-14",
+    "duration.total_minutes": 126,
+    "id": 202313558,
+    "label_id": 1344445,
+    "note": "Centricity Server Information.xlsx • ConnectWise Control Client • SQL_Database_Information.xlsx • Sublime Text • Fastmail • New project | Fastmail",
+    "project.id": 3462020,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2021-09-08",
+    "duration.total_minutes": 47,
+    "id": 202310052,
+    "label_id": 1344445,
+    "note": "ConnectWise Control Client • Ticket#518760/Prairie Spine Pain Inst/Prairie Database access and extraction - PSPI -- has been updated | Fastmail • Centricity Server Information.xlsx • FW: GE Centricity Spreadsheet | Fastmail • Fastmail",
+    "project.id": 3462020,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2021-09-03",
+    "duration.total_minutes": 42,
+    "id": 202302640,
+    "label_id": 1344445,
+    "note": "Centricity Server Information.xlsx • Fastmail • Shortcut: ⌘↵",
+    "project.id": 3462020,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2021-08-26",
+    "duration.total_minutes": 40,
+    "id": 198416679,
+    "label_id": 1344445,
+    "note": "ConnectWise Control Client • Fastmail • Prarie Spine PRM updates | Fastmail • FW: PRM Workflow | Fastmail",
+    "project.id": 3462020,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2021-08-24",
+    "duration.total_minutes": 12,
+    "id": 198416512,
+    "label_id": 1344431,
+    "note": "ConnectWise Control Client",
+    "project.id": 3462020,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2021-08-23",
+    "duration.total_minutes": 38,
+    "id": 198416320,
+    "label_id": 1344431,
+    "note": "Prarie Spine PRM assistance | Fastmail • ConnectWise Control Client • Fastmail",
+    "project.id": 3462020,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2021-08-20",
+    "duration.total_minutes": 9,
+    "id": 198414088,
+    "label_id": 1344445,
+    "note": "Prarie Spine PRM assistance | Fastmail",
+    "project.id": 3462020,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2021-08-17",
+    "duration.total_minutes": 30,
+    "id": 198411383,
+    "label_id": 1344431,
+    "note": "ConnectWise Control Client • Prarie Spine PRM assistance | Fastmail • Fastmail",
+    "project.id": 3462020,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2021-08-16",
+    "duration.total_minutes": 58,
+    "id": 198411057,
+    "label_id": 1344431,
+    "note": "extract data from surescripts document management at DuckDuckGo • Google Search • Fastmail • ConnectWise Control Client",
+    "project.id": 3462020,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2021-08-14",
+    "duration.total_minutes": 230,
+    "id": 198411026,
+    "label_id": 1344431,
+    "note": "Calling other PowerShell scripts within a PowerShell script • powershell - Create directory if it does not exist • powershell Invoke-Expression foreach at DuckDuckGo • powershell - Invoke-Expression in foreach • Invoke-Expression: The Universal PowerShell Executor Cmdlet • Database Administrators...",
+    "project.id": 3462020,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2021-08-13",
+    "duration.total_minutes": 296,
+    "id": 198410961,
+    "label_id": 1344431,
+    "note": "ConnectWise Control Client • Sublime Text • mssql export binary data at DuckDuckGo • sql server - Exporting binary file data (images) from SQL via a stored procedure • powershell export binary data at DuckDuckGo • Basic Examples | Notes on SQL • TechNet Wiki • Microsoft Docs • Finder • Unix & Lin...",
+    "project.id": 3462020,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2021-08-12",
+    "duration.total_minutes": 139,
+    "id": 198408960,
+    "label_id": 1344431,
+    "note": "ConnectWise Control Client • ConnectWise Control Remote Support Software • gHacks Tech News • windows - Text editor to open big (giant, huge, large) text files • Activity Monitor • Download • Parallels Desktop • Sublime Text",
+    "project.id": 3462020,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2021-08-10",
+    "duration.total_minutes": 32,
+    "id": 198408745,
+    "label_id": 1344431,
+    "note": "ConnectWise Control Client",
+    "project.id": 3462020,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2021-08-09",
+    "duration.total_minutes": 230,
+    "id": 198408245,
+    "label_id": 1344431,
+    "note": "ConnectWise Control Client • Fastmail • Calendar • Database.Guide • Import / Export database with SQL Server Server Management Studio • Prairie Database access and extraction | Fastmail • Sublime Text",
+    "project.id": 3462020,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2021-08-04",
+    "duration.total_minutes": 142,
+    "id": 198403658,
+    "label_id": 1344431,
+    "note": "ConnectWise Control Client • Fastmail • Dialpad Meetings • New meeting: Call (30m) with Colleen Ingraham on Wednesday, August 4, 2021 | Fastmail • FW: PRM Workflow | Fastmail",
+    "project.id": 3462020,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2021-07-29",
+    "duration.total_minutes": 172,
+    "id": 195513217,
+    "label_id": 1344431,
+    "note": "Ticket#518760/Prairie Spine Pain Inst/Prairie Database access and extraction - PSPI -- has been updated | Fastmail • ConnectWise Control Client • ConnectWise Control Remote Support Software • Can you export data from Centricity Practice Solution 12? : healthIT • Connecting to Centricity Practice ...",
+    "project.id": 3462020,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2021-07-22",
+    "duration.total_minutes": 19,
+    "id": 195513131,
+    "label_id": 1339640,
+    "note": "Fastmail • Prairie Data transfer project | Fastmail",
+    "project.id": 3462020,
+    "user.id": 933370
+  }
+]

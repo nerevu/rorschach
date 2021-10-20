@@ -1,0 +1,50 @@
+[
+  {
+    "dateEnteredUtc": "2021-09-03T21:57:29.4538565Z",
+    "dateUtc": "2021-08-31T05:00:00Z",
+    "day": "2021-08-31",
+    "description": "Meetings",
+    "duration": 38,
+    "projectId": "3ef944e3-1cc1-4489-9385-3fdc9d4a3a63",
+    "status": "INVOICED",
+    "taskId": "88c368e1-9085-4798-a748-a5de806e230e",
+    "timeEntryId": "80af7f30-9d43-4a97-90cb-eae04fe40633",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  },
+  {
+    "dateEnteredUtc": "2021-09-03T21:58:14.2502046Z",
+    "dateUtc": "2021-08-31T05:00:00Z",
+    "day": "2021-08-31",
+    "description": "Template conversion",
+    "duration": 4901,
+    "projectId": "3ef944e3-1cc1-4489-9385-3fdc9d4a3a63",
+    "status": "INVOICED",
+    "taskId": "e4e5b1cd-d624-458e-9298-67c5e06a3ca5",
+    "timeEntryId": "9851e7a8-d974-4bdc-8082-5a14f84d0a82",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  },
+  {
+    "dateEnteredUtc": "2021-10-13T14:36:34.593854Z",
+    "dateUtc": "2021-09-30T05:00:00Z",
+    "day": "2021-09-30",
+    "description": "Sept Hours",
+    "duration": 2646,
+    "projectId": "3ef944e3-1cc1-4489-9385-3fdc9d4a3a63",
+    "status": "INVOICED",
+    "taskId": "e4e5b1cd-d624-458e-9298-67c5e06a3ca5",
+    "timeEntryId": "15a5a851-9295-4b88-ae7c-dde32f8fe62e",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  },
+  {
+    "dateEnteredUtc": "2021-10-13T14:36:52.1328082Z",
+    "dateUtc": "2021-09-30T05:00:00Z",
+    "day": "2021-09-30",
+    "description": "Sept Hours",
+    "duration": 77,
+    "projectId": "3ef944e3-1cc1-4489-9385-3fdc9d4a3a63",
+    "status": "INVOICED",
+    "taskId": "88c368e1-9085-4798-a748-a5de806e230e",
+    "timeEntryId": "93fd8bf5-ca77-4d20-9888-3a3d6d50cd35",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  }
+]

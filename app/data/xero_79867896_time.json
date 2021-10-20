@@ -1,14 +1,1 @@
-[
-  {
-    "dateEnteredUtc": "2020-06-25T16:29:40.5628505Z",
-    "dateUtc": "2020-04-27T12:00:00Z",
-    "day": "2020-04-27",
-    "description": "Issue organization",
-    "duration": 6,
-    "projectId": "79867896-5504-4215-9a1a-8f9ca45ac7ec",
-    "status": "ACTIVE",
-    "taskId": "3b674ca9-5b3d-4685-a6c3-818f62ff7219",
-    "timeEntryId": "168ee521-11a9-4655-a3af-2e0f528282a5",
-    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
-  }
-]
+[]
