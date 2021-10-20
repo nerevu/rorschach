@@ -40,12 +40,7 @@ class Domains(Postmark):
 class Templates(Postmark):
     def __init__(self, prefix=PREFIX, **kwargs):
         kwargs.update(
-            {
-                "subkey": "Templates",
-                "id_field": "TemplateId",
-                "name_field": "Name",
-                "options": "count=100&offset=0",
-            }
+            {"subkey": "Templates", "id_field": "TemplateId", "name_field": "Name"}
         )
         super().__init__(prefix, resource="templates", **kwargs)
 

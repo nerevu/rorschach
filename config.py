@@ -129,18 +129,18 @@ class Config(object):
         "mailgun": {
             "auth_type": "basic",
             "basic": {
-                "api_base_url": "https://api.mailgun.net/v3",
+                "api_base_url": "https://api.mailgun.net/v3/{domain}",
                 "username": "api",
                 "password": getenv("MAILGUN_API_KEY"),
-                "domain": MAILGUN_DOMAIN,
-                "json_data": False,
+                "attrs": {"domain": MAILGUN_DOMAIN, "json_data": False},
             },
         },
         # https://postmarkapp.com/developer/api/overview
         "postmark": {
-            "auth_type": "token",
-            "token": {
+            "auth_type": "custom",
+            "custom": {
                 "api_base_url": "https://api.postmarkapp.com",
+                "params": {"count": 100, "offset": 0},
                 "headers": {
                     "all": {
                         "X-Postmark-Server-Token": getenv("POSTMARK_SERVER_TOKEN"),
@@ -166,16 +166,20 @@ class Config(object):
         "timely": {
             "auth_type": "oauth2",
             "oauth2": {
-                "api_base_url": "https://api.timelyapp.com/1.1",
+                "api_base_url": "https://api.timelyapp.com/1.1/{account_id}",
+                "api_status_resource": "accounts",
                 "authorization_base_url": "https://api.timelyapp.com/1.1/oauth/authorize",
                 "token_url": "https://api.timelyapp.com/1.1/oauth/token",
                 "refresh_url": "https://api.timelyapp.com/1.1/oauth/token",
                 "redirect_uri": "/timely-callback",
-                "account_id": "777870",
+                "account_id": getenv("TIMELY_ACCOUNT_ID"),
                 "client_id": getenv("TIMELY_CLIENT_ID"),
                 "client_secret": getenv("TIMELY_SECRET"),
                 "username": getenv("TIMELY_USERNAME"),
                 "password": getenv("TIMELY_PASSWORD"),
+                "method_map": {"patch": "put"},
+                "param_map": {"start": "since", "end": "upto"},
+                "attrs": {"singularize": True},
                 "headless_elements": [
                     {
                         "selector": "#email",
@@ -210,16 +214,19 @@ class Config(object):
         "xero": {
             "auth_type": "oauth2",
             "oauth2": {
-                "api_base_url": "https://api.xero.com",
+                "api_base_url": "https://api.xero.com/{domain}.xro/2.0",
+                "api_status_resource": "connections",
                 "authorization_base_url": "https://login.xero.com/identity/connect/authorize",
                 "token_url": "https://identity.xero.com/connect/token",
                 "refresh_url": "https://identity.xero.com/connect/token",
                 "redirect_uri": "/xero-callback",
-                "domain": "projects",
+                "headers": {"all": {"Xero-tenant-id": "{tenant_id}"}},
                 "client_id": getenv("XERO_CLIENT_ID"),
                 "client_secret": getenv("XERO_SECRET"),
                 "username": getenv("XERO_USERNAME"),
                 "password": getenv("XERO_PASSWORD"),
+                "param_map": {"start": "dateAfterUtc", "end": "dateBeforeUtc"},
+                "attrs": {"domain": "projects"},
                 "scope": [
                     "projects",
                     "offline_access",
@@ -277,6 +284,7 @@ class Config(object):
             },
             "oauth1": {
                 "api_base_url": "https://api.xero.com",
+                "api_status_resource": "projects.xro/2.0/projectsusers",
                 "request_url": "https://api.xero.com/oauth/RequestToken",
                 "authorization_base_url": "https://api.xero.com/oauth/Authorize",
                 "token_url": "https://api.xero.com/oauth/AccessToken",

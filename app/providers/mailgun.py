@@ -33,13 +33,13 @@ class Mailgun(Resource):
 ###########################################################################
 class Domains(Mailgun):
     def __init__(self, prefix=PREFIX, **kwargs):
-        kwargs.update({"subkey": "domain", "ignore_domain": True})
+        kwargs.update({"subkey": "domain", "domain": None})
         super().__init__(prefix, resource="domains", **kwargs)
 
 
 class EmailLists(Mailgun):
     def __init__(self, prefix=PREFIX, list_prefix=None, **kwargs):
-        kwargs.update({"ignore_domain": True, "id_field": "address", "subkey": "list"})
+        kwargs.update({"domain": None, "id_field": "address", "subkey": "list"})
         super().__init__(prefix, resource="lists", **kwargs)
 
         def_list_prefix = self.kwargs.get("mailgun_list_prefix")
