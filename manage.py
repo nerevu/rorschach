@@ -163,6 +163,9 @@ def prune(source_prefix, collection_name, **kwargs):
         # if there are dupes, keep the most recent
         for item in reversed(mappings):
             if is_tasks:
+                if source_prefix not in item:
+                    continue
+
                 project_id = item[source_prefix]["project"]
                 task_id = item[source_prefix]["task"]
                 project_tasks.rid = project_id
@@ -177,8 +180,15 @@ def prune(source_prefix, collection_name, **kwargs):
                 valid = item["xero"]["task"] in xero_task_ids
             else:
                 for prefix in AUTHENTICATION:
+                    if prefix not in COLLECTIONS:
+                        continue
+
                     Collection = COLLECTIONS[prefix]
-                    data = Collection(dictify=True, dry_run=True).data
+                    data = Collection(prefix, dictify=True, dry_run=True).data
+
+                    if prefix.lower() not in item:
+                        continue
+
                     valid = str(item[prefix.lower()]) in data
 
                     if not valid:

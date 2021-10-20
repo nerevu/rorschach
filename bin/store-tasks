@@ -1,5 +1,11 @@
 #!/usr/bin/env bash -uo pipefail
 
+echo
+echo "--------------"
+echo "Storing tasks…"
+echo "--------------"
+echo
+
 manage store -P timely -c tasks --dictify
 manage store -P gsheets -c tasks --dictify
 

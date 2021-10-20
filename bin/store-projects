@@ -1,5 +1,10 @@
 #!/usr/bin/env bash -uo pipefail
 
+echo
+echo "-----------------"
+echo "Storing projects…"
+echo "-----------------"
+echo
 manage store -P timely -c projects --dictify
 manage store -P xero -c projects --dictify
 manage store -P gsheets -c projects --dictify

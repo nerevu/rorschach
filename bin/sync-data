@@ -1,5 +1,9 @@
 #!/usr/bin/env bash -uo pipefail
 
+echo
+echo 'Syncing data…'
+echo '============='
+
 bin/store-users
 bin/store-projects
 bin/store-events

@@ -1,5 +1,11 @@
 #!/usr/bin/env bash -uo pipefail
 
+echo
+echo "---------------"
+echo "Storing events…"
+echo "---------------"
+echo
+
 manage store -P timely -c time --dictify
 manage store -P gsheets -c time --dictify
 

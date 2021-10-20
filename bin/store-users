@@ -1,5 +1,10 @@
 #!/usr/bin/env bash -uo pipefail
 
+echo
+echo "--------------"
+echo "Storing users…"
+echo "--------------"
+echo
 manage store -P timely -c users --dictify
 manage store -P xero -c users --dictify
 manage store -P xero -c contacts --dictify
