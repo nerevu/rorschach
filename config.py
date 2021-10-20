@@ -176,9 +176,34 @@ class Config(object):
                 "client_secret": getenv("TIMELY_SECRET"),
                 "username": getenv("TIMELY_USERNAME"),
                 "password": getenv("TIMELY_PASSWORD"),
-                "username_selector": "#email",
-                "password_selector": "#password",
-                "sign_in_selector": '[type="submit"]',
+                "headless_elements": [
+                    {
+                        "selector": "#email",
+                        "description": "timely email",
+                        "content": getenv("TIMELY_USERNAME"),
+                    },
+                    {
+                        "selector": "#next-btn",
+                        "description": "next",
+                        "action": "submit",
+                    },
+                    {
+                        "selector": "#Email",
+                        "description": "google email",
+                        "content": getenv("GOOGLE_USERNAME"),
+                    },
+                    {"selector": "#next", "description": "next", "action": "submit"},
+                    {
+                        "selector": '[type="password"]',
+                        "description": "google password",
+                        "content": getenv("GOOGLE_PASSWORD"),
+                    },
+                    {
+                        "selector": '#submit[type="submit"]',
+                        "description": "google submit",
+                        "action": "click",
+                    },
+                ],
             },
         },
         # https://developer.xero.com/myapps/
@@ -205,13 +230,49 @@ class Config(object):
                     "files",
                     "assets",
                 ],
-                "username_selector": "#xl-form-email",
-                "password_selector": "#xl-form-password",
-                "sign_in_selector": "#xl-form-submit",
                 "headless_elements": [
-                    {"selector": "#approveButton", "description": "connect"},
-                    {"selector": "#approveButton", "description": "allow access"},
-                    {"selector": "#approveButton", "description": "select org"},
+                    {
+                        "selector": "#xl-form-email",
+                        "description": "xero username",
+                        "content": getenv("XERO_USERNAME"),
+                    },
+                    {
+                        "selector": "#xl-form-password",
+                        "description": "xero password",
+                        "content": getenv("XERO_PASSWORD"),
+                    },
+                    {
+                        "selector": "#xl-form-submit",
+                        "description": "xero sign in",
+                        "action": "click",
+                    },
+                    {
+                        "selector": '[placeholder="Authentication code"]',
+                        "description": "xero 2fa code",
+                        "prompt": True,
+                    },
+                    {
+                        "selector": '[type="submit"]',
+                        "description": "xero confirm",
+                        "action": "click",
+                    },
+                    {
+                        "selector": "#approveButton",
+                        "description": "xero connect",
+                        "action": "click",
+                    },
+                    {
+                        "selector": "#approveButton",
+                        "description": "xero allow access",
+                        "action": "click",
+                        "wait": 5,
+                    },
+                    {
+                        "selector": "#approveButton",
+                        "description": "xero select org",
+                        "action": "click",
+                        "wait": 5,
+                    },
                 ],
             },
             "oauth1": {

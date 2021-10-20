@@ -483,6 +483,16 @@ def load_path(path, default=None):
     return contents
 
 
+def fetch_value(description):
+    call(["say", "enter a value"])
+    answer = None
+
+    while answer is None:
+        answer = input(f"{description}: ")
+
+    return answer
+
+
 def fetch_choice(choices):
     call(["say", "enter a value"])
     pos = None

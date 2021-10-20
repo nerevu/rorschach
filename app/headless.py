@@ -12,6 +12,7 @@ from sys import platform
 
 import pygogo as gogo
 
+from app.utils import fetch_value
 from config import Config
 
 try:
@@ -63,7 +64,7 @@ def get_os():
     return operating_system
 
 
-# get system specific chromedriver (currently version 78)
+# get system specific chromedriver
 def get_chromedriver_path(operating_system):
     chromedriver_path = None
     unixlike = operating_system in {"mac", "linux"}
@@ -115,9 +116,6 @@ def _headless_auth(redirect_url, prefix, username=None, password=None, **kwargs)
     options = Options()
     options.headless = True
     chrome_path = kwargs["chrome_path"]
-    username_selector = kwargs["username_selector"]
-    password_selector = kwargs["password_selector"]
-    sign_in_selector = kwargs["sign_in_selector"]
     elements = kwargs.get("elements") or []
     debug = kwargs.get("debug")
 
@@ -127,54 +125,39 @@ def _headless_auth(redirect_url, prefix, username=None, password=None, **kwargs)
     browser.get(redirect_url)
     browser.implicitly_wait(3)
 
-    #######################################################
-    # TODO: Check to see if this is required when logging
-    # in without a headless browser (might remember creds).
-    username_element = browser.find_element_by_css_selector(username_selector)
-
-    if username_element and username:
-        username_element.clear()
-        username_element.send_keys(username)
-    else:
-        if not username:
-            logger.error("No username supplied!")
-
-        if not username_element:
-            logger.error(f"Selector '{username_selector}' not found!")
-
-    password_element = browser.find_element_by_css_selector(password_selector)
-
-    if password_element and password:
-        password_element.clear()
-        password_element.send_keys(password)
-    else:
-        if not password:
-            logger.error("No password supplied!")
-
-        if not password_selector:
-            logger.error(f"Selector '{password_selector}' not found!")
-
     if debug:
-        save_page(browser, "1 - login")
-
-    sign_in = browser.find_element_by_css_selector(sign_in_selector)
-
-    # TODO: why does it stall here for timero??
-    error_msg = f"Selector '{sign_in_selector}' not found!"
-    sign_in.click() if sign_in else logger.error(error_msg)
-
-    if debug:
-        save_page(browser, "2 - logged in")
-    #######################################################
+        save_page(browser, "0 - initial")
 
     for pos, element in enumerate(elements):
+        if element.get("wait"):
+            sleep(element["wait"])
+
         selector = element["selector"]
         el = find_element_loop(browser, selector)
-        error_msg = "'{description}' selector '{selector}' not found!"
-        el.click() if el else logger.error(error_msg.format(**element))
+        error_msg = None
+
+        if not el:
+            error_msg = "'{description}' selector '{selector}' not found!"
+        elif element.get("content"):
+            el.clear()
+            el.send_keys(element["content"])
+        elif element.get("prompt"):
+            el.clear()
+            content = fetch_value(element["description"])
+            el.send_keys(content)
+        elif "content" in element:
+            error_msg = "No content supplied!"
 
         if debug:
-            save_page(browser, "{0} - {description}".format(pos + 3, **element))
+            save_page(browser, "{0} - {description}".format(pos + 1, **element))
+
+        if element.get("action"):
+            action = getattr(el, element["action"])
+            action()
+
+        if error_msg:
+            browser.close()
+            raise AssertionError(error_msg.format(**element))
 
     # TODO: Error if there are any button elements on the page
     browser.close()
@@ -194,7 +177,7 @@ def headless_auth(redirect_url, prefix, **kwargs):
             logger.error(f"chromedriver executable not found in {chrome_path}!")
         else:
             logger.error(e)
-    except AttributeError as e:
+    except Exception as e:
         logger.error(e)
     else:
         failed = False

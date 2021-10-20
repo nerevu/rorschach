@@ -97,7 +97,7 @@ class BaseView(ProviderMixin, MethodView):
             self.domain = None
             def_start = def_end - timedelta(days=Config.REPORT_DAYS)
         else:
-            self.client = get_auth_client(self.prefix, **app.config)
+            self.client = get_auth_client(self.prefix, **app.config, **kwargs)
             self.data_key = self.client.data_key
             self.json_data = self.client.json_data
             self.dump_data = self.client.dump_data

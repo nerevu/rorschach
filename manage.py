@@ -212,6 +212,8 @@ def prune(source_prefix, collection, **kwargs):
 )
 @click.option("-i", "--rid", help="resource ID")
 @click.option("-d", "--dictify/--no-dictify", default=False)
+@click.option("-e", "--debug", help="Debug mode", is_flag=True)
+@click.option("-h", "--headless/--no-headless", default=False)
 def store(prefix, collection_name, **kwargs):
     """Save user info to cache"""
     _store(prefix, collection_name, **kwargs)

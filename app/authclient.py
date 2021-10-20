@@ -112,11 +112,9 @@ class OAuth2Client(BaseClient):
         self.tenant_id = kwargs.get("tenant_id", "")
         self.realm_id = kwargs.get("realm_id")
         self.extra = {"client_id": self.client_id, "client_secret": self.client_secret}
-        self.username_selector = kwargs.get("username_selector")
-        self.password_selector = kwargs.get("password_selector")
         self.username = kwargs.get("username")
         self.password = kwargs.get("password")
-        self.sign_in_selector = kwargs.get("sign_in_selector")
+        self.headless = kwargs.get("headless", False)
         self.headless_elements = kwargs.get("headless_elements") or []
         self.debug = kwargs.get("debug")
         self.tried_headless_auth = False
@@ -161,11 +159,8 @@ class OAuth2Client(BaseClient):
 
     @property
     def can_headlessly_auth(self):
-        auth_info = self.username and self.password
-        selectors = (
-            self.username_selector and self.password_selector and self.sign_in_selector
-        )
-        return auth_info and selectors and not self.failed_or_tried_headless
+        auth_info = self.username and self.password and self.headless_elements
+        return auth_info and self.headless and not self.failed_or_tried_headless
 
     @property
     def expired(self):
@@ -176,11 +171,8 @@ class OAuth2Client(BaseClient):
     @property
     def headless_kwargs(self):
         return {
-            "username_selector": self.username_selector,
-            "password_selector": self.password_selector,
             "username": self.username,
             "password": self.password,
-            "sign_in_selector": self.sign_in_selector,
             "elements": self.headless_elements,
             "debug": self.debug,
         }
@@ -624,6 +616,12 @@ def get_auth_client(prefix, state=None, API_URL="", **kwargs):
 
         if redirect_uri.startswith("/") and API_URL:
             auth_kwargs["redirect_uri"] = f"{API_URL}{redirect_uri}"
+
+        if "debug" in kwargs:
+            auth_kwargs["debug"] = kwargs["debug"]
+
+        if "headless" in kwargs:
+            auth_kwargs["headless"] = kwargs["headless"]
 
         client = MyAuthClient(prefix, **auth_kwargs)
 
