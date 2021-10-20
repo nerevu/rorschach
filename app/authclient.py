@@ -84,7 +84,117 @@ class AuthClient(BaseClient):
         self.expired = False
 
 
-class OAuth2Client(BaseClient):
+class OAuth2BaseClient(BaseClient):
+    def __init__(
+        self,
+        prefix=None,
+        client_id=None,
+        client_secret=None,
+        refresh_url=None,
+        **kwargs,
+    ):
+        super().__init__(prefix, **kwargs)
+        self.scope = kwargs.get("scope", "")
+        self.state = kwargs.get("state")
+        self.access_token = None
+        self.refresh_token = None
+        self.tenant_id = kwargs.get("tenant_id", "")
+        self.realm_id = kwargs.get("realm_id")
+        self.expires_at = dt.now(timezone.utc)
+        self.expires_in = 0
+
+    @property
+    def expired(self):
+        return self.expires_at <= dt.now(timezone.utc) + timedelta(
+            seconds=EXPIRATION_BUFFER
+        )
+
+    @property
+    def token(self):
+        return {
+            "access_token": self.access_token,
+            "refresh_token": self.refresh_token,
+            "token_type": self.token_type,
+            "expires_in": self.expires_in,
+            "expires_at": self.expires_at,
+            "expired": self.expired,
+            "verified": self.verified,
+            "created_at": self.created_at,
+        }
+
+    @token.setter
+    def token(self, value):
+        self.access_token = value.get("access_token")
+        self.refresh_token = value.get("refresh_token")
+        self.token_type = value.get("token_type")
+        self.created_at = value.get("created_at") or dt.now(timezone.utc)
+
+        try:
+            self.created_at.timestamp
+        except AttributeError:
+            self.created_at = dt.fromtimestamp(self.created_at, timezone.utc)
+
+        if value.get("expires_in"):
+            self.expires_in = value["expires_in"]
+            self.expires_at = self.created_at + timedelta(seconds=self.expires_in)
+        else:
+            def_expires_at = self.created_at + timedelta(seconds=SET_TIMEOUT)
+            self.expires_at = value.get("expires_at") or def_expires_at
+
+            try:
+                self.expires_at.timestamp
+            except AttributeError:
+                self.expires_at = dt.fromtimestamp(self.expires_at, timezone.utc)
+
+            self.expires_in = (self.expires_at.replace(tzinfo=timezone.utc) - dt.now(timezone.utc)).total_seconds()
+
+        self.save()
+
+        if self.debug:
+            logger.debug(self.token)
+
+    def save(self):
+        logger.debug(f"saving {self}")
+
+        try:
+            def_state = session.get(f"{self.prefix}_state")
+        except RuntimeError:
+            def_state = None
+
+        if not self.state:
+            self.state = def_state or cache.get(f"{self.prefix}_state")
+
+        cache.set(f"{self.prefix}_state", self.state)
+        cache.set(f"{self.prefix}_access_token", self.access_token)
+        cache.set(f"{self.prefix}_refresh_token", self.refresh_token)
+        cache.set(f"{self.prefix}_created_at", self.created_at)
+        cache.set(f"{self.prefix}_expires_at", self.expires_at)
+        cache.set(f"{self.prefix}_tenant_id", self.tenant_id)
+        cache.set(f"{self.prefix}_realm_id", self.realm_id)
+
+    def restore(self):
+        logger.debug(f"restoring {self}")
+
+        try:
+            def_state = session.get(f"{self.prefix}_state")
+        except RuntimeError:
+            def_state = None
+
+        def_expires_at = dt.now(timezone.utc) + timedelta(
+            seconds=int(OAUTH_EXPIRY_SECONDS)
+        )
+
+        self.state = def_state or cache.get(f"{self.prefix}_state")
+        self.access_token = cache.get(f"{self.prefix}_access_token")
+        self.refresh_token = cache.get(f"{self.prefix}_refresh_token")
+        self.created_at = cache.get(f"{self.prefix}_created_at")
+        self.expires_at = cache.get(f"{self.prefix}_expires_at") or def_expires_at
+        self.expires_in = (self.expires_at - dt.now(timezone.utc)).total_seconds()
+        self.tenant_id = cache.get(f"{self.prefix}_tenant_id")
+        self.realm_id = cache.get(f"{self.prefix}_realm_id")
+
+
+class OAuth2Client(OAuth2BaseClient):
     def __init__(
         self,
         prefix=None,
@@ -95,22 +205,17 @@ class OAuth2Client(BaseClient):
     ):
         super().__init__(prefix, **kwargs)
         self.auth_type = "oauth2"
+        self.token_type = "Bearer"
         self.client_id = client_id
         self.client_secret = client_secret
         self.refresh_url = refresh_url
-        self.access_token = None
-        self.refresh_token = None
         self.oauth_session = None
 
-        self.scope = kwargs.get("scope", "")
         self.authorization_base_url = kwargs.get("authorization_base_url")
         self.revoke_url = kwargs.get("revoke_url")
         self.redirect_uri = kwargs.get("redirect_uri")
         self.token_url = kwargs.get("token_url")
         self.account_id = kwargs.get("account_id")
-        self.state = kwargs.get("state")
-        self.tenant_id = kwargs.get("tenant_id", "")
-        self.realm_id = kwargs.get("realm_id")
         self.extra = {"client_id": self.client_id, "client_secret": self.client_secret}
         self.username = kwargs.get("username")
         self.password = kwargs.get("password")
@@ -119,8 +224,6 @@ class OAuth2Client(BaseClient):
         self.debug = kwargs.get("debug")
         self.tried_headless_auth = False
         self.failed_headless_auth = False
-        self.expires_at = dt.now(timezone.utc)
-        self.expires_in = 0
         self.restore()
         self._init_credentials()
 
@@ -163,12 +266,6 @@ class OAuth2Client(BaseClient):
         return auth_info and self.headless and not self.failed_or_tried_headless
 
     @property
-    def expired(self):
-        return self.expires_at <= dt.now(timezone.utc) + timedelta(
-            seconds=EXPIRATION_BUFFER
-        )
-
-    @property
     def headless_kwargs(self):
         return {
             "username": self.username,
@@ -201,50 +298,6 @@ class OAuth2Client(BaseClient):
             oauth_kwargs = {"redirect_uri": self.redirect_uri, "scope": self.scope}
 
         return oauth_kwargs
-
-    @property
-    def token(self):
-        return {
-            "access_token": self.access_token,
-            "refresh_token": self.refresh_token,
-            "token_type": "Bearer",
-            "expires_in": self.expires_in,
-            "expires_at": self.expires_at,
-            "expired": self.expired,
-            "verified": self.verified,
-            "created_at": self.created_at,
-        }
-
-    @token.setter
-    def token(self, value):
-        self.access_token = value.get("access_token")
-        self.refresh_token = value.get("refresh_token")
-        self.token_type = value.get("token_type")
-        self.created_at = value.get("created_at") or dt.now(timezone.utc)
-
-        try:
-            self.created_at.timestamp
-        except AttributeError:
-            self.created_at = dt.fromtimestamp(self.created_at, timezone.utc)
-
-        if value.get("expires_in"):
-            self.expires_in = value["expires_in"]
-            self.expires_at = self.created_at + timedelta(seconds=self.expires_in)
-        else:
-            def_expires_at = self.created_at + timedelta(seconds=SET_TIMEOUT)
-            self.expires_at = value.get("expires_at") or def_expires_at
-
-            try:
-                self.expires_at.timestamp
-            except AttributeError:
-                self.expires_at = dt.fromtimestamp(self.expires_at, timezone.utc)
-
-            self.expires_in = (self.expires_at - dt.now(timezone.utc)).total_seconds()
-
-        self.save()
-
-        if self.debug:
-            logger.debug(self.token)
 
     @property
     def verified(self):
@@ -345,45 +398,6 @@ class OAuth2Client(BaseClient):
             json = {"status_code": 400, "message": message}
 
         return json
-
-    def save(self):
-        logger.debug(f"saving {self}")
-
-        try:
-            def_state = session.get(f"{self.prefix}_state")
-        except RuntimeError:
-            def_state = None
-
-        if not self.state:
-            self.state = def_state or cache.get(f"{self.prefix}_state")
-
-        cache.set(f"{self.prefix}_state", self.state)
-        cache.set(f"{self.prefix}_access_token", self.access_token)
-        cache.set(f"{self.prefix}_refresh_token", self.refresh_token)
-        cache.set(f"{self.prefix}_created_at", self.created_at)
-        cache.set(f"{self.prefix}_expires_at", self.expires_at)
-        cache.set(f"{self.prefix}_tenant_id", self.tenant_id)
-        cache.set(f"{self.prefix}_realm_id", self.realm_id)
-
-    def restore(self):
-        logger.debug(f"restoring {self}")
-        try:
-            def_state = session.get(f"{self.prefix}_state")
-        except RuntimeError:
-            def_state = None
-
-        def_expires_at = dt.now(timezone.utc) + timedelta(
-            seconds=int(OAUTH_EXPIRY_SECONDS)
-        )
-
-        self.state = def_state or cache.get(f"{self.prefix}_state")
-        self.access_token = cache.get(f"{self.prefix}_access_token")
-        self.refresh_token = cache.get(f"{self.prefix}_refresh_token")
-        self.created_at = cache.get(f"{self.prefix}_created_at")
-        self.expires_at = cache.get(f"{self.prefix}_expires_at") or def_expires_at
-        self.expires_in = (self.expires_at - dt.now(timezone.utc)).total_seconds()
-        self.tenant_id = cache.get(f"{self.prefix}_tenant_id")
-        self.realm_id = cache.get(f"{self.prefix}_realm_id")
 
 
 class OAuth1Client(AuthClient):
@@ -547,42 +561,66 @@ class BasicAuthClient(AuthClient):
         self.auth = (username, password)
 
 
-class ServiceAuthClient(OAuth2Client):
-    def __init__(self, prefix=None, keyfile_path=None, sheet_id=None, **kwargs):
+class ServiceAuthClient(OAuth2BaseClient):
+    def __init__(self, prefix=None, keyfile_path=None, **kwargs):
+        super().__init__(prefix, **kwargs)
+        self.auth_type = "service"
+        self.token_type = "service"
         self.credentials = None
         self.keyfile_path = keyfile_path
-        super().__init__(prefix, **kwargs)
-
-        self.auth_type = "service"
         self.worksheet_name = kwargs.get("worksheet_name")
-        self.sheet_id = sheet_id
-        self.fetch_token()
+        self.sheet_id = kwargs.get("sheet_id")
+        self.restore()
+        self._init_credentials()
 
     def _init_credentials(self):
         p = Path(self.keyfile_path)
         credentials = Credentials.from_service_account_file(p.resolve())
         self.credentials = credentials.with_scopes(self.scope)
 
-    @property
-    def expired(self):
-        return self.credentials.expired
+        if self.expired:
+            logger.warning(f"{self.prefix} token expired. Attempting to renew...")
+            self.renew_token("TokenExpiredError")
+        elif self.access_token:
+            logger.info(f"{self.prefix} successfully authenticated!")
+        else:
+            logger.warning(f"{self.prefix} not authorized. Attempting to renew...")
+            self.renew_token("init")
 
     @property
     def verified(self):
         return self.credentials.valid
 
-    def fetch_token(self):
-        token = {
+    @property
+    def _token(self):
+        return {
             "access_token": self.credentials.token,
-            "expires_at": self.credentials.expiry,
+            "expires_at": self.credentials.expiry.replace(tzinfo=timezone.utc),
         }
-        self.token = token
-        return token
+
+    def fetch_token(self):
+        self.token = self._token
+        return self._token
 
     def renew_token(self, source):
         logger.debug(f"renew {self} from {source}")
+        logger.info("Renewing token using credentials refresh…")
         self.credentials.refresh(transport.requests.Request())
-        return self.fetch_token()
+
+        if self.verified:
+            self.token = self._token
+        else:
+            logger.info("Failed to renew, re-authenticating…")
+            self.fetch_token()
+
+            if self.verified:
+                logger.info(f"Successfully renewed {self}!")
+                self.token = self._token
+            else:
+                self.error = f"Failed to renew {self}: Please re-authenticate!"
+                logger.error(self.error)
+
+        return self
 
 
 def get_auth_client(prefix, state=None, API_URL="", **kwargs):
@@ -606,6 +644,7 @@ def get_auth_client(prefix, state=None, API_URL="", **kwargs):
             MyAuthClient = OAuth2Client
             auth_kwargs["state"] = state
         elif auth_type == "service":
+            auth_kwargs["oauth_version"] = 2
             MyAuthClient = ServiceAuthClient
         elif auth_type == "basic":
             MyAuthClient = BasicAuthClient

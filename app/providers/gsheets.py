@@ -81,9 +81,15 @@ def add_id(record):
 class GSheets(Resource):
     def __init__(self, prefix=PREFIX, **kwargs):
         super().__init__(prefix, **kwargs)
-        self.gc = gspread.authorize(self.client.credentials)
-        self._sheet_id = kwargs.get("sheet_id", self.client.sheet_id)
-        self._worksheet_name = kwargs.get("worksheet_name", self.client.worksheet_name)
+
+        if self.client:
+            self.gc = gspread.authorize(self.client.credentials)
+            self._sheet_id = kwargs.get("sheet_id", self.client.sheet_id)
+            self._worksheet_name = kwargs.get("worksheet_name", self.client.worksheet_name)
+        else:
+            self._sheet_id = kwargs.get("sheet_id")
+            self._worksheet_name = kwargs.get("worksheet_name")
+
         self.use_default = kwargs.get("use_default", True)
         self.chunksize = kwargs.get("chunksize")
         self._sheet_name = kwargs.get("sheet_name")
