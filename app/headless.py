@@ -105,7 +105,7 @@ def find_element_loop(browser, selector, count=0, max_retries=10):
 
 def save_page(browser, page_name, with_html=True):
     logger.debug(f"taking screenshot of {page_name}...")
-    browser.save_screenshot(f"{page_name}.png")
+    browser.save_screenshot(f"screenshots/{page_name}.png")
 
     with open(f"{page_name}.html", "w") as f:
         print(f"saving html of {page_name}...")

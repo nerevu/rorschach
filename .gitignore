@@ -34,3 +34,6 @@ htmlcov/
 # App Cache
 app/cache/*
 commissioner/cache/*
+
+# Misc
+screenshots/*
