@@ -14,24 +14,10 @@
     "taskId": "3d7cde2e-76c9-4004-a94f-3d0b1a5bcd88"
   },
   {
-    "name": "1 Hour Internal Work (Non-Billable)",
+    "name": "1 Hour R&D (Non-Billable)",
     "projectId": "c8b18830-fed0-4979-8c42-6619c4b6b67c",
     "rate.value": 0.0,
     "status": "ACTIVE",
-    "taskId": "b8b2e655-d097-47a7-a823-90483e49f32f"
-  },
-  {
-    "name": "1 Hour Internal Work (Non-Billable)",
-    "projectId": "c8b18830-fed0-4979-8c42-6619c4b6b67c",
-    "rate.value": 0.0,
-    "status": "ACTIVE",
-    "taskId": "1b63a611-1ae1-4c75-838e-39c5e9e17ddd"
-  },
-  {
-    "name": "1 Hour Internal Work (Non-Billable)",
-    "projectId": "c8b18830-fed0-4979-8c42-6619c4b6b67c",
-    "rate.value": 0.0,
-    "status": "ACTIVE",
-    "taskId": "2652c56d-6a37-4619-9e6a-d435837cf2b0"
+    "taskId": "34b0754b-8998-449d-a25f-3a4310302dca"
   }
 ]

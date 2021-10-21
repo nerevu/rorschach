@@ -1,1 +1,16 @@
-[]
+[
+  {
+    "name": "1 Hour Internal Work (Non-Billable)",
+    "projectId": "9e610f03-f11d-4d2d-ac74-1e26a3618d26",
+    "rate.value": 0.0,
+    "status": "ACTIVE",
+    "taskId": "2ecefa64-33a7-43db-92e8-63243d0b0b30"
+  },
+  {
+    "name": "1 Hour Consulting (Partner)",
+    "projectId": "9e610f03-f11d-4d2d-ac74-1e26a3618d26",
+    "rate.value": 150.0,
+    "status": "ACTIVE",
+    "taskId": "886c51ef-7fcf-46ae-a20d-63193ac213a6"
+  }
+]

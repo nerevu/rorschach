@@ -1,1 +1,23 @@
-[]
+[
+  {
+    "name": "1 Hour Consulting (Partner)",
+    "projectId": "4abb468c-ba2b-4820-9554-ef32fea342a3",
+    "rate.value": 150.0,
+    "status": "ACTIVE",
+    "taskId": "d93d5cc8-3e02-4144-a9d1-6c71f4985da9"
+  },
+  {
+    "name": "1 Hour Development (Technical Director)",
+    "projectId": "4abb468c-ba2b-4820-9554-ef32fea342a3",
+    "rate.value": 150.0,
+    "status": "ACTIVE",
+    "taskId": "41a688bc-b17f-4be7-923b-c6d63fd6eb87"
+  },
+  {
+    "name": "1 Hour Internal Work (Non-Billable)",
+    "projectId": "4abb468c-ba2b-4820-9554-ef32fea342a3",
+    "rate.value": 0.0,
+    "status": "ACTIVE",
+    "taskId": "f4265009-fd12-422a-84f2-6142f87a2ced"
+  }
+]

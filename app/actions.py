@@ -62,12 +62,11 @@ def mark_billed(source_prefix, rid, **kwargs):
     response = time.patch(**data)
     json = response.json
     status_code = response.status_code
-    conflict = status_code == 409
 
     json.update(
         {
             "status_code": status_code,
-            "conflict": conflict,
+            "conflict": status_code == 409,
             "eof": False,
             "event_id": time.rid,
         }

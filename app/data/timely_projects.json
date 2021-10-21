@@ -1,8 +1,78 @@
 [
   {
     "active": true,
+    "billable": false,
+    "budget": 40,
+    "client": {
+      "active": true,
+      "external_id": null,
+      "id": 1350585,
+      "name": "Peoria Innovation Alliance",
+      "updated_at": "2019-06-04T14:49:08-05:00"
+    },
+    "id": 2973420,
+    "name": "BOD"
+  },
+  {
+    "active": true,
     "billable": true,
-    "budget": 50000,
+    "budget": 350,
+    "client": {
+      "active": true,
+      "external_id": null,
+      "id": 1404385,
+      "name": "Urban League",
+      "updated_at": "2020-02-07T11:06:29-06:00"
+    },
+    "id": 3626831,
+    "name": "Access DB"
+  },
+  {
+    "active": true,
+    "billable": true,
+    "budget": 2000,
+    "client": {
+      "active": true,
+      "external_id": null,
+      "id": 1492908,
+      "name": "Distillery Labs",
+      "updated_at": "2021-03-10T11:34:12-06:00"
+    },
+    "id": 3481427,
+    "name": "Working Group"
+  },
+  {
+    "active": true,
+    "billable": true,
+    "budget": 500,
+    "client": {
+      "active": true,
+      "external_id": null,
+      "id": 1404386,
+      "name": "Prospective",
+      "updated_at": "2021-02-16T08:56:04-06:00"
+    },
+    "id": 3474778,
+    "name": "Crypto Dashboard"
+  },
+  {
+    "active": true,
+    "billable": true,
+    "budget": 25000,
+    "client": {
+      "active": true,
+      "external_id": null,
+      "id": 1350590,
+      "name": "Hanson",
+      "updated_at": "2019-08-12T15:16:27-05:00"
+    },
+    "id": 3462065,
+    "name": "Grant Search App"
+  },
+  {
+    "active": true,
+    "billable": true,
+    "budget": 1000,
     "client": {
       "active": true,
       "external_id": null,
@@ -10,8 +80,92 @@
       "name": "Nerevu [External]",
       "updated_at": "2021-03-12T20:59:25-06:00"
     },
-    "id": 3013676,
-    "name": "Nerevu API"
+    "id": 3481460,
+    "name": "Project Quotation Service"
+  },
+  {
+    "active": true,
+    "billable": true,
+    "budget": 100,
+    "client": {
+      "active": true,
+      "external_id": null,
+      "id": 1173714,
+      "name": "Nerevu [Internal]",
+      "updated_at": "2021-03-12T20:59:39-06:00"
+    },
+    "id": 3651005,
+    "name": "Business Development"
+  },
+  {
+    "active": true,
+    "billable": false,
+    "budget": 100,
+    "client": {
+      "active": true,
+      "external_id": null,
+      "id": 1173714,
+      "name": "Nerevu [Internal]",
+      "updated_at": "2021-03-12T20:59:39-06:00"
+    },
+    "id": 3625328,
+    "name": "ERP"
+  },
+  {
+    "active": true,
+    "billable": true,
+    "budget": 10,
+    "client": {
+      "active": true,
+      "external_id": null,
+      "id": 1404385,
+      "name": "Urban League",
+      "updated_at": "2020-02-07T11:06:29-06:00"
+    },
+    "id": 3648215,
+    "name": "IT Assistance"
+  },
+  {
+    "active": true,
+    "billable": true,
+    "budget": 15000,
+    "client": {
+      "active": true,
+      "external_id": null,
+      "id": 1492928,
+      "name": "Nerevu [External]",
+      "updated_at": "2021-03-12T20:59:25-06:00"
+    },
+    "id": 3463686,
+    "name": "Pamoja"
+  },
+  {
+    "active": true,
+    "billable": true,
+    "budget": 71000,
+    "client": {
+      "active": true,
+      "external_id": null,
+      "id": 1486931,
+      "name": "OSF",
+      "updated_at": "2021-02-12T13:21:30-06:00"
+    },
+    "id": 3463694,
+    "name": "OCC Dashboard"
+  },
+  {
+    "active": true,
+    "billable": true,
+    "budget": 20000,
+    "client": {
+      "active": true,
+      "external_id": null,
+      "id": 1390597,
+      "name": "ICC",
+      "updated_at": "2019-12-06T15:33:33-06:00"
+    },
+    "id": 3078744,
+    "name": "WEI Website"
   },
   {
     "active": true,
@@ -29,8 +183,190 @@
   },
   {
     "active": true,
+    "billable": false,
+    "budget": 30,
+    "client": {
+      "active": true,
+      "external_id": null,
+      "id": 1350585,
+      "name": "Peoria Innovation Alliance",
+      "updated_at": "2019-06-04T14:49:08-05:00"
+    },
+    "id": 2973418,
+    "name": "Analytics Committee"
+  },
+  {
+    "active": true,
     "billable": true,
-    "budget": 100,
+    "budget": 25,
+    "client": {
+      "active": true,
+      "external_id": null,
+      "id": 1350585,
+      "name": "Peoria Innovation Alliance",
+      "updated_at": "2019-06-04T14:49:08-05:00"
+    },
+    "id": 2906312,
+    "name": "GP Data Community"
+  },
+  {
+    "active": true,
+    "billable": true,
+    "budget": 6000,
+    "client": {
+      "active": true,
+      "external_id": null,
+      "id": 1547709,
+      "name": "Prairie Spine",
+      "updated_at": "2021-08-03T12:55:51-05:00"
+    },
+    "id": 3462020,
+    "name": "EMR Data Extraction"
+  },
+  {
+    "active": true,
+    "billable": true,
+    "budget": 500,
+    "client": {
+      "active": true,
+      "external_id": null,
+      "id": 1404385,
+      "name": "Urban League",
+      "updated_at": "2020-02-07T11:06:29-06:00"
+    },
+    "id": 3147199,
+    "name": "TCPUL Website"
+  },
+  {
+    "active": true,
+    "billable": false,
+    "budget": 50,
+    "client": {
+      "active": true,
+      "external_id": null,
+      "id": 1350585,
+      "name": "Peoria Innovation Alliance",
+      "updated_at": "2019-06-04T14:49:08-05:00"
+    },
+    "id": 2973417,
+    "name": "NomCom"
+  },
+  {
+    "active": true,
+    "billable": true,
+    "budget": 500,
+    "client": {
+      "active": true,
+      "external_id": null,
+      "id": 1350586,
+      "name": "GPEDC",
+      "updated_at": "2019-08-12T15:16:14-05:00"
+    },
+    "id": 3465719,
+    "name": "BOD"
+  },
+  {
+    "active": true,
+    "billable": true,
+    "budget": 72,
+    "client": {
+      "active": true,
+      "external_id": null,
+      "id": 1390597,
+      "name": "ICC",
+      "updated_at": "2019-12-06T15:33:33-06:00"
+    },
+    "id": 3478321,
+    "name": "WEI Improvement"
+  },
+  {
+    "active": true,
+    "billable": true,
+    "budget": 40,
+    "client": {
+      "active": true,
+      "external_id": null,
+      "id": 1390597,
+      "name": "ICC",
+      "updated_at": "2019-12-06T15:33:33-06:00"
+    },
+    "id": 3478320,
+    "name": "WEI Admin"
+  },
+  {
+    "active": true,
+    "billable": true,
+    "budget": 10000,
+    "client": {
+      "active": true,
+      "external_id": null,
+      "id": 1350585,
+      "name": "Peoria Innovation Alliance",
+      "updated_at": "2019-06-04T14:49:08-05:00"
+    },
+    "id": 2906311,
+    "name": "Open Peoria"
+  },
+  {
+    "active": true,
+    "billable": true,
+    "budget": 5000,
+    "client": {
+      "active": true,
+      "external_id": null,
+      "id": 1492928,
+      "name": "Nerevu [External]",
+      "updated_at": "2021-03-12T20:59:25-06:00"
+    },
+    "id": 3216781,
+    "name": "Dashboard Service"
+  },
+  {
+    "active": true,
+    "billable": true,
+    "budget": 10000,
+    "client": {
+      "active": true,
+      "external_id": null,
+      "id": 1492928,
+      "name": "Nerevu [External]",
+      "updated_at": "2021-03-12T20:59:25-06:00"
+    },
+    "id": 3154983,
+    "name": "Kazeeki"
+  },
+  {
+    "active": true,
+    "billable": true,
+    "budget": 1000,
+    "client": {
+      "active": true,
+      "external_id": null,
+      "id": 1492928,
+      "name": "Nerevu [External]",
+      "updated_at": "2021-03-12T20:59:25-06:00"
+    },
+    "id": 2973485,
+    "name": "Invoice/Billing Service"
+  },
+  {
+    "active": true,
+    "billable": true,
+    "budget": 50000,
+    "client": {
+      "active": true,
+      "external_id": null,
+      "id": 1492928,
+      "name": "Nerevu [External]",
+      "updated_at": "2021-03-12T20:59:25-06:00"
+    },
+    "id": 3013676,
+    "name": "Nerevu API"
+  },
+  {
+    "active": true,
+    "billable": true,
+    "budget": 5000,
     "client": {
       "active": true,
       "external_id": null,
@@ -38,8 +374,50 @@
       "name": "Nerevu [Internal]",
       "updated_at": "2021-03-12T20:59:39-06:00"
     },
-    "id": 3632139,
-    "name": "Case Studies"
+    "id": 2980115,
+    "name": "Hiring"
+  },
+  {
+    "active": true,
+    "billable": true,
+    "budget": 20,
+    "client": {
+      "active": true,
+      "external_id": null,
+      "id": 1390597,
+      "name": "ICC",
+      "updated_at": "2019-12-06T15:33:33-06:00"
+    },
+    "id": 3478322,
+    "name": "WEI Maintenance"
+  },
+  {
+    "active": true,
+    "billable": true,
+    "budget": 2000,
+    "client": {
+      "active": true,
+      "external_id": null,
+      "id": 1390597,
+      "name": "ICC",
+      "updated_at": "2019-12-06T15:33:33-06:00"
+    },
+    "id": 3393712,
+    "name": "Sharepoint"
+  },
+  {
+    "active": true,
+    "billable": true,
+    "budget": 3000,
+    "client": {
+      "active": true,
+      "external_id": null,
+      "id": 1350586,
+      "name": "GPEDC",
+      "updated_at": "2019-08-12T15:16:14-05:00"
+    },
+    "id": 2960359,
+    "name": "Data Automation"
   },
   {
     "active": true,
@@ -68,118 +446,6 @@
     },
     "id": 3474756,
     "name": "LOA"
-  },
-  {
-    "active": true,
-    "billable": true,
-    "budget": 5000,
-    "client": {
-      "active": true,
-      "external_id": null,
-      "id": 1173714,
-      "name": "Nerevu [Internal]",
-      "updated_at": "2021-03-12T20:59:39-06:00"
-    },
-    "id": 2980115,
-    "name": "Hiring"
-  },
-  {
-    "active": true,
-    "billable": true,
-    "budget": 100,
-    "client": {
-      "active": true,
-      "external_id": null,
-      "id": 1173714,
-      "name": "Nerevu [Internal]",
-      "updated_at": "2021-03-12T20:59:39-06:00"
-    },
-    "id": 3651005,
-    "name": "Business Development"
-  },
-  {
-    "active": true,
-    "billable": true,
-    "budget": 71000,
-    "client": {
-      "active": true,
-      "external_id": null,
-      "id": 1486931,
-      "name": "OSF",
-      "updated_at": "2021-02-12T13:21:30-06:00"
-    },
-    "id": 3463694,
-    "name": "OCC Dashboard"
-  },
-  {
-    "active": true,
-    "billable": true,
-    "budget": 10,
-    "client": {
-      "active": true,
-      "external_id": null,
-      "id": 1404385,
-      "name": "Urban League",
-      "updated_at": "2020-02-07T11:06:29-06:00"
-    },
-    "id": 3648215,
-    "name": "IT Assistance"
-  },
-  {
-    "active": true,
-    "billable": false,
-    "budget": 100,
-    "client": {
-      "active": true,
-      "external_id": null,
-      "id": 1173714,
-      "name": "Nerevu [Internal]",
-      "updated_at": "2021-03-12T20:59:39-06:00"
-    },
-    "id": 3625328,
-    "name": "ERP"
-  },
-  {
-    "active": true,
-    "billable": true,
-    "budget": 6000,
-    "client": {
-      "active": true,
-      "external_id": null,
-      "id": 1547709,
-      "name": "Prairie Spine",
-      "updated_at": "2021-08-03T12:55:51-05:00"
-    },
-    "id": 3462020,
-    "name": "EMR Data Extraction"
-  },
-  {
-    "active": true,
-    "billable": true,
-    "budget": 20,
-    "client": {
-      "active": true,
-      "external_id": null,
-      "id": 1390597,
-      "name": "ICC",
-      "updated_at": "2019-12-06T15:33:33-06:00"
-    },
-    "id": 3478322,
-    "name": "WEI Maintenance"
-  },
-  {
-    "active": true,
-    "billable": true,
-    "budget": 40,
-    "client": {
-      "active": true,
-      "external_id": null,
-      "id": 1390597,
-      "name": "ICC",
-      "updated_at": "2019-12-06T15:33:33-06:00"
-    },
-    "id": 3478320,
-    "name": "WEI Admin"
   },
   {
     "active": true,
@@ -226,48 +492,6 @@
   {
     "active": true,
     "billable": true,
-    "budget": 350,
-    "client": {
-      "active": true,
-      "external_id": null,
-      "id": 1404386,
-      "name": "Prospective",
-      "updated_at": "2021-02-16T08:56:04-06:00"
-    },
-    "id": 3626831,
-    "name": "Access DB"
-  },
-  {
-    "active": true,
-    "billable": false,
-    "budget": 40,
-    "client": {
-      "active": true,
-      "external_id": null,
-      "id": 1350585,
-      "name": "Peoria Innovation Alliance",
-      "updated_at": "2019-06-04T14:49:08-05:00"
-    },
-    "id": 2973420,
-    "name": "BOD"
-  },
-  {
-    "active": true,
-    "billable": false,
-    "budget": 30,
-    "client": {
-      "active": true,
-      "external_id": null,
-      "id": 1350585,
-      "name": "Peoria Innovation Alliance",
-      "updated_at": "2019-06-04T14:49:08-05:00"
-    },
-    "id": 2973418,
-    "name": "Analytics Committee"
-  },
-  {
-    "active": true,
-    "billable": true,
     "budget": 2500,
     "client": {
       "active": true,
@@ -286,222 +510,12 @@
     "client": {
       "active": true,
       "external_id": null,
-      "id": 1404385,
-      "name": "Urban League",
-      "updated_at": "2020-02-07T11:06:29-06:00"
-    },
-    "id": 3147199,
-    "name": "TCPUL Website"
-  },
-  {
-    "active": true,
-    "billable": true,
-    "budget": 1000,
-    "client": {
-      "active": true,
-      "external_id": null,
-      "id": 1492928,
-      "name": "Nerevu [External]",
-      "updated_at": "2021-03-12T20:59:25-06:00"
-    },
-    "id": 2973485,
-    "name": "Invoice/Billing Service"
-  },
-  {
-    "active": true,
-    "billable": true,
-    "budget": 72,
-    "client": {
-      "active": true,
-      "external_id": null,
-      "id": 1390597,
-      "name": "ICC",
-      "updated_at": "2019-12-06T15:33:33-06:00"
-    },
-    "id": 3478321,
-    "name": "WEI Improvement"
-  },
-  {
-    "active": true,
-    "billable": true,
-    "budget": 2000,
-    "client": {
-      "active": true,
-      "external_id": null,
-      "id": 1492908,
-      "name": "Distillery Labs",
-      "updated_at": "2021-03-10T11:34:12-06:00"
-    },
-    "id": 3481427,
-    "name": "Working Group"
-  },
-  {
-    "active": true,
-    "billable": false,
-    "budget": 50,
-    "client": {
-      "active": true,
-      "external_id": null,
-      "id": 1350585,
-      "name": "Peoria Innovation Alliance",
-      "updated_at": "2019-06-04T14:49:08-05:00"
-    },
-    "id": 2973417,
-    "name": "NomCom"
-  },
-  {
-    "active": true,
-    "billable": true,
-    "budget": 15000,
-    "client": {
-      "active": true,
-      "external_id": null,
-      "id": 1492928,
-      "name": "Nerevu [External]",
-      "updated_at": "2021-03-12T20:59:25-06:00"
-    },
-    "id": 3463686,
-    "name": "Pamoja"
-  },
-  {
-    "active": true,
-    "billable": true,
-    "budget": 500,
-    "client": {
-      "active": true,
-      "external_id": null,
-      "id": 1350586,
-      "name": "GPEDC",
-      "updated_at": "2019-08-12T15:16:14-05:00"
-    },
-    "id": 3465719,
-    "name": "BOD"
-  },
-  {
-    "active": true,
-    "billable": true,
-    "budget": 500,
-    "client": {
-      "active": true,
-      "external_id": null,
-      "id": 1404386,
-      "name": "Prospective",
-      "updated_at": "2021-02-16T08:56:04-06:00"
-    },
-    "id": 3474778,
-    "name": "Crypto Dashboard"
-  },
-  {
-    "active": true,
-    "billable": true,
-    "budget": 500,
-    "client": {
-      "active": true,
-      "external_id": null,
       "id": 1350586,
       "name": "GPEDC",
       "updated_at": "2019-08-12T15:16:14-05:00"
     },
     "id": 3078743,
     "name": "Workforce Directory"
-  },
-  {
-    "active": true,
-    "billable": true,
-    "budget": 1000,
-    "client": {
-      "active": true,
-      "external_id": null,
-      "id": 1492928,
-      "name": "Nerevu [External]",
-      "updated_at": "2021-03-12T20:59:25-06:00"
-    },
-    "id": 3481460,
-    "name": "Project Quotation Service"
-  },
-  {
-    "active": true,
-    "billable": true,
-    "budget": 5000,
-    "client": {
-      "active": true,
-      "external_id": null,
-      "id": 1492928,
-      "name": "Nerevu [External]",
-      "updated_at": "2021-03-12T20:59:25-06:00"
-    },
-    "id": 3216781,
-    "name": "Dashboard Service"
-  },
-  {
-    "active": true,
-    "billable": true,
-    "budget": 3000,
-    "client": {
-      "active": true,
-      "external_id": null,
-      "id": 1350586,
-      "name": "GPEDC",
-      "updated_at": "2019-08-12T15:16:14-05:00"
-    },
-    "id": 2960359,
-    "name": "Data Automation"
-  },
-  {
-    "active": true,
-    "billable": true,
-    "budget": 2000,
-    "client": {
-      "active": true,
-      "external_id": null,
-      "id": 1390597,
-      "name": "ICC",
-      "updated_at": "2019-12-06T15:33:33-06:00"
-    },
-    "id": 3393712,
-    "name": "Sharepoint"
-  },
-  {
-    "active": true,
-    "billable": true,
-    "budget": 10000,
-    "client": {
-      "active": true,
-      "external_id": null,
-      "id": 1350585,
-      "name": "Peoria Innovation Alliance",
-      "updated_at": "2019-06-04T14:49:08-05:00"
-    },
-    "id": 2906311,
-    "name": "Open Peoria"
-  },
-  {
-    "active": true,
-    "billable": true,
-    "budget": 25000,
-    "client": {
-      "active": true,
-      "external_id": null,
-      "id": 1350590,
-      "name": "Hanson",
-      "updated_at": "2019-08-12T15:16:27-05:00"
-    },
-    "id": 3462065,
-    "name": "Grant Search App"
-  },
-  {
-    "active": true,
-    "billable": true,
-    "budget": 10000,
-    "client": {
-      "active": true,
-      "external_id": null,
-      "id": 1492928,
-      "name": "Nerevu [External]",
-      "updated_at": "2021-03-12T20:59:25-06:00"
-    },
-    "id": 3154983,
-    "name": "Kazeeki"
   },
   {
     "active": true,
@@ -516,34 +530,6 @@
     },
     "id": 2973544,
     "name": "Smart Airport"
-  },
-  {
-    "active": true,
-    "billable": true,
-    "budget": 25,
-    "client": {
-      "active": true,
-      "external_id": null,
-      "id": 1350585,
-      "name": "Peoria Innovation Alliance",
-      "updated_at": "2019-06-04T14:49:08-05:00"
-    },
-    "id": 2906312,
-    "name": "GP Data Community"
-  },
-  {
-    "active": true,
-    "billable": true,
-    "budget": 20000,
-    "client": {
-      "active": true,
-      "external_id": null,
-      "id": 1390597,
-      "name": "ICC",
-      "updated_at": "2019-12-06T15:33:33-06:00"
-    },
-    "id": 3078744,
-    "name": "WEI Website"
   },
   {
     "active": true,

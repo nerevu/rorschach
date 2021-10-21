@@ -40,5 +40,12 @@
     "rate.value": 0.0,
     "status": "ACTIVE",
     "taskId": "e60e4b66-ae0d-454a-91a7-277507973e37"
+  },
+  {
+    "name": "1 Hour Research (Partner)",
+    "projectId": "d2812acb-40dc-4ed2-8e83-e105ef21b9ef",
+    "rate.value": 150.0,
+    "status": "ACTIVE",
+    "taskId": "2056a412-9e15-4fe8-b05d-656f374d7410"
   }
 ]

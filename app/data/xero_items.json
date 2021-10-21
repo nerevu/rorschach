@@ -66,6 +66,17 @@
     }
   },
   {
+    "Code": "design-1h-L0",
+    "Description": "1 Hour Design Work (Non-Billable)",
+    "ItemID": "7b4e4735-cc1c-4f92-9a1f-990dde1a2636",
+    "Name": "1 Hour Design Work (Non-Billable)",
+    "SalesDetails": {
+      "AccountCode": "4025",
+      "TaxType": "NONE",
+      "UnitPrice": 0.0
+    }
+  },
+  {
     "Code": "design-1h-L3",
     "Description": "1 hour of design services by a Senior Designer",
     "ItemID": "0aea19eb-9e2e-4206-b917-e151dcdb31a5",
