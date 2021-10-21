@@ -26,15 +26,12 @@ from flask_cors import CORS
 from flask_caching import Cache
 from flask_compress import Compress
 
-from rq_dashboard import default_settings
-from rq_dashboard.cli import add_basic_auth
-
 from app.helpers import configure, email_hdlr, flask_formatter
 
 from mezmorize.utils import get_cache_config, get_cache_type
 from meza.fntools import CustomEncoder
 
-__version__ = "0.28.0"
+__version__ = "0.29.0"
 __title__ = "Nerevu API"
 __package_name__ = "api"
 __author__ = "Reuben Cummings"
@@ -48,17 +45,6 @@ BASEDIR = p.dirname(__file__)
 cache = Cache()
 compress = Compress()
 cors = CORS()
-
-
-def register_rq(app):
-    username = app.config.get("RQ_DASHBOARD_USERNAME")
-    password = app.config.get("RQ_DASHBOARD_PASSWORD")
-
-    if username and password:
-        add_basic_auth(blueprint=rq, username=username, password=password)
-        app.logger.info(f"Creating RQ-dashboard login for {username}")
-
-    app.register_blueprint(rq, url_prefix="/dashboard")
 
 
 def configure_talisman(app):
@@ -150,7 +136,6 @@ def create_app(script_info=None, **kwargs):
     app.url_map.strict_slashes = False
     cors.init_app(app)
     compress.init_app(app)
-    app.config.from_object(default_settings)
 
     try:
         if script_info.flask_config:
@@ -172,7 +157,6 @@ def create_app(script_info=None, **kwargs):
     check_settings(app)
 
     app.register_blueprint(api)
-    register_rq(app)
     configure_talisman(app)
     configure_cache(app)
     app.json_encoder = CustomEncoder
@@ -182,4 +166,3 @@ def create_app(script_info=None, **kwargs):
 # put at bottom to avoid circular reference errors
 from app.routes.api import blueprint as api  # noqa
 from app.routes.housekeeping import blueprint as housekeeping  # noqa
-from rq_dashboard import blueprint as rq  # noqa

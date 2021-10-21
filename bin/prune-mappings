@@ -1,5 +1,10 @@
 #!/usr/bin/env bash -uo pipefail
 
+echo
+echo "-----------------"
+echo "Pruning mappings…"
+echo "-----------------"
+echo
 manage prune -c users
 manage prune -c projects
 manage prune -c projecttasks

@@ -143,26 +143,29 @@ def help(ctx):
 )
 @click.option(
     "-c",
-    "--collection",
+    "--collection-name",
     type=Choice(COLLECTION_NAMES, case_sensitive=False),
     default="users",
 )
-def prune(source_prefix, collection, **kwargs):
+def prune(source_prefix, collection_name, **kwargs):
     """Remove duplicated and outdated mappings entries"""
     provider = get_provider(source_prefix)
     added_names = set()
-    collection = collection.lower()
-    is_tasks = collection == "projecttasks"
+    collection_name = collection_name.lower()
+    is_tasks = collection_name == "projecttasks"
 
     project_tasks = provider.ProjectTasks(dictify=True, dry_run=True)
-    XeroCollection = get_collection("xero", collection)
+    XeroCollection = get_collection("xero", collection_name)
     mappings = XeroCollection(dictify=True, dry_run=True).mappings
-    COLLECTIONS = dict(gen_collections(collection))
+    COLLECTIONS = dict(gen_collections(collection_name))
 
     def gen_items():
         # if there are dupes, keep the most recent
         for item in reversed(mappings):
             if is_tasks:
+                if source_prefix not in item:
+                    continue
+
                 project_id = item[source_prefix]["project"]
                 task_id = item[source_prefix]["task"]
                 project_tasks.rid = project_id
@@ -177,8 +180,15 @@ def prune(source_prefix, collection, **kwargs):
                 valid = item["xero"]["task"] in xero_task_ids
             else:
                 for prefix in AUTHENTICATION:
+                    if prefix not in COLLECTIONS:
+                        continue
+
                     Collection = COLLECTIONS[prefix]
-                    data = Collection(dictify=True, dry_run=True).data
+                    data = Collection(prefix, dictify=True, dry_run=True).data
+
+                    if prefix.lower() not in item:
+                        continue
+
                     valid = str(item[prefix.lower()]) in data
 
                     if not valid:
@@ -212,6 +222,8 @@ def prune(source_prefix, collection, **kwargs):
 )
 @click.option("-i", "--rid", help="resource ID")
 @click.option("-d", "--dictify/--no-dictify", default=False)
+@click.option("-e", "--debug", help="Debug mode", is_flag=True)
+@click.option("-h", "--headless/--no-headless", default=False)
 def store(prefix, collection_name, **kwargs):
     """Save user info to cache"""
     _store(prefix, collection_name, **kwargs)

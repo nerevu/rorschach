@@ -1,1 +1,1112 @@
-[]
+[
+  {
+    "billed": false,
+    "day": "2021-10-19",
+    "duration.total_minutes": 190,
+    "id": 203149578,
+    "label_id": 1344671,
+    "note": "Nerevu_Group__LLC_-_Tax_Payments.xlsx • Tax Payments • Account Transactions • View Manual Journal | Nerevu • Balance Sheet • Invoice INV-0206 • Xero • Nerevu • Preview",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2021-10-20",
+    "duration.total_minutes": 35,
+    "id": 203119381,
+    "label_id": 1344464,
+    "note": "Backlogged Video: Why Customers Really Buy - Notes (Google)",
+    "project.id": 2906240,
+    "user.id": 2014908
+  },
+  {
+    "billed": false,
+    "day": "2021-10-20",
+    "duration.total_minutes": 75,
+    "id": 203119365,
+    "label_id": 1344464,
+    "note": "Backlogged Video: Secret to How Customers Think - Notes (Google)",
+    "project.id": 2906240,
+    "user.id": 2014908
+  },
+  {
+    "billed": false,
+    "day": "2021-10-19",
+    "duration.total_minutes": 60,
+    "id": 202990503,
+    "label_id": 1344451,
+    "note": "WEI Website Testing ",
+    "project.id": 2906240,
+    "user.id": 2014908
+  },
+  {
+    "billed": false,
+    "day": "2021-10-19",
+    "duration.total_minutes": 20,
+    "id": 202990468,
+    "label_id": 1339639,
+    "note": "Update Airtable & Timely ",
+    "project.id": 2906240,
+    "user.id": 2014908
+  },
+  {
+    "billed": false,
+    "day": "2021-10-19",
+    "duration.total_minutes": 60,
+    "id": 202981383,
+    "label_id": 1344671,
+    "note": "Xero ",
+    "project.id": 2906240,
+    "user.id": 2014908
+  },
+  {
+    "billed": false,
+    "day": "2021-10-18",
+    "duration.total_minutes": 35,
+    "id": 202981191,
+    "label_id": 2173031,
+    "note": "Weekly Meeting ",
+    "project.id": 2906240,
+    "user.id": 2014908
+  },
+  {
+    "billed": false,
+    "day": "2021-08-12",
+    "duration.total_minutes": 60,
+    "id": 196227622,
+    "label_id": 1344452,
+    "note": "•  Began filling out the case study template for the Great Peoria Economic Development Council - Greater Peoria Data Hub (Client, Challenge, Outcomes)\n•  Research on GPEDC/GPDH",
+    "project.id": 2906240,
+    "user.id": 2014349
+  },
+  {
+    "billed": false,
+    "day": "2021-08-13",
+    "duration.total_minutes": 27,
+    "id": 196439889,
+    "label_id": 1344452,
+    "note": "• Drafted emails/developed questions for case study interviews",
+    "project.id": 2906240,
+    "user.id": 2014349
+  },
+  {
+    "billed": false,
+    "day": "2021-08-12",
+    "duration.total_minutes": 30,
+    "id": 196225713,
+    "label_id": 1344452,
+    "note": "•  Created a template for writing case studies",
+    "project.id": 2906240,
+    "user.id": 2014349
+  },
+  {
+    "billed": false,
+    "day": "2021-10-16",
+    "duration.total_minutes": 20,
+    "id": 202704028,
+    "label_id": 1339639,
+    "note": "Add webinar summary to Storytelling Summit - 11/3 & 4 Weekly Progress Update",
+    "project.id": 2906240,
+    "user.id": 2014908
+  },
+  {
+    "billed": false,
+    "day": "2021-10-16",
+    "duration.total_minutes": 30,
+    "id": 202704027,
+    "label_id": 1344671,
+    "note": "Xero - Chase Ink (see weekly progress update)",
+    "project.id": 2906240,
+    "user.id": 2014908
+  },
+  {
+    "billed": false,
+    "day": "2021-10-16",
+    "duration.total_minutes": 30,
+    "id": 202704025,
+    "label_id": 1339639,
+    "note": "Update Timely & Upload Summaries to Google Drive",
+    "project.id": 2906240,
+    "user.id": 2014908
+  },
+  {
+    "billed": false,
+    "day": "2021-10-13",
+    "duration.total_minutes": 30,
+    "id": 202445399,
+    "label_id": 1344671,
+    "note": "Xero ",
+    "project.id": 2906240,
+    "user.id": 2014908
+  },
+  {
+    "billed": false,
+    "day": "2021-10-14",
+    "duration.total_minutes": 35,
+    "id": 202702862,
+    "label_id": 2173031,
+    "note": "OSF Meeting/Notes",
+    "project.id": 2906240,
+    "user.id": 2014908
+  },
+  {
+    "billed": false,
+    "day": "2021-10-13",
+    "duration.total_minutes": 75,
+    "id": 202431770,
+    "label_id": 1344671,
+    "note": "Xero",
+    "project.id": 2906240,
+    "user.id": 2014908
+  },
+  {
+    "billed": false,
+    "day": "2021-10-12",
+    "duration.total_minutes": 360,
+    "id": 202320859,
+    "label_id": 1339639,
+    "note": "",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2021-10-11",
+    "duration.total_minutes": 240,
+    "id": 202320854,
+    "label_id": 1339639,
+    "note": "",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2021-09-21",
+    "duration.total_minutes": 188,
+    "id": 202320753,
+    "label_id": 1339639,
+    "note": "Fastmail • Activity Monitor • New meeting: Nerevu Call (60m) with Wendi Ramsay on Tuesday, July 13, 2021 | Fastmail • PIA Board Meeting | Fastmail • Calendar",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2021-09-20",
+    "duration.total_minutes": 49,
+    "id": 202320666,
+    "label_id": 1339639,
+    "note": "Fastmail • Airtable • Nerevu Task Entry Form • Calendar",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2021-09-20",
+    "duration.total_minutes": 21,
+    "id": 202318231,
+    "label_id": 1344451,
+    "note": "Custom domains for your Notion pages • n6g7/notion-cms: Notion.so as a headless CMS • No Code Websites using Notion as CMS • How to Create a Quick Note-Taking Template & Product Wiki in Notion?",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2021-09-20",
+    "duration.total_minutes": 51,
+    "id": 202320647,
+    "label_id": 2173031,
+    "note": "Weekly Progress Update: Week Ending 9/17/2021 | Fastmail • Dialpad Meetings • Airtable • Fastmail • Opt-In Opportunities | Recruitment Trends Survey & Candidate Match Tool | Fastmail • Nerevu Task Entry Form • Introducing: Solv[ED] Youth Innovation Challenge | Fastmail • Calendar • Timely",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2021-09-17",
+    "duration.total_minutes": 108,
+    "id": 202317477,
+    "label_id": 1339639,
+    "note": "Fastmail • Gusto • Calendar • New meeting: Nerevu Call (60m) with Wendi Ramsay on Tuesday, July 13, 2021 | Fastmail • Prarie Spine PRM assistance | Fastmail • Airtable • OmniFocus • RE: Can't add employee's work email [ ref:_00DG0hKQi._5001M1lEUST:ref ] | Fastmail",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2021-09-17",
+    "duration.total_minutes": 43,
+    "id": 202317442,
+    "label_id": 1344671,
+    "note": "Nerevu Exhibit A.docx • 2021 Engagement Letter-Nerevu.docx • Finder",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2021-09-16",
+    "duration.total_minutes": 116,
+    "id": 202317271,
+    "label_id": 1344452,
+    "note": "Airtable • LinkedIn • Make Your Day • Instapaper",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2021-09-15",
+    "duration.total_minutes": 73,
+    "id": 202317121,
+    "label_id": 2173031,
+    "note": "Airtable • Dialpad Meetings • Nerevu • Lunar Open Architecture (LOA) • Fwd: Update: NIGP Codes Ending with \"00\" digits. | Fastmail",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2021-09-14",
+    "duration.total_minutes": 126,
+    "id": 202313785,
+    "label_id": 1339639,
+    "note": "Fastmail • Contacts • Calendar • Manage groups",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2021-09-09",
+    "duration.total_minutes": 35,
+    "id": 202313353,
+    "label_id": 1339639,
+    "note": "Fastmail • Calendar",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2021-09-09",
+    "duration.total_minutes": 32,
+    "id": 202313345,
+    "label_id": 1339640,
+    "note": "Dialpad Meetings",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2021-09-09",
+    "duration.total_minutes": 41,
+    "id": 202313302,
+    "label_id": 2173031,
+    "note": "Dialpad Meetings",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2021-09-08",
+    "duration.total_minutes": 43,
+    "id": 202312738,
+    "label_id": 1339639,
+    "note": "Airtable",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2021-09-08",
+    "duration.total_minutes": 13,
+    "id": 202311717,
+    "label_id": 1339640,
+    "note": "Apply • Apply for a Google Scholarship: Virtual Digital Excellence Program, October 18-20, 2021 | Fastmail • Fastmail",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2021-09-08",
+    "duration.total_minutes": 112,
+    "id": 202310163,
+    "label_id": 1339639,
+    "note": "OmniFocus • Timely • Bitwarden • Nerevu • Timely — (Private Browsing) • Timely Feature Request Form — (Private Browsing) • Fastmail • Airtable • 7GUB9 | Fastmail • 10/8 | Fastmail • small correction request from Kaskaskia College | Fastmail",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2021-09-07",
+    "duration.total_minutes": 50,
+    "id": 202309935,
+    "label_id": 1339639,
+    "note": "OmniFocus",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2021-09-07",
+    "duration.total_minutes": 68,
+    "id": 202309767,
+    "label_id": 1339640,
+    "note": "Allies for Community Business • Gun.io • Finder • File Upload • Fastmail • Gusto",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2021-09-07",
+    "duration.total_minutes": 24,
+    "id": 202305995,
+    "label_id": 1344671,
+    "note": "My Profile • Payments • MyTax Illinois",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2021-09-06",
+    "duration.total_minutes": 10,
+    "id": 202305868,
+    "label_id": 1339636,
+    "note": "WEI • TryGhost/Ghost-CLI • reubano/csv2ofx",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2021-09-06",
+    "duration.total_minutes": 45,
+    "id": 202305808,
+    "label_id": 1344671,
+    "note": "Account Transactions • Xero Accounting Software",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2021-09-06",
+    "duration.total_minutes": 49,
+    "id": 202305804,
+    "label_id": 1339639,
+    "note": "OmniFocus • Finder",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2021-09-04",
+    "duration.total_minutes": 18,
+    "id": 202302811,
+    "label_id": 1344671,
+    "note": "Timely • Income Statement • Nerevu",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2021-09-03",
+    "duration.total_minutes": 21,
+    "id": 202302784,
+    "label_id": 1344521,
+    "note": "Gusto • Switch between Gusto profiles and accounts",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2021-09-03",
+    "duration.total_minutes": 72,
+    "id": 202302768,
+    "label_id": 1344671,
+    "note": "Projects • Lunar Open Architecture (LOA) • Zapier • Nerevu • Fwd: [media-lab] [billing] Heroku Invoice for July 2021 (Invoice #53558193) | Fastmail • Airtable • [media-lab] [billing] Heroku Invoice for August 2021 (Invoice #54821200) | Fastmail",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2021-09-03",
+    "duration.total_minutes": 231,
+    "id": 202302734,
+    "label_id": 1339639,
+    "note": "Timely • Gusto • Introducing Tasks ✅",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2021-09-03",
+    "duration.total_minutes": 28,
+    "id": 202302705,
+    "label_id": 1344671,
+    "note": "Preview • 2021 Engagement Letter-Nerevu.docx • Finder • Fastmail • Calendar",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2021-10-12",
+    "duration.total_minutes": 10,
+    "id": 202289402,
+    "label_id": 1339639,
+    "note": "Updated Tasks Airtable",
+    "project.id": 2906240,
+    "user.id": 2014908
+  },
+  {
+    "billed": false,
+    "day": "2021-10-12",
+    "duration.total_minutes": 110,
+    "id": 202289370,
+    "label_id": 2173031,
+    "note": "Weekly meeting ",
+    "project.id": 2906240,
+    "user.id": 2014908
+  },
+  {
+    "billed": false,
+    "day": "2021-10-11",
+    "duration.total_minutes": 25,
+    "id": 202170769,
+    "label_id": 1339639,
+    "note": "Weekly Update/Emails",
+    "project.id": 2906240,
+    "user.id": 2014908
+  },
+  {
+    "billed": false,
+    "day": "2021-10-07",
+    "duration.total_minutes": 65,
+    "id": 201857033,
+    "label_id": 1344464,
+    "note": "Webinar UW: How to Start and Internship",
+    "project.id": 2906240,
+    "user.id": 2014908
+  },
+  {
+    "billed": false,
+    "day": "2021-10-06",
+    "duration.total_minutes": 45,
+    "id": 201750035,
+    "label_id": 1344521,
+    "note": "Project Management Processes - Internal Project Workflow/Client De-brief",
+    "project.id": 2906240,
+    "user.id": 2014908
+  },
+  {
+    "billed": false,
+    "day": "2021-10-06",
+    "duration.total_minutes": 30,
+    "id": 201732528,
+    "label_id": 1344464,
+    "note": "Webinar GTM",
+    "project.id": 2906240,
+    "user.id": 2014908
+  },
+  {
+    "billed": false,
+    "day": "2021-10-06",
+    "duration.total_minutes": 45,
+    "id": 201725773,
+    "label_id": 1344451,
+    "note": "Webinar Internal/External Traffic - SEM ",
+    "project.id": 2906240,
+    "user.id": 2014908
+  },
+  {
+    "billed": false,
+    "day": "2021-10-06",
+    "duration.total_minutes": 20,
+    "id": 201705587,
+    "label_id": 1344671,
+    "note": "Reconciled Chase Ink (indicated in Airtable Accounting)",
+    "project.id": 2906240,
+    "user.id": 2014908
+  },
+  {
+    "billed": false,
+    "day": "2021-10-05",
+    "duration.total_minutes": 30,
+    "id": 201601331,
+    "label_id": 1344521,
+    "note": "Vanguard - per Reuben (He will have to call - I am not an authorized signer) ",
+    "project.id": 2906240,
+    "user.id": 2014908
+  },
+  {
+    "billed": false,
+    "day": "2021-10-05",
+    "duration.total_minutes": 15,
+    "id": 201594979,
+    "label_id": 1344521,
+    "note": "Diversity Compliance - Call and Ticket/Email Returned (wanted information from me to allow me access to get NIGP updated)",
+    "project.id": 2906240,
+    "user.id": 2014908
+  },
+  {
+    "billed": false,
+    "day": "2021-10-05",
+    "duration.total_minutes": 35,
+    "id": 201578893,
+    "label_id": 1344521,
+    "note": "Gusto (Phone - Resolve Invoicing for 2 contractors)",
+    "project.id": 2906240,
+    "user.id": 2014908
+  },
+  {
+    "billed": false,
+    "day": "2021-10-04",
+    "duration.total_minutes": 30,
+    "id": 201424636,
+    "label_id": 1339639,
+    "note": "Weekly Update Week Ending 10/1 & Timely Updating/Google Calendar Webinar Additions ",
+    "project.id": 2906240,
+    "user.id": 2014908
+  },
+  {
+    "billed": false,
+    "day": "2021-09-27",
+    "duration.total_minutes": 45,
+    "id": 200713221,
+    "label_id": 1344521,
+    "note": "Gusto/Utah/Northwest $0 File Tax Amend - (Completed internally by Rep named Charlie) - Phone ",
+    "project.id": 2906240,
+    "user.id": 2014908
+  },
+  {
+    "billed": false,
+    "day": "2021-09-23",
+    "duration.total_minutes": 60,
+    "id": 200708266,
+    "label_id": 1344521,
+    "note": "Webinar - Hiring GenZ (Employer)",
+    "project.id": 2906240,
+    "user.id": 2014908
+  },
+  {
+    "billed": false,
+    "day": "2021-09-26",
+    "duration.total_minutes": 35,
+    "id": 200577904,
+    "label_id": 1339639,
+    "note": "Weekly Progress Update & Timely for end of week",
+    "project.id": 2906240,
+    "user.id": 2014908
+  },
+  {
+    "billed": false,
+    "day": "2021-09-21",
+    "duration.total_minutes": 10,
+    "id": 200143335,
+    "label_id": 1339639,
+    "note": "Email re: Panel Viewing 9/20 - Time Tracking ",
+    "project.id": 2906240,
+    "user.id": 2014908
+  },
+  {
+    "billed": false,
+    "day": "2021-09-21",
+    "duration.total_minutes": 180,
+    "id": 200140479,
+    "label_id": 1344464,
+    "note": "Read GTD  - Bkmrk Chapter 5             \nhttps://docs.google.com/document/d/12-0HSPDYJdf4pn3DUIAfkTnYRGQJqqBqWyGUegsK-uQ/edit?usp=sharing",
+    "project.id": 2906240,
+    "user.id": 2014908
+  },
+  {
+    "billed": false,
+    "day": "2021-09-20",
+    "duration.total_minutes": 15,
+    "id": 200004217,
+    "label_id": 1339639,
+    "note": "Updating Timely Week Ending 9/17/21",
+    "project.id": 2906240,
+    "user.id": 2014908
+  },
+  {
+    "billed": false,
+    "day": "2021-09-20",
+    "duration.total_minutes": 60,
+    "id": 200002832,
+    "label_id": 1339639,
+    "note": "Email (Folders and Labels) - Fast Mail server went down and disconnected ",
+    "project.id": 2906240,
+    "user.id": 2014908
+  },
+  {
+    "billed": false,
+    "day": "2021-09-20",
+    "duration.total_minutes": 40,
+    "id": 200002793,
+    "label_id": 2173031,
+    "note": "Weekly Meeting",
+    "project.id": 2906240,
+    "user.id": 2014908
+  },
+  {
+    "billed": false,
+    "day": "2021-09-18",
+    "duration.total_minutes": 30,
+    "id": 200002735,
+    "label_id": 1339639,
+    "note": "Weekly Progress Report and Meeting Scheduling",
+    "project.id": 2906240,
+    "user.id": 2014908
+  },
+  {
+    "billed": false,
+    "day": "2021-09-17",
+    "duration.total_minutes": 20,
+    "id": 200002648,
+    "label_id": 1339639,
+    "note": "Emails",
+    "project.id": 2906240,
+    "user.id": 2014908
+  },
+  {
+    "billed": false,
+    "day": "2021-09-15",
+    "duration.total_minutes": 70,
+    "id": 199579391,
+    "label_id": 1344671,
+    "note": "Meeting with Reuben re: Xero/Airtable ",
+    "project.id": 2906240,
+    "user.id": 2014908
+  },
+  {
+    "billed": false,
+    "day": "2021-09-13",
+    "duration.total_minutes": 85,
+    "id": 199302190,
+    "label_id": 1339639,
+    "note": "DUA Setup - Phone Calls",
+    "project.id": 2906240,
+    "user.id": 2014908
+  },
+  {
+    "billed": false,
+    "day": "2021-09-13",
+    "duration.total_minutes": 55,
+    "id": 199293433,
+    "label_id": 1339639,
+    "note": "Gusto MA DOR - Phone",
+    "project.id": 2906240,
+    "user.id": 2014908
+  },
+  {
+    "billed": false,
+    "day": "2021-09-13",
+    "duration.total_minutes": 40,
+    "id": 199293406,
+    "label_id": 2173031,
+    "note": "Weekly Meeting ",
+    "project.id": 2906240,
+    "user.id": 2014908
+  },
+  {
+    "billed": false,
+    "day": "2021-09-10",
+    "duration.total_minutes": 15,
+    "id": 199111250,
+    "label_id": 1344521,
+    "note": "Tuck Diversity Application",
+    "project.id": 2906240,
+    "user.id": 2014908
+  },
+  {
+    "billed": false,
+    "day": "2021-09-10",
+    "duration.total_minutes": 45,
+    "id": 199111226,
+    "label_id": 1344521,
+    "note": "Sam.gov - Biz renewal",
+    "project.id": 2906240,
+    "user.id": 2014908
+  },
+  {
+    "billed": false,
+    "day": "2021-09-09",
+    "duration.total_minutes": 55,
+    "id": 199084466,
+    "label_id": 1344464,
+    "note": "Youtube Video - Google DoIT https://youtu.be/rrEBM3zZGlU",
+    "project.id": 2906240,
+    "user.id": 2014908
+  },
+  {
+    "billed": false,
+    "day": "2021-09-02",
+    "duration.total_minutes": 20,
+    "id": 198419369,
+    "label_id": 1344671,
+    "note": "2021 Engagement Letter-Nerevu.docx",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2021-09-02",
+    "duration.total_minutes": 88,
+    "id": 198419319,
+    "label_id": 1344451,
+    "note": "AWS Amplify Console • AWS Elastic Beanstalk • node.js - Deploy on AWS ElasticBeanstalk - run custom npm script before starting server? • How to deploy an Express application with React front-end on AWS Elastic Beanstalk • Terminal • Sublime Text • Fork • Heroku • Build a React Application on AWS ...",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2021-09-01",
+    "duration.total_minutes": 415,
+    "id": 198419133,
+    "label_id": 1344451,
+    "note": "NodeChef Cloud Platform • paas heroku node alternative at DuckDuckGo • Amazon Web Services Sign-In • AWS Command Line Interface • EC2 Management Console • Platform.sh • elasticbeanstalk vs heroku pricing pricing at DuckDuckGo • Deploy your Node.js app using the CLI • Deploy your app using the CLI...",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2021-08-31",
+    "duration.total_minutes": 28,
+    "id": 198416925,
+    "label_id": 2173031,
+    "note": "Dialpad Meetings • Weekly Progress Report 8/27/2021 | Fastmail",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2021-08-30",
+    "duration.total_minutes": 44,
+    "id": 198416844,
+    "label_id": 1339639,
+    "note": "Fastmail • Meeting this morning | Fastmail • Quick Hello | Fastmail • Weekly Progress Report 8/27/2021 | Fastmail • Calendar • OmniFocus",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2021-08-23",
+    "duration.total_minutes": 30,
+    "id": 198416407,
+    "label_id": 2173031,
+    "note": "Dialpad Meetings • Finder • Fastmail • Weekly update | Fastmail • Deliverables • Prarie Spine PRM updates | Fastmail • Brand/communications proposal | Fastmail",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2021-08-21",
+    "duration.total_minutes": 16,
+    "id": 198414117,
+    "label_id": 1339639,
+    "note": "Fastmail",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2021-08-19",
+    "duration.total_minutes": 40,
+    "id": 198413980,
+    "label_id": 1339639,
+    "note": "My Drive • Case • Fastmail • OmniFocus • Timely • Prarie Spine PRM assistance | Fastmail • Sign in with Apple ID",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2021-08-18",
+    "duration.total_minutes": 56,
+    "id": 198413935,
+    "label_id": 1339639,
+    "note": "DMARC weekly digest for nerevu.com | Fastmail • Mail • wei-app notification | Fastmail • Fastmail • Airtable • Case • Calendar",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2021-08-18",
+    "duration.total_minutes": 41,
+    "id": 198413928,
+    "label_id": 1344671,
+    "note": "Income Statement • Projects • Nerevu",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2021-08-17",
+    "duration.total_minutes": 18,
+    "id": 198413619,
+    "label_id": 1339639,
+    "note": "Activity Monitor • nvALT • Hi from Parade (YC S20) - Thanks for joining our waitlist last year | Fastmail",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2021-08-17",
+    "duration.total_minutes": 54,
+    "id": 198411460,
+    "label_id": 1344671,
+    "note": "Balance Sheet • Contact Xero Support • Case • File Upload",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2021-08-16",
+    "duration.total_minutes": 36,
+    "id": 198411239,
+    "label_id": 1339639,
+    "note": "Dialpad Meetings • Status updates | Fastmail • Timely • Gusto • Dialpad • OmniFocus • Calendar • Airtable • RE: OCC Change 8/17 - 8pm | Fastmail",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2021-08-16",
+    "duration.total_minutes": 58,
+    "id": 198411191,
+    "label_id": 1344671,
+    "note": "Account Transactions • Income Statement",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2021-08-12",
+    "duration.total_minutes": 68,
+    "id": 198409398,
+    "label_id": 1344671,
+    "note": "View Manual Journal | Nerevu • Nerevu • Balance Sheet • Balance Sheet (Custom) • Account Transactions • Xero",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2021-08-11",
+    "duration.total_minutes": 26,
+    "id": 198408907,
+    "label_id": 1339639,
+    "note": "Timely • Calendly • Week of August 8, 2021 • Calendar",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2021-08-11",
+    "duration.total_minutes": 43,
+    "id": 198408859,
+    "label_id": 1339639,
+    "note": "Bitwarden Web Vault • Bitwarden Help & Support • Bitwarden",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2021-08-10",
+    "duration.total_minutes": 180,
+    "id": 198408678,
+    "label_id": 1339640,
+    "note": "Community | Hello Alice • The Entrepreneurial Spirit Fund by SIA Scotch • Nerevu • Capital Access Financial System • Reports — (Private Browsing) • Balance Sheet (Custom) • Income Statement • Bitwarden • Activity Monitor",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2021-08-09",
+    "duration.total_minutes": 11,
+    "id": 198408658,
+    "label_id": 1339639,
+    "note": "Fastmail • Calendar",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2021-08-09",
+    "duration.total_minutes": 24,
+    "id": 198408622,
+    "label_id": 1344671,
+    "note": "Income Statement • Account Transactions",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2021-08-06",
+    "duration.total_minutes": 62,
+    "id": 198406517,
+    "label_id": 1339639,
+    "note": "Timely • Calendar • Fastmail",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2021-08-06",
+    "duration.total_minutes": 197,
+    "id": 198406515,
+    "label_id": 1344671,
+    "note": "Nerevu • Stripe • Plan contribution summary • Account Transactions • Balance Sheet • Xero • Invoice • Billing Management Console • Nerevu Group • Invoice INV-0202 • Heroku Help • File Upload • Nerevu Invoice INV-0202 | Fastmail • Zapier • Airtable • Lunar Open Architecture (LOA) • You're invited ...",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2021-08-05",
+    "duration.total_minutes": 133,
+    "id": 198406339,
+    "label_id": 1339639,
+    "note": "Timely • Calendar",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2021-08-04",
+    "duration.total_minutes": 54,
+    "id": 198406283,
+    "label_id": 1339639,
+    "note": "Fastmail • Breaking: Good GPEDC News | Fastmail",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2021-08-04",
+    "duration.total_minutes": 87,
+    "id": 198406130,
+    "label_id": 1344451,
+    "note": "why calendar apps don't support caldav at DuckDuckGo • August 2021 • Microsoft Community • Calendly • New Event: Reuben Cummings - 09:30am Thu, Aug 5, 2021 - 60 Minute Meeting | Fastmail • New meeting: Call (30m) with Reuben Cummings on Friday, August 6, 2021 | Fastmail • Scheduled meeting: Call ...",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2021-08-04",
+    "duration.total_minutes": 112,
+    "id": 198405856,
+    "label_id": 1344671,
+    "note": "Preview • DinerDiver • Payment Center • Fastmail • Nerevu • Compatible check stationery for printing checks from Xero • TurboTax Tax Tips & Videos • Projects",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2021-08-03",
+    "duration.total_minutes": 28,
+    "id": 198403519,
+    "label_id": 1344604,
+    "note": "How to fix? • August 2021 • Event details • August  2021 • Economic Development Social Hour, aka \"Drinking Development\" | Fastmail",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2021-08-03",
+    "duration.total_minutes": 47,
+    "id": 198403425,
+    "label_id": 1344671,
+    "note": "Nerevu",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2021-08-03",
+    "duration.total_minutes": 37,
+    "id": 198403418,
+    "label_id": 1339639,
+    "note": "Timely • OmniFocus • Calendar",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2021-08-02",
+    "duration.total_minutes": 2,
+    "id": 198403186,
+    "label_id": 1339639,
+    "note": "Fastmail",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2021-08-02",
+    "duration.total_minutes": 63,
+    "id": 198403155,
+    "label_id": 1344466,
+    "note": "Rajith zoom.us • Calendar • Cloze",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2021-07-31",
+    "duration.total_minutes": 29,
+    "id": 195569776,
+    "label_id": 1339639,
+    "note": "Fastmail • Entrepreneurship Connections | Fastmail • Bradley University • 2nd Round Interview Scheduling | Fastmail • Small Business Function at Bradley University | Fastmail",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2021-07-30",
+    "duration.total_minutes": 18,
+    "id": 195569715,
+    "label_id": 1339639,
+    "note": "Thanks, Reuben! | Fastmail • Invitation to Meet with Wharton's Rajith Sebastien about Tech Workforce Recruitment | Fastmail • Finder • Veem",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2021-07-29",
+    "duration.total_minutes": 22,
+    "id": 195516082,
+    "label_id": 1339639,
+    "note": "Calendar",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2021-07-22",
+    "duration.total_minutes": 45,
+    "id": 195513145,
+    "label_id": 1344466,
+    "note": "(1) Facebook • LinkedIn • Fwd: Fruits of Digital Transformations | EV Growth | Fastmail • (2) Facebook",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2021-07-22",
+    "duration.total_minutes": 27,
+    "id": 195513095,
+    "label_id": 1339640,
+    "note": "Community | Hello Alice • Hello Alice • THE ENTREPRENEURIAL SPIRIT FUND BY SIA SCOTCH • Fwd: Updates Including SBA Restaurant Revitalization Fund Program Information | Fastmail • Cage Code 7GUB9 | Fastmail • June Newsletter | Fastmail",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2021-07-22",
+    "duration.total_minutes": 44,
+    "id": 195513069,
+    "label_id": 1344671,
+    "note": "Dialpad Meetings • nvALT • Finder",
+    "project.id": 2906240,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2021-07-22",
+    "duration.total_minutes": 14,
+    "id": 195513050,
+    "label_id": 1339639,
+    "note": "Timely • Zapier",
+    "project.id": 2906240,
+    "user.id": 933370
+  }
+]

@@ -1,0 +1,392 @@
+[
+  {
+    "billed": false,
+    "day": "2021-08-20",
+    "duration.total_minutes": 10,
+    "id": 196940674,
+    "label_id": 2173031,
+    "note": "Interview with Reuben (GPEDC case study)",
+    "project.id": 3632139,
+    "user.id": 2014349
+  },
+  {
+    "billed": false,
+    "day": "2021-08-20",
+    "duration.total_minutes": 10,
+    "id": 196939735,
+    "label_id": 1339639,
+    "note": "Upload weekly hours to Timely",
+    "project.id": 3632139,
+    "user.id": 2014349
+  },
+  {
+    "billed": false,
+    "day": "2021-08-16",
+    "duration.total_minutes": 15,
+    "id": 196939228,
+    "label_id": 2173031,
+    "note": "Meeting with Jake discussing case studies",
+    "project.id": 3632139,
+    "user.id": 2014349
+  },
+  {
+    "billed": false,
+    "day": "2021-08-16",
+    "duration.total_minutes": 15,
+    "id": 196939250,
+    "label_id": 2173031,
+    "note": "Meeting with Reuben: overview/clarification on case study",
+    "project.id": 3632139,
+    "user.id": 2014349
+  },
+  {
+    "billed": false,
+    "day": "2021-08-17",
+    "duration.total_minutes": 90,
+    "id": 196939537,
+    "label_id": 1344444,
+    "note": "Worked on general data automation infograph",
+    "project.id": 3632139,
+    "user.id": 2014349
+  },
+  {
+    "billed": false,
+    "day": "2021-08-18",
+    "duration.total_minutes": 60,
+    "id": 196939577,
+    "label_id": 1344444,
+    "note": "Work on general data automation IG post (swipe)",
+    "project.id": 3632139,
+    "user.id": 2014349
+  },
+  {
+    "billed": false,
+    "day": "2021-08-20",
+    "duration.total_minutes": 20,
+    "id": 196941914,
+    "label_id": 1344444,
+    "note": "Turn general data automation infograph into IG posts",
+    "project.id": 3632139,
+    "user.id": 2014349
+  },
+  {
+    "billed": false,
+    "day": "2021-08-18",
+    "duration.total_minutes": 60,
+    "id": 196939643,
+    "label_id": 1344444,
+    "note": "Work on layout for specific case study",
+    "project.id": 3632139,
+    "user.id": 2014349
+  },
+  {
+    "billed": false,
+    "day": "2021-08-19",
+    "duration.total_minutes": 90,
+    "id": 196939716,
+    "label_id": 1344444,
+    "note": "Worked on blog post version of case study",
+    "project.id": 3632139,
+    "user.id": 2014349
+  },
+  {
+    "billed": false,
+    "day": "2021-08-16",
+    "duration.total_minutes": 60,
+    "id": 196939492,
+    "label_id": 1344449,
+    "note": "Worked on general automation caption for social media for case study",
+    "project.id": 3632139,
+    "user.id": 2014349
+  },
+  {
+    "billed": false,
+    "day": "2021-09-07",
+    "duration.total_minutes": 10,
+    "id": 202309925,
+    "label_id": 1344449,
+    "note": "Peoria, IL • WEI Case - Edited.docx • WEI Case Study • Shared with me",
+    "project.id": 3632139,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2021-09-28",
+    "duration.total_minutes": 105,
+    "id": 201421187,
+    "label_id": 1344451,
+    "note": "Case Study Format Research",
+    "project.id": 3632139,
+    "user.id": 2014908
+  },
+  {
+    "billed": false,
+    "day": "2021-09-27",
+    "duration.total_minutes": 90,
+    "id": 200709819,
+    "label_id": 1344464,
+    "note": "Case Study Formats w/ Summary Uploaded to Drive",
+    "project.id": 3632139,
+    "user.id": 2014908
+  },
+  {
+    "billed": false,
+    "day": "2021-09-27",
+    "duration.total_minutes": 20,
+    "id": 200717004,
+    "label_id": 2173031,
+    "note": "Alice - Email returned, Questionnaire Preferred. Created in Drive - Sent via Email ",
+    "project.id": 3632139,
+    "user.id": 2014908
+  },
+  {
+    "billed": false,
+    "day": "2021-09-24",
+    "duration.total_minutes": 90,
+    "id": 200577886,
+    "label_id": 1344464,
+    "note": "External Case Study Research",
+    "project.id": 3632139,
+    "user.id": 2014908
+  },
+  {
+    "billed": false,
+    "day": "2021-09-08",
+    "duration.total_minutes": 15,
+    "id": 198875630,
+    "label_id": 1339639,
+    "note": "Changes in Timely - Billable to Non",
+    "project.id": 3632139,
+    "user.id": 2014908
+  },
+  {
+    "billed": false,
+    "day": "2021-09-07",
+    "duration.total_minutes": 150,
+    "id": 198729792,
+    "label_id": 1344452,
+    "note": "WEI Case: Edited Docx - Text Revisions before reformatting to add images",
+    "project.id": 3632139,
+    "user.id": 2014908
+  },
+  {
+    "billed": false,
+    "day": "2021-09-07",
+    "duration.total_minutes": 60,
+    "id": 198714136,
+    "label_id": 2173031,
+    "note": "Weekly Meeting ",
+    "project.id": 3632139,
+    "user.id": 2014908
+  },
+  {
+    "billed": false,
+    "day": "2021-08-30",
+    "duration.total_minutes": 165,
+    "id": 197858465,
+    "label_id": 1344452,
+    "note": "Infographic - Based on Final Draft, Uploaded to Google Drive",
+    "project.id": 3632139,
+    "user.id": 2014908
+  },
+  {
+    "billed": false,
+    "day": "2021-08-30",
+    "duration.total_minutes": 60,
+    "id": 197858438,
+    "label_id": 1344452,
+    "note": "Case Study - Revision Final Draft",
+    "project.id": 3632139,
+    "user.id": 2014908
+  },
+  {
+    "billed": false,
+    "day": "2021-08-27",
+    "duration.total_minutes": 45,
+    "id": 197682826,
+    "label_id": 1344604,
+    "note": "Conclusion to Case Study Start ",
+    "project.id": 3632139,
+    "user.id": 2014908
+  },
+  {
+    "billed": false,
+    "day": "2021-08-27",
+    "duration.total_minutes": 150,
+    "id": 197682794,
+    "label_id": 1344452,
+    "note": "Infographic Start ",
+    "project.id": 3632139,
+    "user.id": 2014908
+  },
+  {
+    "billed": false,
+    "day": "2021-08-26",
+    "duration.total_minutes": 150,
+    "id": 197534991,
+    "label_id": 1344452,
+    "note": "Outline Rough & Image Sourcing/Layout??",
+    "project.id": 3632139,
+    "user.id": 2014908
+  },
+  {
+    "billed": false,
+    "day": "2021-08-24",
+    "duration.total_minutes": 150,
+    "id": 197296761,
+    "label_id": 1344452,
+    "note": "Rough Start WEI Case Study (Not Posted)",
+    "project.id": 3632139,
+    "user.id": 2014908
+  },
+  {
+    "billed": false,
+    "day": "2021-08-24",
+    "duration.total_minutes": 15,
+    "id": 197296737,
+    "label_id": 2173031,
+    "note": "Interview with Kayla Phillips WEI",
+    "project.id": 3632139,
+    "user.id": 2014908
+  },
+  {
+    "billed": false,
+    "day": "2021-08-24",
+    "duration.total_minutes": 30,
+    "id": 197296715,
+    "label_id": 2173031,
+    "note": "Weekly Meeting with Reuben",
+    "project.id": 3632139,
+    "user.id": 2014908
+  },
+  {
+    "billed": false,
+    "day": "2021-08-23",
+    "duration.total_minutes": 10,
+    "id": 197141604,
+    "label_id": 1339639,
+    "note": "Email Jake Hamann & (Sam Daughtry no contact as of 8/23) Updated Timely for the day/Thursday 8/19 & Rest of Friday 8/20",
+    "project.id": 3632139,
+    "user.id": 2014908
+  },
+  {
+    "billed": false,
+    "day": "2021-08-23",
+    "duration.total_minutes": 5,
+    "id": 197140834,
+    "label_id": 1339639,
+    "note": "Weekend Email Check ",
+    "project.id": 3632139,
+    "user.id": 2014908
+  },
+  {
+    "billed": false,
+    "day": "2021-08-20",
+    "duration.total_minutes": 60,
+    "id": 197138251,
+    "label_id": 1344452,
+    "note": "Revision Outline Format (1) + Research WEI/ICC Website ",
+    "project.id": 3632139,
+    "user.id": 2014908
+  },
+  {
+    "billed": false,
+    "day": "2021-08-20",
+    "duration.total_minutes": 60,
+    "id": 197138026,
+    "label_id": 1344452,
+    "note": "Outline - Dawn Interview Additions",
+    "project.id": 3632139,
+    "user.id": 2014908
+  },
+  {
+    "billed": false,
+    "day": "2021-08-20",
+    "duration.total_minutes": 30,
+    "id": 197138004,
+    "label_id": 2173031,
+    "note": "Interview with Dawn Koeltzow",
+    "project.id": 3632139,
+    "user.id": 2014908
+  },
+  {
+    "billed": false,
+    "day": "2021-08-19",
+    "duration.total_minutes": 180,
+    "id": 197139940,
+    "label_id": 1344464,
+    "note": "Research - WEI Case Study Docs - Note Taking (Outline)",
+    "project.id": 3632139,
+    "user.id": 2014908
+  },
+  {
+    "billed": false,
+    "day": "2021-08-19",
+    "duration.total_minutes": 30,
+    "id": 197138370,
+    "label_id": 1339639,
+    "note": "Sent Emails to Schedule 1st contact interviews with Designers, Intern, WEI Project Director (Not everyone responded ",
+    "project.id": 3632139,
+    "user.id": 2014908
+  },
+  {
+    "billed": false,
+    "day": "2021-08-18",
+    "duration.total_minutes": 120,
+    "id": 196898940,
+    "label_id": 2173031,
+    "note": "WEI Outline - Reuben Interview Add in",
+    "project.id": 3632139,
+    "user.id": 2014908
+  },
+  {
+    "billed": false,
+    "day": "2021-08-18",
+    "duration.total_minutes": 15,
+    "id": 196898919,
+    "label_id": 1339639,
+    "note": "Meeting Scheduling",
+    "project.id": 3632139,
+    "user.id": 2014908
+  },
+  {
+    "billed": false,
+    "day": "2021-08-17",
+    "duration.total_minutes": 45,
+    "id": 196590184,
+    "label_id": 1344464,
+    "note": "Outline Begin/Questionnaire Prep",
+    "project.id": 3632139,
+    "user.id": 2014908
+  },
+  {
+    "billed": false,
+    "day": "2021-08-17",
+    "duration.total_minutes": 135,
+    "id": 196590076,
+    "label_id": 1344464,
+    "note": "WEI Research Case Study",
+    "project.id": 3632139,
+    "user.id": 2014908
+  },
+  {
+    "billed": false,
+    "day": "2021-08-23",
+    "duration.total_minutes": 10,
+    "id": 197140985,
+    "label_id": 1339639,
+    "note": "Weekly Progress Report Update ",
+    "project.id": 3632139,
+    "user.id": 2014908
+  },
+  {
+    "billed": false,
+    "day": "2021-08-23",
+    "duration.total_minutes": 180,
+    "id": 197141564,
+    "label_id": 1344449,
+    "note": "Outline",
+    "project.id": 3632139,
+    "user.id": 2014908
+  }
+]

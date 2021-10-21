@@ -20,6 +20,7 @@ _mailinglist
 .cache/
 docs/_build/
 app.db
+screenshots/*
 
 # Coverage reports
 htmlcov/
@@ -33,3 +34,6 @@ htmlcov/
 # App Cache
 app/cache/*
 commissioner/cache/*
+
+# Misc
+screenshots/*

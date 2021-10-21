@@ -1,3 +1,8 @@
 #!/usr/bin/env bash -uo pipefail
 
+echo
+echo "-----------------------"
+echo "Storing xero inventory…"
+echo "-----------------------"
+echo
 manage store -P xero -c inventory

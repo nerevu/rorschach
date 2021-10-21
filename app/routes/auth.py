@@ -41,7 +41,6 @@ logger.propagate = False
 APP_DIR = Path(__file__).parents[1]
 DATA_DIR = APP_DIR.joinpath("data")
 MAPPINGS_DIR = APP_DIR.joinpath("mappings")
-PREFIX = Config.API_URL_PREFIX
 
 
 def process_result(result, fields=None, black_list=None, **kwargs):
@@ -57,9 +56,9 @@ def process_result(result, fields=None, black_list=None, **kwargs):
     return result
 
 
-def store(prefix, collection_name, *args, **kwargs):
+def store(prefix, collection_name, **kwargs):
     Collection = get_collection(prefix, collection_name)
-    collection = Collection(prefix, *args, **kwargs)
+    collection = Collection(prefix, **kwargs)
     response = collection.get(update_cache=True)
     json = response.json
 
@@ -70,7 +69,7 @@ def store(prefix, collection_name, *args, **kwargs):
 
 
 class BaseView(ProviderMixin, MethodView):
-    def __init__(self, prefix, **kwargs):
+    def __init__(self, prefix=None, **kwargs):
         super().__init__(prefix)
 
         self.START_PARMS = {
@@ -98,7 +97,7 @@ class BaseView(ProviderMixin, MethodView):
             self.domain = None
             def_start = def_end - timedelta(days=Config.REPORT_DAYS)
         else:
-            self.client = get_auth_client(self.prefix, **app.config)
+            self.client = get_auth_client(self.prefix, **app.config, **kwargs)
             self.data_key = self.client.data_key
             self.json_data = self.client.json_data
             self.dump_data = self.client.dump_data
@@ -249,18 +248,16 @@ class Resource(BaseView):
             >>> kwargs = {"options": options}
             >>> qb_transactions = Resource("qb", "TransactionList", **kwargs)
         """
+        super().__init__(prefix, **kwargs)
         self.resource = resource
         self.subresource = kwargs.get("subresource", "")
         self.subresource_id = kwargs.get("subresource_id")
         self.lowered_resource = self.resource.lower()
         self.lowered_subresource = self.subresource.lower()
-        super().__init__(prefix, **kwargs)
 
         self.fields = kwargs.get("fields", [])
         self.map_factory = kwargs.get("map_factory", reg_mapper)
         self.entry_factory = kwargs.get("entry_factory")
-        self.get_json_response = kwargs.get("get_json_response")
-        self.patch_response = kwargs.get("patch_response")
         self.eof = False
 
         try:
@@ -311,6 +308,12 @@ class Resource(BaseView):
 
     def __getitem__(self, key):
         return self.data[key]
+
+    def patch_response(self):
+        raise NotImplementedError
+
+    def get_json_response(self):
+        raise NotImplementedError
 
     @property
     def results(self):
@@ -816,27 +819,34 @@ class Resource(BaseView):
             status_code = 200 if result else 404
             ok = status_code == 200
             json = {"result": result, "ok": ok, "status_code": status_code}
-        elif self.get_json_response:
-            self.client.json = self.get_json_response()
-            json = get_json_response(None, self.client)
         else:
             try:
-                url = self.api_url
-            except AssertionError as err:
-                url = None
-                self.error_msg, status_code = err.args[0]
-            else:
-                if self.id:
-                    url += f"/{self.id}"
-                elif source_name or source_rid:
+                self.client.json = self.get_json_response()
+            except NotImplementedError:
+                try:
+                    url = self.api_url
+                except AssertionError as err:
                     url = None
+                    self.error_msg, status_code = err.args[0]
+                else:
+                    if url and self.id:
+                        url += f"/{self.id}"
+                    elif source_name or source_rid:
+                        url = None
 
-            if url:
-                headers = {**self.headers, **kwargs.get("headers", {})}
-                rkwargs = {"headers": headers, "params": self.params, **app.config}
-                json = get_json_response(url, self.client, **rkwargs)
+                if url:
+                    headers = {**self.headers, **kwargs.get("headers", {})}
+                    rkwargs = {"headers": headers, "params": self.params, **app.config}
+                    json = get_json_response(url, self.client, **rkwargs)
+                else:
+                    json = {
+                        "message": "No API url provided!",
+                        "result": {},
+                        "ok": False,
+                        "status_code": 404,
+                    }
             else:
-                json = {"result": {}, "ok": False, "status_code": 404}
+                json = get_json_response(None, self.client)
 
         result = json.get("result")
 
@@ -981,9 +991,13 @@ class Resource(BaseView):
                 "ok": True,
                 "message": f"Disable dry_run mode to PATCH {self}.",
             }
-        elif self.patch_response:
-            self.client.response = self.patch_response(**data)
-            json = get_json_response(None, self.client)
+        else:
+            try:
+                self.client.response = self.patch_response(**data)
+            except NotImplementedError:
+                pass
+            else:
+                json = get_json_response(None, self.client)
 
         if not json:
             url = f"{self.api_url}/{self.id}"

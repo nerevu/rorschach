@@ -1,1 +1,22 @@
-[]
+[
+  {
+    "billed": false,
+    "day": "2021-07-30",
+    "duration.total_minutes": 71,
+    "id": 195516124,
+    "label_id": 1344445,
+    "note": "Office 365 • Google for Nonprofits • Preview • Urban League Website Development Proposal by Nerevu Group.pages • TCPUL A Record changes v0003.docx • Aplus.net: Web Hosting & Domain Name Registration Services • Names4Ever Control Panel • Fastmail • Foundation • Book1",
+    "project.id": 3147199,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2021-07-28",
+    "duration.total_minutes": 117,
+    "id": 195513191,
+    "label_id": 1339640,
+    "note": "Fastmail • Urban League Website Development Proposal by Nerevu Group.pages • Preview • Brand/communications proposal | Fastmail",
+    "project.id": 3147199,
+    "user.id": 933370
+  }
+]

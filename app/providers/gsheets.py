@@ -9,6 +9,7 @@ from datetime import date
 from time import sleep
 
 import pygogo as gogo
+import gspread
 
 from gspread.exceptions import APIError
 
@@ -78,11 +79,17 @@ def add_id(record):
 
 
 class GSheets(Resource):
-    def __init__(self, *args, **kwargs):
-        super().__init__(PREFIX, *args, **kwargs)
-        self.gc = self.client.gc
-        self._sheet_id = kwargs.get("sheet_id", self.client.sheet_id)
-        self._worksheet_name = kwargs.get("worksheet_name", self.client.worksheet_name)
+    def __init__(self, prefix=PREFIX, **kwargs):
+        super().__init__(prefix, **kwargs)
+
+        if self.client:
+            self.gc = gspread.authorize(self.client.credentials)
+            self._sheet_id = kwargs.get("sheet_id", self.client.sheet_id)
+            self._worksheet_name = kwargs.get("worksheet_name", self.client.worksheet_name)
+        else:
+            self._sheet_id = kwargs.get("sheet_id")
+            self._worksheet_name = kwargs.get("worksheet_name")
+
         self.use_default = kwargs.get("use_default", True)
         self.chunksize = kwargs.get("chunksize")
         self._sheet_name = kwargs.get("sheet_name")
@@ -207,13 +214,13 @@ class GSheets(Resource):
 # Resources
 ###########################################################################
 class Status(GSheets):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, resource="status", **kwargs)
+    def __init__(self, prefix=PREFIX, **kwargs):
+        super().__init__(prefix, resource="status", **kwargs)
 
 
 class Projects(GSheets):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, resource="projects", **kwargs)
+    def __init__(self, prefix=PREFIX, **kwargs):
+        super().__init__(prefix, resource="projects", **kwargs)
 
     def get_json_response(self):
         self.worksheet_name = "client projects"
@@ -236,8 +243,8 @@ class Projects(GSheets):
 
 
 class Users(GSheets):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, resource="users", **kwargs)
+    def __init__(self, prefix=PREFIX, **kwargs):
+        super().__init__(prefix, resource="users", **kwargs)
 
     def get_json_response(self):
         result = [
@@ -252,8 +259,8 @@ class Users(GSheets):
 
 
 class Contacts(GSheets):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, resource="contacts", **kwargs)
+    def __init__(self, prefix=PREFIX, **kwargs):
+        super().__init__(prefix, resource="contacts", **kwargs)
 
     def get_json_response(self):
         result = self.worksheet.col_values(1)[1:]
@@ -265,8 +272,8 @@ class Contacts(GSheets):
 
 
 class Tasks(GSheets):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, resource="tasks", **kwargs)
+    def __init__(self, prefix=PREFIX, **kwargs):
+        super().__init__(prefix, resource="tasks", **kwargs)
 
     def get_json_response(self):
         result = [
@@ -281,7 +288,7 @@ class Tasks(GSheets):
 
 
 class Time(GSheets):
-    def __init__(self, *args, **kwargs):
+    def __init__(self, prefix=PREFIX, **kwargs):
         fields = [
             "id",
             "row",
@@ -297,7 +304,7 @@ class Time(GSheets):
         processor = events_processor
         filterer = events_filterer
         kwargs.update({"fields": fields, "processor": processor, "filterer": filterer})
-        super().__init__(*args, resource="events", **kwargs)
+        super().__init__(prefix, resource="events", **kwargs)
 
     def set_patch_data(self):
         assert self.rid, ("No 'rid' given!", 500)
@@ -353,14 +360,14 @@ class Time(GSheets):
 
 
 class ProjectTasks(GSheets):
-    def __init__(self, *args, **kwargs):
+    def __init__(self, prefix=PREFIX, **kwargs):
         kwargs["fields"] = ["id", "name"]
         self.get_json_response = Tasks().get_json_response
-        super().__init__(*args, resource="projects", **kwargs)
+        super().__init__(prefix, resource="projects", **kwargs)
 
 
 class ProjectTime(GSheets):
-    def __init__(self, *args, **kwargs):
+    def __init__(self, prefix=PREFIX, **kwargs):
         processor = events_processor
         filterer = events_filterer
         kwargs.update(
@@ -372,7 +379,7 @@ class ProjectTime(GSheets):
             }
         )
 
-        super().__init__(*args, resource="projects", **kwargs)
+        super().__init__(prefix, resource="projects", **kwargs)
 
     def get_json_response(self):
         if self.rid:
@@ -410,5 +417,5 @@ class ProjectTime(GSheets):
 
 
 class Hooks(Webhook):
-    def __init__(self, *args, **kwargs):
-        super().__init__(PREFIX, *args, **kwargs)
+    def __init__(self, prefix=PREFIX, **kwargs):
+        super().__init__(prefix, **kwargs)

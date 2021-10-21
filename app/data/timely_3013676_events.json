@@ -1,1 +1,12 @@
-[]
+[
+  {
+    "billed": false,
+    "day": "2021-10-19",
+    "duration.total_minutes": 314,
+    "id": 203149605,
+    "label_id": 1344431,
+    "note": "Sublime Text • Terminal • Fork • Dash • Automatically Google login by selenium • wkeeling/selenium-wire: Extends Selenium's Python bindings to give you the ability to inspect requests made by the browser. • Finder • Google Accounts — (Private Browsing)",
+    "project.id": 3013676,
+    "user.id": 933370
+  }
+]

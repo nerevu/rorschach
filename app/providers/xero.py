@@ -43,7 +43,7 @@ def get_position_user_ids(xero_task_name):
     return user_ids
 
 
-def get_user_name(user_id, prefix=None):
+def get_user_name(user_id, prefix=PREFIX):
     Users = get_collection(prefix, "users")
     users = Users(dry_run=True, rid=user_id)
     user = users.extract_model(update_cache=True, strict=True)
@@ -85,23 +85,23 @@ def gen_address(City="", Region="", PostalCode="", **kwargs):
 
 
 class Xero(Resource):
-    def __init__(self, *args, **kwargs):
-        super().__init__(PREFIX, *args, **kwargs)
+    def __init__(self, prefix=PREFIX, **kwargs):
+        super().__init__(prefix, **kwargs)
 
 
 ###########################################################################
 # Resources
 ###########################################################################
 class Status(providers.Status):
-    def __init__(self, *args, **kwargs):
-        super().__init__(PREFIX, **kwargs)
+    def __init__(self, prefix=PREFIX, **kwargs):
+        super().__init__(prefix, **kwargs)
 
 
 class Projects(Xero):
-    def __init__(self, *args, **kwargs):
+    def __init__(self, prefix=PREFIX, **kwargs):
         fields = ["projectId", "name", "status"]
         kwargs.update({"fields": fields, "id_field": "projectId", "subkey": "items"})
-        super().__init__(*args, resource="projects", **kwargs)
+        super().__init__(prefix, resource="projects", **kwargs)
 
     def get_post_data(self, project, project_name, rid, **kwargs):
         client = project["client"]
@@ -123,12 +123,12 @@ class Projects(Xero):
 
 
 class Users(Xero):
-    def __init__(self, *args, **kwargs):
+    def __init__(self, prefix=PREFIX, **kwargs):
         fields = ["userId", "name"]
         kwargs.update({"fields": fields, "id_field": "userId", "subkey": "items"})
-        super().__init__(*args, resource="projectsusers", **kwargs)
+        super().__init__(prefix, resource="projectsusers", **kwargs)
 
-    def id_func(self, user, user_name, rid, prefix=None):
+    def id_func(self, user, user_name, rid, prefix=PREFIX):
         matching = list(enumerate(x["name"] for x in self))
         none_of_prev = [(len(matching), "None of the previous users")]
         choices = matching + none_of_prev
@@ -145,7 +145,7 @@ class Users(Xero):
 
 
 class Contacts(Xero):
-    def __init__(self, *args, **kwargs):
+    def __init__(self, prefix=PREFIX, **kwargs):
         kwargs.update(
             {
                 "fields": ["ContactID", "Name", "FirstName", "LastName"],
@@ -154,11 +154,11 @@ class Contacts(Xero):
                 "domain": "api",
             }
         )
-        super().__init__(*args, resource="Contacts", **kwargs)
+        super().__init__(prefix, resource="Contacts", **kwargs)
 
 
 class Payments(Xero):
-    def __init__(self, *args, **kwargs):
+    def __init__(self, prefix=PREFIX, **kwargs):
         kwargs.update(
             {
                 "fields": [],
@@ -168,11 +168,11 @@ class Payments(Xero):
             }
         )
 
-        super().__init__(*args, resource="Payments", **kwargs)
+        super().__init__(prefix, resource="Payments", **kwargs)
 
 
 class Invoices(Xero):
-    def __init__(self, *args, **kwargs):
+    def __init__(self, prefix=PREFIX, **kwargs):
         kwargs.update(
             {
                 "fields": [],
@@ -183,7 +183,7 @@ class Invoices(Xero):
             }
         )
 
-        super().__init__(*args, resource="Invoices", **kwargs)
+        super().__init__(prefix, resource="Invoices", **kwargs)
 
     def get_address(self, Addresses=None, **customer):
         address = []
@@ -198,11 +198,15 @@ class Invoices(Xero):
 
         return address
 
-    def get_cc(self, ContactPersons=None, **customer):
+    def get_cc(self, email, ContactPersons=None, **customer):
         contacts = ContactPersons or []
 
         try:
-            cced = next(x["EmailAddress"] for x in contacts if x.get("IncludeInEmails"))
+            cced = next(
+                x["EmailAddress"]
+                for x in contacts
+                if x.get("IncludeInEmails") and x["EmailAddress"] != email
+            )
         except StopIteration:
             cced = ""
 
@@ -210,7 +214,7 @@ class Invoices(Xero):
 
 
 class OnlineInvoices(Xero):
-    def __init__(self, *args, **kwargs):
+    def __init__(self, prefix=PREFIX, **kwargs):
         kwargs.update(
             {
                 "id_field": "OnlineInvoiceUrl",
@@ -220,21 +224,22 @@ class OnlineInvoices(Xero):
             }
         )
 
-        super().__init__(*args, resource="Invoices", **kwargs)
+        super().__init__(prefix, resource="Invoices", **kwargs)
 
 
 class EmailTemplate(Xero):
-    def __init__(self, *args, **kwargs):
+    def __init__(self, prefix=PREFIX, **kwargs):
         kwargs["get_json_response"] = self.get_json_response
-        super().__init__(*args, **kwargs)
+        super().__init__(prefix, **kwargs)
         self.recipient_name = kwargs.get("recipient_name")
         self.recipient_email = kwargs.get("recipient_email")
         self.copied_email = kwargs.get("copied_email")
+        self.blind_copied_email = kwargs.get("blind_copied_email")
 
 
 class InvoiceEmailTemplate(EmailTemplate):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, resource="Invoices", **kwargs)
+    def __init__(self, prefix=PREFIX, **kwargs):
+        super().__init__(prefix, resource="Invoices", **kwargs)
 
     def get_line_item(self, LineAmount=0, DiscountAmount=0, Quantity=1, **kwargs):
         item_price = Decimal(LineAmount) + Decimal(DiscountAmount)
@@ -257,7 +262,8 @@ class InvoiceEmailTemplate(EmailTemplate):
         items = [self.get_line_item(**item) for item in invoice["LineItems"]]
         customer = invoice["Contact"]
         address = invoices.get_address(**customer)
-        cced = invoices.get_cc(**customer)
+        email = self.recipient_email or customer["EmailAddress"]
+        cced = invoices.get_cc(email, **customer)
         due_date = parse_date(invoice["DueDateString"])
         invoice_date = parse_date(invoice["DateString"])
         due = Decimal(invoice["AmountDue"])
@@ -266,9 +272,11 @@ class InvoiceEmailTemplate(EmailTemplate):
 
         online_invoices = OnlineInvoices(rid=self.id)
         online_invoice = online_invoices.extract_model()
+        def_name = "{FirstName} {LastName}".format(**customer)
+        name = def_name if self.recipient_name is None else self.recipient_name
 
         model = {
-            "contact_name": customer["FirstName"],
+            "contact_name": name.split(" ")[0],
             "reference": invoice["Reference"],
             "due": "{:,.2f}".format(due),
             "currency": invoice["CurrencyCode"],
@@ -283,13 +291,12 @@ class InvoiceEmailTemplate(EmailTemplate):
             "address": address,
         }
 
-        def_name = "{FirstName} {LastName}".format(**customer)
-
         result = {
             "model": model,
-            "name": def_name if self.recipient_name is None else self.recipient_name,
-            "email": self.recipient_email or customer["EmailAddress"],
+            "name": name,
+            "email": email,
             "copied_email": cced if self.copied_email is None else self.copied_email,
+            "blind_copied_email": self.blind_copied_email,
             "filename": "Nerevu Invoice {invoice_num}.pdf".format(**model),
             "pdf": invoices.extract_model(headers={"Accept": "application/pdf"}),
             "metadata": {"client-id": customer["ContactID"]},
@@ -299,8 +306,8 @@ class InvoiceEmailTemplate(EmailTemplate):
 
 
 class PaymentEmailTemplate(EmailTemplate):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, resource="Payments", **kwargs)
+    def __init__(self, prefix=PREFIX, **kwargs):
+        super().__init__(prefix, resource="Payments", **kwargs)
 
     def get_json_response(self):
         # https://developer.xero.com/documentation/api/accounting/payments#get-payments
@@ -317,15 +324,18 @@ class PaymentEmailTemplate(EmailTemplate):
         invoice_num = invoice[invoices.name_field]
         customer = invoice["Contact"]
         address = invoices.get_address(**customer)
-        cced = invoices.get_cc(**customer)
+        email = self.recipient_email or customer["EmailAddress"]
+        cced = invoices.get_cc(email, **customer)
         remaining = Decimal(invoice["AmountDue"])
         previous = paid + remaining
 
         online_invoices = OnlineInvoices(rid=invoice_id)
         online_invoice = online_invoices.extract_model()
+        def_name = "{FirstName} {LastName}".format(**customer)
+        name = def_name if self.recipient_name is None else self.recipient_name
 
         model = {
-            "contact_name": customer["FirstName"],
+            "contact_name": name.split(" ")[0],
             "reference": invoice["Reference"],
             "paid": "{:,.2f}".format(paid),
             "currency": invoice["CurrencyCode"],
@@ -338,13 +348,12 @@ class PaymentEmailTemplate(EmailTemplate):
             "address": address,
         }
 
-        def_name = "{FirstName} {LastName}".format(**customer)
-
         result = {
             "model": model,
-            "name": def_name if self.recipient_name is None else self.recipient_name,
-            "email": self.recipient_email or customer["EmailAddress"],
+            "name": name,
+            "email": email,
             "copied_email": cced if self.copied_email is None else self.copied_email,
+            "blind_copied_email": self.blind_copied_email,
             "filename": "Nerevu Payment (Invoice {invoice_num}).pdf".format(**model),
             "pdf": invoices.extract_model(headers={"Accept": "application/pdf"}),
             "metadata": {"client-id": customer["ContactID"]},
@@ -354,7 +363,7 @@ class PaymentEmailTemplate(EmailTemplate):
 
 
 class Inventory(Xero):
-    def __init__(self, *args, **kwargs):
+    def __init__(self, prefix=PREFIX, **kwargs):
         kwargs.update(
             {
                 "fields": ["ItemID", "Name", "Code", "Description", "SalesDetails"],
@@ -365,7 +374,7 @@ class Inventory(Xero):
             }
         )
 
-        super().__init__(*args, resource="Items", **kwargs)
+        super().__init__(prefix, resource="Items", **kwargs)
 
     def get_matching_xero_postions(self, user_id, task_name, user_name=None):
         trunc_name = task_name.split(" ")[0]
@@ -382,7 +391,7 @@ class Inventory(Xero):
 
 
 class ProjectTasks(Xero):
-    def __init__(self, *args, **kwargs):
+    def __init__(self, prefix=PREFIX, **kwargs):
         # TODO: filter by active xero tasks
         kwargs.update(
             {
@@ -396,9 +405,9 @@ class ProjectTasks(Xero):
             }
         )
 
-        super().__init__(*args, resource="projects", **kwargs)
+        super().__init__(prefix, resource="projects", **kwargs)
 
-    def get_task_entry(self, rid, source_rid, prefix=None):
+    def get_task_entry(self, rid, source_rid, prefix=PREFIX):
         (project_id, user_id, label_id) = source_rid
         entry = {}
         entry[prefix.lower()] = {
@@ -434,7 +443,7 @@ class ProjectTasks(Xero):
             if user_id in get_position_user_ids(t[self.name_field])
         ]
 
-    def get_post_data(self, task, task_name, rid, prefix=None):
+    def get_post_data(self, task, task_name, rid, prefix=PREFIX):
         (project_id, user_id, label_id) = rid
         args = (user_id, task_name, get_user_name(user_id, prefix=prefix))
         matching_task_positions = self.get_matching_xero_postions(*args)
@@ -477,7 +486,7 @@ class ProjectTasks(Xero):
 
         return task_data
 
-    def id_func(self, task, task_name, rid, prefix=None):
+    def id_func(self, task, task_name, rid, prefix=PREFIX):
         (project_id, user_id, label_id) = rid
         args = (user_id, task_name, get_user_name(user_id, prefix=prefix))
         matching_task_positions = self.get_matching_xero_postions(*args)
@@ -497,7 +506,7 @@ class ProjectTasks(Xero):
 
 
 class ProjectTime(Xero):
-    def __init__(self, *args, source_prefix="timely", **kwargs):
+    def __init__(self, prefix=PREFIX, source_prefix="timely", **kwargs):
         self.source_prefix = source_prefix
         self.event_pos = int(kwargs.pop("event_pos", 0))
         self.event_id = kwargs.pop("event_id", None)
@@ -513,7 +522,7 @@ class ProjectTime(Xero):
             }
         )
 
-        super().__init__(*args, resource="projects", **kwargs)
+        super().__init__(prefix, resource="projects", **kwargs)
 
     def set_post_data(self):
         prefix = self.source_prefix
@@ -617,8 +626,8 @@ class ProjectTime(Xero):
 
 
 class Hooks(Webhook):
-    def __init__(self, *args, **kwargs):
-        super().__init__(PREFIX, *args, **kwargs)
+    def __init__(self, prefix=PREFIX, **kwargs):
+        super().__init__(prefix, **kwargs)
 
     def process_value(self, value, **kwargs):
         result = {}

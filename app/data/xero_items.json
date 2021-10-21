@@ -18,7 +18,7 @@
     "SalesDetails": {
       "AccountCode": "4015",
       "TaxType": "NONE",
-      "UnitPrice": 130.0
+      "UnitPrice": 150.0
     }
   },
   {
@@ -62,7 +62,7 @@
     "SalesDetails": {
       "AccountCode": "4010",
       "TaxType": "AVALARA",
-      "UnitPrice": 130.0
+      "UnitPrice": 150.0
     }
   },
   {
@@ -84,7 +84,7 @@
     "SalesDetails": {
       "AccountCode": "4025",
       "TaxType": "AVALARA",
-      "UnitPrice": 130.0
+      "UnitPrice": 150.0
     }
   },
   {
@@ -150,7 +150,7 @@
     "SalesDetails": {
       "AccountCode": "4005",
       "TaxType": "AVALARA",
-      "UnitPrice": 130.0
+      "UnitPrice": 150.0
     }
   },
   {
@@ -173,6 +173,17 @@
       "AccountCode": "4020",
       "TaxType": "NONE",
       "UnitPrice": 84.0
+    }
+  },
+  {
+    "Code": "hosting-1m-LX",
+    "Description": "1 month Nerevu Hosting (Passthrough)",
+    "ItemID": "eef1813d-852d-4ba4-9d9c-9ba0b691b574",
+    "Name": "1 month Nerevu Hosting (Passthrough)",
+    "SalesDetails": {
+      "AccountCode": "4020",
+      "TaxType": "NONE",
+      "UnitPrice": 0.0
     }
   },
   {
@@ -237,7 +248,7 @@
     "SalesDetails": {
       "AccountCode": "4030",
       "TaxType": "NONE",
-      "UnitPrice": 130.0
+      "UnitPrice": 150.0
     }
   },
   {
@@ -246,7 +257,7 @@
     "ItemID": "b4c0898c-7dcf-431d-bdc3-44c7e9040af1",
     "Name": "1 Week Retainer",
     "SalesDetails": {
-      "AccountCode": "4006",
+      "AccountCode": "2001",
       "TaxType": "NONE",
       "UnitPrice": 5000.0
     }
@@ -257,7 +268,7 @@
     "ItemID": "7abd425d-2267-4ef7-99ac-78eefacccd30",
     "Name": "20 Hour Retainer",
     "SalesDetails": {
-      "AccountCode": "4006",
+      "AccountCode": "2001",
       "TaxType": "NONE",
       "UnitPrice": 2500.0
     }

@@ -16,8 +16,8 @@ PREFIX = __name__.split(".")[-1]
 
 
 class Hooks(Webhook):
-    def __init__(self, *args, **kwargs):
-        super().__init__(PREFIX, *args, **kwargs)
+    def __init__(self, prefix=PREFIX, **kwargs):
+        super().__init__(prefix, **kwargs)
 
     def process_value(self, value, activity_name, **kwargs):
         action = self.actions.get(activity_name)

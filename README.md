@@ -87,7 +87,11 @@ You can read more about symlinks [here](https://www.maketecheasier.com/create-sy
 
 `Macports`
 
-`sudo port install chromedriver-{version}`
+`sudo port install chromedriver`
+
+`Homebrew`
+
+`brew install chromedriver`
 
 `Download`
 

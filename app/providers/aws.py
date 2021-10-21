@@ -18,7 +18,7 @@ PREFIX = __name__.split(".")[-1]
 
 
 class AWS(Resource):
-    def __init__(self, *args, **kwargs):
+    def __init__(self, prefix=PREFIX, **kwargs):
         rid = kwargs.get("rid", "nerevu")
 
         try:
@@ -30,12 +30,12 @@ class AWS(Resource):
             session = boto3.Session(**boto_kwargs)
 
         self.session = session
-        super().__init__(PREFIX, *args, **kwargs)
+        super().__init__(prefix, **kwargs)
 
 
 class Cloudfront(AWS):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, resource="cloudfront", **kwargs)
+    def __init__(self, prefix=PREFIX, **kwargs):
+        super().__init__(prefix, resource="cloudfront", **kwargs)
         self.client = self.session.client(self.resource)
 
 
@@ -74,5 +74,5 @@ class Distribution(Cloudfront):
 
 
 class Hooks(Webhook):
-    def __init__(self, *args, **kwargs):
-        super().__init__(PREFIX, *args, **kwargs)
+    def __init__(self, prefix=PREFIX, **kwargs):
+        super().__init__(prefix, **kwargs)

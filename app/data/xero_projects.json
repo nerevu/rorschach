@@ -1,32 +1,7 @@
 [
   {
-    "name": "DinerDiver",
-    "projectId": "803591c3-72af-4475-888f-7c4c50044589",
-    "status": "INPROGRESS"
-  },
-  {
-    "name": "IPA/AEA Site",
-    "projectId": "132489d0-9094-4da6-a739-ced4d0a1f0c9",
-    "status": "CLOSED"
-  },
-  {
-    "name": "Commission Dashboard",
-    "projectId": "b1d797e3-e54b-4686-b83f-d8ea5a35f1c2",
-    "status": "CLOSED"
-  },
-  {
-    "name": "Data Automation",
-    "projectId": "15ff819d-6d69-406c-98c5-ed9ab9163779",
-    "status": "INPROGRESS"
-  },
-  {
-    "name": "Open Peoria",
-    "projectId": "615c8090-938d-4ee7-8f4e-6ae945920507",
-    "status": "INPROGRESS"
-  },
-  {
-    "name": "NomCom",
-    "projectId": "3fe4d0ef-b45f-4812-8ca8-9c64f6bd679c",
+    "name": "Analytics Committee",
+    "projectId": "4ae942e8-af62-4318-b569-7476df14cbef",
     "status": "INPROGRESS"
   },
   {
@@ -35,9 +10,64 @@
     "status": "INPROGRESS"
   },
   {
-    "name": "Internal",
-    "projectId": "f9d0e04b-f07c-423d-8975-418159180dab",
+    "name": "COVID-19",
+    "projectId": "e72ce041-023c-4abf-80e8-c4af054b38ed",
     "status": "INPROGRESS"
+  },
+  {
+    "name": "Calendar Service",
+    "projectId": "ebf98c35-4d4b-41c6-b717-08afb9243b03",
+    "status": "CLOSED"
+  },
+  {
+    "name": "ClozeCart",
+    "projectId": "34a6629c-6902-4436-881c-b909a285b8bd",
+    "status": "INPROGRESS"
+  },
+  {
+    "name": "Commission Dashboard",
+    "projectId": "b1d797e3-e54b-4686-b83f-d8ea5a35f1c2",
+    "status": "INPROGRESS"
+  },
+  {
+    "name": "Company Metrics",
+    "projectId": "c7f2aa8e-bf50-4359-8e3e-0721f5cd49bc",
+    "status": "INPROGRESS"
+  },
+  {
+    "name": "Company Website",
+    "projectId": "7fe1e7c0-24e2-4c26-809f-654f1cbae1f1",
+    "status": "INPROGRESS"
+  },
+  {
+    "name": "Dashboard Service",
+    "projectId": "7c147cbf-4f92-43e4-bcc2-d32dbf48fed3",
+    "status": "INPROGRESS"
+  },
+  {
+    "name": "Data Automation",
+    "projectId": "15ff819d-6d69-406c-98c5-ed9ab9163779",
+    "status": "INPROGRESS"
+  },
+  {
+    "name": "Data Update Service",
+    "projectId": "13cec3b6-1cfd-4572-9f4d-3da85bc07a3b",
+    "status": "CLOSED"
+  },
+  {
+    "name": "DinerDiver",
+    "projectId": "803591c3-72af-4475-888f-7c4c50044589",
+    "status": "CLOSED"
+  },
+  {
+    "name": "EMR Data Extraction",
+    "projectId": "4abb468c-ba2b-4820-9554-ef32fea342a3",
+    "status": "INPROGRESS"
+  },
+  {
+    "name": "GDPR Policy",
+    "projectId": "da71537a-8806-4b4b-b3a1-6b470f52dd7e",
+    "status": "CLOSED"
   },
   {
     "name": "GP Data Community",
@@ -50,13 +80,18 @@
     "status": "INPROGRESS"
   },
   {
-    "name": "Onboarding",
-    "projectId": "c8b18830-fed0-4979-8c42-6619c4b6b67c",
-    "status": "INPROGRESS"
+    "name": "IPA/AEA Site",
+    "projectId": "132489d0-9094-4da6-a739-ced4d0a1f0c9",
+    "status": "CLOSED"
   },
   {
-    "name": "Analytics Committee",
-    "projectId": "4ae942e8-af62-4318-b569-7476df14cbef",
+    "name": "Incentives Dashboard",
+    "projectId": "bf46311b-de69-4480-a173-8a8ba7700db3",
+    "status": "CLOSED"
+  },
+  {
+    "name": "Internal",
+    "projectId": "f9d0e04b-f07c-423d-8975-418159180dab",
     "status": "INPROGRESS"
   },
   {
@@ -65,93 +100,38 @@
     "status": "INPROGRESS"
   },
   {
-    "name": "Company Website",
-    "projectId": "7fe1e7c0-24e2-4c26-809f-654f1cbae1f1",
-    "status": "INPROGRESS"
-  },
-  {
-    "name": "Smart Cities",
-    "projectId": "62859aaa-0b21-4a8c-9009-03f3458a9fe2",
-    "status": "CLOSED"
-  },
-  {
-    "name": "Retainer",
-    "projectId": "2e4c160d-a4bf-4eb4-b531-3cae6cfeb2fa",
-    "status": "INPROGRESS"
-  },
-  {
-    "name": "Timero",
-    "projectId": "79867896-5504-4215-9a1a-8f9ca45ac7ec",
-    "status": "INPROGRESS"
-  },
-  {
-    "name": "Smart Airport",
-    "projectId": "13b73b2a-d949-4887-9fc4-fbf4b1c62491",
-    "status": "INPROGRESS"
-  },
-  {
-    "name": "Company Metrics",
-    "projectId": "c7f2aa8e-bf50-4359-8e3e-0721f5cd49bc",
-    "status": "INPROGRESS"
-  },
-  {
-    "name": "Website Audit",
-    "projectId": "0d4a1f7f-173f-47e5-98f2-6b37eb4974cf",
-    "status": "CLOSED"
-  },
-  {
-    "name": "WEI CMS",
-    "projectId": "6bee8c68-9266-40f2-9a4b-3bb03186d322",
-    "status": "CLOSED"
-  },
-  {
-    "name": "Workforce Initiative (WEI) Website",
-    "projectId": "d2812acb-40dc-4ed2-8e83-e105ef21b9ef",
-    "status": "INPROGRESS"
-  },
-  {
-    "name": "Incentives Dashboard",
-    "projectId": "bf46311b-de69-4480-a173-8a8ba7700db3",
-    "status": "CLOSED"
-  },
-  {
-    "name": "GDPR Policy",
-    "projectId": "da71537a-8806-4b4b-b3a1-6b470f52dd7e",
-    "status": "CLOSED"
-  },
-  {
-    "name": "Data Update Service",
-    "projectId": "13cec3b6-1cfd-4572-9f4d-3da85bc07a3b",
-    "status": "INPROGRESS"
-  },
-  {
-    "name": "Calendar Service",
-    "projectId": "ebf98c35-4d4b-41c6-b717-08afb9243b03",
-    "status": "CLOSED"
-  },
-  {
-    "name": "TCPUL Website",
-    "projectId": "6af33309-b00b-4f9c-991f-25f0b4506582",
-    "status": "INPROGRESS"
-  },
-  {
     "name": "Kazeeki",
     "projectId": "4487260c-7d80-486f-a18f-7e209301e06c",
     "status": "INPROGRESS"
   },
   {
-    "name": "Sitation Dashboard",
-    "projectId": "ed071320-fbcb-465d-8066-324cae235718",
-    "status": "CLOSED"
-  },
-  {
-    "name": "COVID-19",
-    "projectId": "e72ce041-023c-4abf-80e8-c4af054b38ed",
+    "name": "Lunar Open Architecture (LOA)",
+    "projectId": "3ef944e3-1cc1-4489-9385-3fdc9d4a3a63",
     "status": "INPROGRESS"
   },
   {
-    "name": "Dashboard Service",
-    "projectId": "7c147cbf-4f92-43e4-bcc2-d32dbf48fed3",
+    "name": "Nerevu API",
+    "projectId": "79867896-5504-4215-9a1a-8f9ca45ac7ec",
+    "status": "INPROGRESS"
+  },
+  {
+    "name": "NomCom",
+    "projectId": "3fe4d0ef-b45f-4812-8ca8-9c64f6bd679c",
+    "status": "INPROGRESS"
+  },
+  {
+    "name": "OCC Dashboard",
+    "projectId": "a71db308-8d99-4e01-ba9e-8b8a788d03ab",
+    "status": "INPROGRESS"
+  },
+  {
+    "name": "Onboarding",
+    "projectId": "c8b18830-fed0-4979-8c42-6619c4b6b67c",
+    "status": "INPROGRESS"
+  },
+  {
+    "name": "Open Peoria",
+    "projectId": "615c8090-938d-4ee7-8f4e-6ae945920507",
     "status": "INPROGRESS"
   },
   {
@@ -160,13 +140,43 @@
     "status": "INPROGRESS"
   },
   {
-    "name": "ClozeCart",
-    "projectId": "34a6629c-6902-4436-881c-b909a285b8bd",
+    "name": "Retainer",
+    "projectId": "2e4c160d-a4bf-4eb4-b531-3cae6cfeb2fa",
     "status": "INPROGRESS"
   },
   {
-    "name": "Internal",
-    "projectId": "f9d0e04b-f07c-423d-8975-418159180dab",
+    "name": "Sharepoint Training Guide",
+    "projectId": "9e610f03-f11d-4d2d-ac74-1e26a3618d26",
+    "status": "INPROGRESS"
+  },
+  {
+    "name": "Sitation Dashboard",
+    "projectId": "ed071320-fbcb-465d-8066-324cae235718",
+    "status": "CLOSED"
+  },
+  {
+    "name": "Smart Cities",
+    "projectId": "62859aaa-0b21-4a8c-9009-03f3458a9fe2",
+    "status": "CLOSED"
+  },
+  {
+    "name": "TCPUL Website",
+    "projectId": "6af33309-b00b-4f9c-991f-25f0b4506582",
+    "status": "INPROGRESS"
+  },
+  {
+    "name": "WEI CMS",
+    "projectId": "6bee8c68-9266-40f2-9a4b-3bb03186d322",
+    "status": "CLOSED"
+  },
+  {
+    "name": "Website Audit",
+    "projectId": "0d4a1f7f-173f-47e5-98f2-6b37eb4974cf",
+    "status": "CLOSED"
+  },
+  {
+    "name": "Workforce Initiative (WEI) Website",
+    "projectId": "d2812acb-40dc-4ed2-8e83-e105ef21b9ef",
     "status": "INPROGRESS"
   }
 ]

@@ -8,8 +8,8 @@
     # WARNING: if running on a a staging server, you MUST set the 'STAGE' env
     # heroku config:set STAGE=true --remote staging
 
-    # WARNING: The heroku project must either have a postgres or memcache db to be
-    # recognized as production. If it is not recognized as production, Talisman
+    # WARNING: The heroku project must either have a postgres, redis, or memcache db to
+    # be recognized as production. If it is not recognized as production, Talisman
     # will not be run.
     ###########################################################################
 """
@@ -101,6 +101,7 @@ class Config(object):
     SEND_FILE_MAX_AGE_DEFAULT = ROUTE_TIMEOUT
     EMPTY_TIMEOUT = ROUTE_TIMEOUT * 10
     API_URL_PREFIX = "/v1"
+    API_URL = f"http://localhost:5000{API_URL_PREFIX}"
     SECRET_KEY = SECRET = getenv(SECRET_ENV, urandom(24))
     CHROME_DRIVER_VERSIONS = [None] + list(range(87, 77, -1))
 
@@ -169,15 +170,40 @@ class Config(object):
                 "authorization_base_url": "https://api.timelyapp.com/1.1/oauth/authorize",
                 "token_url": "https://api.timelyapp.com/1.1/oauth/token",
                 "refresh_url": "https://api.timelyapp.com/1.1/oauth/token",
-                "redirect_uri": "urn:ietf:wg:oauth:2.0:oob",
+                "redirect_uri": "/timely-callback",
                 "account_id": "777870",
                 "client_id": getenv("TIMELY_CLIENT_ID"),
                 "client_secret": getenv("TIMELY_SECRET"),
                 "username": getenv("TIMELY_USERNAME"),
                 "password": getenv("TIMELY_PASSWORD"),
-                "username_selector": "#email",
-                "password_selector": "#password",
-                "sign_in_selector": '[type="submit"]',
+                "headless_elements": [
+                    {
+                        "selector": "#email",
+                        "description": "timely email",
+                        "content": getenv("TIMELY_USERNAME"),
+                    },
+                    {
+                        "selector": "#next-btn",
+                        "description": "next",
+                        "action": "submit",
+                    },
+                    {
+                        "selector": "#Email",
+                        "description": "google email",
+                        "content": getenv("GOOGLE_USERNAME"),
+                    },
+                    {"selector": "#next", "description": "next", "action": "submit"},
+                    {
+                        "selector": '[type="password"]',
+                        "description": "google password",
+                        "content": getenv("GOOGLE_PASSWORD"),
+                    },
+                    {
+                        "selector": '#submit[type="submit"]',
+                        "description": "google submit",
+                        "action": "click",
+                    },
+                ],
             },
         },
         # https://developer.xero.com/myapps/
@@ -188,7 +214,7 @@ class Config(object):
                 "authorization_base_url": "https://login.xero.com/identity/connect/authorize",
                 "token_url": "https://identity.xero.com/connect/token",
                 "refresh_url": "https://identity.xero.com/connect/token",
-                "redirect_uri": f"http://localhost:5000{API_URL_PREFIX}/xero-callback",
+                "redirect_uri": "/xero-callback",
                 "domain": "projects",
                 "client_id": getenv("XERO_CLIENT_ID"),
                 "client_secret": getenv("XERO_SECRET"),
@@ -204,13 +230,49 @@ class Config(object):
                     "files",
                     "assets",
                 ],
-                "username_selector": "#xl-form-email",
-                "password_selector": "#xl-form-password",
-                "sign_in_selector": "#xl-form-submit",
                 "headless_elements": [
-                    {"selector": "#approveButton", "description": "connect"},
-                    {"selector": "#approveButton", "description": "allow access"},
-                    {"selector": "#approveButton", "description": "select org"},
+                    {
+                        "selector": "#xl-form-email",
+                        "description": "xero username",
+                        "content": getenv("XERO_USERNAME"),
+                    },
+                    {
+                        "selector": "#xl-form-password",
+                        "description": "xero password",
+                        "content": getenv("XERO_PASSWORD"),
+                    },
+                    {
+                        "selector": "#xl-form-submit",
+                        "description": "xero sign in",
+                        "action": "click",
+                    },
+                    {
+                        "selector": '[placeholder="Authentication code"]',
+                        "description": "xero 2fa code",
+                        "prompt": True,
+                    },
+                    {
+                        "selector": '[type="submit"]',
+                        "description": "xero confirm",
+                        "action": "click",
+                    },
+                    {
+                        "selector": "#approveButton",
+                        "description": "xero connect",
+                        "action": "click",
+                    },
+                    {
+                        "selector": "#approveButton",
+                        "description": "xero allow access",
+                        "action": "click",
+                        "wait": 5,
+                    },
+                    {
+                        "selector": "#approveButton",
+                        "description": "xero select org",
+                        "action": "click",
+                        "wait": 5,
+                    },
                 ],
             },
             "oauth1": {
@@ -268,23 +330,7 @@ class Config(object):
             "digest": "sha256",
             "b64_encode": True,
             "payload_key": "events",
-            "activities": [
-                {
-                    "name": "new_invoice",
-                    "action": "send_invoice_notification",
-                    "kwargs": {
-                        "sender_email": "billing@nerevu.com",
-                        "sender_name": "Nerevu Billing Team",
-                        "recipient_email": None,
-                        "recipient_name": None,
-                        "copied_email": None,
-                        "template_id": 9956182,
-                        "debug": False,
-                        "dry_run": False,
-                        "prompt": False,
-                    },
-                }
-            ],
+            "activities": [],
         },
         "heroku": {
             "signature_header": "Heroku-Webhook-Hmac-SHA256",
@@ -309,7 +355,8 @@ class Config(object):
                         "sender_name": "Nerevu Billing Team",
                         "recipient_email": "rcummings@nerevu.com",
                         "recipient_name": "Reuben Cummings",
-                        "copied_email": "rcummings@nerevu.com",
+                        "copied_email": None,
+                        "blind_copied_email": "billing@nerevu.com",
                         "template_id": 12058975,
                         "debug": True,
                         "dry_run": False,
@@ -324,7 +371,8 @@ class Config(object):
                         "sender_name": "Nerevu Billing Team",
                         "recipient_email": "rcummings@nerevu.com",
                         "recipient_name": "Reuben Cummings",
-                        "copied_email": "rcummings@nerevu.com",
+                        "copied_email": None,
+                        "blind_copied_email": "billing@nerevu.com",
                         "template_id": 16342429,
                         "debug": True,
                         "dry_run": False,
@@ -339,7 +387,8 @@ class Config(object):
                         "sender_name": "Nerevu Billing Team",
                         "recipient_email": "rcummings@nerevu.com",
                         "recipient_name": "Reuben Cummings",
-                        "copied_email": "rcummings@nerevu.com",
+                        "copied_email": None,
+                        "blind_copied_email": "billing@nerevu.com",
                         "template_id": 9956182,
                         "debug": True,
                         "dry_run": False,
@@ -406,9 +455,6 @@ class Production(Config):
 class Heroku(Production):
     server_name = get_server_name(True)
     API_URL = f"https://{server_name}{Config.API_URL_PREFIX}"
-    AUTHENTICATION = Config.AUTHENTICATION
-    AUTHENTICATION["timely"]["oauth2"]["redirect_uri"] = f"{API_URL}/timely-callback"
-    AUTHENTICATION["xero"]["oauth2"]["redirect_uri"] = f"{API_URL}/xero-callback"
 
     if __PROD_SERVER__:
         SERVER_NAME = server_name
@@ -417,9 +463,6 @@ class Heroku(Production):
 class Custom(Production):
     server_name = get_server_name()
     API_URL = f"https://{server_name}{Config.API_URL_PREFIX}"
-    AUTHENTICATION = Config.AUTHENTICATION
-    AUTHENTICATION["timely"]["oauth2"]["redirect_uri"] = f"{API_URL}/timely-callback"
-    AUTHENTICATION["xero"]["oauth2"]["redirect_uri"] = f"{API_URL}/xero-callback"
 
     if __PROD_SERVER__:
         SERVER_NAME = server_name
@@ -441,12 +484,8 @@ class Development(Config):
 
 
 class Ngrok(Development):
-    # Xero localhost callbacks work fine
     server_name = "nerevu-api.ngrok.io"
     API_URL = f"https://{server_name}{Config.API_URL_PREFIX}"
-    AUTHENTICATION = Config.AUTHENTICATION
-    AUTHENTICATION["timely"]["oauth2"]["redirect_uri"] = f"{API_URL}/timely-callback"
-    AUTHENTICATION["xero"]["oauth2"]["redirect_uri"] = f"{API_URL}/xero-callback"
 
 
 class Test(Config):

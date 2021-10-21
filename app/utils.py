@@ -127,7 +127,12 @@ def parse(string):
         >>> parse('{"key": "value"}')
         {'key': 'value'}
     """
-    if string.lower() in {"true", "false"}:
+    try:
+        bool_string = string.lower() in {"true", "false"}
+    except AttributeError:
+        bool_string = False
+
+    if bool_string:
         parsed = loads(string.lower())
     else:
         try:
@@ -476,6 +481,16 @@ def load_path(path, default=None):
         contents = default
 
     return contents
+
+
+def fetch_value(description):
+    call(["say", "enter a value"])
+    answer = None
+
+    while answer is None:
+        answer = input(f"{description}: ")
+
+    return answer
 
 
 def fetch_choice(choices):

@@ -1,0 +1,132 @@
+[
+  {
+    "billed": false,
+    "day": "2021-09-18",
+    "duration.total_minutes": 78,
+    "id": 202317514,
+    "label_id": 1344431,
+    "note": "Airtable • Cloze",
+    "project.id": 3625328,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2021-09-17",
+    "duration.total_minutes": 285,
+    "id": 202317427,
+    "label_id": 1344431,
+    "note": "RegExr: Learn, Build, & Test RegEx • Regex get domain name from email • regex - What is a non-capturing group in regular expressions? • Extract email domain using Python regex • Splunk Community • regex extract email domain at DuckDuckGo • Dash • Airtable • Zapier • Nerevu Prospect Entry Form • A...",
+    "project.id": 3625328,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2021-09-16",
+    "duration.total_minutes": 194,
+    "id": 202317196,
+    "label_id": 1344431,
+    "note": "Script for setting default values in Airtable • Airtable Blocks SDK • Airtable Community Forum • Nerevu Task Entry Form • Airtable Support • Dash • Airtable",
+    "project.id": 3625328,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2021-09-16",
+    "duration.total_minutes": 87,
+    "id": 202317162,
+    "label_id": 1344431,
+    "note": "airtable default date value at DuckDuckGo • Airtable Support • Airtable • Sublime Text",
+    "project.id": 3625328,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2021-09-15",
+    "duration.total_minutes": 284,
+    "id": 202317094,
+    "label_id": 1344431,
+    "note": "Zapier • Airtable • Nerevu Task Entry Form • Fastmail • Timely",
+    "project.id": 3625328,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2021-09-14",
+    "duration.total_minutes": 120,
+    "id": 202313657,
+    "label_id": 1344431,
+    "note": "Airtable • Start A Project — Nerevu Group • Cummings, Reuben - Resume.pages • Nerevu Group Capabilities.pages • Form Submission - Project Intake | Fastmail • Zapier",
+    "project.id": 3625328,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2021-08-18",
+    "duration.total_minutes": 57,
+    "id": 198413865,
+    "label_id": 1344431,
+    "note": "Airtable • Fastmail • LinkedIn • Finder",
+    "project.id": 3625328,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2021-08-06",
+    "duration.total_minutes": 307,
+    "id": 198406442,
+    "label_id": 1344431,
+    "note": "Sublime Text • OmniFocus • Airtable",
+    "project.id": 3625328,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2021-08-02",
+    "duration.total_minutes": 132,
+    "id": 198403166,
+    "label_id": 1344431,
+    "note": "Airtable • Calendar • [Memotoo] Confirmation of subscription to PREMIUM Version | Fastmail",
+    "project.id": 3625328,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2021-08-01",
+    "duration.total_minutes": 68,
+    "id": 196454425,
+    "label_id": 1344431,
+    "note": "Airtable • Gusto • Dashboard",
+    "project.id": 3625328,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2021-07-31",
+    "duration.total_minutes": 371,
+    "id": 195569759,
+    "label_id": 1344431,
+    "note": "Airtable • Prairie Spine EMR Data Extraction Proposal by Nerevu Group.pages • Timely • Sublime Text • Calendar • Airtable Support • OmniPlan",
+    "project.id": 3625328,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2021-07-30",
+    "duration.total_minutes": 325,
+    "id": 195516136,
+    "label_id": 1344431,
+    "note": "OmniPlan • Airtable • Calendar",
+    "project.id": 3625328,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2021-07-23",
+    "duration.total_minutes": 55,
+    "id": 195513174,
+    "label_id": 1344431,
+    "note": "Zapier • Databox • Google Alerts • Airtable • OmniFocus • Calendar",
+    "project.id": 3625328,
+    "user.id": 933370
+  }
+]

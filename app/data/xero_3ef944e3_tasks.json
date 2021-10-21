@@ -1,0 +1,23 @@
+[
+  {
+    "name": "1 Hour Consulting (Partner)",
+    "projectId": "3ef944e3-1cc1-4489-9385-3fdc9d4a3a63",
+    "rate.value": 150.0,
+    "status": "ACTIVE",
+    "taskId": "88c368e1-9085-4798-a748-a5de806e230e"
+  },
+  {
+    "name": "1 Hour Development (Technical Director)",
+    "projectId": "3ef944e3-1cc1-4489-9385-3fdc9d4a3a63",
+    "rate.value": 150.0,
+    "status": "ACTIVE",
+    "taskId": "e4e5b1cd-d624-458e-9298-67c5e06a3ca5"
+  },
+  {
+    "name": "1 Hour Design (Creative Director)",
+    "projectId": "3ef944e3-1cc1-4489-9385-3fdc9d4a3a63",
+    "rate.value": 150.0,
+    "status": "ACTIVE",
+    "taskId": "47a56f5c-6c3d-49f8-bdb4-38c231af0276"
+  }
+]

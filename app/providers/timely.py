@@ -72,32 +72,32 @@ def get_position_user_ids(xero_task_name):
 
 
 class Timely(Resource):
-    def __init__(self, *args, **kwargs):
-        super().__init__(PREFIX, *args, **kwargs)
+    def __init__(self, prefix=PREFIX, **kwargs):
+        super().__init__(prefix, **kwargs)
 
 
 ###########################################################################
 # Resources
 ###########################################################################
 class Status(providers.Status):
-    def __init__(self, *args, **kwargs):
-        super().__init__(PREFIX, **kwargs)
+    def __init__(self, prefix=PREFIX, **kwargs):
+        super().__init__(prefix, **kwargs)
 
 
 class Projects(Timely):
-    def __init__(self, *args, **kwargs):
+    def __init__(self, prefix=PREFIX, **kwargs):
         kwargs["fields"] = ["id", "name", "active", "billable", "client", "budget"]
-        super().__init__(*args, resource="projects", **kwargs)
+        super().__init__(prefix, resource="projects", **kwargs)
 
 
 class Users(Timely):
-    def __init__(self, *args, **kwargs):
+    def __init__(self, prefix=PREFIX, **kwargs):
         kwargs["fields"] = ["id", "name"]
-        super().__init__(*args, resource="users", **kwargs)
+        super().__init__(prefix, resource="users", **kwargs)
 
 
 class Tasks(Timely):
-    def __init__(self, *args, **kwargs):
+    def __init__(self, prefix=PREFIX, **kwargs):
 
         kwargs.update(
             {
@@ -106,7 +106,7 @@ class Tasks(Timely):
                 "rid_hook": self.hook,
             }
         )
-        super().__init__(*args, resource="labels", **kwargs)
+        super().__init__(prefix, resource="labels", **kwargs)
 
     def hook(self):
         if self.rid:
@@ -114,7 +114,7 @@ class Tasks(Timely):
 
 
 class Time(Timely):
-    def __init__(self, *args, **kwargs):
+    def __init__(self, prefix=PREFIX, **kwargs):
         fields = [
             "id",
             "day",
@@ -129,7 +129,7 @@ class Time(Timely):
         processor = events_processor
         filterer = events_filterer
         kwargs.update({"fields": fields, "processor": processor, "filterer": filterer})
-        super().__init__(*args, resource="events", **kwargs)
+        super().__init__(prefix, resource="events", **kwargs)
 
     def set_patch_data(self):
         assert self.rid, ("No 'rid' given!", 500)
@@ -164,7 +164,7 @@ class Time(Timely):
 
 
 class ProjectTasks(Timely):
-    def __init__(self, *args, **kwargs):
+    def __init__(self, prefix=PREFIX, **kwargs):
         kwargs.update(
             {
                 "fields": ["id", "name"],
@@ -173,7 +173,7 @@ class ProjectTasks(Timely):
                 "id_hook": self.hook,
             }
         )
-        super().__init__(*args, resource="projects", **kwargs)
+        super().__init__(prefix, resource="projects", **kwargs)
 
     def project_tasks_processor(self, result, fields, **kwargs):
         tasks = Tasks(dictify=True)
@@ -188,7 +188,7 @@ class ProjectTasks(Timely):
 
 
 class ProjectTime(Timely):
-    def __init__(self, *args, **kwargs):
+    def __init__(self, prefix=PREFIX, **kwargs):
         kwargs.update(
             {
                 "fields": Time().fields,
@@ -198,9 +198,9 @@ class ProjectTime(Timely):
             }
         )
 
-        super().__init__(*args, resource="projects", **kwargs)
+        super().__init__(prefix, resource="projects", **kwargs)
 
 
 class Hooks(Webhook):
-    def __init__(self, *args, **kwargs):
-        super().__init__(PREFIX, *args, **kwargs)
+    def __init__(self, prefix=PREFIX, **kwargs):
+        super().__init__(prefix, **kwargs)
