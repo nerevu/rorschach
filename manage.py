@@ -5,6 +5,7 @@
 """ A script to manage development tasks """
 import sys
 
+from datetime import date, timedelta
 from os import path as p, environ
 from subprocess import call, check_call, CalledProcessError
 from urllib.parse import urlparse
@@ -17,7 +18,7 @@ import pygogo as gogo
 import click
 
 from flask import current_app as app
-from click import Choice
+from click import Choice, DateTime
 from flask.cli import FlaskGroup, pass_script_info, with_appcontext
 from flask.config import Config as FlaskConfig
 
@@ -49,6 +50,9 @@ ACTIONS = {
     "charge": actions.send_invoice_notification,
     "payment": actions.send_invoice_notification,
 }
+
+DEF_END = date.today().strftime("%Y-%m-%d")
+DEF_START = (date.today() - timedelta(days=Config.REPORT_DAYS)).strftime("%Y-%m-%d")
 
 
 def gen_collection_names(prefixes):
@@ -224,6 +228,20 @@ def prune(source_prefix, collection_name, **kwargs):
 @click.option("-d", "--dictify/--no-dictify", default=False)
 @click.option("-e", "--debug", help="Debug mode", is_flag=True)
 @click.option("-h", "--headless/--no-headless", default=False)
+@click.option(
+    "-s",
+    "--start",
+    help="the start date",
+    type=DateTime(["%Y-%m-%d", "%m/%d/%y"]),
+    default=DEF_START,
+)
+@click.option(
+    "-E",
+    "--end",
+    help="the end date",
+    type=DateTime(["%Y-%m-%d", "%m/%d/%y"]),
+    default=DEF_END,
+)
 def store(prefix, collection_name, **kwargs):
     """Save user info to cache"""
     _store(prefix, collection_name, **kwargs)
@@ -330,10 +348,25 @@ def test_oauth(method=None, resource=None, project_id=None, **kwargs):
 )
 @click.option("-p", "--project-id", help="The Timely Project ID", default="2389295")
 @click.option(
-    "-s", "--start", help="The Timely event start position", type=int, default=0
+    "-S", "--start-pos", help="The Timely event start position", type=int, default=0
 )
-@click.option("-e", "--end", help="The Timely event end position", type=int)
+@click.option("-E", "--end-pos", help="The Timely event end position", type=int)
+@click.option("-e", "--debug", help="Debug mode", is_flag=True)
 @click.option("-d", "--dry-run/--no-dry-run", help="Perform a dry run", default=False)
+@click.option(
+    "-s",
+    "--start",
+    help="the start date",
+    type=DateTime(["%Y-%m-%d", "%m/%d/%y"]),
+    default=DEF_START,
+)
+@click.option(
+    "-E",
+    "--end",
+    help="the end date",
+    type=DateTime(["%Y-%m-%d", "%m/%d/%y"]),
+    default=DEF_END,
+)
 def sync(source_prefix, **kwargs):
     """Sync Timely/GSheets events with Xero time entries"""
     sys.excepthook = partial(exception_hook, debug=True, callback=save_results)
@@ -342,10 +375,10 @@ def sync(source_prefix, **kwargs):
     logger.info(f"\n{message}")
     logger.info("—" * len(message))
 
-    if kwargs["end"]:
-        _range = range(kwargs["start"], kwargs["end"])
+    if kwargs["end_pos"]:
+        _range = range(kwargs["start_pos"], kwargs["end_pos"])
     else:
-        _range = count(kwargs["start"])
+        _range = count(kwargs["start_pos"])
 
     logger.info("Adding events…")
 

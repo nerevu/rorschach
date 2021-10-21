@@ -105,8 +105,8 @@ class BaseView(ProviderMixin, MethodView):
             self.domain = kwargs.get("domain", self.client.domain)
             def_start = def_end - timedelta(days=app.config["REPORT_DAYS"])
 
-        self._end = kwargs.get("end", def_end.strftime("%Y-%m-%d"))
-        self._start = kwargs.get("start", def_start.strftime("%Y-%m-%d"))
+        self._end = kwargs.get("end", def_end)
+        self._start = kwargs.get("start", def_start)
         self.headers = kwargs.get("headers", {})
 
         if self.is_xero and self.client and self.client.oauth2:
@@ -577,7 +577,14 @@ class Resource(BaseView):
 
     @property
     def start(self):
-        return self.values.get("start", self._start)
+        value = self.values.get("start", self._start)
+
+        try:
+            value = value.strftime("%Y-%m-%d")
+        except AttributeError:
+            pass
+
+        return value
 
     @start.setter
     def start(self, value):
@@ -585,7 +592,14 @@ class Resource(BaseView):
 
     @property
     def end(self):
-        return self.values.get("end", self._end)
+        value = self.values.get("end", self._end)
+
+        try:
+            value = value.strftime("%Y-%m-%d")
+        except AttributeError:
+            pass
+
+        return value
 
     @end.setter
     def end(self, value):
