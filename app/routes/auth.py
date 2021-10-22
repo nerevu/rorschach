@@ -731,12 +731,21 @@ class Resource(BaseView):
 
                 if dest_id:
                     dest_item = self.extract_model(dest_id, update_cache=True)
+            elif not dest_item:
+                logger.warning(
+                    f"Unable to present {self.prefix} {self.resource} mapping choices without an id_func!"
+                )
 
             self.dry_run = dry_run
 
             if not (dest_item or dry_run):
                 message = f"No mapping available for {dispaly_name} in {self}. "
-                message += "Do you want to create it?"
+                message += f"Do you want to create a new {self.prefix} {self.resource}"
+
+                if self.subresource:
+                    message += f"-{self.subresource}"
+
+                message += " entry for it?"
                 answer = fetch_bool(message)
 
                 if answer == "y":

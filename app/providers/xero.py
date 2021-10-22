@@ -49,8 +49,8 @@ def get_position_user_ids(xero_task_name):
 def get_user_name(user_id, prefix=PREFIX):
     Users = get_collection(prefix, "users")
     users = Users(dry_run=True, rid=user_id)
-    user = users.extract_model(update_cache=True, strict=True)
-    return user[users.name_field]
+    user = users.extract_model(update_cache=True, strict=False)
+    return user.get(users.name_field, "User Not Found")
 
 
 def parse_date(date_str):
@@ -124,6 +124,21 @@ class Projects(Xero):
 
         return project_data
 
+    def id_func(self, project, proj_name, rid, prefix=PREFIX):
+        matching = list(enumerate(x["name"] for x in self))
+        none_of_prev = [(len(matching), "None of the previous projects")]
+        choices = matching + none_of_prev
+        pos = fetch_choice(choices) if choices else None
+
+        try:
+            item = self[pos]
+        except (IndexError, TypeError):
+            proj_id = None
+        else:
+            proj_id = item["projectId"]
+
+        return proj_id
+
 
 class Users(Xero):
     def __init__(self, prefix=PREFIX, **kwargs):
@@ -159,6 +174,21 @@ class Contacts(Xero):
             }
         )
         super().__init__(prefix, resource="Contacts", **kwargs)
+
+    def id_func(self, contact, contact_name, rid, prefix=PREFIX):
+        matching = list(enumerate(x["Name"] for x in self))
+        none_of_prev = [(len(matching), "None of the previous contacts")]
+        choices = matching + none_of_prev
+        pos = fetch_choice(choices) if choices else None
+
+        try:
+            item = self[pos]
+        except (IndexError, TypeError):
+            contact_id = None
+        else:
+            contact_id = item["ContactID"]
+
+        return contact_id
 
 
 class Payments(Xero):
@@ -526,8 +556,7 @@ class ProjectTime(Xero):
         source_projects = provider.Projects(
             rid=self.source_project_id, use_default=True, dry_run=self.dry_run
         )
-        ekwargs = {"update_cache": True, "strict": True}
-        source_project = source_projects.extract_model(**ekwargs)
+        source_project = source_projects.extract_model(update_cache=True, strict=True)
         self.source_project_id = source_project[source_projects.id_field]
 
         self.event_pos = int(self.values.get("eventPos", self.event_pos))
@@ -565,21 +594,35 @@ class ProjectTime(Xero):
         self.rid = xero_project["projectId"]
 
         source_user_id = self.source_event["user.id"]
-        source_users = provider.Users(dry_run=self.dry_run, rid=source_user_id)
-        source_user = source_users.extract_model(**ekwargs)
-        source_user_name = source_user["name"]
-        xero_user = Users.from_source(source_user, **skwargs)
-        assert xero_user, (f"User {source_user_name} doesn't exist in Xero!", 404)
+
+        mapping = {
+            933370: "a76380db-eb5f-4fe4-8975-99ad2fabbd13",
+            2014349: "929e6f75-6fae-42f1-8d99-bcda9565d906",
+            2014908: "9dffcd83-581d-4a02-bdde-317c0c334e68",
+        }
+
+        xero_user_id = mapping.get(source_user_id)
+
+        if not xero_user_id:
+            logger.debug(f"User ID {source_user_id} doesn't exist in mapping!")
+            source_users = provider.Users(dry_run=self.dry_run, rid=source_user_id)
+            source_user = source_users.extract_model(update_cache=True)
+            source_user_name = source_user["name"]
+            xero_user = Users.from_source(source_user, **skwargs)
+            assert xero_user, (f"User {source_user_name} doesn't exist in Xero!", 404)
+            xero_user_id = xero_user["userId"]
 
         source_tasks = provider.Tasks(dry_run=self.dry_run)
-        source_task = source_tasks.extract_model(label_id, **ekwargs)
+        source_task = source_tasks.extract_model(
+            label_id, update_cache=True, strict=True
+        )
         source_rid = (self.source_project_id, source_user_id, label_id)
         xero_task = ProjectTasks.from_source(
             source_task, rid=self.rid, source_rid=source_rid, **skwargs,
         )
         assert xero_task, (f"Task {source_rid} doesn't exist in Xero!", 404)
 
-        self.xero_user_id = xero_user["userId"]
+        self.xero_user_id = xero_user_id
         self.xero_task_id = xero_task["taskId"]
 
         xero_tunc_user_id = self.xero_user_id.split("-")[0]

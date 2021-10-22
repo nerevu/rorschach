@@ -90,6 +90,27 @@ class Projects(Timely):
         super().__init__(prefix, resource="projects", **kwargs)
 
 
+class Contacts(Timely):
+    def __init__(self, prefix=PREFIX, **kwargs):
+        kwargs["fields"] = ["id", "name"]
+        super().__init__(prefix, resource="clients", **kwargs)
+
+    def id_func(self, client, client_name, rid, prefix=PREFIX):
+        matching = list(enumerate(x["name"] for x in self))
+        none_of_prev = [(len(matching), "None of the previous clients")]
+        choices = matching + none_of_prev
+        pos = fetch_choice(choices) if choices else None
+
+        try:
+            item = self[pos]
+        except (IndexError, TypeError):
+            client_id = None
+        else:
+            client_id = item["id"]
+
+        return client_id
+
+
 class Users(Timely):
     def __init__(self, prefix=PREFIX, **kwargs):
         kwargs["fields"] = ["id", "name"]
