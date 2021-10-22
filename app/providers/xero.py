@@ -16,7 +16,7 @@ import pygogo as gogo
 from app import providers
 from app.utils import fetch_choice
 from app.helpers import get_collection, get_provider
-from app.mappings import USERS, NAMES, POSITIONS, gen_task_mapping
+from app.mappings import USERS, POSITIONS, gen_task_mapping
 from app.routes.webhook import Webhook
 from app.routes.auth import Resource, process_result
 
@@ -32,12 +32,15 @@ def events_processor(result, fields, **kwargs):
 
 
 def get_position_user_ids(xero_task_name):
-    position_name = xero_task_name.split("(")[1][:-1]
+    position_name = xero_task_name.lower()
+
+    if "(" in position_name:
+        position_name = position_name.split("(")[1][:-1]
 
     try:
         user_ids = POSITIONS[position_name]
     except KeyError:
-        logger.debug(f"Position map doesn't contain position '{position_name}'!")
+        logger.debug(f"Xero position map doesn't contain position '{position_name}'!")
         user_ids = []
 
     return user_ids
@@ -46,8 +49,8 @@ def get_position_user_ids(xero_task_name):
 def get_user_name(user_id, prefix=PREFIX):
     Users = get_collection(prefix, "users")
     users = Users(dry_run=True, rid=user_id)
-    user = users.extract_model(update_cache=True, strict=True)
-    return user[users.name_field]
+    user = users.extract_model(update_cache=True, strict=False)
+    return user.get(users.name_field, "User Not Found")
 
 
 def parse_date(date_str):
@@ -121,6 +124,21 @@ class Projects(Xero):
 
         return project_data
 
+    def id_func(self, project, proj_name, rid, prefix=PREFIX):
+        matching = list(enumerate(x["name"] for x in self))
+        none_of_prev = [(len(matching), "None of the previous projects")]
+        choices = matching + none_of_prev
+        pos = fetch_choice(choices) if choices else None
+
+        try:
+            item = self[pos]
+        except (IndexError, TypeError):
+            proj_id = None
+        else:
+            proj_id = item["projectId"]
+
+        return proj_id
+
 
 class Users(Xero):
     def __init__(self, prefix=PREFIX, **kwargs):
@@ -137,11 +155,11 @@ class Users(Xero):
         try:
             item = self[pos]
         except (IndexError, TypeError):
-            xero_user_id = None
+            user_id = None
         else:
-            xero_user_id = item["userId"]
+            user_id = item["userId"]
 
-        return xero_user_id
+        return user_id
 
 
 class Contacts(Xero):
@@ -151,10 +169,26 @@ class Contacts(Xero):
                 "fields": ["ContactID", "Name", "FirstName", "LastName"],
                 "id_field": "ContactID",
                 "subkey": "Contacts",
+                "result_key": "result.Contacts.0",
                 "domain": "api",
             }
         )
         super().__init__(prefix, resource="Contacts", **kwargs)
+
+    def id_func(self, contact, contact_name, rid, prefix=PREFIX):
+        matching = list(enumerate(x["Name"] for x in self))
+        none_of_prev = [(len(matching), "None of the previous contacts")]
+        choices = matching + none_of_prev
+        pos = fetch_choice(choices) if choices else None
+
+        try:
+            item = self[pos]
+        except (IndexError, TypeError):
+            contact_id = None
+        else:
+            contact_id = item["ContactID"]
+
+        return contact_id
 
 
 class Payments(Xero):
@@ -378,16 +412,8 @@ class Inventory(Xero):
 
     def get_matching_xero_postions(self, user_id, task_name, user_name=None):
         trunc_name = task_name.split(" ")[0]
-        names = NAMES[trunc_name]
         logger.debug(f"Loading {self} choices for {user_name}…")
-        matching_tasks = [
-            r for r in self if any(n in r[self.name_field] for n in names)
-        ]
-        return [
-            t
-            for t in matching_tasks
-            if user_id in get_position_user_ids(t[self.name_field])
-        ]
+        return [t for t in self if user_id in get_position_user_ids(t[self.name_field])]
 
 
 class ProjectTasks(Xero):
@@ -432,18 +458,14 @@ class ProjectTasks(Xero):
 
     def get_matching_xero_postions(self, user_id, task_name, user_name=None):
         trunc_name = task_name.split(" ")[0]
-        names = NAMES[trunc_name]
         logger.debug(f"Loading {self} choices for {user_name}…")
-        matching_tasks = [
-            r for r in self if any(n in r[self.name_field] for n in names)
-        ]
-        return [
-            t
-            for t in matching_tasks
-            if user_id in get_position_user_ids(t[self.name_field])
+        positions = [
+            t for t in self if user_id in get_position_user_ids(t[self.name_field])
         ]
 
-    def get_post_data(self, task, task_name, rid, prefix=PREFIX):
+        return positions
+
+    def get_post_data(self, task, task_name, rid, prefix=PREFIX, **kwargs):
         (project_id, user_id, label_id) = rid
         args = (user_id, task_name, get_user_name(user_id, prefix=prefix))
         matching_task_positions = self.get_matching_xero_postions(*args)
@@ -498,11 +520,11 @@ class ProjectTasks(Xero):
         try:
             item = matching_task_positions[pos]
         except (IndexError, TypeError):
-            xero_task_id = None
+            task_id = None
         else:
-            xero_task_id = item["taskId"]
+            task_id = item["taskId"]
 
-        return xero_task_id
+        return task_id
 
 
 class ProjectTime(Xero):
@@ -524,7 +546,7 @@ class ProjectTime(Xero):
 
         super().__init__(prefix, resource="projects", **kwargs)
 
-    def set_post_data(self):
+    def set_post_data(self, **kwargs):
         prefix = self.source_prefix
         provider = get_provider(prefix)
         assert provider, (f"Provider {prefix.lower()} doesn't exist!", 404)
@@ -532,18 +554,23 @@ class ProjectTime(Xero):
             "sourceProjectId", self.source_project_id
         )
         source_projects = provider.Projects(
-            rid=self.source_project_id, use_default=True, dry_run=self.dry_run
+            rid=self.source_project_id,
+            use_default=True,
+            dry_run=self.dry_run,
+            start=self.start,
+            end=self.end,
         )
-        ekwargs = {"update_cache": True, "strict": True}
-        source_project = source_projects.extract_model(**ekwargs)
+        source_project = source_projects.extract_model(update_cache=True, strict=True)
         self.source_project_id = source_project[source_projects.id_field]
 
         self.event_pos = int(self.values.get("eventPos", self.event_pos))
         source_project_events = provider.ProjectTime(
-            use_default=True,
             rid=self.source_project_id,
-            pos=self.event_pos,
+            use_default=True,
             dry_run=self.dry_run,
+            start=self.start,
+            end=self.end,
+            pos=self.event_pos,
         )
         self.source_event = source_project_events.extract_model(update_cache=True)
         self.eof = source_project_events.eof
@@ -573,21 +600,35 @@ class ProjectTime(Xero):
         self.rid = xero_project["projectId"]
 
         source_user_id = self.source_event["user.id"]
-        source_users = provider.Users(dry_run=self.dry_run, rid=source_user_id)
-        source_user = source_users.extract_model(**ekwargs)
-        source_user_name = source_user["name"]
-        xero_user = Users.from_source(source_user, **skwargs)
-        assert xero_user, (f"User {source_user_name} doesn't exist in Xero!", 404)
+
+        mapping = {
+            933370: "a76380db-eb5f-4fe4-8975-99ad2fabbd13",
+            2014349: "929e6f75-6fae-42f1-8d99-bcda9565d906",
+            2014908: "9dffcd83-581d-4a02-bdde-317c0c334e68",
+        }
+
+        xero_user_id = mapping.get(source_user_id)
+
+        if not xero_user_id:
+            logger.debug(f"User ID {source_user_id} doesn't exist in mapping!")
+            source_users = provider.Users(dry_run=self.dry_run, rid=source_user_id)
+            source_user = source_users.extract_model(update_cache=True)
+            source_user_name = source_user["name"]
+            xero_user = Users.from_source(source_user, **skwargs)
+            assert xero_user, (f"User {source_user_name} doesn't exist in Xero!", 404)
+            xero_user_id = xero_user["userId"]
 
         source_tasks = provider.Tasks(dry_run=self.dry_run)
-        source_task = source_tasks.extract_model(label_id, **ekwargs)
+        source_task = source_tasks.extract_model(
+            label_id, update_cache=True, strict=True
+        )
         source_rid = (self.source_project_id, source_user_id, label_id)
         xero_task = ProjectTasks.from_source(
             source_task, rid=self.rid, source_rid=source_rid, **skwargs,
         )
         assert xero_task, (f"Task {source_rid} doesn't exist in Xero!", 404)
 
-        self.xero_user_id = xero_user["userId"]
+        self.xero_user_id = xero_user_id
         self.xero_task_id = xero_task["taskId"]
 
         xero_tunc_user_id = self.xero_user_id.split("-")[0]
@@ -601,11 +642,11 @@ class ProjectTime(Xero):
         error = (f"Xero time entry {truncated_key} already exists!", 409)
         assert key not in event_keys, error
 
-    def get_post_data(self, *args, **kwargs):
+    def get_post_data(self, **kwargs):
         # url = 'http://localhost:5000/v1/xero-time'
         # r = requests.post(url, data={"sourceProjectId": 2389295, "dryRun": True})
         try:
-            self.set_post_data()
+            self.set_post_data(**kwargs)
         except AssertionError as err:
             self.error_msg, self.status_code = err.args[0]
             data = {}

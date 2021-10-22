@@ -1,8 +1,8 @@
 #!/usr/bin/env bash -uo pipefail
 
+echo
 echo "Syncing time…"
 echo "============="
-echo
 
 for PROJECT in $(jq -r '.[] | .id' app/data/timely_projects.json); do
   manage sync $@ -P timely -p ${PROJECT}; STATUS=$?

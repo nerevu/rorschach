@@ -1,0 +1,23 @@
+[
+  {
+    "name": "1 Hour Internal Work (Non-Billable)",
+    "projectId": "9919b5f7-1078-45ee-8809-a277b75dffdd",
+    "rate.value": 0.0,
+    "status": "ACTIVE",
+    "taskId": "089f8054-57e1-4121-8b5d-6279bd835744"
+  },
+  {
+    "name": "1 Hour Design Work (Non-Billable)",
+    "projectId": "9919b5f7-1078-45ee-8809-a277b75dffdd",
+    "rate.value": 0.0,
+    "status": "ACTIVE",
+    "taskId": "f1deb696-d0be-401a-94ad-54a53ac7b67e"
+  },
+  {
+    "name": "1 Hour R&D (Non-Billable)",
+    "projectId": "9919b5f7-1078-45ee-8809-a277b75dffdd",
+    "rate.value": 0.0,
+    "status": "ACTIVE",
+    "taskId": "d8871be7-96c6-403d-bc7c-26b8c1198051"
+  }
+]

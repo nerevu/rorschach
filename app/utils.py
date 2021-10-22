@@ -17,6 +17,7 @@ from hashlib import md5
 from http.client import responses
 from json.decoder import JSONDecodeError
 from subprocess import call
+from pprint import pprint
 
 import pygogo as gogo
 
@@ -498,7 +499,8 @@ def fetch_choice(choices):
     pos = None
 
     while pos is None:
-        answer = input(f"{choices}: ")
+        pprint(choices)
+        answer = input("select a choice: ")
 
         try:
             pos = int(answer or "0")

@@ -1,1 +1,14 @@
-[]
+[
+  {
+    "dateEnteredUtc": "2021-10-21T23:38:48.6603928Z",
+    "dateUtc": "2021-08-03T12:00:00Z",
+    "day": "2021-08-03",
+    "description": "Zapier • PIA Databox Metrics",
+    "duration": 12,
+    "projectId": "4ae942e8-af62-4318-b569-7476df14cbef",
+    "status": "ACTIVE",
+    "taskId": "c1b1fb50-94b4-4e65-bcd3-2c6bdcd24260",
+    "timeEntryId": "4afd4675-52d6-47e4-9b0f-32e4f341c569",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  }
+]

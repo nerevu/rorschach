@@ -1,1 +1,26 @@
-[]
+[
+  {
+    "dateEnteredUtc": "2021-10-21T04:35:40.7476573Z",
+    "dateUtc": "2021-10-19T12:00:00Z",
+    "day": "2021-10-19",
+    "description": "Sublime Text • Terminal • Fork • Dash • Automatically Google log…",
+    "duration": 314,
+    "projectId": "79867896-5504-4215-9a1a-8f9ca45ac7ec",
+    "status": "ACTIVE",
+    "taskId": "8665a63f-9907-45b4-971b-1639a2a7a48a",
+    "timeEntryId": "b7ed1394-4124-4407-be47-74f9d6b877a5",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  },
+  {
+    "dateEnteredUtc": "2021-10-21T04:37:21.60047Z",
+    "dateUtc": "2021-10-19T12:00:00Z",
+    "day": "2021-10-19",
+    "description": "Sublime Text • Terminal • Fork • Dash • Automatically Google log…",
+    "duration": 314,
+    "projectId": "79867896-5504-4215-9a1a-8f9ca45ac7ec",
+    "status": "ACTIVE",
+    "taskId": "8665a63f-9907-45b4-971b-1639a2a7a48a",
+    "timeEntryId": "aa897746-2ad0-4887-ae6f-fcba668e5ca7",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  }
+]

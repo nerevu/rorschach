@@ -1,7 +1,17 @@
 [
   {
+    "name": "Access DB",
+    "projectId": "db487fa7-4697-434d-a0b5-a2fbfd11ffe4",
+    "status": "CLOSED"
+  },
+  {
     "name": "Analytics Committee",
     "projectId": "4ae942e8-af62-4318-b569-7476df14cbef",
+    "status": "INPROGRESS"
+  },
+  {
+    "name": "BOD",
+    "projectId": "287bf83d-849d-4baa-8e39-6f683b5f65be",
     "status": "INPROGRESS"
   },
   {
@@ -10,8 +20,8 @@
     "status": "INPROGRESS"
   },
   {
-    "name": "COVID-19",
-    "projectId": "e72ce041-023c-4abf-80e8-c4af054b38ed",
+    "name": "Business Development",
+    "projectId": "9919b5f7-1078-45ee-8809-a277b75dffdd",
     "status": "INPROGRESS"
   },
   {
@@ -22,32 +32,37 @@
   {
     "name": "ClozeCart",
     "projectId": "34a6629c-6902-4436-881c-b909a285b8bd",
-    "status": "INPROGRESS"
+    "status": "CLOSED"
   },
   {
     "name": "Commission Dashboard",
     "projectId": "b1d797e3-e54b-4686-b83f-d8ea5a35f1c2",
-    "status": "INPROGRESS"
+    "status": "CLOSED"
   },
   {
     "name": "Company Metrics",
     "projectId": "c7f2aa8e-bf50-4359-8e3e-0721f5cd49bc",
-    "status": "INPROGRESS"
+    "status": "CLOSED"
   },
   {
     "name": "Company Website",
     "projectId": "7fe1e7c0-24e2-4c26-809f-654f1cbae1f1",
-    "status": "INPROGRESS"
+    "status": "CLOSED"
+  },
+  {
+    "name": "Crypto Dashboard",
+    "projectId": "f1509770-aa3c-4bfe-9549-c01d8bbc040f",
+    "status": "CLOSED"
   },
   {
     "name": "Dashboard Service",
     "projectId": "7c147cbf-4f92-43e4-bcc2-d32dbf48fed3",
-    "status": "INPROGRESS"
+    "status": "CLOSED"
   },
   {
     "name": "Data Automation",
     "projectId": "15ff819d-6d69-406c-98c5-ed9ab9163779",
-    "status": "INPROGRESS"
+    "status": "CLOSED"
   },
   {
     "name": "Data Update Service",
@@ -62,6 +77,11 @@
   {
     "name": "EMR Data Extraction",
     "projectId": "4abb468c-ba2b-4820-9554-ef32fea342a3",
+    "status": "CLOSED"
+  },
+  {
+    "name": "ERP",
+    "projectId": "55a55be8-f4c6-4fe5-b395-2c1dd2bf8465",
     "status": "INPROGRESS"
   },
   {
@@ -72,17 +92,27 @@
   {
     "name": "GP Data Community",
     "projectId": "37b69d72-7168-47d4-8a9f-d225fccf8b38",
-    "status": "INPROGRESS"
+    "status": "CLOSED"
+  },
+  {
+    "name": "Grant Search App",
+    "projectId": "eb90d0a9-35cf-4fa3-8cfe-3763615839b1",
+    "status": "CLOSED"
   },
   {
     "name": "Hiring",
     "projectId": "c74d4b92-4a5c-4301-80ac-a601593b41ba",
-    "status": "INPROGRESS"
+    "status": "CLOSED"
   },
   {
     "name": "IPA/AEA Site",
     "projectId": "132489d0-9094-4da6-a739-ced4d0a1f0c9",
     "status": "CLOSED"
+  },
+  {
+    "name": "IT Assistance",
+    "projectId": "ab249e42-0c5c-4e0a-8515-5b08466e3ca9",
+    "status": "INPROGRESS"
   },
   {
     "name": "Incentives Dashboard",
@@ -97,17 +127,17 @@
   {
     "name": "Invoice/Billing Service",
     "projectId": "69cb6ef7-7886-4172-8112-bbc70e949a9e",
-    "status": "INPROGRESS"
+    "status": "CLOSED"
   },
   {
     "name": "Kazeeki",
     "projectId": "4487260c-7d80-486f-a18f-7e209301e06c",
-    "status": "INPROGRESS"
+    "status": "CLOSED"
   },
   {
     "name": "Lunar Open Architecture (LOA)",
     "projectId": "3ef944e3-1cc1-4489-9385-3fdc9d4a3a63",
-    "status": "INPROGRESS"
+    "status": "CLOSED"
   },
   {
     "name": "Nerevu API",
@@ -127,7 +157,7 @@
   {
     "name": "Onboarding",
     "projectId": "c8b18830-fed0-4979-8c42-6619c4b6b67c",
-    "status": "INPROGRESS"
+    "status": "CLOSED"
   },
   {
     "name": "Open Peoria",
@@ -135,19 +165,29 @@
     "status": "INPROGRESS"
   },
   {
+    "name": "Pamoja",
+    "projectId": "fe76951e-172d-41e1-a916-214a93a2f1f0",
+    "status": "INPROGRESS"
+  },
+  {
+    "name": "Project Quotation Service",
+    "projectId": "493e13b7-ffa9-4833-8b77-176894aa8c9c",
+    "status": "INPROGRESS"
+  },
+  {
     "name": "R&D",
     "projectId": "c799cd2f-9371-4917-bde2-a8981385be34",
-    "status": "INPROGRESS"
+    "status": "CLOSED"
   },
   {
     "name": "Retainer",
     "projectId": "2e4c160d-a4bf-4eb4-b531-3cae6cfeb2fa",
-    "status": "INPROGRESS"
+    "status": "CLOSED"
   },
   {
     "name": "Sharepoint Training Guide",
     "projectId": "9e610f03-f11d-4d2d-ac74-1e26a3618d26",
-    "status": "INPROGRESS"
+    "status": "CLOSED"
   },
   {
     "name": "Sitation Dashboard",
@@ -162,7 +202,7 @@
   {
     "name": "TCPUL Website",
     "projectId": "6af33309-b00b-4f9c-991f-25f0b4506582",
-    "status": "INPROGRESS"
+    "status": "CLOSED"
   },
   {
     "name": "WEI CMS",
@@ -177,6 +217,11 @@
   {
     "name": "Workforce Initiative (WEI) Website",
     "projectId": "d2812acb-40dc-4ed2-8e83-e105ef21b9ef",
+    "status": "INPROGRESS"
+  },
+  {
+    "name": "Working Group",
+    "projectId": "3538b73a-74c7-4580-997c-abd2264b1c84",
     "status": "INPROGRESS"
   }
 ]

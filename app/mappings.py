@@ -8,11 +8,13 @@
 REUBEN_TIMELY = 933370
 ADITYA_TIMELY = 1281455
 MITCHELL_TIMELY = 1281876
+MALLORY_TIMELY = 2014908
+TIFFANY_TIMELY = 2014349
 MITCHELL_GSHEETS = "mitchell"
 AUSTIN_GSHEETS = "austin"
 LEVEL_1 = [AUSTIN_GSHEETS]
-LEVEL_2 = [ADITYA_TIMELY, MITCHELL_TIMELY, MITCHELL_GSHEETS]
-LEVEL_3 = []
+LEVEL_2 = [ADITYA_TIMELY, MITCHELL_TIMELY, MITCHELL_GSHEETS, TIFFANY_TIMELY]
+LEVEL_3 = [MALLORY_TIMELY]
 LEVEL_4 = []
 LEVEL_5 = [REUBEN_TIMELY]
 TEAM = LEVEL_1 + LEVEL_2 + LEVEL_3 + LEVEL_4 + LEVEL_5
@@ -21,47 +23,25 @@ USERS = {
     REUBEN_TIMELY: LEVEL_5,
     ADITYA_TIMELY: LEVEL_2,
     MITCHELL_TIMELY: LEVEL_2,
+    MALLORY_TIMELY: LEVEL_3,
+    TIFFANY_TIMELY: LEVEL_2,
     MITCHELL_GSHEETS: LEVEL_2,
     AUSTIN_GSHEETS: LEVEL_1,
 }
 
 POSITIONS = {
-    "Creative Director": LEVEL_5,
-    "Technical Director": LEVEL_5,
-    "Partner": LEVEL_5,
-    "Principal Developer": LEVEL_4,
-    "Senior Designer": LEVEL_3,
-    "Senior Consultant": LEVEL_3,
-    "Senior Developer": LEVEL_3,
-    "Consultant": LEVEL_2,
-    "Developer": LEVEL_2,
-    "Junior Developer": LEVEL_1,
-    "Pro-Bono": TEAM,
-    "Non-Billable": TEAM,
-}
-
-NAMES = {
-    "Admin": ["1 Hour Internal Work"],
-    "Consulting": ["1 Hour Consulting"],
-    "Design": ["1 Hour Design", "1 Hour Internal Work"],
-    "Development": ["1 Hour Development", "1 Hour R&D", "1 Hour Internal Work"],
-    "Evaluating": ["1 Hour Internal Work"],
-    "Finance": ["1 Hour Internal Work"],
-    "Finance & Accounting": ["1 Hour Internal Work"],
-    "HR": ["1 Hour Internal Work"],
-    "Coaching": ["1 Hour Coaching"],
-    "Training": ["1 Hour Coaching"],
-    "Instructing": ["1 Hour Internal Work"],
-    "Learning": ["1 Hour Client Work", "1 Hour Internal Work"],
-    "Maintenance": ["1 Hour Development", "1 Hour R&D", "1 Hour Internal Work"],
-    "Market": ["1 Hour Internal Work"],
-    "Marketing": ["1 Hour Internal Work"],
-    "Marketing/PR": ["1 Hour Internal Work"],
-    "Misc": ["1 Hour Internal Work"],
-    "Networking": ["1 Hour Internal Work"],
-    "R&D": ["1 Hour R&D"],
-    "Research": ["1 Hour Research", "1 Hour R&D"],
-    "Sales": ["1 Hour Internal Work"],
+    "creative director": LEVEL_5,
+    "technical director": LEVEL_5,
+    "partner": LEVEL_5,
+    "principal developer": LEVEL_4,
+    "senior designer": LEVEL_3,
+    "senior consultant": LEVEL_3,
+    "senior developer": LEVEL_3,
+    "consultant": LEVEL_2,
+    "developer": LEVEL_2,
+    "junior developer": LEVEL_1,
+    "pro-bono": TEAM,
+    "non-billable": TEAM,
 }
 
 

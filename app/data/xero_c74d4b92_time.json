@@ -1,1 +1,146 @@
-[]
+[
+  {
+    "dateEnteredUtc": "2021-10-21T21:45:39.6924081Z",
+    "dateUtc": "2021-09-10T12:00:00Z",
+    "day": "2021-09-10",
+    "description": "Register Nerevu for Massachusetts state taxes: https://app.gusto…",
+    "duration": 30,
+    "projectId": "c74d4b92-4a5c-4301-80ac-a601593b41ba",
+    "status": "ACTIVE",
+    "taskId": "c78b97dd-f2ba-41a3-888d-43e8677fdc31",
+    "timeEntryId": "2e3d8e60-0391-4623-8223-bca243db0ef9",
+    "userId": "9dffcd83-581d-4a02-bdde-317c0c334e68"
+  },
+  {
+    "dateEnteredUtc": "2021-10-21T21:45:43.7777444Z",
+    "dateUtc": "2021-09-02T12:00:00Z",
+    "day": "2021-09-02",
+    "description": "Mallory McElroy <> Nerevu Employment Agreement.pages • Mallory M…",
+    "duration": 86,
+    "projectId": "c74d4b92-4a5c-4301-80ac-a601593b41ba",
+    "status": "ACTIVE",
+    "taskId": "c78b97dd-f2ba-41a3-888d-43e8677fdc31",
+    "timeEntryId": "9764054b-0694-47ec-b1dd-881139dba711",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  },
+  {
+    "dateEnteredUtc": "2021-10-21T21:48:08.8258154Z",
+    "dateUtc": "2021-08-18T12:00:00Z",
+    "day": "2021-08-18",
+    "description": "Gusto • Mallory McElroy Independent Contractor Agreement - Nerev…",
+    "duration": 15,
+    "projectId": "c74d4b92-4a5c-4301-80ac-a601593b41ba",
+    "status": "ACTIVE",
+    "taskId": "e3201ce3-b6dd-4d01-832e-17ae37352907",
+    "timeEntryId": "9817dc21-d7c5-41b5-b80e-97fa8dfd68f2",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  },
+  {
+    "dateEnteredUtc": "2021-10-21T21:48:14.7404456Z",
+    "dateUtc": "2021-08-11T12:00:00Z",
+    "day": "2021-08-11",
+    "description": "Paid trial offer | Fastmail • Tiffany Liao Independent Contracto…",
+    "duration": 62,
+    "projectId": "c74d4b92-4a5c-4301-80ac-a601593b41ba",
+    "status": "ACTIVE",
+    "taskId": "c78b97dd-f2ba-41a3-888d-43e8677fdc31",
+    "timeEntryId": "91b4609b-2903-462a-aa88-db7473e72fad",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  },
+  {
+    "dateEnteredUtc": "2021-10-21T21:48:15.6096923Z",
+    "dateUtc": "2021-08-10T12:00:00Z",
+    "day": "2021-08-10",
+    "description": "Airtable • Data Analyst & Backend Development Internship offer f…",
+    "duration": 34,
+    "projectId": "c74d4b92-4a5c-4301-80ac-a601593b41ba",
+    "status": "ACTIVE",
+    "taskId": "e3201ce3-b6dd-4d01-832e-17ae37352907",
+    "timeEntryId": "fdfc1c54-9e71-4290-a1c7-2bae84711f02",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  },
+  {
+    "dateEnteredUtc": "2021-10-21T21:48:16.5029985Z",
+    "dateUtc": "2021-08-09T12:00:00Z",
+    "day": "2021-08-09",
+    "description": "Dialpad Meetings • Airtable • Preview • Fastmail • Finder • Cale…",
+    "duration": 146,
+    "projectId": "c74d4b92-4a5c-4301-80ac-a601593b41ba",
+    "status": "ACTIVE",
+    "taskId": "c78b97dd-f2ba-41a3-888d-43e8677fdc31",
+    "timeEntryId": "80acc682-e387-441e-864d-456ef8c76ded",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  },
+  {
+    "dateEnteredUtc": "2021-10-21T21:48:17.4797372Z",
+    "dateUtc": "2021-08-09T12:00:00Z",
+    "day": "2021-08-09",
+    "description": "Re: Nerevu Executive Assistant Position - 2nd Round Interview Sc…",
+    "duration": 96,
+    "projectId": "c74d4b92-4a5c-4301-80ac-a601593b41ba",
+    "status": "ACTIVE",
+    "taskId": "e3201ce3-b6dd-4d01-832e-17ae37352907",
+    "timeEntryId": "a4e39fce-ff43-4a18-be65-6ab88a23d593",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  },
+  {
+    "dateEnteredUtc": "2021-10-21T21:48:18.5773243Z",
+    "dateUtc": "2021-08-04T12:00:00Z",
+    "day": "2021-08-04",
+    "description": "Airtable • Dialpad Meetings • Fastmail",
+    "duration": 59,
+    "projectId": "c74d4b92-4a5c-4301-80ac-a601593b41ba",
+    "status": "ACTIVE",
+    "taskId": "c78b97dd-f2ba-41a3-888d-43e8677fdc31",
+    "timeEntryId": "63f2d8d0-620b-414c-94eb-eccfd6343e01",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  },
+  {
+    "dateEnteredUtc": "2021-10-21T21:48:19.5089782Z",
+    "dateUtc": "2021-08-01T12:00:00Z",
+    "day": "2021-08-01",
+    "description": "Nerevu Group • Indeed.com • 56 conversations",
+    "duration": 15,
+    "projectId": "c74d4b92-4a5c-4301-80ac-a601593b41ba",
+    "status": "ACTIVE",
+    "taskId": "c78b97dd-f2ba-41a3-888d-43e8677fdc31",
+    "timeEntryId": "d20d9967-b8c0-4355-9e41-96e97dd4017d",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  },
+  {
+    "dateEnteredUtc": "2021-10-21T21:48:20.3969262Z",
+    "dateUtc": "2021-07-30T12:00:00Z",
+    "day": "2021-07-30",
+    "description": "Dialpad Meetings • Airtable • SendGrid • Analytics • OmniFocus",
+    "duration": 57,
+    "projectId": "c74d4b92-4a5c-4301-80ac-a601593b41ba",
+    "status": "ACTIVE",
+    "taskId": "c78b97dd-f2ba-41a3-888d-43e8677fdc31",
+    "timeEntryId": "22d0fb93-6de1-43fb-974d-46f12b2618c3",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  },
+  {
+    "dateEnteredUtc": "2021-10-21T21:48:21.6224219Z",
+    "dateUtc": "2021-07-30T12:00:00Z",
+    "day": "2021-07-30",
+    "description": "Re: Nerevu Executive Assistant Position - 2nd Round Interview Sc…",
+    "duration": 61,
+    "projectId": "c74d4b92-4a5c-4301-80ac-a601593b41ba",
+    "status": "ACTIVE",
+    "taskId": "e3201ce3-b6dd-4d01-832e-17ae37352907",
+    "timeEntryId": "2f6f2826-d891-42ce-bc88-c132d0ea5174",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  },
+  {
+    "dateEnteredUtc": "2021-10-21T21:48:22.5981029Z",
+    "dateUtc": "2021-07-29T12:00:00Z",
+    "day": "2021-07-29",
+    "description": "Airtable • nvALT • Molly Yarrington Exec.pdf • Dialpad Meetings …",
+    "duration": 193,
+    "projectId": "c74d4b92-4a5c-4301-80ac-a601593b41ba",
+    "status": "ACTIVE",
+    "taskId": "c78b97dd-f2ba-41a3-888d-43e8677fdc31",
+    "timeEntryId": "bf776753-7f9f-4ba7-8095-13e4f0a23222",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  }
+]

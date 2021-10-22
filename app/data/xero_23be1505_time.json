@@ -1,1 +1,14 @@
-[]
+[
+  {
+    "dateEnteredUtc": "2021-10-22T00:20:07.8060911Z",
+    "dateUtc": "2021-08-25T12:00:00Z",
+    "day": "2021-08-25",
+    "description": "Meeting",
+    "duration": 64,
+    "projectId": "23be1505-900b-4504-b1fe-cf1b1c7e1d12",
+    "status": "ACTIVE",
+    "taskId": "d673b523-9c0d-4af9-a9d3-add77ac44f86",
+    "timeEntryId": "fbfbc007-6e09-4755-9f85-5f8be7aa6621",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  }
+]

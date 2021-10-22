@@ -105,8 +105,8 @@ class BaseView(ProviderMixin, MethodView):
             self.domain = kwargs.get("domain", self.client.domain)
             def_start = def_end - timedelta(days=app.config["REPORT_DAYS"])
 
-        self._end = kwargs.get("end", def_end.strftime("%Y-%m-%d"))
-        self._start = kwargs.get("start", def_start.strftime("%Y-%m-%d"))
+        self._end = kwargs.get("end", def_end)
+        self._start = kwargs.get("start", def_start)
         self.headers = kwargs.get("headers", {})
 
         if self.is_xero and self.client and self.client.oauth2:
@@ -279,6 +279,7 @@ class Resource(BaseView):
         self.filterer = kwargs.get("filterer")
         self.id_hook = kwargs.get("id_hook")
         self.rid_hook = kwargs.get("rid_hook")
+        self.result_key = kwargs.get("result_key", "result")
         self._rid = kwargs.get("rid")
         self._use_default = kwargs.get("use_default")
         self._dictify = kwargs.get("dictify")
@@ -309,10 +310,10 @@ class Resource(BaseView):
     def __getitem__(self, key):
         return self.data[key]
 
-    def patch_response(self):
+    def patch_response(self, *args, **kwargs):
         raise NotImplementedError
 
-    def get_json_response(self):
+    def get_json_response(self, *args, **kwargs):
         raise NotImplementedError
 
     @property
@@ -562,12 +563,6 @@ class Resource(BaseView):
         self._values["subkey"] = value
 
     @property
-    def result_key(self):
-        _result_key = "result"
-
-        return _result_key
-
-    @property
     def pos(self):
         return int(self.values.get("pos", self._pos))
 
@@ -577,7 +572,14 @@ class Resource(BaseView):
 
     @property
     def start(self):
-        return self.values.get("start", self._start)
+        value = self.values.get("start", self._start)
+
+        try:
+            value = value.strftime("%Y-%m-%d")
+        except AttributeError:
+            pass
+
+        return value
 
     @start.setter
     def start(self, value):
@@ -585,7 +587,14 @@ class Resource(BaseView):
 
     @property
     def end(self):
-        return self.values.get("end", self._end)
+        value = self.values.get("end", self._end)
+
+        try:
+            value = value.strftime("%Y-%m-%d")
+        except AttributeError:
+            pass
+
+        return value
 
     @end.setter
     def end(self, value):
@@ -605,7 +614,7 @@ class Resource(BaseView):
 
         return _mapper
 
-    def get_post_data(self, item, name, rid, prefix=None):
+    def get_post_data(self, item, name, rid, prefix=None, **kwargs):
         data = {}
         data[self.name_field] = name
         return data
@@ -682,7 +691,12 @@ class Resource(BaseView):
     def update_data(self, **kwargs):
         if kwargs:
             entry = dict(extract_fields(kwargs, *self.fields))
-            self.data = list(self.data) + [entry]
+
+            for _entry in self.data:
+                if entry == _entry:
+                    break
+            else:
+                self.data = list(self.data) + [entry]
 
     def map_rid(self, rid, prefix=None, **kwargs):
         return self.mapper(prefix).get(rid)
@@ -722,16 +736,27 @@ class Resource(BaseView):
 
                 if dest_id:
                     dest_item = self.extract_model(dest_id, update_cache=True)
+            elif not dest_item:
+                logger.warning(
+                    f"Unable to present {self.prefix} {self.resource} mapping choices without an id_func!"
+                )
 
             self.dry_run = dry_run
 
             if not (dest_item or dry_run):
                 message = f"No mapping available for {dispaly_name} in {self}. "
-                message += "Do you want to create it?"
+                message += f"Do you want to create a new {self.prefix} {self.resource}"
+
+                if self.subresource:
+                    message += f"-{self.subresource}"
+
+                message += " entry for it?"
                 answer = fetch_bool(message)
 
                 if answer == "y":
-                    data = self.get_post_data(*args, prefix=source.prefix)
+                    data = self.get_post_data(
+                        *args, prefix=source.prefix, source_prefix=source.prefix
+                    )
                 else:
                     data = {}
 
@@ -755,14 +780,16 @@ class Resource(BaseView):
         return converter
 
     @classmethod
-    def from_source(cls, source_item, dry_run=True, source_rid=None, **kwargs):
+    def from_source(
+        cls, source_item, dry_run=True, rid=None, source_rid=None, **kwargs
+    ):
         dest_prefix = kwargs["dest_prefix"]
         dest_collection = get_collection(dest_prefix, cls.__name__)
-        dest = dest_collection(dry_run=dry_run, **kwargs)
+        dest = dest_collection(dry_run=dry_run, prefix=dest_prefix, rid=rid)
 
         source_prefix = kwargs["source_prefix"]
         source_collection = get_collection(source_prefix, cls.__name__)
-        source = source_collection(dry_run=dry_run)
+        source = source_collection(dry_run=dry_run, prefix=source_prefix)
         converter = dest.convert(source)
         return converter(source_item, rid=source_rid)
 
@@ -882,7 +909,7 @@ class Resource(BaseView):
 
         if self.error_msg:
             logger.error(self.error_msg)
-            json["message"] = self.error_msg
+            json["message"] = f"{self.error_msg}: {url}"
 
         json["result"] = result
         return jsonify(**json)
