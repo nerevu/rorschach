@@ -403,6 +403,8 @@ def sync(source_prefix, **kwargs):
             if result["status_code"] == 401:
                 exit(1)
 
+        save_results(**kwargs)
+
     num_added_events = len(added_events)
     num_skipped_events = len(skipped_events)
     num_total_events = num_added_events + num_skipped_events
@@ -450,6 +452,8 @@ def sync(source_prefix, **kwargs):
             unpatched_events.add(event_id)
             logger.info(f"- {message or 'Unknown error!'}")
 
+        save_results(**kwargs)
+
     num_patched_events = len(patched_events)
 
     msg = f"Of {num_total_events} events: {num_added_events} added and "
@@ -458,7 +462,6 @@ def sync(source_prefix, **kwargs):
     logger.info(msg)
     logger.info("-" * len(msg))
     num_errors = len(skipped_events) + len(unpatched_events)
-    save_results(**kwargs)
     exit(num_errors)
 
 
