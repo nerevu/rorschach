@@ -16,7 +16,7 @@ import pygogo as gogo
 from app import providers
 from app.utils import fetch_choice
 from app.helpers import get_collection, get_provider
-from app.mappings import USERS, NAMES, POSITIONS, gen_task_mapping
+from app.mappings import USERS, POSITIONS, gen_task_mapping
 from app.routes.webhook import Webhook
 from app.routes.auth import Resource, process_result
 
@@ -32,12 +32,15 @@ def events_processor(result, fields, **kwargs):
 
 
 def get_position_user_ids(xero_task_name):
-    position_name = xero_task_name.split("(")[1][:-1]
+    position_name = xero_task_name.lower()
+
+    if "(" in position_name:
+        position_name = position_name.split("(")[1][:-1]
 
     try:
         user_ids = POSITIONS[position_name]
     except KeyError:
-        logger.debug(f"Position map doesn't contain position '{position_name}'!")
+        logger.debug(f"Xero position map doesn't contain position '{position_name}'!")
         user_ids = []
 
     return user_ids
@@ -378,16 +381,8 @@ class Inventory(Xero):
 
     def get_matching_xero_postions(self, user_id, task_name, user_name=None):
         trunc_name = task_name.split(" ")[0]
-        names = NAMES[trunc_name]
         logger.debug(f"Loading {self} choices for {user_name}…")
-        matching_tasks = [
-            r for r in self if any(n in r[self.name_field] for n in names)
-        ]
-        return [
-            t
-            for t in matching_tasks
-            if user_id in get_position_user_ids(t[self.name_field])
-        ]
+        return [t for t in self if user_id in get_position_user_ids(t[self.name_field])]
 
 
 class ProjectTasks(Xero):
@@ -432,16 +427,12 @@ class ProjectTasks(Xero):
 
     def get_matching_xero_postions(self, user_id, task_name, user_name=None):
         trunc_name = task_name.split(" ")[0]
-        names = NAMES[trunc_name]
         logger.debug(f"Loading {self} choices for {user_name}…")
-        matching_tasks = [
-            r for r in self if any(n in r[self.name_field] for n in names)
+        positions = [
+            t for t in self if user_id in get_position_user_ids(t[self.name_field])
         ]
-        return [
-            t
-            for t in matching_tasks
-            if user_id in get_position_user_ids(t[self.name_field])
-        ]
+
+        return positions
 
     def get_post_data(self, task, task_name, rid, prefix=PREFIX):
         (project_id, user_id, label_id) = rid
