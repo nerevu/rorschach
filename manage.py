@@ -350,7 +350,7 @@ def test_oauth(method=None, resource=None, project_id=None, **kwargs):
 @click.option(
     "-S", "--start-pos", help="The Timely event start position", type=int, default=0
 )
-@click.option("-E", "--end-pos", help="The Timely event end position", type=int)
+@click.option("-D", "--end-pos", help="The Timely event end position", type=int)
 @click.option("-e", "--debug", help="Debug mode", is_flag=True)
 @click.option("-d", "--dry-run/--no-dry-run", help="Perform a dry run", default=False)
 @click.option(

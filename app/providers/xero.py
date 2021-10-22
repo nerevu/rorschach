@@ -554,17 +554,23 @@ class ProjectTime(Xero):
             "sourceProjectId", self.source_project_id
         )
         source_projects = provider.Projects(
-            rid=self.source_project_id, use_default=True, dry_run=self.dry_run
+            rid=self.source_project_id,
+            use_default=True,
+            dry_run=self.dry_run,
+            start=self.start,
+            end=self.end,
         )
         source_project = source_projects.extract_model(update_cache=True, strict=True)
         self.source_project_id = source_project[source_projects.id_field]
 
         self.event_pos = int(self.values.get("eventPos", self.event_pos))
         source_project_events = provider.ProjectTime(
-            use_default=True,
             rid=self.source_project_id,
-            pos=self.event_pos,
+            use_default=True,
             dry_run=self.dry_run,
+            start=self.start,
+            end=self.end,
+            pos=self.event_pos,
         )
         self.source_event = source_project_events.extract_model(update_cache=True)
         self.eof = source_project_events.eof
