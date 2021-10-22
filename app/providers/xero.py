@@ -154,6 +154,7 @@ class Contacts(Xero):
                 "fields": ["ContactID", "Name", "FirstName", "LastName"],
                 "id_field": "ContactID",
                 "subkey": "Contacts",
+                "result_key": "result.Contacts.0",
                 "domain": "api",
             }
         )
@@ -434,7 +435,7 @@ class ProjectTasks(Xero):
 
         return positions
 
-    def get_post_data(self, task, task_name, rid, prefix=PREFIX):
+    def get_post_data(self, task, task_name, rid, prefix=PREFIX, **kwargs):
         (project_id, user_id, label_id) = rid
         args = (user_id, task_name, get_user_name(user_id, prefix=prefix))
         matching_task_positions = self.get_matching_xero_postions(*args)
@@ -515,7 +516,7 @@ class ProjectTime(Xero):
 
         super().__init__(prefix, resource="projects", **kwargs)
 
-    def set_post_data(self):
+    def set_post_data(self, **kwargs):
         prefix = self.source_prefix
         provider = get_provider(prefix)
         assert provider, (f"Provider {prefix.lower()} doesn't exist!", 404)
@@ -592,11 +593,11 @@ class ProjectTime(Xero):
         error = (f"Xero time entry {truncated_key} already exists!", 409)
         assert key not in event_keys, error
 
-    def get_post_data(self, *args, **kwargs):
+    def get_post_data(self, **kwargs):
         # url = 'http://localhost:5000/v1/xero-time'
         # r = requests.post(url, data={"sourceProjectId": 2389295, "dryRun": True})
         try:
-            self.set_post_data()
+            self.set_post_data(**kwargs)
         except AssertionError as err:
             self.error_msg, self.status_code = err.args[0]
             data = {}

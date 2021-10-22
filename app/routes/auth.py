@@ -279,6 +279,7 @@ class Resource(BaseView):
         self.filterer = kwargs.get("filterer")
         self.id_hook = kwargs.get("id_hook")
         self.rid_hook = kwargs.get("rid_hook")
+        self.result_key = kwargs.get("result_key", "result")
         self._rid = kwargs.get("rid")
         self._use_default = kwargs.get("use_default")
         self._dictify = kwargs.get("dictify")
@@ -309,10 +310,10 @@ class Resource(BaseView):
     def __getitem__(self, key):
         return self.data[key]
 
-    def patch_response(self):
+    def patch_response(self, *args, **kwargs):
         raise NotImplementedError
 
-    def get_json_response(self):
+    def get_json_response(self, *args, **kwargs):
         raise NotImplementedError
 
     @property
@@ -562,12 +563,6 @@ class Resource(BaseView):
         self._values["subkey"] = value
 
     @property
-    def result_key(self):
-        _result_key = "result"
-
-        return _result_key
-
-    @property
     def pos(self):
         return int(self.values.get("pos", self._pos))
 
@@ -619,7 +614,7 @@ class Resource(BaseView):
 
         return _mapper
 
-    def get_post_data(self, item, name, rid, prefix=None):
+    def get_post_data(self, item, name, rid, prefix=None, **kwargs):
         data = {}
         data[self.name_field] = name
         return data
@@ -745,7 +740,9 @@ class Resource(BaseView):
                 answer = fetch_bool(message)
 
                 if answer == "y":
-                    data = self.get_post_data(*args, prefix=source.prefix)
+                    data = self.get_post_data(
+                        *args, prefix=source.prefix, source_prefix=source.prefix
+                    )
                 else:
                     data = {}
 
@@ -769,14 +766,16 @@ class Resource(BaseView):
         return converter
 
     @classmethod
-    def from_source(cls, source_item, dry_run=True, source_rid=None, **kwargs):
+    def from_source(
+        cls, source_item, dry_run=True, rid=None, source_rid=None, **kwargs
+    ):
         dest_prefix = kwargs["dest_prefix"]
         dest_collection = get_collection(dest_prefix, cls.__name__)
-        dest = dest_collection(dry_run=dry_run, **kwargs)
+        dest = dest_collection(dry_run=dry_run, prefix=dest_prefix, rid=rid)
 
         source_prefix = kwargs["source_prefix"]
         source_collection = get_collection(source_prefix, cls.__name__)
-        source = source_collection(dry_run=dry_run)
+        source = source_collection(dry_run=dry_run, prefix=source_prefix)
         converter = dest.convert(source)
         return converter(source_item, rid=source_rid)
 
@@ -896,7 +895,7 @@ class Resource(BaseView):
 
         if self.error_msg:
             logger.error(self.error_msg)
-            json["message"] = self.error_msg
+            json["message"] = f"{self.error_msg}: {url}"
 
         json["result"] = result
         return jsonify(**json)

@@ -32,25 +32,23 @@ def add_xero_time(source_prefix, project_id=None, position=None, **kwargs):
         **kwargs,
     )
 
-    data = xero_time.get_post_data()
-    response = xero_time.post(**data)
-    json = response.json
-    status_code = response.status_code
-    conflict = status_code == 409
+    data = xero_time.get_post_data(source_prefix=source_prefix, **kwargs)
 
-    json.update(
-        {
-            "status_code": status_code,
-            "conflict": conflict,
-            "eof": xero_time.eof,
-            "event_id": xero_time.event_id,
-            "event_pos": xero_time.event_pos,
-        }
-    )
+    json = {
+        "eof": xero_time.eof,
+        "event_id": xero_time.event_id,
+        "event_pos": xero_time.event_pos,
+    }
 
-    if xero_time.error_msg:
-        json["message"] = xero_time.error_msg
+    if data:
+        response = xero_time.post(**data)
+        json.update(response.json)
+        status_code = response.status_code
+    else:
+        json.update({"message": xero_time.error_msg, "ok": False})
+        status_code = xero_time.status_code
 
+    json.update({"status_code": status_code, "conflict": status_code == 409})
     return json
 
 
@@ -59,22 +57,21 @@ def mark_billed(source_prefix, rid, **kwargs):
     provider = get_provider(source_prefix)
     time = provider.Time(dictify=True, rid=rid, **kwargs)
     data = time.get_patch_data()
-    response = time.patch(**data)
-    json = response.json
-    status_code = response.status_code
 
-    json.update(
-        {
-            "status_code": status_code,
-            "conflict": status_code == 409,
-            "eof": False,
-            "event_id": time.rid,
-        }
-    )
+    json = {
+        "eof": False,
+        "event_id": time.rid,
+    }
 
-    if time.error_msg:
-        json["message"] = time.error_msg
+    if data:
+        response = time.patch(**data)
+        json.update(response.json)
+        status_code = response.status_code
+    else:
+        json.update({"message": time.error_msg, "ok": False})
+        status_code = xero_time.status_code
 
+    json.update({"status_code": status_code, "conflict": status_code == 409})
     return json
 
 
