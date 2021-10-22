@@ -279,7 +279,7 @@ class Resource(BaseView):
         self.filterer = kwargs.get("filterer")
         self.id_hook = kwargs.get("id_hook")
         self.rid_hook = kwargs.get("rid_hook")
-        self.result_key = kwargs.get("result_key", "result")
+        self._result_key = kwargs.get("result_key", "result")
         self._rid = kwargs.get("rid")
         self._use_default = kwargs.get("use_default")
         self._dictify = kwargs.get("dictify")
@@ -418,6 +418,15 @@ class Resource(BaseView):
 
         if self.rid_hook:
             self.rid_hook()
+
+    @property
+    def result_key(self):
+        _result_key = self._result_key
+
+        if self.subkey:
+            _result_key += f".{self.subkey}.0"
+
+        return _result_key
 
     @property
     def data_p(self):

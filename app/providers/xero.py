@@ -169,7 +169,6 @@ class Contacts(Xero):
                 "fields": ["ContactID", "Name", "FirstName", "LastName"],
                 "id_field": "ContactID",
                 "subkey": "Contacts",
-                "result_key": "result.Contacts.0",
                 "domain": "api",
             }
         )
