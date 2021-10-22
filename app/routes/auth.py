@@ -691,7 +691,12 @@ class Resource(BaseView):
     def update_data(self, **kwargs):
         if kwargs:
             entry = dict(extract_fields(kwargs, *self.fields))
-            self.data = list(self.data) + [entry]
+
+            for _entry in self.data:
+                if entry == _entry:
+                    break
+            else:
+                self.data = list(self.data) + [entry]
 
     def map_rid(self, rid, prefix=None, **kwargs):
         return self.mapper(prefix).get(rid)
