@@ -146,7 +146,9 @@ class OAuth2BaseClient(BaseClient):
             except AttributeError:
                 self.expires_at = dt.fromtimestamp(self.expires_at, timezone.utc)
 
-            self.expires_in = (self.expires_at.replace(tzinfo=timezone.utc) - dt.now(timezone.utc)).total_seconds()
+            self.expires_in = (
+                self.expires_at.replace(tzinfo=timezone.utc) - dt.now(timezone.utc)
+            ).total_seconds()
 
         self.save()
 

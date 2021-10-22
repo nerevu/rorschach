@@ -59,18 +59,6 @@ def events_processor(result, fields, **kwargs):
     return process_result(result, fields, **kwargs)
 
 
-def get_position_user_ids(xero_task_name):
-    position_name = xero_task_name.split("(")[1][:-1]
-
-    try:
-        user_ids = POSITIONS[position_name]
-    except KeyError:
-        logger.debug(f"Position map doesn't contain position '{position_name}'!")
-        user_ids = []
-
-    return user_ids
-
-
 class Timely(Resource):
     def __init__(self, prefix=PREFIX, **kwargs):
         super().__init__(prefix, **kwargs)

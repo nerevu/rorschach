@@ -155,11 +155,11 @@ class Users(Xero):
         try:
             item = self[pos]
         except (IndexError, TypeError):
-            xero_user_id = None
+            user_id = None
         else:
-            xero_user_id = item["userId"]
+            user_id = item["userId"]
 
-        return xero_user_id
+        return user_id
 
 
 class Contacts(Xero):
@@ -520,11 +520,11 @@ class ProjectTasks(Xero):
         try:
             item = matching_task_positions[pos]
         except (IndexError, TypeError):
-            xero_task_id = None
+            task_id = None
         else:
-            xero_task_id = item["taskId"]
+            task_id = item["taskId"]
 
-        return xero_task_id
+        return task_id
 
 
 class ProjectTime(Xero):

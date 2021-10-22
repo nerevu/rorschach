@@ -85,7 +85,9 @@ class GSheets(Resource):
         if self.client:
             self.gc = gspread.authorize(self.client.credentials)
             self._sheet_id = kwargs.get("sheet_id", self.client.sheet_id)
-            self._worksheet_name = kwargs.get("worksheet_name", self.client.worksheet_name)
+            self._worksheet_name = kwargs.get(
+                "worksheet_name", self.client.worksheet_name
+            )
         else:
             self._sheet_id = kwargs.get("sheet_id")
             self._worksheet_name = kwargs.get("worksheet_name")
