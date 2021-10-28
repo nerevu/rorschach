@@ -429,6 +429,10 @@ class Resource(BaseView):
         return _result_key
 
     @property
+    def single_result_key(self):
+        return self._result_key
+
+    @property
     def data_p(self):
         if self.subresource and self._rid:
             try:
@@ -636,7 +640,7 @@ class Resource(BaseView):
             json = response.json
 
             if json["ok"]:
-                model = DotDict(json).get(self.result_key)
+                model = DotDict(json).get(self.single_result_key)
             else:
                 logger.error(json.get("message"))
 
