@@ -40,6 +40,7 @@ POSITIONS = {
     "consultant": LEVEL_2,
     "developer": LEVEL_2,
     "junior developer": LEVEL_1,
+    "junior consultant": LEVEL_1,
     "pro-bono": TEAM,
     "non-billable": TEAM,
 }

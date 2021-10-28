@@ -142,5 +142,89 @@
     "taskId": "b21c23f1-19a7-4958-88ac-3608c90f5a34",
     "timeEntryId": "5cbd11e0-b5b5-46f9-b4f8-09ab310c6a31",
     "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  },
+  {
+    "dateEnteredUtc": "2021-10-22T05:01:34.9915136Z",
+    "dateUtc": "2021-07-23T12:00:00Z",
+    "day": "2021-07-23",
+    "description": "Zapier • Databox • Google Alerts • Airtable • OmniFocus • Calend…",
+    "duration": 55,
+    "projectId": "55a55be8-f4c6-4fe5-b395-2c1dd2bf8465",
+    "status": "ACTIVE",
+    "taskId": "b21c23f1-19a7-4958-88ac-3608c90f5a34",
+    "timeEntryId": "ef0847d5-f22b-4b1a-ad37-fe0f3917f6af",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  },
+  {
+    "dateEnteredUtc": "2021-10-22T05:01:35.8632095Z",
+    "dateUtc": "2021-07-20T12:00:00Z",
+    "day": "2021-07-20",
+    "description": "Google Contacts • Zapier • Frida I Rivera Resume.pdf • Airtable",
+    "duration": 121,
+    "projectId": "55a55be8-f4c6-4fe5-b395-2c1dd2bf8465",
+    "status": "ACTIVE",
+    "taskId": "b21c23f1-19a7-4958-88ac-3608c90f5a34",
+    "timeEntryId": "0bdb2750-6ea0-4433-99de-378c24ebded4",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  },
+  {
+    "dateEnteredUtc": "2021-10-22T05:01:36.8051872Z",
+    "dateUtc": "2021-07-16T12:00:00Z",
+    "day": "2021-07-16",
+    "description": "Memotoo • Memotoo: Synchronization history • Calendars: clear  |…",
+    "duration": 39,
+    "projectId": "55a55be8-f4c6-4fe5-b395-2c1dd2bf8465",
+    "status": "ACTIVE",
+    "taskId": "b21c23f1-19a7-4958-88ac-3608c90f5a34",
+    "timeEntryId": "065c7076-5d35-4fc5-9d52-e9be4399b62b",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  },
+  {
+    "dateEnteredUtc": "2021-10-22T05:01:38.2912998Z",
+    "dateUtc": "2021-07-15T12:00:00Z",
+    "day": "2021-07-15",
+    "description": "Sync a CalDAV Server with Memotoo • Memotoo: Synchronization his…",
+    "duration": 497,
+    "projectId": "55a55be8-f4c6-4fe5-b395-2c1dd2bf8465",
+    "status": "ACTIVE",
+    "taskId": "b21c23f1-19a7-4958-88ac-3608c90f5a34",
+    "timeEntryId": "872e515a-8500-4a92-bbd7-a704fe4b326b",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  },
+  {
+    "dateEnteredUtc": "2021-10-22T05:01:52.0822167Z",
+    "dateUtc": "2021-07-12T12:00:00Z",
+    "day": "2021-07-12",
+    "description": "BackstageIncome • Agency-in-a-box: using Airtable to manage your…",
+    "duration": 142,
+    "projectId": "55a55be8-f4c6-4fe5-b395-2c1dd2bf8465",
+    "status": "ACTIVE",
+    "taskId": "b21c23f1-19a7-4958-88ac-3608c90f5a34",
+    "timeEntryId": "dc033988-3790-4cd0-aca2-65dd5ec2b5bc",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  },
+  {
+    "dateEnteredUtc": "2021-10-22T05:02:27.2230492Z",
+    "dateUtc": "2021-07-12T12:00:00Z",
+    "day": "2021-07-12",
+    "description": "Nerevu Group • Form Submission - Executive Assistant Application…",
+    "duration": 163,
+    "projectId": "55a55be8-f4c6-4fe5-b395-2c1dd2bf8465",
+    "status": "ACTIVE",
+    "taskId": "b21c23f1-19a7-4958-88ac-3608c90f5a34",
+    "timeEntryId": "f0bab5bd-b7e3-4de3-a44e-e354ddfc9df3",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  },
+  {
+    "dateEnteredUtc": "2021-10-22T05:02:28.0758498Z",
+    "dateUtc": "2021-07-11T12:00:00Z",
+    "day": "2021-07-11",
+    "description": "Memotoo • Fastmail • Airtable • Zapier • Google Contacts • Welco…",
+    "duration": 169,
+    "projectId": "55a55be8-f4c6-4fe5-b395-2c1dd2bf8465",
+    "status": "ACTIVE",
+    "taskId": "b21c23f1-19a7-4958-88ac-3608c90f5a34",
+    "timeEntryId": "b2071bb5-ffbe-490a-8d19-2fcb864da0a6",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
   }
 ]

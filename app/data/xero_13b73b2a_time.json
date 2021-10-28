@@ -1,1 +1,38 @@
-[]
+[
+  {
+    "dateEnteredUtc": "2020-01-08T06:35:51.5579214Z",
+    "dateUtc": "2020-01-02T12:00:00Z",
+    "day": "2020-01-02",
+    "description": "Fastmail • State Farm Insurance Agent in Peoria Heights, IL • Cu…",
+    "duration": 118,
+    "projectId": "13b73b2a-d949-4887-9fc4-fbf4b1c62491",
+    "status": "ACTIVE",
+    "taskId": "c27f191b-a1d4-4da9-9068-cddfd5430088",
+    "timeEntryId": "2e2e183d-36f3-4e2d-a9ed-b9024fd129b2",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  },
+  {
+    "dateEnteredUtc": "2020-01-08T06:35:51.8860602Z",
+    "dateUtc": "2020-01-03T12:00:00Z",
+    "day": "2020-01-03",
+    "description": "Comparison of Hanson",
+    "duration": 51,
+    "projectId": "13b73b2a-d949-4887-9fc4-fbf4b1c62491",
+    "status": "ACTIVE",
+    "taskId": "c27f191b-a1d4-4da9-9068-cddfd5430088",
+    "timeEntryId": "8c92ac16-6404-4207-8c12-9669b3288cbb",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  },
+  {
+    "dateEnteredUtc": "2020-01-27T17:52:02.77074Z",
+    "dateUtc": "2020-01-14T12:00:00Z",
+    "day": "2020-01-14",
+    "description": "Comparison of Hanson • Fastmail",
+    "duration": 14,
+    "projectId": "13b73b2a-d949-4887-9fc4-fbf4b1c62491",
+    "status": "ACTIVE",
+    "taskId": "c27f191b-a1d4-4da9-9068-cddfd5430088",
+    "timeEntryId": "6a46bcd2-6578-4134-a90a-c324be33f1df",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  }
+]

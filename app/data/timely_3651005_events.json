@@ -1,1 +1,392 @@
-[]
+[
+  {
+    "billed": false,
+    "day": "2021-11-16",
+    "duration.total_minutes": 45,
+    "id": 205637841,
+    "label_id": 2173031,
+    "note": "CWFMGroup Weekly Check In & Notes",
+    "project.id": 3651005,
+    "user.id": 2014908
+  },
+  {
+    "billed": false,
+    "day": "2021-10-26",
+    "duration.total_minutes": 60,
+    "id": 203649006,
+    "label_id": 2173031,
+    "note": "Vital Statistics & CWFMG",
+    "project.id": 3651005,
+    "user.id": 2014908
+  },
+  {
+    "billed": false,
+    "day": "2021-10-26",
+    "duration.total_minutes": 45,
+    "id": 203644772,
+    "label_id": 2173031,
+    "note": "Craig Williams Financial Group - Meet and Greet",
+    "project.id": 3651005,
+    "user.id": 2014908
+  },
+  {
+    "billed": false,
+    "day": "2021-11-23",
+    "duration.total_minutes": 10,
+    "id": 206243661,
+    "label_id": 1344604,
+    "note": "Follow up with Verizon re: Small Business Digital Grant Videos",
+    "project.id": 3651005,
+    "user.id": 2014908
+  },
+  {
+    "billed": false,
+    "day": "2021-11-23",
+    "duration.total_minutes": 20,
+    "id": 206240088,
+    "label_id": 1339640,
+    "note": "Airtable Task - Bidbuy Opportunity Entry",
+    "project.id": 3651005,
+    "user.id": 2014908
+  },
+  {
+    "billed": false,
+    "day": "2021-11-23",
+    "duration.total_minutes": 25,
+    "id": 206225317,
+    "label_id": 2173031,
+    "note": "CWFMGroup Weekly Check In",
+    "project.id": 3651005,
+    "user.id": 2014908
+  },
+  {
+    "billed": false,
+    "day": "2021-11-23",
+    "duration.total_minutes": 45,
+    "id": 206225374,
+    "label_id": 1340560,
+    "note": "CWFMG Minutes",
+    "project.id": 3651005,
+    "user.id": 2014908
+  },
+  {
+    "billed": false,
+    "day": "2021-11-23",
+    "duration.total_minutes": 30,
+    "id": 206225404,
+    "label_id": 1340560,
+    "note": "CWFMG Minutes (Re-do) ",
+    "project.id": 3651005,
+    "user.id": 2014908
+  },
+  {
+    "billed": false,
+    "day": "2021-11-02",
+    "duration.total_minutes": 60,
+    "id": 204128619,
+    "label_id": 2173031,
+    "note": "Meeting: CWFMGroup (RFP)",
+    "project.id": 3651005,
+    "user.id": 2014908
+  },
+  {
+    "billed": false,
+    "day": "2021-09-23",
+    "duration.total_minutes": 65,
+    "id": 206078237,
+    "label_id": 1340560,
+    "note": "Webinar Notes ",
+    "project.id": 3651005,
+    "user.id": 2014908
+  },
+  {
+    "billed": false,
+    "day": "2021-11-18",
+    "duration.total_minutes": 25,
+    "id": 205899946,
+    "label_id": 2173031,
+    "note": "HHS CMS",
+    "project.id": 3651005,
+    "user.id": 2014908
+  },
+  {
+    "billed": false,
+    "day": "2021-11-17",
+    "duration.total_minutes": 45,
+    "id": 205680100,
+    "label_id": 1339639,
+    "note": "Breaking into Govt Contracting - Transcribe/Notes ",
+    "project.id": 3651005,
+    "user.id": 2014908
+  },
+  {
+    "billed": false,
+    "day": "2021-11-17",
+    "duration.total_minutes": 30,
+    "id": 205680062,
+    "label_id": 1344521,
+    "note": "MN State Supplier Registration ",
+    "project.id": 3651005,
+    "user.id": 2014908
+  },
+  {
+    "billed": false,
+    "day": "2021-11-16",
+    "duration.total_minutes": 75,
+    "id": 205638057,
+    "label_id": 2173031,
+    "note": "Breaking into Govt Contracting ",
+    "project.id": 3651005,
+    "user.id": 2014908
+  },
+  {
+    "billed": false,
+    "day": "2021-11-02",
+    "duration.total_minutes": 40,
+    "id": 205429185,
+    "label_id": 1339639,
+    "note": "State of IL Central Management Services (CMS) • Fwd: Update: NIGP Codes Ending with \"00\" digits. | Fastmail • Bitwarden Web Vault • Fastmail",
+    "project.id": 3651005,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2021-11-11",
+    "duration.total_minutes": 15,
+    "id": 205425013,
+    "label_id": 1344452,
+    "note": "Nerevu Blog - Mitchell (Review)",
+    "project.id": 3651005,
+    "user.id": 2014908
+  },
+  {
+    "billed": false,
+    "day": "2021-11-11",
+    "duration.total_minutes": 120,
+    "id": 205425000,
+    "label_id": 1344452,
+    "note": "CM World Blog ",
+    "project.id": 3651005,
+    "user.id": 2014908
+  },
+  {
+    "billed": false,
+    "day": "2021-11-10",
+    "duration.total_minutes": 15,
+    "id": 204954059,
+    "label_id": 1344604,
+    "note": "Data-vis-jobs Added",
+    "project.id": 3651005,
+    "user.id": 2014908
+  },
+  {
+    "billed": false,
+    "day": "2021-11-09",
+    "duration.total_minutes": 30,
+    "id": 204835488,
+    "label_id": 1340560,
+    "note": "Webinar Notes Update, Takeaways, Live links, Dates",
+    "project.id": 3651005,
+    "user.id": 2014908
+  },
+  {
+    "billed": false,
+    "day": "2021-11-08",
+    "duration.total_minutes": 180,
+    "id": 204791143,
+    "label_id": 1344466,
+    "note": "Mastermind Group List (Google Drive)",
+    "project.id": 3651005,
+    "user.id": 2014908
+  },
+  {
+    "billed": false,
+    "day": "2021-11-08",
+    "duration.total_minutes": 90,
+    "id": 204791102,
+    "label_id": 1340560,
+    "note": "Webinar Notes",
+    "project.id": 3651005,
+    "user.id": 2014908
+  },
+  {
+    "billed": false,
+    "day": "2021-10-28",
+    "duration.total_minutes": 26,
+    "id": 204402836,
+    "label_id": 1344466,
+    "note": "ABOUT — Vital Statistics Consulting • Calendar • LinkedIn",
+    "project.id": 3651005,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2021-10-27",
+    "duration.total_minutes": 101,
+    "id": 204402571,
+    "label_id": 1344466,
+    "note": "Airtable • LinkedIn • Care Coordination Institute • CMS Innovation Center • CMMI Remains Dedicated to Value-Based Care Despite Pause to Some Models, Fowler Says • HRS Consulting IHT Contact List.xlsx • Fastmail",
+    "project.id": 3651005,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2021-10-27",
+    "duration.total_minutes": 54,
+    "id": 204402655,
+    "label_id": 1339639,
+    "note": "Finder • ICC Statement of Work by Nerevu Group (WEI Website Support Renewal).pages • State of IL Central Management Services (CMS) • Notarize • Preview • BidBuy • File Upload • The Activate Fellowship: Apply to Cohort 2022 • FAQ — Activate • Eventbrite",
+    "project.id": 3651005,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2021-10-15",
+    "duration.total_minutes": 70,
+    "id": 204395929,
+    "label_id": 1339639,
+    "note": "Airtable • Zapier • Parabola • Marketing Reporting • Databox Help Desk • Databox • Fastmail • Google Alerts • OmniFocus",
+    "project.id": 3651005,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2021-10-15",
+    "duration.total_minutes": 78,
+    "id": 204395893,
+    "label_id": 1339640,
+    "note": "Nerevu Group Capabilities.pages • Fastmail • OmniFocus • Google Search • Finder • Preview",
+    "project.id": 3651005,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2021-10-14",
+    "duration.total_minutes": 40,
+    "id": 204395779,
+    "label_id": 1339639,
+    "note": "Fastmail • 21-0044 Technology Professional Services RFP Final.pdf • Calendar",
+    "project.id": 3651005,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2021-11-04",
+    "duration.total_minutes": 45,
+    "id": 204385415,
+    "label_id": 1344464,
+    "note": "Webinar: The Critical 90 Seconds That Can Make or Break Your Brand",
+    "project.id": 3651005,
+    "user.id": 2014908
+  },
+  {
+    "billed": false,
+    "day": "2021-11-04",
+    "duration.total_minutes": 30,
+    "id": 204374884,
+    "label_id": 1344464,
+    "note": "Webinar: Visual Storytelling Transformation: Content's Journey from Article to Visual Content Experience\n",
+    "project.id": 3651005,
+    "user.id": 2014908
+  },
+  {
+    "billed": false,
+    "day": "2021-11-04",
+    "duration.total_minutes": 45,
+    "id": 204371266,
+    "label_id": 1344464,
+    "note": "Webinar: How to Transform Traditional Marketing Channels into Content-rich, Multi-media Experiences",
+    "project.id": 3651005,
+    "user.id": 2014908
+  },
+  {
+    "billed": false,
+    "day": "2021-11-04",
+    "duration.total_minutes": 30,
+    "id": 204366520,
+    "label_id": 1339639,
+    "note": "Webinar Notes: 11/3",
+    "project.id": 3651005,
+    "user.id": 2014908
+  },
+  {
+    "billed": false,
+    "day": "2021-11-03",
+    "duration.total_minutes": 45,
+    "id": 204349281,
+    "label_id": 1344464,
+    "note": "Webinar - Rescheduled from 10/20 Advanced Keyword and Competitor Research Webinar ",
+    "project.id": 3651005,
+    "user.id": 2014908
+  },
+  {
+    "billed": false,
+    "day": "2021-11-03",
+    "duration.total_minutes": 45,
+    "id": 204349246,
+    "label_id": 1344464,
+    "note": "Webinar: Lessons on Storytelling: What Can We Learn from Movies & TV Shows 45 min",
+    "project.id": 3651005,
+    "user.id": 2014908
+  },
+  {
+    "billed": false,
+    "day": "2021-11-03",
+    "duration.total_minutes": 40,
+    "id": 204349231,
+    "label_id": 1344464,
+    "note": "Webinar: Creating Favorite Content: Stealable Ideas For Better Video Marketing",
+    "project.id": 3651005,
+    "user.id": 2014908
+  },
+  {
+    "billed": false,
+    "day": "2021-10-30",
+    "duration.total_minutes": 45,
+    "id": 203822074,
+    "label_id": 1344452,
+    "note": "Content Strategy - Verizon",
+    "project.id": 3651005,
+    "user.id": 2014908
+  },
+  {
+    "billed": false,
+    "day": "2021-10-27",
+    "duration.total_minutes": 60,
+    "id": 203678082,
+    "label_id": 1344466,
+    "note": "Webinar: Tales from the Trenches",
+    "project.id": 3651005,
+    "user.id": 2014908
+  },
+  {
+    "billed": false,
+    "day": "2021-10-26",
+    "duration.total_minutes": 50,
+    "id": 203645627,
+    "label_id": 1344464,
+    "note": "Airtable Webinars",
+    "project.id": 3651005,
+    "user.id": 2014908
+  },
+  {
+    "billed": false,
+    "day": "2021-10-26",
+    "duration.total_minutes": 65,
+    "id": 203644751,
+    "label_id": 1344464,
+    "note": "Airtable Webinars",
+    "project.id": 3651005,
+    "user.id": 2014908
+  },
+  {
+    "billed": false,
+    "day": "2021-10-25",
+    "duration.total_minutes": 10,
+    "id": 203593346,
+    "label_id": 1344464,
+    "note": "Case study format notes Updating ",
+    "project.id": 3651005,
+    "user.id": 2014908
+  }
+]

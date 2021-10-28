@@ -2599,5 +2599,294 @@
       "project": "23be1505-900b-4504-b1fe-cf1b1c7e1d12",
       "task": "d673b523-9c0d-4af9-a9d3-add77ac44f86"
     }
+  },
+  {
+    "gsheets": {
+      "project": "wei-website",
+      "task": "development",
+      "users": [
+        "austin"
+      ]
+    },
+    "xero": {
+      "project": "d2812acb-40dc-4ed2-8e83-e105ef21b9ef",
+      "task": "d8033b37-7783-4189-8457-f03d874f61a3"
+    }
+  },
+  {
+    "gsheets": {
+      "project": "wei-website",
+      "task": "admin",
+      "users": [
+        "austin"
+      ]
+    },
+    "xero": {
+      "project": "d2812acb-40dc-4ed2-8e83-e105ef21b9ef",
+      "task": "7419b30c-6c60-4744-bec2-e97d505cda25"
+    }
+  },
+  {
+    "gsheets": {
+      "project": "wei-website",
+      "task": "maintenance",
+      "users": [
+        "austin"
+      ]
+    },
+    "xero": {
+      "project": "d2812acb-40dc-4ed2-8e83-e105ef21b9ef",
+      "task": "d8033b37-7783-4189-8457-f03d874f61a3"
+    }
+  },
+  {
+    "gsheets": {
+      "project": "wei-website",
+      "task": "instructing",
+      "users": [
+        "austin"
+      ]
+    },
+    "xero": {
+      "project": "d2812acb-40dc-4ed2-8e83-e105ef21b9ef",
+      "task": "09b92f6a-f1ba-4eae-915c-13370109ba2c"
+    }
+  },
+  {
+    "gsheets": {
+      "project": "wei-website",
+      "task": "research",
+      "users": [
+        "austin"
+      ]
+    },
+    "xero": {
+      "project": "d2812acb-40dc-4ed2-8e83-e105ef21b9ef",
+      "task": "451535e8-3ab1-409c-a32f-f214dde0110d"
+    }
+  },
+  {
+    "gsheets": {
+      "project": "internal",
+      "task": "admin",
+      "users": [
+        1281455,
+        1281876,
+        "mitchell",
+        2014349
+      ]
+    },
+    "xero": {
+      "project": "f9d0e04b-f07c-423d-8975-418159180dab",
+      "task": "ed9d0041-3680-4011-a24a-a20e72210864"
+    }
+  },
+  {
+    "gsheets": {
+      "project": "internal",
+      "task": "research",
+      "users": [
+        1281455,
+        1281876,
+        "mitchell",
+        2014349
+      ]
+    },
+    "xero": {
+      "project": "f9d0e04b-f07c-423d-8975-418159180dab",
+      "task": "96a199d6-a8a4-4796-9cde-5a307f6c71f0"
+    }
+  },
+  {
+    "gsheets": {
+      "project": "internal",
+      "task": "development",
+      "users": [
+        1281455,
+        1281876,
+        "mitchell",
+        2014349
+      ]
+    },
+    "xero": {
+      "project": "f9d0e04b-f07c-423d-8975-418159180dab",
+      "task": "8b68e01d-f93b-4060-9f9b-e46f8377c613"
+    }
+  },
+  {
+    "gsheets": {
+      "project": "internal",
+      "task": "maintenance",
+      "users": [
+        1281455,
+        1281876,
+        "mitchell",
+        2014349
+      ]
+    },
+    "xero": {
+      "project": "f9d0e04b-f07c-423d-8975-418159180dab",
+      "task": "8b68e01d-f93b-4060-9f9b-e46f8377c613"
+    }
+  },
+  {
+    "gsheets": {
+      "project": "internal",
+      "task": "instructing",
+      "users": [
+        1281455,
+        1281876,
+        "mitchell",
+        2014349
+      ]
+    },
+    "xero": {
+      "project": "f9d0e04b-f07c-423d-8975-418159180dab",
+      "task": "ed9d0041-3680-4011-a24a-a20e72210864"
+    }
+  },
+  {
+    "gsheets": {
+      "project": "kazeeki",
+      "task": "development",
+      "users": [
+        1281455,
+        1281876,
+        "mitchell",
+        2014349
+      ]
+    },
+    "xero": {
+      "project": "4487260c-7d80-486f-a18f-7e209301e06c",
+      "task": "02cebe25-451a-47c1-981b-8b6a350ae61a"
+    }
+  },
+  {
+    "gsheets": {
+      "project": "kazeeki",
+      "task": "research",
+      "users": [
+        1281455,
+        1281876,
+        "mitchell",
+        2014349
+      ]
+    },
+    "xero": {
+      "project": "4487260c-7d80-486f-a18f-7e209301e06c",
+      "task": "02cebe25-451a-47c1-981b-8b6a350ae61a"
+    }
+  },
+  {
+    "gsheets": {
+      "project": "open-peoria",
+      "task": "development",
+      "users": [
+        1281455,
+        1281876,
+        "mitchell",
+        2014349
+      ]
+    },
+    "xero": {
+      "project": "615c8090-938d-4ee7-8f4e-6ae945920507",
+      "task": "03a59a14-0d98-42a0-aef6-74a98b93bcf2"
+    }
+  },
+  {
+    "gsheets": {
+      "project": "open-peoria",
+      "task": "research",
+      "users": [
+        1281455,
+        1281876,
+        "mitchell",
+        2014349
+      ]
+    },
+    "xero": {
+      "project": "615c8090-938d-4ee7-8f4e-6ae945920507",
+      "task": "03a59a14-0d98-42a0-aef6-74a98b93bcf2"
+    }
+  },
+  {
+    "gsheets": {
+      "project": "open-peoria",
+      "task": "instructing",
+      "users": [
+        1281455,
+        1281876,
+        "mitchell",
+        2014349
+      ]
+    },
+    "xero": {
+      "project": "615c8090-938d-4ee7-8f4e-6ae945920507",
+      "task": "b648b234-f265-4f0b-824d-ac9824c80baf"
+    }
+  },
+  {
+    "gsheets": {
+      "project": "covid-19",
+      "task": "research",
+      "users": [
+        1281455,
+        1281876,
+        "mitchell",
+        2014349
+      ]
+    },
+    "xero": {
+      "project": "615c8090-938d-4ee7-8f4e-6ae945920507",
+      "task": "03a59a14-0d98-42a0-aef6-74a98b93bcf2"
+    }
+  },
+  {
+    "gsheets": {
+      "project": "covid-19",
+      "task": "development",
+      "users": [
+        1281455,
+        1281876,
+        "mitchell",
+        2014349
+      ]
+    },
+    "xero": {
+      "project": "615c8090-938d-4ee7-8f4e-6ae945920507",
+      "task": "03a59a14-0d98-42a0-aef6-74a98b93bcf2"
+    }
+  },
+  {
+    "gsheets": {
+      "project": "covid-19",
+      "task": "maintenance",
+      "users": [
+        1281455,
+        1281876,
+        "mitchell",
+        2014349
+      ]
+    },
+    "xero": {
+      "project": "615c8090-938d-4ee7-8f4e-6ae945920507",
+      "task": "03a59a14-0d98-42a0-aef6-74a98b93bcf2"
+    }
+  },
+  {
+    "gsheets": {
+      "project": "covid-19",
+      "task": "admin",
+      "users": [
+        1281455,
+        1281876,
+        "mitchell",
+        2014349
+      ]
+    },
+    "xero": {
+      "project": "615c8090-938d-4ee7-8f4e-6ae945920507",
+      "task": "892fa5f6-00a4-4b4e-987c-9f80b07e2293"
+    }
   }
 ]

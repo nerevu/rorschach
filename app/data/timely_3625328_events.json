@@ -1,1 +1,72 @@
-[]
+[
+  {
+    "billed": false,
+    "day": "2021-11-08",
+    "duration.total_minutes": 126,
+    "id": 205432087,
+    "label_id": 1344431,
+    "note": "Airtable • Prospect Checkout",
+    "project.id": 3625328,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2021-11-04",
+    "duration.total_minutes": 205,
+    "id": 205430526,
+    "label_id": 1344431,
+    "note": "Airtable",
+    "project.id": 3625328,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2021-11-03",
+    "duration.total_minutes": 392,
+    "id": 205429663,
+    "label_id": 1344431,
+    "note": "Airtable • Gnucash • DinerDiver • TCPUL Website • Nerevu • IT Assistance",
+    "project.id": 3625328,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2021-11-02",
+    "duration.total_minutes": 479,
+    "id": 205429088,
+    "label_id": 1344431,
+    "note": "Service Pricelist • Airtable • Sublime Text",
+    "project.id": 3625328,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2021-11-01",
+    "duration.total_minutes": 450,
+    "id": 205428319,
+    "label_id": 1344431,
+    "note": "Airtable • Service Pricelist",
+    "project.id": 3625328,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2021-10-20",
+    "duration.total_minutes": 343,
+    "id": 204399178,
+    "label_id": 1344431,
+    "note": "Airtable • Timely Hours • Employee Hours • Timely • Zapier • Projects • Sublime Text",
+    "project.id": 3625328,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2021-10-18",
+    "duration.total_minutes": 60,
+    "id": 204396054,
+    "label_id": 1344431,
+    "note": "Airtable • Nerevu • Sublime Text • Zapier",
+    "project.id": 3625328,
+    "user.id": 933370
+  }
+]

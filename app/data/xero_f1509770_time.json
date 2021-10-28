@@ -1,1 +1,98 @@
-[]
+[
+  {
+    "dateEnteredUtc": "2021-10-22T05:36:05.0216694Z",
+    "dateUtc": "2021-03-11T12:00:00Z",
+    "day": "2021-03-11",
+    "description": "OmniPlan",
+    "duration": 22,
+    "projectId": "f1509770-aa3c-4bfe-9549-c01d8bbc040f",
+    "status": "ACTIVE",
+    "taskId": "cb337f7f-c9b7-441f-86a9-540fe32c4020",
+    "timeEntryId": "c233b559-f210-4114-9af2-bc6e3afbdb7b",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  },
+  {
+    "dateEnteredUtc": "2021-10-22T05:36:05.8848635Z",
+    "dateUtc": "2021-01-20T12:00:00Z",
+    "day": "2021-01-20",
+    "description": "Rotki • nvALT • plaid dashboard at DuckDuckGo • Trade and commun…",
+    "duration": 58,
+    "projectId": "f1509770-aa3c-4bfe-9549-c01d8bbc040f",
+    "status": "ACTIVE",
+    "taskId": "cb337f7f-c9b7-441f-86a9-540fe32c4020",
+    "timeEntryId": "14722b7b-ab78-43c1-a5c9-1addcccef64e",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  },
+  {
+    "dateEnteredUtc": "2021-10-22T05:36:06.6680713Z",
+    "dateUtc": "2021-03-04T12:00:00Z",
+    "day": "2021-03-04",
+    "description": "OmniPlan • Financial Dashboard Development Proposal by Nerevu Gr…",
+    "duration": 446,
+    "projectId": "f1509770-aa3c-4bfe-9549-c01d8bbc040f",
+    "status": "ACTIVE",
+    "taskId": "cb337f7f-c9b7-441f-86a9-540fe32c4020",
+    "timeEntryId": "05e3e2f1-1a77-41e0-96fe-959f0d63e9a1",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  },
+  {
+    "dateEnteredUtc": "2021-10-22T05:36:07.6019132Z",
+    "dateUtc": "2021-03-05T12:00:00Z",
+    "day": "2021-03-05",
+    "description": "IT Architectures.key • WEI Website Support Proposal by Nerevu Gr…",
+    "duration": 272,
+    "projectId": "f1509770-aa3c-4bfe-9549-c01d8bbc040f",
+    "status": "ACTIVE",
+    "taskId": "cb337f7f-c9b7-441f-86a9-540fe32c4020",
+    "timeEntryId": "283fc595-b244-496a-bd01-261900236a8c",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  },
+  {
+    "dateEnteredUtc": "2021-10-22T05:36:08.624723Z",
+    "dateUtc": "2021-03-03T12:00:00Z",
+    "day": "2021-03-03",
+    "description": "Sublime Text • dashboard | Fastmail • Rotki Usage Guide — Rotki …",
+    "duration": 170,
+    "projectId": "f1509770-aa3c-4bfe-9549-c01d8bbc040f",
+    "status": "ACTIVE",
+    "taskId": "cb337f7f-c9b7-441f-86a9-540fe32c4020",
+    "timeEntryId": "8e10e3b6-f1e0-41db-b1bc-5a24096a28a8",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  },
+  {
+    "dateEnteredUtc": "2021-10-22T05:36:09.529773Z",
+    "dateUtc": "2021-03-02T12:00:00Z",
+    "day": "2021-03-02",
+    "description": "Introduction to Transactions | Plaid Docs • Fastmail • Accountin…",
+    "duration": 97,
+    "projectId": "f1509770-aa3c-4bfe-9549-c01d8bbc040f",
+    "status": "ACTIVE",
+    "taskId": "cb337f7f-c9b7-441f-86a9-540fe32c4020",
+    "timeEntryId": "7fe19322-438c-4ff8-bc4c-7c79d24c1d8b",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  },
+  {
+    "dateEnteredUtc": "2021-10-22T05:36:10.293072Z",
+    "dateUtc": "2021-02-22T12:00:00Z",
+    "day": "2021-02-22",
+    "description": "Rotki Usage Guide — Rotki 1.14.1 documentation • Preview • Fastm…",
+    "duration": 80,
+    "projectId": "f1509770-aa3c-4bfe-9549-c01d8bbc040f",
+    "status": "ACTIVE",
+    "taskId": "cb337f7f-c9b7-441f-86a9-540fe32c4020",
+    "timeEntryId": "ab7ca40d-8507-4413-850d-ed16595f9fd6",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  },
+  {
+    "dateEnteredUtc": "2021-10-22T05:36:11.0919185Z",
+    "dateUtc": "2021-02-09T12:00:00Z",
+    "day": "2021-02-09",
+    "description": "nvALT • UberConference • zillow api at DuckDuckGo • Cloze",
+    "duration": 43,
+    "projectId": "f1509770-aa3c-4bfe-9549-c01d8bbc040f",
+    "status": "ACTIVE",
+    "taskId": "cb337f7f-c9b7-441f-86a9-540fe32c4020",
+    "timeEntryId": "718ef525-15c7-4d6f-9a80-4dfdea6f89a4",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  }
+]

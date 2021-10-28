@@ -47,5 +47,33 @@
     "rate.value": 150.0,
     "status": "ACTIVE",
     "taskId": "2056a412-9e15-4fe8-b05d-656f374d7410"
+  },
+  {
+    "name": "1 Hour Development (Junior Developer)",
+    "projectId": "d2812acb-40dc-4ed2-8e83-e105ef21b9ef",
+    "rate.value": 50.0,
+    "status": "ACTIVE",
+    "taskId": "d8033b37-7783-4189-8457-f03d874f61a3"
+  },
+  {
+    "name": "1 Hour Research (Junior Consultant)",
+    "projectId": "d2812acb-40dc-4ed2-8e83-e105ef21b9ef",
+    "rate.value": 50.0,
+    "status": "ACTIVE",
+    "taskId": "451535e8-3ab1-409c-a32f-f214dde0110d"
+  },
+  {
+    "name": "1 Hour Consulting (Junior Consultant)",
+    "projectId": "d2812acb-40dc-4ed2-8e83-e105ef21b9ef",
+    "rate.value": 50.0,
+    "status": "ACTIVE",
+    "taskId": "09b92f6a-f1ba-4eae-915c-13370109ba2c"
+  },
+  {
+    "name": "1 Hour Development (Developer)",
+    "projectId": "d2812acb-40dc-4ed2-8e83-e105ef21b9ef",
+    "rate.value": 68.0,
+    "status": "ACTIVE",
+    "taskId": "5f3a999c-5ef7-4573-9b81-f4c08866f84d"
   }
 ]

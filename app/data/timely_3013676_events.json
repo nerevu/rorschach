@@ -1,1 +1,62 @@
-[]
+[
+  {
+    "billed": false,
+    "day": "2021-10-24",
+    "duration.total_minutes": 52,
+    "id": 204399341,
+    "label_id": 1344431,
+    "note": "Airtable • Terminal • Xero Developer • Sublime Text • Xero API Explorer",
+    "project.id": 3013676,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2021-10-23",
+    "duration.total_minutes": 197,
+    "id": 204399294,
+    "label_id": 1344431,
+    "note": "Sublime Text • Terminal • Fork • Airtable • Employee Hours • Detailed Project Time • Nerevu Prospect Entry Form • Zapier • Workforce Initiative (WEI) Website • Company Entry Form",
+    "project.id": 3013676,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2021-10-22",
+    "duration.total_minutes": 135,
+    "id": 204399263,
+    "label_id": 1344431,
+    "note": "Sublime Text • Terminal • Fork • Project Summary • Detailed Time • Projects • Open Peoria -dep • Sharepoint Training Guide • Timely • Employee Hours",
+    "project.id": 3013676,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2021-10-21",
+    "duration.total_minutes": 743,
+    "id": 204399244,
+    "label_id": 1344431,
+    "note": "Terminal • Sublime Text • Timely • Fork • Workforce Initiative (WEI) Website • Projects • BOD • Pamoja • Onboarding • Internal • Case Studies • Xero Developer • Data Automation • Timely API v1.1 • ClozeCart • Sharepoint Training Guide • xero api A validation exception occurred at DuckDuckGo • Emp...",
+    "project.id": 3013676,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2021-10-20",
+    "duration.total_minutes": 322,
+    "id": 204399161,
+    "label_id": 1344431,
+    "note": "Sublime Text • Terminal • Fork • Internal • Employee Hours • Timely Hours",
+    "project.id": 3013676,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2021-10-18",
+    "duration.total_minutes": 316,
+    "id": 204396024,
+    "label_id": 1344431,
+    "note": "Sublime Text • Terminal • googleapis/google-auth-library-python • User Guide — google-auth 2.3.0 documentation • Fork • Airtable • Nerevu • Add webhook • Timely • Zapier",
+    "project.id": 3013676,
+    "user.id": 933370
+  }
+]

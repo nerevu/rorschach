@@ -7,11 +7,11 @@
     "taskId": "c3a4d190-0e10-419c-b642-4246d603fc0c"
   },
   {
-    "name": "1 Hour Internal Work (Non-Billable)",
+    "name": "1 Hour Design (Creative Director)",
     "projectId": "a71db308-8d99-4e01-ba9e-8b8a788d03ab",
-    "rate.value": 0.0,
+    "rate.value": 150.0,
     "status": "ACTIVE",
-    "taskId": "8521c134-c771-45a5-b137-887d0bf43b14"
+    "taskId": "19a2a742-dff6-4826-9f68-d8abac62d7a0"
   },
   {
     "name": "1 Hour Development (Technical Director)",
@@ -21,10 +21,10 @@
     "taskId": "d9a171a5-47ce-4cf5-b978-7f6774c5ab4f"
   },
   {
-    "name": "1 Hour Design (Creative Director)",
+    "name": "1 Hour Internal Work (Non-Billable)",
     "projectId": "a71db308-8d99-4e01-ba9e-8b8a788d03ab",
-    "rate.value": 150.0,
+    "rate.value": 0.0,
     "status": "ACTIVE",
-    "taskId": "19a2a742-dff6-4826-9f68-d8abac62d7a0"
+    "taskId": "8521c134-c771-45a5-b137-887d0bf43b14"
   }
 ]

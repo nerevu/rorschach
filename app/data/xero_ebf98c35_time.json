@@ -1,1 +1,26 @@
-[]
+[
+  {
+    "dateEnteredUtc": "2020-02-10T21:58:22.4037925Z",
+    "dateUtc": "2020-01-30T12:00:00Z",
+    "day": "2020-01-30",
+    "description": "Meeting w Jen",
+    "duration": 60,
+    "projectId": "ebf98c35-4d4b-41c6-b717-08afb9243b03",
+    "status": "ACTIVE",
+    "taskId": "134de033-3243-42bd-824e-64d7ecedd81d",
+    "timeEntryId": "63382c54-0e3b-445d-af94-70feb5fd651d",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  },
+  {
+    "dateEnteredUtc": "2020-02-10T22:02:11.0365561Z",
+    "dateUtc": "2020-02-06T12:00:00Z",
+    "day": "2020-02-06",
+    "description": "The Events Calendar",
+    "duration": 15,
+    "projectId": "ebf98c35-4d4b-41c6-b717-08afb9243b03",
+    "status": "ACTIVE",
+    "taskId": "134de033-3243-42bd-824e-64d7ecedd81d",
+    "timeEntryId": "53b809cd-82f0-4980-9f03-f2ad99d485a9",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  }
+]

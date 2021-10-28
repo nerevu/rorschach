@@ -10,16 +10,6 @@
     "status": "INPROGRESS"
   },
   {
-    "name": "BOD",
-    "projectId": "287bf83d-849d-4baa-8e39-6f683b5f65be",
-    "status": "INPROGRESS"
-  },
-  {
-    "name": "BOD",
-    "projectId": "23be1505-900b-4504-b1fe-cf1b1c7e1d12",
-    "status": "INPROGRESS"
-  },
-  {
     "name": "Business Development",
     "projectId": "9919b5f7-1078-45ee-8809-a277b75dffdd",
     "status": "INPROGRESS"
@@ -32,12 +22,12 @@
   {
     "name": "ClozeCart",
     "projectId": "34a6629c-6902-4436-881c-b909a285b8bd",
-    "status": "CLOSED"
+    "status": "INPROGRESS"
   },
   {
     "name": "Commission Dashboard",
     "projectId": "b1d797e3-e54b-4686-b83f-d8ea5a35f1c2",
-    "status": "CLOSED"
+    "status": "INPROGRESS"
   },
   {
     "name": "Company Metrics",
@@ -47,7 +37,7 @@
   {
     "name": "Company Website",
     "projectId": "7fe1e7c0-24e2-4c26-809f-654f1cbae1f1",
-    "status": "CLOSED"
+    "status": "INPROGRESS"
   },
   {
     "name": "Crypto Dashboard",
@@ -57,7 +47,7 @@
   {
     "name": "Dashboard Service",
     "projectId": "7c147cbf-4f92-43e4-bcc2-d32dbf48fed3",
-    "status": "CLOSED"
+    "status": "INPROGRESS"
   },
   {
     "name": "Data Automation",
@@ -77,7 +67,7 @@
   {
     "name": "EMR Data Extraction",
     "projectId": "4abb468c-ba2b-4820-9554-ef32fea342a3",
-    "status": "CLOSED"
+    "status": "INPROGRESS"
   },
   {
     "name": "ERP",
@@ -93,6 +83,11 @@
     "name": "GP Data Community",
     "projectId": "37b69d72-7168-47d4-8a9f-d225fccf8b38",
     "status": "CLOSED"
+  },
+  {
+    "name": "GPEDC BOD",
+    "projectId": "287bf83d-849d-4baa-8e39-6f683b5f65be",
+    "status": "INPROGRESS"
   },
   {
     "name": "Grant Search App",
@@ -111,7 +106,7 @@
   },
   {
     "name": "IT Assistance",
-    "projectId": "ab249e42-0c5c-4e0a-8515-5b08466e3ca9",
+    "projectId": "6af33309-b00b-4f9c-991f-25f0b4506582",
     "status": "INPROGRESS"
   },
   {
@@ -132,12 +127,12 @@
   {
     "name": "Kazeeki",
     "projectId": "4487260c-7d80-486f-a18f-7e209301e06c",
-    "status": "CLOSED"
+    "status": "INPROGRESS"
   },
   {
     "name": "Lunar Open Architecture (LOA)",
     "projectId": "3ef944e3-1cc1-4489-9385-3fdc9d4a3a63",
-    "status": "CLOSED"
+    "status": "INPROGRESS"
   },
   {
     "name": "Nerevu API",
@@ -162,6 +157,11 @@
   {
     "name": "Open Peoria",
     "projectId": "615c8090-938d-4ee7-8f4e-6ae945920507",
+    "status": "INPROGRESS"
+  },
+  {
+    "name": "PIA BOD",
+    "projectId": "23be1505-900b-4504-b1fe-cf1b1c7e1d12",
     "status": "INPROGRESS"
   },
   {
@@ -195,13 +195,13 @@
     "status": "CLOSED"
   },
   {
-    "name": "Smart Cities",
-    "projectId": "62859aaa-0b21-4a8c-9009-03f3458a9fe2",
+    "name": "Smart Airport",
+    "projectId": "13b73b2a-d949-4887-9fc4-fbf4b1c62491",
     "status": "CLOSED"
   },
   {
-    "name": "TCPUL Website",
-    "projectId": "6af33309-b00b-4f9c-991f-25f0b4506582",
+    "name": "Smart Cities",
+    "projectId": "62859aaa-0b21-4a8c-9009-03f3458a9fe2",
     "status": "CLOSED"
   },
   {

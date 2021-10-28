@@ -1,5 +1,53 @@
 [
   {
+    "dateEnteredUtc": "2020-06-25T07:29:46.3664303Z",
+    "dateUtc": "2020-04-24T12:00:00Z",
+    "day": "2020-04-24",
+    "description": "Welcome to Nerevu Handbook’s documentation! — Nerevu Handbook 1.…",
+    "duration": 401,
+    "projectId": "c8b18830-fed0-4979-8c42-6619c4b6b67c",
+    "status": "ACTIVE",
+    "taskId": "3d7cde2e-76c9-4004-a94f-3d0b1a5bcd88",
+    "timeEntryId": "41150383-58b5-4cdb-b4fa-11a8113eedb5",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  },
+  {
+    "dateEnteredUtc": "2020-06-25T07:33:59.9524579Z",
+    "dateUtc": "2020-04-25T12:00:00Z",
+    "day": "2020-04-25",
+    "description": "Welcome to the Nerevu Employee Handbook! — Nerevu Handbook 1.0.0…",
+    "duration": 178,
+    "projectId": "c8b18830-fed0-4979-8c42-6619c4b6b67c",
+    "status": "ACTIVE",
+    "taskId": "3d7cde2e-76c9-4004-a94f-3d0b1a5bcd88",
+    "timeEntryId": "19274b61-1a84-45be-a5ed-f9632ac3179b",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  },
+  {
+    "dateEnteredUtc": "2020-06-26T15:24:53.1982312Z",
+    "dateUtc": "2020-04-26T12:00:00Z",
+    "day": "2020-04-26",
+    "description": "Dropbox • Finder • Dropbox Business • Fork",
+    "duration": 116,
+    "projectId": "c8b18830-fed0-4979-8c42-6619c4b6b67c",
+    "status": "ACTIVE",
+    "taskId": "3d7cde2e-76c9-4004-a94f-3d0b1a5bcd88",
+    "timeEntryId": "1310b861-7ddf-4be5-a357-4f49e52a72f7",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  },
+  {
+    "dateEnteredUtc": "2020-06-26T15:24:55.1897166Z",
+    "dateUtc": "2020-05-19T12:00:00Z",
+    "day": "2020-05-19",
+    "description": "nerevu/handbook • Nerevu Onboarding • Project settings • R&D • N…",
+    "duration": 31,
+    "projectId": "c8b18830-fed0-4979-8c42-6619c4b6b67c",
+    "status": "ACTIVE",
+    "taskId": "3d7cde2e-76c9-4004-a94f-3d0b1a5bcd88",
+    "timeEntryId": "5536690e-d456-4d0a-ba10-54192407fe7d",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  },
+  {
     "dateEnteredUtc": "2021-10-21T17:08:06.4908124Z",
     "dateUtc": "2021-08-11T12:00:00Z",
     "day": "2021-08-11",

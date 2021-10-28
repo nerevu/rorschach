@@ -1,1 +1,32 @@
-[]
+[
+  {
+    "billed": false,
+    "day": "2021-11-02",
+    "duration.total_minutes": 30,
+    "id": 204128539,
+    "label_id": 2173031,
+    "note": "Meeting: Proposal Review - Dr. Jeffries",
+    "project.id": 3147199,
+    "user.id": 2014908
+  },
+  {
+    "billed": false,
+    "day": "2021-11-02",
+    "duration.total_minutes": 150,
+    "id": 205428984,
+    "label_id": 1339640,
+    "note": "Urban League Website Development Statement of Work by Nerevu Group.pages • Urban League Website Development Proposal by Nerevu Group.pages • Nerevu Meeting • Calendar • Google Meet Placeholder • Urban League IT Support Proposal by Nerevu Group.pages • Preview",
+    "project.id": 3147199,
+    "user.id": 933370
+  },
+  {
+    "billed": false,
+    "day": "2021-10-29",
+    "duration.total_minutes": 131,
+    "id": 204403765,
+    "label_id": 1339640,
+    "note": "Urban League Website Development Proposal by Nerevu Group.pages • Urban League IT Support Proposal by Nerevu Group.pages • Airtable • Finder • Gatsby Default Starter • Dialpad Meetings • Calendar",
+    "project.id": 3147199,
+    "user.id": 933370
+  }
+]

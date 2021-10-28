@@ -1,1 +1,62 @@
-[]
+[
+  {
+    "dateEnteredUtc": "2020-01-27T17:38:25.7552412Z",
+    "dateUtc": "2020-01-25T12:00:00Z",
+    "day": "2020-01-25",
+    "description": "Stripe/Postmark/Xero R&D",
+    "duration": 548,
+    "projectId": "69cb6ef7-7886-4172-8112-bbc70e949a9e",
+    "status": "ACTIVE",
+    "taskId": "13c4fce8-fdc4-4c3a-8802-fff77fef1e99",
+    "timeEntryId": "f000943a-7e58-4e5b-a9ea-074ff0cc4f45",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  },
+  {
+    "dateEnteredUtc": "2020-01-27T17:38:26.5434253Z",
+    "dateUtc": "2020-01-26T12:00:00Z",
+    "day": "2020-01-26",
+    "description": "ACH Payment Example",
+    "duration": 10,
+    "projectId": "69cb6ef7-7886-4172-8112-bbc70e949a9e",
+    "status": "ACTIVE",
+    "taskId": "13c4fce8-fdc4-4c3a-8802-fff77fef1e99",
+    "timeEntryId": "d9542485-8298-470c-a242-c6867bedb6ee",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  },
+  {
+    "dateEnteredUtc": "2021-10-21T21:52:08.6605258Z",
+    "dateUtc": "2021-07-29T12:00:00Z",
+    "day": "2021-07-29",
+    "description": "Invoice INV-0201 • GoCardless • Veem • Nerevu Invoice INV-0200 P…",
+    "duration": 149,
+    "projectId": "69cb6ef7-7886-4172-8112-bbc70e949a9e",
+    "status": "ACTIVE",
+    "taskId": "56aedcf3-73f0-41d7-a8ed-df0a441dcf07",
+    "timeEntryId": "86d749c5-855b-4890-ac59-01db06c9b8c0",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  },
+  {
+    "dateEnteredUtc": "2021-10-21T21:52:09.7875473Z",
+    "dateUtc": "2021-07-22T12:00:00Z",
+    "day": "2021-07-22",
+    "description": "GoCardless • Xero App Marketplace US • receivabl.es • (22) Dubsa…",
+    "duration": 157,
+    "projectId": "69cb6ef7-7886-4172-8112-bbc70e949a9e",
+    "status": "ACTIVE",
+    "taskId": "56aedcf3-73f0-41d7-a8ed-df0a441dcf07",
+    "timeEntryId": "e7a21859-dc69-4145-add3-8ac9d93c0ec8",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  },
+  {
+    "dateEnteredUtc": "2021-10-21T21:52:10.5590674Z",
+    "dateUtc": "2021-07-20T12:00:00Z",
+    "day": "2021-07-20",
+    "description": "Fork • Heroku • Sublime Text • Terminal • Finder • Airtable • Fa…",
+    "duration": 306,
+    "projectId": "69cb6ef7-7886-4172-8112-bbc70e949a9e",
+    "status": "ACTIVE",
+    "taskId": "13c4fce8-fdc4-4c3a-8802-fff77fef1e99",
+    "timeEntryId": "179b9bc1-fef9-452d-9ea3-3154f7608a5a",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  }
+]
