@@ -6,7 +6,7 @@
     Provides the flask config options
     ###########################################################################
     # WARNING: if running on a a staging server, you MUST set the 'STAGE' env
-    # heroku config:set STAGE=true --remote staging
+    # heroku config:set STAGE=true remote staging
 
     # WARNING: The heroku project must either have a postgres, redis, or memcache db to
     # be recognized as production. If it is not recognized as production, Talisman

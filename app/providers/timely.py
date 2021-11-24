@@ -10,10 +10,10 @@ from itertools import chain
 import pygogo as gogo
 
 from app import providers
-from app.mappings import POSITIONS
 from app.routes.auth import Resource, process_result
 from app.routes.webhook import Webhook
 from app.helpers import flask_formatter as formatter
+from app.utils import fetch_choice
 
 logger = gogo.Gogo(
     __name__, low_formatter=formatter, high_formatter=formatter, monolog=True

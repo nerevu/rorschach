@@ -26,6 +26,7 @@ from flask import (
     after_this_request,
     url_for,
 )
+
 from oauthlib.oauth2 import TokenExpiredError
 from google.oauth2.service_account import Credentials
 from google.auth import transport
@@ -34,6 +35,7 @@ from requests_oauthlib import OAuth1Session, OAuth2Session
 from requests_oauthlib.oauth1_session import TokenRequestDenied
 
 from config import Config
+
 from app import cache
 from app.utils import uncache_header, make_cache_key, jsonify, get_links
 from app.headless import headless_auth

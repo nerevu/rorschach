@@ -71,7 +71,7 @@ def mark_billed(source_prefix, rid, **kwargs):
         status_code = response.status_code
     else:
         json.update({"message": time.error_msg, "ok": False})
-        status_code = xero_time.status_code
+        status_code = time.status_code
 
     json.update({"status_code": status_code, "conflict": status_code == 409})
     return json

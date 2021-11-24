@@ -22,9 +22,10 @@ from flask import (
 
 from flask.views import MethodView
 
-from config import Config
-
 from meza.fntools import listize, remove_keys
+from riko.dotdict import DotDict
+
+from config import Config
 
 from app import cache
 from app.routes import ProviderMixin
@@ -32,8 +33,6 @@ from app.authclient import get_auth_client, get_json_response, callback
 from app.utils import jsonify, get_links, fetch_bool, extract_fields
 from app.mappings import reg_mapper
 from app.helpers import singularize, get_collection, flask_formatter as formatter
-
-from riko.dotdict import DotDict
 
 logger = gogo.Gogo(
     __name__, low_formatter=formatter, high_formatter=formatter, monolog=True
@@ -204,30 +203,6 @@ class Auth(BaseView):
 
 
 class Resource(BaseView):
-    def __repr__(self):
-        name = f"{self.lowered}-{self.lowered_resource}"
-
-        if self.subresource:
-            if self.rid and len(str(self.rid)) > 16:
-                trunc_rid = str(self.rid).split("-")[0]
-                prefix = f"[id:{trunc_rid}]"
-            elif self.rid:
-                prefix = f"[id:{self.rid}]"
-            else:
-                prefix = f"[pos:{self.pos}]" if self.use_default else "[id:None]"
-
-            name += f"{prefix}-{self.lowered_subresource}"
-
-        if self.id and len(str(self.id)) > 16:
-            trunc_id = str(self.id).split("-")[0]
-            name += f"[id:{trunc_id}]"
-        elif self.id:
-            name += f"[id:{self.id}]"
-        else:
-            name += f"[pos:{self.pos}]" if self.use_default else "[id:None]"
-
-        return name
-
     def __init__(self, prefix, resource=None, **kwargs):
         """ An API Resource.
 
@@ -305,6 +280,30 @@ class Resource(BaseView):
 
         if self.rid and self.rid_hook:
             self.rid_hook()
+
+    def __repr__(self):
+        name = f"{self.lowered}-{self.lowered_resource}"
+
+        if self.subresource:
+            if self.rid and len(str(self.rid)) > 16:
+                trunc_rid = str(self.rid).split("-")[0]
+                prefix = f"[id:{trunc_rid}]"
+            elif self.rid:
+                prefix = f"[id:{self.rid}]"
+            else:
+                prefix = f"[pos:{self.pos}]" if self.use_default else "[all ids]"
+
+            name += f"{prefix}-{self.lowered_subresource}"
+
+        if self.id and len(str(self.id)) > 16:
+            trunc_id = str(self.id).split("-")[0]
+            name += f"[id:{trunc_id}]"
+        elif self.id:
+            name += f"[id:{self.id}]"
+        else:
+            name += f"[pos:{self.pos}]" if self.use_default else "[all ids]"
+
+        return name
 
     def __iter__(self):
         yield from self.data.values() if self.dictify else self.data
@@ -752,9 +751,9 @@ class Resource(BaseView):
                 if dest_id:
                     dest_item = self.extract_model(dest_id, update_cache=True)
             elif not dest_item:
-                logger.warning(
-                    f"Unable to present {self.prefix} {self.resource} mapping choices without an id_func!"
-                )
+                message = f"Unable to present {self.prefix} {self.resource} "
+                message += 'mapping choices without an id_func!'
+                logger.warning(message)
 
             self.dry_run = dry_run
 

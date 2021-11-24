@@ -151,11 +151,17 @@ class GSheets(Resource):
     def worksheet(self):
         if self.sheet and self._worksheet is None:
             if self.worksheet_name:
-                self._worksheet = self.sheet.worksheet(self.worksheet_name)
+                self._worksheet = self.retry_method(
+                    "worksheet", self.worksheet_name, obj_attr="sheet"
+                )
             elif self.worksheet_pos is not None:
-                self._worksheet = self.sheet.get_worksheet(self.worksheet_pos)
+                self._worksheet = self.retry_method(
+                    "get_worksheet", self.worksheet_pos, obj_attr="sheet"
+                )
             elif self.use_default:
-                self._worksheet = self.sheet.get_worksheet(0)
+                self._worksheet = self.retry_method(
+                    "get_worksheet", 0, obj_attr="sheet"
+                )
 
         return self._worksheet
 

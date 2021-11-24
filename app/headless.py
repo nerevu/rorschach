@@ -12,9 +12,10 @@ from sys import platform
 
 import pygogo as gogo
 
+from config import Config
+
 from app.utils import fetch_value
 from app.helpers import flask_formatter as formatter
-from config import Config
 
 try:
     from selenium import webdriver
