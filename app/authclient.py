@@ -9,7 +9,7 @@ from datetime import timezone, timedelta, datetime as dt
 from urllib.parse import urlencode, urlparse, parse_qs, parse_qsl
 from itertools import chain
 from functools import partial
-from json import JSONDecodeError
+from json import JSONDecodeError, load
 from base64 import b64encode
 from pathlib import Path
 from tempfile import NamedTemporaryFile
@@ -516,6 +516,8 @@ class OAuth1Client(AuthClient):
             self.verified = True
             self.token = token
 
+        return token
+
     def save(self):
         logger.debug(f"saving {self}")
         cache.set(f"{self.prefix}_oauth_token", self.oauth_token)
@@ -571,28 +573,79 @@ class BasicAuthClient(AuthClient):
 class ServiceAuthClient(OAuth2BaseClient):
     def __init__(self, prefix=None, keyfile_path=None, **kwargs):
         super().__init__(prefix, **kwargs)
+        self._info = None
+        self._credentials = None
         self.auth_type = "service"
         self.token_type = "service"
-        self.credentials = None
+        self.private_key = None
+        self.auth_provider_x509_cert_url = None
+        self.client_x509_cert_url = None
+        self.project_id = None
+        self.client_email = None
+        self.token_uri = None
         self.keyfile_path = keyfile_path
         self.worksheet_name = kwargs.get("worksheet_name")
         self.sheet_id = kwargs.get("sheet_id")
         self.restore()
         self._init_credentials()
 
+    def save(self):
+        super().save()
+        cache.set(f"{self.prefix}_scopes", self.credentials.scopes)
+        cache.set(f"{self.prefix}_project_id", self.credentials.project_id)
+        cache.set(f"{self.prefix}_client_email", self.credentials.service_account_email)
+        cache.set(f"{self.prefix}_token_uri", self.credentials._token_uri)
+        cache.set(f"{self.prefix}_private_key", self.private_key)
+
+    def restore(self):
+        super().restore()
+        self.project_id = cache.get(f"{self.prefix}_project_id")
+        self.client_email = cache.get(f"{self.prefix}_client_email")
+        self.token_uri = cache.get(f"{self.prefix}_token_uri")
+        self.private_key = cache.get(f"{self.prefix}_private_key")
+        self.scope = cache.get(f"{self.prefix}_scopes") or self.scope
+
     def _init_credentials(self):
-        p = Path(self.keyfile_path)
-        credentials = Credentials.from_service_account_file(p.resolve())
-        self.credentials = credentials.with_scopes(self.scope)
+        if not self.credentials:
+            p = Path(self.keyfile_path)
+            logger.debug(f"Loading {self.prefix} keyfile from {p}...")
+
+            with p.open() as f:
+                self._info = load(f)
+                self.private_key = self._info["private_key"]
 
         if self.expired:
             logger.warning(f"{self.prefix} token expired. Attempting to renew...")
             self.renew_token("TokenExpiredError")
-        elif self.access_token:
+        elif self.verified:
             logger.info(f"{self.prefix} successfully authenticated!")
         else:
             logger.warning(f"{self.prefix} not authorized. Attempting to renew...")
             self.renew_token("init")
+
+    @property
+    def info(self):
+        if not self._info:
+            self._info = {
+                "private_key": self.private_key,
+                "project_id": self.project_id,
+                "client_email": self.client_email,
+                "token_uri": self.token_uri,
+            }
+
+        return self._info
+
+    @property
+    def credentials(self):
+        if not self._credentials:
+            try:
+                self._credentials = Credentials.from_service_account_info(
+                    self.info, scopes=self.scope
+                )
+            except Exception as e:
+                logger.warning(f"{self.prefix} info invalid: {e}.")
+
+        return self._credentials
 
     @property
     def verified(self):
@@ -695,6 +748,7 @@ def get_json_response(url, client, params=None, renewed=False, **kwargs):
     ok = False
     unscoped = False
     success_code = kwargs.get("success_code", 200)
+    method = kwargs.get("method", "get")
 
     if not client:
         json = {"message": "No client.", "status_code": 407}
@@ -708,7 +762,6 @@ def get_json_response(url, client, params=None, renewed=False, **kwargs):
         params = params or {}
         data = kwargs.get("data", {})
         json_data = kwargs.get("json", {})
-        method = kwargs.get("method", "get")
         def_headers = kwargs.get("headers", {})
         all_headers = client.headers.get("all", {})
         method_headers = client.headers.get(method, {})
