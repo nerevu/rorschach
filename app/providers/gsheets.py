@@ -165,8 +165,9 @@ class GSheets(Resource):
 
         return self._worksheet
 
-    def retry_method(self, attr, *args, **kwargs):
-        method = getattr(self.worksheet, attr)
+    def retry_method(self, attr, *args, obj_attr="worksheet", **kwargs):
+        obj = getattr(self, obj_attr)
+        method = getattr(obj, attr)
 
         try:
             value = method(*args, **kwargs)
@@ -177,11 +178,11 @@ class GSheets(Resource):
             err_message = error["message"]
 
             # https://console.cloud.google.com/iam-admin/quotas?authuser=1
-            if status_code == 429:  # Exceeded quota
-                logger.debug("Waiting 100 seconds...")
+            if status_code == 429:
+                logger.debug("Exceeded quota. Waiting 100 seconds...")
                 sleep(100)
                 logger.debug("Done waiting!")
-                value = self.retry_method(attr, *args, **kwargs)
+                value = self.retry_method(attr, *args, obj_attr=obj_attr, **kwargs)
             else:
                 logger.error(err_message)
 
@@ -234,7 +235,7 @@ class Projects(GSheets):
 
     def get_json_response(self):
         self.worksheet_name = "client projects"
-        records = self.worksheet.get_all_records()
+        records = self.retry_method("get_all_records")
 
         result = [
             {
@@ -273,7 +274,7 @@ class Contacts(GSheets):
         super().__init__(prefix, resource="contacts", **kwargs)
 
     def get_json_response(self):
-        result = self.worksheet.col_values(1)[1:]
+        result = self.retry_method("col_values", 1)[1:]
 
         if self.id:
             result = select_by_id(result, self.id, self.id_field)
@@ -288,7 +289,7 @@ class Tasks(GSheets):
     def get_json_response(self):
         result = [
             {"name": v, "row": pos + 2, "id": slugify(v)}
-            for (pos, v) in enumerate(self.worksheet.col_values(3)[1:])
+            for (pos, v) in enumerate(self.retry_method("col_values", 3)[1:])
         ]
 
         if self.id:
@@ -341,14 +342,14 @@ class Time(GSheets):
 
     def get_json_response(self):
         self.worksheet_name = "austin (time)"
-        austin_records = self.worksheet.get_all_records()
+        austin_records = self.retry_method("get_all_records")
         austin_time = [
             {**r, "user.id": "austin", "row": pos + 2}
             for (pos, r) in enumerate(austin_records)
         ]
 
         self.worksheet_name = "mitchell (time)"
-        mitchell_records = self.worksheet.get_all_records()
+        mitchell_records = self.retry_method("get_all_records")
         mitchell_time = [
             {**r, "user.id": "mitchell", "row": pos + 2}
             for (pos, r) in enumerate(mitchell_records)
@@ -365,7 +366,7 @@ class Time(GSheets):
     def patch_response(self, range_name="", values=None, **data):
         user_id = self.source_event["user.id"]
         self.worksheet_name = f"{user_id} (time)"
-        result = self.worksheet.update(range_name, values, raw=False)
+        result = self.retry_method("update", range_name, values, raw=False)
         return {"result": result}
 
 
@@ -394,7 +395,7 @@ class ProjectTime(GSheets):
     def get_json_response(self):
         if self.rid:
             self.worksheet_name = "austin (time)"
-            austin_records = self.worksheet.get_all_records()
+            austin_records = self.retry_method("get_all_records")
             austin_time = [
                 {**r, "user.id": "austin", "row": pos + 2}
                 for (pos, r) in enumerate(austin_records)
@@ -402,7 +403,7 @@ class ProjectTime(GSheets):
             ]
 
             self.worksheet_name = "mitchell (time)"
-            mitchell_records = self.worksheet.get_all_records()
+            mitchell_records = self.retry_method("get_all_records")
             mitchell_time = [
                 {**r, "user.id": "mitchell", "row": pos + 2}
                 for (pos, r) in enumerate(mitchell_records)
