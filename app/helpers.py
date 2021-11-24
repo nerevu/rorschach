@@ -8,6 +8,7 @@
 import pdb
 import logging
 
+from datetime import date
 from inspect import getmembers, isclass
 from importlib import import_module
 from os import getenv
@@ -182,3 +183,27 @@ def log(message=None, ok=True, r=None, exit_on_completion=False, **kwargs):
         exit(0 if ok else 1)
     else:
         return ok
+
+
+def slugify(text):
+    return text.lower().strip().replace(" ", "-")
+
+
+def select_by_id(_result, _id, id_field):
+    try:
+        result = next(r for r in _result if _id == r[id_field])
+    except StopIteration:
+        result = {}
+
+    return result
+
+
+def parse_date(date_str):
+    try:
+        month, day, year = map(int, date_str.split("/"))
+    except ValueError:
+        parsed = ""
+    else:
+        parsed = date(year, month, day).isoformat()
+
+    return parsed

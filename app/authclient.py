@@ -561,6 +561,22 @@ class BasicAuthClient(AuthClient):
         self.auth = (username, password)
 
 
+class BearerAuth(requests.auth.AuthBase):
+    def __init__(self, token):
+        self.token = token
+
+    def __call__(self, r):
+        r.headers["authorization"] = f"Bearer {self.token}"
+        return r
+
+
+class BearerAuthClient(AuthClient):
+    def __init__(self, prefix=None, token=None, **kwargs):
+        super().__init__(prefix, **kwargs)
+        self.auth_type = "bearer"
+        self.auth = BearerAuth(token)
+
+
 class ServiceAuthClient(OAuth2BaseClient):
     def __init__(self, prefix=None, keyfile_path=None, **kwargs):
         super().__init__(prefix, **kwargs)
@@ -763,11 +779,18 @@ def get_json_response(url, client, params=None, renewed=False, **kwargs):
             k: v.format(**client.__dict__) for k, v in _client_headers.items()
         }
         headers = {**HEADERS, **client_headers, **def_headers}
-        requestor = client.oauth_session if client.oauth_version else requests
+
+        try:
+            requestor = client.oauth_session
+        except AttributeError:
+            requestor = requests
+
         verb = getattr(requestor, method)
 
-        if client.auth_type == "basic":
+        try:
             verb = partial(verb, auth=client.auth)
+        except AttributeError:
+            pass
 
         try:
             result = verb(
@@ -786,7 +809,7 @@ def get_json_response(url, client, params=None, renewed=False, **kwargs):
             except AttributeError:
                 json = {"message": result.text, "status_code": result.status_code}
             except JSONDecodeError:
-                content_type = result.headers["Content-Type"]
+                content_type = result.headers.get("Content-Type", "")
                 is_json = content_type.endswith("json")
                 is_file = content_type.endswith("pdf")
 
@@ -918,8 +941,13 @@ def get_json_response(url, client, params=None, renewed=False, **kwargs):
             msg = json.get("message", "")
 
         logger.debug(msg)
-        client.renew_token(status_code)
-        json = get_json_response(url, client, params=params, renewed=True, **kwargs)
+
+        try:
+            client.renew_token(status_code)
+        except AttributeError:
+            pass
+        else:
+            json = get_json_response(url, client, params=params, renewed=True, **kwargs)
     elif ok:
         try:
             json["links"] = get_links(app.url_map.iter_rules())

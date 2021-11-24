@@ -59,9 +59,14 @@ def process_result(result, fields=None, black_list=None, **kwargs):
 
 def store(prefix, collection_name, **kwargs):
     Collection = get_collection(prefix, collection_name)
-    collection = Collection(prefix, **kwargs)
-    response = collection.get(update_cache=True)
-    json = response.json
+
+    if Collection:
+        collection = Collection(prefix, **kwargs)
+        response = collection.get(update_cache=True)
+        json = response.json
+    else:
+        message = f"Collection `{collection_name}` doesn't exist in `{prefix}`."
+        json = {"ok": False, "message": message}
 
     if json["ok"]:
         logger.debug(f"Success storing {collection}!")
@@ -92,7 +97,7 @@ class BaseView(ProviderMixin, MethodView):
             self.param_map = client.param_map
             self.verb_map = client.verb_map
             self.method_map = client.method_map
-            self._params = {**params, **client.params}
+            self._params = {**client.params, **params}
 
             attrs = client.attrs
             def_start = def_end - timedelta(days=app.config["REPORT_DAYS"])
@@ -608,17 +613,20 @@ class Resource(BaseView):
 
         return model
 
-    def extract_model(self, _id=None, strict=False, **kwargs):
+    def extract_model(self, _id=None, strict=False, as_collection=False, **kwargs):
         response = self.get(_id, **kwargs)
         json = response.json
         result = [] if self.eof else json["result"]
 
-        try:
-            model = result[0]
-        except (IndexError, TypeError):
-            model = {}
-        except KeyError:
+        if as_collection:
             model = result
+        else:
+            try:
+                model = result[0]
+            except (IndexError, TypeError):
+                model = {}
+            except KeyError:
+                model = result
 
         if json["ok"]:
             error = (f"{self} doesn't exist!", 404)
@@ -628,7 +636,9 @@ class Resource(BaseView):
 
         if strict:
             assert model, error
-            assert model.get(self.id_field), (f"{self} has no ID!", 500)
+
+            if not as_collection:
+                assert model.get(self.id_field), (f"{self} has no ID!", 500)
 
         return model
 
@@ -971,8 +981,6 @@ class Resource(BaseView):
         self.id = self.values.pop("id", _id) or self.id
         self.rid = self.values.pop("rid", rid) or self.rid
 
-        method = self.method_map.get("patch", "patch")
-        rkwargs = {"headers": self.headers, "method": method, **app.config}
         black_list = {
             "dryRun",
             "start",
@@ -984,7 +992,6 @@ class Resource(BaseView):
         }
         values = remove_keys(self.values, black_list)
         data = {**values, **kwargs}
-        data[self.id_field] = self.id
         json = {}
 
         if not self.id:
@@ -1002,16 +1009,16 @@ class Resource(BaseView):
             }
         else:
             try:
-                self.client.response = self.patch_response(**data)
+                self.client.json = self.patch_response(**data)
             except NotImplementedError:
-                pass
+                url = f"{self.api_url}/{self.id}"
+                headers = {**self.headers, **kwargs.get("headers", {})}
+                method = self.method_map.get("patch", "patch")
+                rkwargs = {"headers": headers, "method": method, **app.config}
+                rkwargs[self.data_key] = dumps(data) if self.dump_data else data
+                json = get_json_response(url, self.client, **rkwargs)
             else:
                 json = get_json_response(None, self.client)
-
-        if not json:
-            url = f"{self.api_url}/{self.id}"
-            rkwargs[self.data_key] = dumps(data) if self.dump_data else data
-            json = get_json_response(url, self.client, **rkwargs)
 
         json["id"] = self.id
 

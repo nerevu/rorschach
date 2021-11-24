@@ -13,8 +13,8 @@ for PROJECT in $(jq -r '.[] | .id' app/data/timely_projects.json); do
   fi
 done
 
-for PROJECT in $(jq -r '.[] | .id' app/data/gsheets_projects.json); do
-  manage sync $@ -P gsheets -p ${PROJECT}; STATUS=$?
+for PROJECT in $(jq -r '.[] | .id' app/data/airtable_projects.json); do
+  manage sync $@ -P airtable -p ${PROJECT}; STATUS=$?
 
   if [ $STATUS -ne 0 ]; then
     echo "Sync exited with failures"

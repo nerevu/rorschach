@@ -126,6 +126,16 @@ class Config(object):
 
     # Authentication
     AUTHENTICATION = {
+        # https://airtable.com/apph4M6HDXw0rWaYW/api/docs
+        "airtable": {
+            "auth_type": "bearer",
+            "bearer": {
+                "api_base_url": "https://api.airtable.com/v0/{base_id}",
+                "token": getenv("AIRTABLE_API_KEY"),
+                "params": {"maxRecords": 2048, "pageSize": 100, "offset": None},
+                "attrs": {"base_id": getenv("AIRTABLE_BASE_ID"), "subkey": "records"},
+            },
+        },
         "mailgun": {
             "auth_type": "basic",
             "basic": {

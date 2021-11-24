@@ -5,7 +5,6 @@
 
     Provides Google Sheets API related functions
 """
-from datetime import date
 from time import sleep
 
 import pygogo as gogo
@@ -16,7 +15,7 @@ from gspread.exceptions import APIError
 from app.utils import parse
 from app.routes.auth import Resource, process_result
 from app.routes.webhook import Webhook
-from app.helpers import flask_formatter as formatter
+from app.helpers import flask_formatter as formatter, slugify, select_by_id, parse_date
 from meza.fntools import chunk
 
 logger = gogo.Gogo(
@@ -27,30 +26,6 @@ logger.propagate = False
 PREFIX = __name__.split(".")[-1]
 # DEF_START_ROW = Config.DEF_START_ROW
 DEF_START_ROW = 2  # Since the first row is header
-
-
-def slugify(text):
-    return text.lower().strip().replace(" ", "-")
-
-
-def parse_date(date_str):
-    try:
-        month, day, year = map(int, date_str.split("/"))
-    except ValueError:
-        parsed = ""
-    else:
-        parsed = date(year, month, day).isoformat()
-
-    return parsed
-
-
-def select_by_id(_result, _id, id_field):
-    try:
-        result = next(r for r in _result if _id == r[id_field])
-    except StopIteration:
-        result = {}
-
-    return result
 
 
 def events_filterer(item):

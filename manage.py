@@ -142,7 +142,7 @@ def help(ctx):
 @click.option(
     "-P",
     "--source-prefix",
-    type=Choice(["timely", "gsheets"], case_sensitive=False),
+    type=Choice(["timely", "airtable"], case_sensitive=False),
     default="timely",
 )
 @click.option(
@@ -215,7 +215,7 @@ def prune(source_prefix, collection_name, **kwargs):
 @click.option(
     "-P",
     "--prefix",
-    type=Choice(["timely", "xero", "gsheets"], case_sensitive=False),
+    type=Choice(["timely", "xero", "airtable"], case_sensitive=False),
     default="xero",
 )
 @click.option(
@@ -343,7 +343,7 @@ def test_oauth(method=None, resource=None, project_id=None, **kwargs):
 @click.option(
     "-P",
     "--source-prefix",
-    type=Choice(["timely", "gsheets"], case_sensitive=False),
+    type=Choice(["timely", "airtable"], case_sensitive=False),
     default="timely",
 )
 @click.option("-p", "--project-id", help="The Timely Project ID", default="2389295")
@@ -368,7 +368,7 @@ def test_oauth(method=None, resource=None, project_id=None, **kwargs):
     default=DEF_END,
 )
 def sync(source_prefix, **kwargs):
-    """Sync Timely/GSheets events with Xero time entries"""
+    """Sync Timely/Airtable events with Xero time entries"""
     sys.excepthook = partial(exception_hook, debug=True, callback=save_results)
     provider = get_provider(source_prefix)
     message = f"{source_prefix} Project {kwargs['project_id']}"
