@@ -94,7 +94,6 @@ class GSheets(Resource):
             self._sheet_id = kwargs.get("sheet_id")
             self._worksheet_name = kwargs.get("worksheet_name")
 
-        self.use_default = kwargs.get("use_default", True)
         self.chunksize = kwargs.get("chunksize")
         self._sheet_name = kwargs.get("sheet_name")
         self._worksheet_pos = kwargs.get("worksheet_pos")
