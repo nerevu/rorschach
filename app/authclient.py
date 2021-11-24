@@ -37,8 +37,11 @@ from config import Config
 from app import cache
 from app.utils import uncache_header, make_cache_key, jsonify, get_links
 from app.headless import headless_auth
+from app.helpers import flask_formatter as formatter
 
-logger = gogo.Gogo(__name__, monolog=True).logger
+logger = gogo.Gogo(
+    __name__, low_formatter=formatter, high_formatter=formatter, monolog=True
+).logger
 logger.propagate = False
 
 SET_TIMEOUT = Config.SET_TIMEOUT

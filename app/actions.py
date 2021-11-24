@@ -12,13 +12,15 @@ import pygogo as gogo
 from flask import has_request_context
 
 from app.authclient import get_json_response
-from app.helpers import get_provider
+from app.helpers import get_provider, flask_formatter as formatter
 from app.utils import fetch_bool
 from app.providers.aws import Distribution
 from app.providers.postmark import Email
 from app.providers.xero import ProjectTime, InvoiceEmailTemplate, PaymentEmailTemplate
 
-logger = gogo.Gogo(__name__, monolog=True).logger
+logger = gogo.Gogo(
+    __name__, low_formatter=formatter, high_formatter=formatter, monolog=True
+).logger
 logger.propagate = False
 
 

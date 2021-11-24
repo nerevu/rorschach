@@ -10,7 +10,11 @@ import pygogo as gogo
 
 from config import Config
 
-logger = gogo.Gogo(__name__, monolog=True).logger
+from app.helpers import flask_formatter as formatter
+
+logger = gogo.Gogo(
+    __name__, low_formatter=formatter, high_formatter=formatter, monolog=True
+).logger
 
 try:
     conn = redis.from_url(Config.RQ_DASHBOARD_REDIS_URL)

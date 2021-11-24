@@ -24,8 +24,6 @@ from pygogo.formatters import DATEFMT
 
 p = inflect.engine()
 singularize = p.singular_noun
-logger = gogo.Gogo(__name__, monolog=True).logger
-logger.propagate = False
 
 ADMIN = Config.ADMIN
 MAILGUN_DOMAIN = Config.MAILGUN_DOMAIN
@@ -105,31 +103,6 @@ def get_collection(prefix, collection="", **kwargs):
     return Collection
 
 
-def log(message=None, ok=True, r=None, exit_on_completion=False, **kwargs):
-    _logger = app.logger if has_request_context() else logger
-
-    if r is not None:
-        ok = r.ok
-
-        try:
-            message = r.json().get("message")
-        except JSONDecodeError:
-            message = r.text
-
-    if message and ok:
-        _logger.info(message)
-    elif message:
-        try:
-            _logger.error(message)
-        except ConnectionRefusedError:
-            handleLoggingError(message=message, reason="SMTP connect refused.")
-
-    if exit_on_completion:
-        exit(0 if ok else 1)
-    else:
-        return ok
-
-
 def exception_hook(etype, value, tb, debug=False, callback=None, **kwargs):
     exception = format_exception(etype, value, tb)
 
@@ -158,3 +131,36 @@ flask_format = (
     "[%(levelname)s %(asctime)s] via %(url)s in %(module)s:%(lineno)s: %(message)s"
 )
 flask_formatter = RequestFormatter(flask_format, datefmt=DATEFMT)
+
+logger = gogo.Gogo(
+    __name__,
+    low_formatter=flask_formatter,
+    high_formatter=flask_formatter,
+    monolog=True,
+).logger
+logger.propagate = False
+
+
+def log(message=None, ok=True, r=None, exit_on_completion=False, **kwargs):
+    _logger = app.logger if has_request_context() else logger
+
+    if r is not None:
+        ok = r.ok
+
+        try:
+            message = r.json().get("message")
+        except JSONDecodeError:
+            message = r.text
+
+    if message and ok:
+        _logger.info(message)
+    elif message:
+        try:
+            _logger.error(message)
+        except ConnectionRefusedError:
+            handleLoggingError(message=message, reason="SMTP connect refused.")
+
+    if exit_on_completion:
+        exit(0 if ok else 1)
+    else:
+        return ok

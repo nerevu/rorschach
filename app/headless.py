@@ -13,6 +13,7 @@ from sys import platform
 import pygogo as gogo
 
 from app.utils import fetch_value
+from app.helpers import flask_formatter as formatter
 from config import Config
 
 try:
@@ -27,7 +28,9 @@ else:
 
 CHROME_DRIVER_VERSIONS = Config.CHROME_DRIVER_VERSIONS
 
-logger = gogo.Gogo(__name__, monolog=True).logger
+logger = gogo.Gogo(
+    __name__, low_formatter=formatter, high_formatter=formatter, monolog=True
+).logger
 logger.propagate = False
 
 

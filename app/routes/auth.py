@@ -31,11 +31,13 @@ from app.routes import ProviderMixin
 from app.authclient import get_auth_client, get_json_response, callback
 from app.utils import jsonify, get_links, fetch_bool, extract_fields
 from app.mappings import reg_mapper
-from app.helpers import singularize, get_collection
+from app.helpers import singularize, get_collection, flask_formatter as formatter
 
 from riko.dotdict import DotDict
 
-logger = gogo.Gogo(__name__, monolog=True).logger
+logger = gogo.Gogo(
+    __name__, low_formatter=formatter, high_formatter=formatter, monolog=True
+).logger
 logger.propagate = False
 
 APP_DIR = Path(__file__).parents[1]

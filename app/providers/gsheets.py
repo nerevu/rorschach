@@ -16,10 +16,12 @@ from gspread.exceptions import APIError
 from app.utils import parse
 from app.routes.auth import Resource, process_result
 from app.routes.webhook import Webhook
-
+from app.helpers import flask_formatter as formatter
 from meza.fntools import chunk
 
-logger = gogo.Gogo(__name__, monolog=True).logger
+logger = gogo.Gogo(
+    __name__, low_formatter=formatter, high_formatter=formatter, monolog=True
+).logger
 logger.propagate = False
 
 PREFIX = __name__.split(".")[-1]
