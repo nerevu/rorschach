@@ -5,7 +5,6 @@
 
     Provides Google Sheets API related functions
 """
-from datetime import date
 from time import sleep
 
 import pygogo as gogo
@@ -16,39 +15,17 @@ from gspread.exceptions import APIError
 from app.utils import parse
 from app.routes.auth import Resource, process_result
 from app.routes.webhook import Webhook
-
+from app.helpers import flask_formatter as formatter, slugify, select_by_id, parse_date
 from meza.fntools import chunk
 
-logger = gogo.Gogo(__name__, monolog=True).logger
+logger = gogo.Gogo(
+    __name__, low_formatter=formatter, high_formatter=formatter, monolog=True
+).logger
 logger.propagate = False
 
 PREFIX = __name__.split(".")[-1]
 # DEF_START_ROW = Config.DEF_START_ROW
 DEF_START_ROW = 2  # Since the first row is header
-
-
-def slugify(text):
-    return text.lower().strip().replace(" ", "-")
-
-
-def parse_date(date_str):
-    try:
-        month, day, year = map(int, date_str.split("/"))
-    except ValueError:
-        parsed = ""
-    else:
-        parsed = date(year, month, day).isoformat()
-
-    return parsed
-
-
-def select_by_id(_result, _id, id_field):
-    try:
-        result = next(r for r in _result if _id == r[id_field])
-    except StopIteration:
-        result = {}
-
-    return result
 
 
 def events_filterer(item):
@@ -92,7 +69,6 @@ class GSheets(Resource):
             self._sheet_id = kwargs.get("sheet_id")
             self._worksheet_name = kwargs.get("worksheet_name")
 
-        self.use_default = kwargs.get("use_default", True)
         self.chunksize = kwargs.get("chunksize")
         self._sheet_name = kwargs.get("sheet_name")
         self._worksheet_pos = kwargs.get("worksheet_pos")
@@ -149,16 +125,23 @@ class GSheets(Resource):
     def worksheet(self):
         if self.sheet and self._worksheet is None:
             if self.worksheet_name:
-                self._worksheet = self.sheet.worksheet(self.worksheet_name)
+                self._worksheet = self.retry_method(
+                    "worksheet", self.worksheet_name, obj_attr="sheet"
+                )
             elif self.worksheet_pos is not None:
-                self._worksheet = self.sheet.get_worksheet(self.worksheet_pos)
+                self._worksheet = self.retry_method(
+                    "get_worksheet", self.worksheet_pos, obj_attr="sheet"
+                )
             elif self.use_default:
-                self._worksheet = self.sheet.get_worksheet(0)
+                self._worksheet = self.retry_method(
+                    "get_worksheet", 0, obj_attr="sheet"
+                )
 
         return self._worksheet
 
-    def retry_method(self, attr, *args, **kwargs):
-        method = getattr(self.worksheet, attr)
+    def retry_method(self, attr, *args, obj_attr="worksheet", **kwargs):
+        obj = getattr(self, obj_attr)
+        method = getattr(obj, attr)
 
         try:
             value = method(*args, **kwargs)
@@ -169,11 +152,11 @@ class GSheets(Resource):
             err_message = error["message"]
 
             # https://console.cloud.google.com/iam-admin/quotas?authuser=1
-            if status_code == 429:  # Exceeded quota
-                logger.debug("Waiting 100 seconds...")
+            if status_code == 429:
+                logger.debug("Exceeded quota. Waiting 100 seconds...")
                 sleep(100)
                 logger.debug("Done waiting!")
-                value = self.retry_method(attr, *args, **kwargs)
+                value = self.retry_method(attr, *args, obj_attr=obj_attr, **kwargs)
             else:
                 logger.error(err_message)
 
@@ -226,7 +209,7 @@ class Projects(GSheets):
 
     def get_json_response(self):
         self.worksheet_name = "client projects"
-        records = self.worksheet.get_all_records()
+        records = self.retry_method("get_all_records")
 
         result = [
             {
@@ -265,7 +248,7 @@ class Contacts(GSheets):
         super().__init__(prefix, resource="contacts", **kwargs)
 
     def get_json_response(self):
-        result = self.worksheet.col_values(1)[1:]
+        result = self.retry_method("col_values", 1)[1:]
 
         if self.id:
             result = select_by_id(result, self.id, self.id_field)
@@ -280,7 +263,7 @@ class Tasks(GSheets):
     def get_json_response(self):
         result = [
             {"name": v, "row": pos + 2, "id": slugify(v)}
-            for (pos, v) in enumerate(self.worksheet.col_values(3)[1:])
+            for (pos, v) in enumerate(self.retry_method("col_values", 3)[1:])
         ]
 
         if self.id:
@@ -333,14 +316,14 @@ class Time(GSheets):
 
     def get_json_response(self):
         self.worksheet_name = "austin (time)"
-        austin_records = self.worksheet.get_all_records()
+        austin_records = self.retry_method("get_all_records")
         austin_time = [
             {**r, "user.id": "austin", "row": pos + 2}
             for (pos, r) in enumerate(austin_records)
         ]
 
         self.worksheet_name = "mitchell (time)"
-        mitchell_records = self.worksheet.get_all_records()
+        mitchell_records = self.retry_method("get_all_records")
         mitchell_time = [
             {**r, "user.id": "mitchell", "row": pos + 2}
             for (pos, r) in enumerate(mitchell_records)
@@ -357,7 +340,7 @@ class Time(GSheets):
     def patch_response(self, range_name="", values=None, **data):
         user_id = self.source_event["user.id"]
         self.worksheet_name = f"{user_id} (time)"
-        result = self.worksheet.update(range_name, values, raw=False)
+        result = self.retry_method("update", range_name, values, raw=False)
         return {"result": result}
 
 
@@ -386,7 +369,7 @@ class ProjectTime(GSheets):
     def get_json_response(self):
         if self.rid:
             self.worksheet_name = "austin (time)"
-            austin_records = self.worksheet.get_all_records()
+            austin_records = self.retry_method("get_all_records")
             austin_time = [
                 {**r, "user.id": "austin", "row": pos + 2}
                 for (pos, r) in enumerate(austin_records)
@@ -394,7 +377,7 @@ class ProjectTime(GSheets):
             ]
 
             self.worksheet_name = "mitchell (time)"
-            mitchell_records = self.worksheet.get_all_records()
+            mitchell_records = self.retry_method("get_all_records")
             mitchell_time = [
                 {**r, "user.id": "mitchell", "row": pos + 2}
                 for (pos, r) in enumerate(mitchell_records)

@@ -1,0 +1,50 @@
+[
+  {
+    "dateEnteredUtc": "2021-10-22T05:40:00.4675347Z",
+    "dateUtc": "2021-03-01T12:00:00Z",
+    "day": "2021-03-01",
+    "description": "Tesla • LinkedIn",
+    "duration": 18,
+    "projectId": "3538b73a-74c7-4580-997c-abd2264b1c84",
+    "status": "ACTIVE",
+    "taskId": "4b49f5f3-3a9c-4390-894d-b26944f02fc7",
+    "timeEntryId": "12c309bd-c553-4886-b823-a70373541c72",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  },
+  {
+    "dateEnteredUtc": "2021-10-22T05:40:01.3474197Z",
+    "dateUtc": "2021-03-22T12:00:00Z",
+    "day": "2021-03-22",
+    "description": "zoom.us",
+    "duration": 27,
+    "projectId": "3538b73a-74c7-4580-997c-abd2264b1c84",
+    "status": "ACTIVE",
+    "taskId": "4b49f5f3-3a9c-4390-894d-b26944f02fc7",
+    "timeEntryId": "ca772289-6fc3-4e6c-8ae5-516549c86dca",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  },
+  {
+    "dateEnteredUtc": "2021-10-22T05:40:02.2415781Z",
+    "dateUtc": "2021-03-15T12:00:00Z",
+    "day": "2021-03-15",
+    "description": "zoom.us • Finder",
+    "duration": 65,
+    "projectId": "3538b73a-74c7-4580-997c-abd2264b1c84",
+    "status": "ACTIVE",
+    "taskId": "4b49f5f3-3a9c-4390-894d-b26944f02fc7",
+    "timeEntryId": "74d52c3f-4043-4296-9598-8b97851ea264",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  },
+  {
+    "dateEnteredUtc": "2021-10-22T05:40:03.1628978Z",
+    "dateUtc": "2021-04-12T12:00:00Z",
+    "day": "2021-04-12",
+    "description": "zoom.us",
+    "duration": 35,
+    "projectId": "3538b73a-74c7-4580-997c-abd2264b1c84",
+    "status": "ACTIVE",
+    "taskId": "4b49f5f3-3a9c-4390-894d-b26944f02fc7",
+    "timeEntryId": "75cb88b0-375c-4439-9784-287b574a22ab",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  }
+]

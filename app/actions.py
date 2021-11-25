@@ -12,13 +12,15 @@ import pygogo as gogo
 from flask import has_request_context
 
 from app.authclient import get_json_response
-from app.helpers import get_provider
+from app.helpers import get_provider, flask_formatter as formatter
 from app.utils import fetch_bool
 from app.providers.aws import Distribution
 from app.providers.postmark import Email
 from app.providers.xero import ProjectTime, InvoiceEmailTemplate, PaymentEmailTemplate
 
-logger = gogo.Gogo(__name__, monolog=True).logger
+logger = gogo.Gogo(
+    __name__, low_formatter=formatter, high_formatter=formatter, monolog=True
+).logger
 logger.propagate = False
 
 
@@ -57,11 +59,7 @@ def mark_billed(source_prefix, rid, **kwargs):
     provider = get_provider(source_prefix)
     time = provider.Time(dictify=True, rid=rid, **kwargs)
     data = time.get_patch_data()
-
-    json = {
-        "eof": False,
-        "event_id": time.rid,
-    }
+    json = {"eof": False, "event_id": time.rid}
 
     if data:
         response = time.patch(**data)
@@ -69,7 +67,7 @@ def mark_billed(source_prefix, rid, **kwargs):
         status_code = response.status_code
     else:
         json.update({"message": time.error_msg, "ok": False})
-        status_code = xero_time.status_code
+        status_code = time.status_code
 
     json.update({"status_code": status_code, "conflict": status_code == 409})
     return json

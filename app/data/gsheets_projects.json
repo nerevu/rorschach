@@ -1,47 +1,74 @@
 [
   {
-    "id": "commission-dashboard",
-    "name": "Commission Dashboard",
+    "client": {
+      "id": "icc",
+      "name": "ICC"
+    },
+    "id": "wei-website",
+    "name": "WEI Website",
     "row": 2
   },
   {
-    "id": "wei-website",
-    "name": "WEI Website",
+    "client": {
+      "id": "nerevu",
+      "name": "Nerevu"
+    },
+    "id": "internal",
+    "name": "Internal",
     "row": 3
   },
   {
-    "id": "internal",
-    "name": "Internal",
+    "client": {
+      "id": "nerevu",
+      "name": "Nerevu"
+    },
+    "id": "kazeeki",
+    "name": "Kazeeki",
     "row": 4
   },
   {
-    "id": "kazeeki",
-    "name": "Kazeeki",
+    "client": {
+      "id": "nerevu",
+      "name": "Nerevu"
+    },
+    "id": "dashboard-service",
+    "name": "Dashboard Service",
     "row": 5
   },
   {
-    "id": "dashboard-service",
-    "name": "Dashboard Service",
+    "client": {
+      "id": "nerevu",
+      "name": "Nerevu"
+    },
+    "id": "timero",
+    "name": "Timero",
     "row": 6
   },
   {
-    "id": "timero",
-    "name": "Timero",
+    "client": {
+      "id": "pia",
+      "name": "PIA"
+    },
+    "id": "open-peoria",
+    "name": "Open Peoria",
     "row": 7
   },
   {
-    "id": "open-peoria",
-    "name": "Open Peoria",
+    "client": {
+      "id": "nerevu",
+      "name": "Nerevu"
+    },
+    "id": "covid-19",
+    "name": "COVID-19",
     "row": 8
   },
   {
-    "id": "covid-19",
-    "name": "COVID-19",
-    "row": 9
-  },
-  {
+    "client": {
+      "id": "alegna",
+      "name": "Alegna"
+    },
     "id": "clozecart",
     "name": "ClozeCart",
-    "row": 10
+    "row": 9
   }
 ]

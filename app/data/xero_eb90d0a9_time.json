@@ -1,1 +1,38 @@
-[]
+[
+  {
+    "dateEnteredUtc": "2021-10-22T05:37:51.9640856Z",
+    "dateUtc": "2021-01-15T12:00:00Z",
+    "day": "2021-01-15",
+    "description": "UberConference • Preferences • Grant Management System & Cost Al…",
+    "duration": 49,
+    "projectId": "eb90d0a9-35cf-4fa3-8cfe-3763615839b1",
+    "status": "ACTIVE",
+    "taskId": "3d2a1fc0-6424-4b67-b91a-1491b6d10ff6",
+    "timeEntryId": "39715ea7-e173-4e31-ac25-fe187c645890",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  },
+  {
+    "dateEnteredUtc": "2021-10-22T05:37:52.7882911Z",
+    "dateUtc": "2021-02-09T12:00:00Z",
+    "day": "2021-02-09",
+    "description": "UberConference",
+    "duration": 25,
+    "projectId": "eb90d0a9-35cf-4fa3-8cfe-3763615839b1",
+    "status": "ACTIVE",
+    "taskId": "3d2a1fc0-6424-4b67-b91a-1491b6d10ff6",
+    "timeEntryId": "b70ce3b3-ce9a-4f33-b7f3-ac1d0d455085",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  },
+  {
+    "dateEnteredUtc": "2021-10-22T05:37:53.8852805Z",
+    "dateUtc": "2021-02-01T12:00:00Z",
+    "day": "2021-02-01",
+    "description": "Comparison of Hanson - Nerevu Master Services Agreements • Web s…",
+    "duration": 56,
+    "projectId": "eb90d0a9-35cf-4fa3-8cfe-3763615839b1",
+    "status": "ACTIVE",
+    "taskId": "3d2a1fc0-6424-4b67-b91a-1491b6d10ff6",
+    "timeEntryId": "ec87663b-715e-40ce-b640-dde91be58d99",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  }
+]

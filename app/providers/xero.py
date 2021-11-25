@@ -15,12 +15,14 @@ import pygogo as gogo
 
 from app import providers
 from app.utils import fetch_choice
-from app.helpers import get_collection, get_provider
+from app.helpers import get_collection, get_provider, flask_formatter as formatter
 from app.mappings import USERS, POSITIONS, gen_task_mapping
 from app.routes.webhook import Webhook
 from app.routes.auth import Resource, process_result
 
-logger = gogo.Gogo(__name__, monolog=True).logger
+logger = gogo.Gogo(
+    __name__, low_formatter=formatter, high_formatter=formatter, monolog=True
+).logger
 logger.propagate = False
 
 PREFIX = __name__.split(".")[-1]
@@ -40,7 +42,7 @@ def get_position_user_ids(xero_task_name):
     try:
         user_ids = POSITIONS[position_name]
     except KeyError:
-        logger.debug(f"Xero position map doesn't contain position '{position_name}'!")
+        logger.debug(f"Xero position map doesn't contain '{position_name}'!")
         user_ids = []
 
     return user_ids
@@ -169,7 +171,6 @@ class Contacts(Xero):
                 "fields": ["ContactID", "Name", "FirstName", "LastName"],
                 "id_field": "ContactID",
                 "subkey": "Contacts",
-                "result_key": "result.Contacts.0",
                 "domain": "api",
             }
         )
@@ -411,7 +412,6 @@ class Inventory(Xero):
         super().__init__(prefix, resource="Items", **kwargs)
 
     def get_matching_xero_postions(self, user_id, task_name, user_name=None):
-        trunc_name = task_name.split(" ")[0]
         logger.debug(f"Loading {self} choices for {user_name}…")
         return [t for t in self if user_id in get_position_user_ids(t[self.name_field])]
 
@@ -457,7 +457,6 @@ class ProjectTasks(Xero):
             )
 
     def get_matching_xero_postions(self, user_id, task_name, user_name=None):
-        trunc_name = task_name.split(" ")[0]
         logger.debug(f"Loading {self} choices for {user_name}…")
         positions = [
             t for t in self if user_id in get_position_user_ids(t[self.name_field])

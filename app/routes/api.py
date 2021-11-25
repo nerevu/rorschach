@@ -23,9 +23,11 @@ from app.utils import (
 
 from app import actions
 from app.routes import auth, Memoization, subscription
-from app.helpers import get_collection, get_member
+from app.helpers import get_collection, get_member, flask_formatter as formatter
 
-logger = gogo.Gogo(__name__, monolog=True).logger
+logger = gogo.Gogo(
+    __name__, low_formatter=formatter, high_formatter=formatter, monolog=True
+).logger
 logger.propagate = False
 blueprint = Blueprint("API", __name__)
 fake = Faker()

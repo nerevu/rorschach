@@ -15,6 +15,7 @@ from rq import Queue, get_current_job
 from config import Config
 from app.utils import jsonify, parse_kwargs, get_links
 from app.connection import conn
+from app.helpers import flask_formatter as formatter
 
 if conn:
     from rq.registry import FailedJobRegistry
@@ -28,7 +29,9 @@ else:
 # https://requests-oauthlib.readthedocs.io/en/latest/index.html
 blueprint = Blueprint("API", __name__)
 
-logger = gogo.Gogo(__name__, monolog=True).logger
+logger = gogo.Gogo(
+    __name__, low_formatter=formatter, high_formatter=formatter, monolog=True
+).logger
 logger.propagate = False
 
 # these don't change based on mode, so no need to do app.config['...']

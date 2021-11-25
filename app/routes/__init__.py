@@ -22,7 +22,11 @@ from app.utils import (
     get_request_base,
 )
 
-logger = gogo.Gogo(__name__, monolog=True).logger
+from app.helpers import flask_formatter as formatter
+
+logger = gogo.Gogo(
+    __name__, low_formatter=formatter, high_formatter=formatter, monolog=True
+).logger
 logger.propagate = False
 
 PREFIX = Config.API_URL_PREFIX
@@ -32,12 +36,6 @@ class ProviderMixin:
     def __init__(self, prefix, **kwargs):
         self.prefix = prefix or ""
         self.lowered = self.prefix.lower()
-        self.is_timely = self.prefix == "timely"
-        self.is_xero = self.prefix == "xero"
-        self.is_opencart = self.prefix == "opencart"
-        self.is_cloze = self.prefix == "cloze"
-        self.is_qb = self.prefix == "qb"
-        self.is_gsheets = self.prefix == "gsheets"
 
         lowered_class = type(self).__name__.lower()
 

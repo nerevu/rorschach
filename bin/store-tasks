@@ -7,7 +7,7 @@ echo "--------------"
 echo
 
 manage store -P timely -c tasks --dictify
-manage store -P gsheets -c tasks --dictify
+manage store -P airtable -c tasks --dictify
 
 for PROJECT in $(jq -r '.[] | .id' app/data/timely_projects.json); do
     manage store -P timely -c projecttasks --rid="${PROJECT}"
@@ -17,6 +17,6 @@ for PROJECT in $(jq -r '.[] | .projectId' app/data/xero_projects.json); do
     manage store -P xero -c projecttasks --rid="${PROJECT}"
 done
 
-for PROJECT in $(jq -r '.[] | .id' app/data/gsheets_projects.json); do
-    manage store -P gsheets -c projecttasks --rid="${PROJECT}"
+for PROJECT in $(jq -r '.[] | .id' app/data/airtable_projects.json); do
+    manage store -P airtable -c projecttasks --rid="${PROJECT}"
 done

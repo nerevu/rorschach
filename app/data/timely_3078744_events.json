@@ -1,1 +1,12 @@
-[]
+[
+  {
+    "billed": false,
+    "day": "2020-06-02",
+    "duration.total_minutes": 0,
+    "id": 177674953,
+    "label_id": 1344431,
+    "note": "Fork • WEI • WEI API • Workforce Equity Initiative (WEI) • Sublime Text • Nerevu Ad Performance Dashboard Service • Dash • Terminal • Heroku • Fastmail",
+    "project.id": 3078744,
+    "user.id": 933370
+  }
+]

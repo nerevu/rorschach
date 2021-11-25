@@ -6,7 +6,9 @@
     Provides misc helper functions
 """
 import pdb
+import logging
 
+from datetime import date
 from inspect import getmembers, isclass
 from importlib import import_module
 from os import getenv
@@ -24,8 +26,6 @@ from pygogo.formatters import DATEFMT
 
 p = inflect.engine()
 singularize = p.singular_noun
-logger = gogo.Gogo(__name__, monolog=True).logger
-logger.propagate = False
 
 ADMIN = Config.ADMIN
 MAILGUN_DOMAIN = Config.MAILGUN_DOMAIN
@@ -105,6 +105,61 @@ def get_collection(prefix, collection="", **kwargs):
     return Collection
 
 
+def exception_hook(etype, value, tb, debug=False, callback=None, **kwargs):
+    exception = format_exception(etype, value, tb)
+
+    try:
+        info, error = exception[-2:]
+    except ValueError:
+        info, error = "", exception[0]
+
+    message = f"Exception in:\n{info}\n{error}"
+    log(message, ok=False)
+
+    if debug:
+        pdb.post_mortem(tb)
+
+    callback() if callback else None
+
+
+# https://stackoverflow.com/a/56944256/408556
+GREY = "\x1b[38;21m"
+YELLOW = "\x1b[33;21m"
+RED = "\x1b[31;21m"
+BOLD_RED = "\x1b[31;1m"
+RESET = "\x1b[0m"
+
+
+# https://flask.palletsprojects.com/en/1.1.x/logging/#injecting-request-information
+class RequestFormatter(Formatter):
+    def format(self, record):
+        FORMATS = {
+            logging.DEBUG: f"{GREY} {self._fmt} {RESET}",
+            logging.INFO: f"{GREY} {self._fmt} {RESET}",
+            logging.WARNING: f"{YELLOW} {self._fmt} {RESET}",
+            logging.ERROR: f"{RED} {self._fmt} {RESET}",
+            logging.CRITICAL: f"{BOLD_RED} {self._fmt} {RESET}",
+        }
+
+        log_fmt = FORMATS.get(record.levelno)
+        record.url = request.url if has_request_context() else "n/a"
+        return Formatter(log_fmt).format(record)
+
+
+flask_format = (
+    "[%(levelname)s %(asctime)s] via %(url)s in %(module)s:%(lineno)s: %(message)s"
+)
+flask_formatter = RequestFormatter(flask_format, datefmt=DATEFMT)
+
+logger = gogo.Gogo(
+    __name__,
+    low_formatter=flask_formatter,
+    high_formatter=flask_formatter,
+    monolog=True,
+).logger
+logger.propagate = False
+
+
 def log(message=None, ok=True, r=None, exit_on_completion=False, **kwargs):
     _logger = app.logger if has_request_context() else logger
 
@@ -130,31 +185,25 @@ def log(message=None, ok=True, r=None, exit_on_completion=False, **kwargs):
         return ok
 
 
-def exception_hook(etype, value, tb, debug=False, callback=None, **kwargs):
-    exception = format_exception(etype, value, tb)
+def slugify(text):
+    return text.lower().strip().replace(" ", "-")
 
+
+def select_by_id(_result, _id, id_field):
     try:
-        info, error = exception[-2:]
+        result = next(r for r in _result if _id == r[id_field])
+    except StopIteration:
+        result = {}
+
+    return result
+
+
+def parse_date(date_str):
+    try:
+        month, day, year = map(int, date_str.split("/"))
     except ValueError:
-        info, error = "", exception[0]
+        parsed = ""
+    else:
+        parsed = date(year, month, day).isoformat()
 
-    message = f"Exception in:\n{info}\n{error}"
-    log(message, ok=False)
-
-    if debug:
-        pdb.post_mortem(tb)
-
-    callback() if callback else None
-
-
-# https://flask.palletsprojects.com/en/1.1.x/logging/#injecting-request-information
-class RequestFormatter(Formatter):
-    def format(self, record):
-        record.url = request.url if has_request_context() else "n/a"
-        return super().format(record)
-
-
-flask_format = (
-    "[%(levelname)s %(asctime)s] via %(url)s in %(module)s:%(lineno)s: %(message)s"
-)
-flask_formatter = RequestFormatter(flask_format, datefmt=DATEFMT)
+    return parsed

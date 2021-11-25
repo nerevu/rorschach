@@ -9,8 +9,7 @@ from datetime import timezone, timedelta, datetime as dt
 from urllib.parse import urlencode, urlparse, parse_qs, parse_qsl
 from itertools import chain
 from functools import partial
-from json import JSONDecodeError
-from base64 import b64encode
+from json import JSONDecodeError, load
 from pathlib import Path
 from tempfile import NamedTemporaryFile
 
@@ -26,6 +25,7 @@ from flask import (
     after_this_request,
     url_for,
 )
+
 from oauthlib.oauth2 import TokenExpiredError
 from google.oauth2.service_account import Credentials
 from google.auth import transport
@@ -34,11 +34,15 @@ from requests_oauthlib import OAuth1Session, OAuth2Session
 from requests_oauthlib.oauth1_session import TokenRequestDenied
 
 from config import Config
+
 from app import cache
 from app.utils import uncache_header, make_cache_key, jsonify, get_links
 from app.headless import headless_auth
+from app.helpers import flask_formatter as formatter
 
-logger = gogo.Gogo(__name__, monolog=True).logger
+logger = gogo.Gogo(
+    __name__, low_formatter=formatter, high_formatter=formatter, monolog=True
+).logger
 logger.propagate = False
 
 SET_TIMEOUT = Config.SET_TIMEOUT
@@ -53,22 +57,17 @@ def _clear_cache():
 
 
 class BaseClient(object):
-    def __init__(self, prefix, json_data=True, **kwargs):
+    def __init__(self, prefix, **kwargs):
         self.prefix = prefix
-        self.json_data = json_data
-        self.data_key = "json" if self.json_data else "data"
         self.auth = None
         self.oauth_version = kwargs.get("oauth_version")
         self.oauth1 = self.oauth_version == 1
         self.oauth2 = self.oauth_version == 2
         self.api_base_url = kwargs.get("api_base_url", "")
-        self.domain = kwargs.get("domain")
         self.debug = kwargs.get("debug")
         self.username = kwargs.get("username")
         self.password = kwargs.get("password")
-        self.dump_data = kwargs.get("dump_data")
         self.headers = kwargs.get("headers", {})
-        self.auth_params = kwargs.get("auth_params", {})
         self.created_at = None
         self.error = ""
 
@@ -79,7 +78,7 @@ class BaseClient(object):
 class AuthClient(BaseClient):
     def __init__(self, prefix=None, **kwargs):
         super().__init__(prefix, **kwargs)
-        self.auth_type = "other"
+        self.auth_type = "custom"
         self.verified = True
         self.expired = False
 
@@ -339,17 +338,13 @@ class OAuth2Client(OAuth2BaseClient):
             logger.info(f"Renewing token using {self.refresh_url}…")
             args = (self.refresh_url, self.refresh_token)
 
-            if self.prefix == "xero":
-                # TODO: can't requests fill this in automatically?
-                # https://developer.xero.com/documentation/oauth2/auth-flow
-                authorization = f"{self.client_id}:{self.client_secret}"
-                encoded = b64encode(authorization.encode("utf-8")).decode("utf-8")
-                headers = {"Authorization": f"Basic {encoded}"}
+            if self.client_id and self.client_secret:
+                auth = (self.client_id, self.client_secret)
             else:
-                headers = {}
+                auth = None
 
             try:
-                token = self.oauth_session.refresh_token(*args, headers=headers)
+                token = self.oauth_session.refresh_token(*args, auth=auth)
             except Exception as e:
                 self.error = f"Failed to renew {self}: {str(e)} Please re-authenticate!"
                 logger.error(self.error)
@@ -387,14 +382,15 @@ class OAuth2Client(OAuth2BaseClient):
         return self
 
     def revoke_token(self):
-        # TODO: this used to be AuthClientError. What will it be now?
         # https://developer.intuit.com/app/developer/qbo/docs/develop/authentication-and-authorization/oauth-2.0#revoke-token-disconnect
-        try:
+        if self.revoke_url and self.verified:
+            json = get_json_response(self.revoke_url, self.client)
+        elif self.verified:
             json = {
                 "status_code": 404,
                 "message": "This endpoint is not yet implemented.",
             }
-        except Exception:
+        else:
             message = "Can't revoke authentication rights because the app is"
             message += " not currently authenticated."
             json = {"status_code": 400, "message": message}
@@ -511,6 +507,8 @@ class OAuth1Client(AuthClient):
             self.verified = True
             self.token = token
 
+        return token
+
     def save(self):
         logger.debug(f"saving {self}")
         cache.set(f"{self.prefix}_oauth_token", self.oauth_token)
@@ -563,31 +561,98 @@ class BasicAuthClient(AuthClient):
         self.auth = (username, password)
 
 
+class BearerAuth(requests.auth.AuthBase):
+    def __init__(self, token):
+        self.token = token
+
+    def __call__(self, r):
+        r.headers["authorization"] = f"Bearer {self.token}"
+        return r
+
+
+class BearerAuthClient(AuthClient):
+    def __init__(self, prefix=None, token=None, **kwargs):
+        super().__init__(prefix, **kwargs)
+        self.auth_type = "bearer"
+        self.auth = BearerAuth(token)
+
+
 class ServiceAuthClient(OAuth2BaseClient):
     def __init__(self, prefix=None, keyfile_path=None, **kwargs):
         super().__init__(prefix, **kwargs)
+        self._info = None
+        self._credentials = None
         self.auth_type = "service"
         self.token_type = "service"
-        self.credentials = None
+        self.private_key = None
+        self.auth_provider_x509_cert_url = None
+        self.client_x509_cert_url = None
+        self.project_id = None
+        self.client_email = None
+        self.token_uri = None
         self.keyfile_path = keyfile_path
         self.worksheet_name = kwargs.get("worksheet_name")
         self.sheet_id = kwargs.get("sheet_id")
         self.restore()
         self._init_credentials()
 
+    def save(self):
+        super().save()
+        cache.set(f"{self.prefix}_scopes", self.credentials.scopes)
+        cache.set(f"{self.prefix}_project_id", self.credentials.project_id)
+        cache.set(f"{self.prefix}_client_email", self.credentials.service_account_email)
+        cache.set(f"{self.prefix}_token_uri", self.credentials._token_uri)
+        cache.set(f"{self.prefix}_private_key", self.private_key)
+
+    def restore(self):
+        super().restore()
+        self.project_id = cache.get(f"{self.prefix}_project_id")
+        self.client_email = cache.get(f"{self.prefix}_client_email")
+        self.token_uri = cache.get(f"{self.prefix}_token_uri")
+        self.private_key = cache.get(f"{self.prefix}_private_key")
+        self.scope = cache.get(f"{self.prefix}_scopes") or self.scope
+
     def _init_credentials(self):
-        p = Path(self.keyfile_path)
-        credentials = Credentials.from_service_account_file(p.resolve())
-        self.credentials = credentials.with_scopes(self.scope)
+        if not self.credentials:
+            p = Path(self.keyfile_path)
+            logger.debug(f"Loading {self.prefix} keyfile from {p}...")
+
+            with p.open() as f:
+                self._info = load(f)
+                self.private_key = self._info["private_key"]
 
         if self.expired:
             logger.warning(f"{self.prefix} token expired. Attempting to renew...")
             self.renew_token("TokenExpiredError")
-        elif self.access_token:
+        elif self.verified:
             logger.info(f"{self.prefix} successfully authenticated!")
         else:
             logger.warning(f"{self.prefix} not authorized. Attempting to renew...")
             self.renew_token("init")
+
+    @property
+    def info(self):
+        if not self._info:
+            self._info = {
+                "private_key": self.private_key,
+                "project_id": self.project_id,
+                "client_email": self.client_email,
+                "token_uri": self.token_uri,
+            }
+
+        return self._info
+
+    @property
+    def credentials(self):
+        if not self._credentials:
+            try:
+                self._credentials = Credentials.from_service_account_info(
+                    self.info, scopes=self.scope
+                )
+            except Exception as e:
+                logger.warning(f"{self.prefix} info invalid: {e}.")
+
+        return self._credentials
 
     @property
     def verified(self):
@@ -638,21 +703,18 @@ def get_auth_client(prefix, state=None, API_URL="", **kwargs):
             auth_type = ""
             auth_kwargs = {}
 
-        if auth_type == "oauth1":
-            auth_kwargs["oauth_version"] = 1
-            MyAuthClient = OAuth1Client
-        elif auth_type == "oauth2":
-            auth_kwargs["oauth_version"] = 2
-            MyAuthClient = OAuth2Client
-            auth_kwargs["state"] = state
-        elif auth_type == "service":
-            auth_kwargs["oauth_version"] = 2
-            MyAuthClient = ServiceAuthClient
-        elif auth_type == "basic":
-            MyAuthClient = BasicAuthClient
-        else:
-            MyAuthClient = AuthClient
+        available_auths = {
+            "oauth1": {"oauth_version": 1, "auth_client": OAuth1Client},
+            "oauth2": {"oauth_version": 2, "auth_client": OAuth2Client, "state": state},
+            "service": {"oauth_version": 2, "auth_client": ServiceAuthClient},
+            "bearer": {"oauth_version": 1, "auth_client": BearerAuthClient},
+            "basic": {"auth_client": BasicAuthClient},
+            "custom": {"auth_client": AuthClient},
+        }
 
+        extra_auth_kwargs = available_auths[auth_type]
+        MyAuthClient = extra_auth_kwargs.pop("auth_client")
+        auth_kwargs.update(extra_auth_kwargs)
         redirect_uri = auth_kwargs.get("redirect_uri") or ""
 
         if redirect_uri.startswith("/") and API_URL:
@@ -665,6 +727,11 @@ def get_auth_client(prefix, state=None, API_URL="", **kwargs):
             auth_kwargs["headless"] = kwargs["headless"]
 
         client = MyAuthClient(prefix, **auth_kwargs)
+        client.attrs = auth_kwargs.get("attrs", {})
+        client.params = auth_kwargs.get("params", {})
+        client.param_map = auth_kwargs.get("param_map", {})
+        client.verb_map = auth_kwargs.get("verb_map", {})
+        client.method_map = auth_kwargs.get("method_map", {})
 
         try:
             restore_from_headless = client.restore_from_headless
@@ -690,6 +757,7 @@ def get_json_response(url, client, params=None, renewed=False, **kwargs):
     ok = False
     unscoped = False
     success_code = kwargs.get("success_code", 200)
+    method = kwargs.get("method", "get")
 
     if not client:
         json = {"message": "No client.", "status_code": 407}
@@ -703,17 +771,26 @@ def get_json_response(url, client, params=None, renewed=False, **kwargs):
         params = params or {}
         data = kwargs.get("data", {})
         json_data = kwargs.get("json", {})
-        method = kwargs.get("method", "get")
         def_headers = kwargs.get("headers", {})
         all_headers = client.headers.get("all", {})
         method_headers = client.headers.get(method, {})
-        client_headers = {**all_headers, **method_headers}
+        _client_headers = {**all_headers, **method_headers}
+        client_headers = {
+            k: v.format(**client.__dict__) for k, v in _client_headers.items()
+        }
         headers = {**HEADERS, **client_headers, **def_headers}
-        requestor = client.oauth_session if client.oauth_version else requests
+
+        try:
+            requestor = client.oauth_session
+        except AttributeError:
+            requestor = requests
+
         verb = getattr(requestor, method)
 
-        if client.auth_type == "basic":
+        try:
             verb = partial(verb, auth=client.auth)
+        except AttributeError:
+            pass
 
         try:
             result = verb(
@@ -732,7 +809,7 @@ def get_json_response(url, client, params=None, renewed=False, **kwargs):
             except AttributeError:
                 json = {"message": result.text, "status_code": result.status_code}
             except JSONDecodeError:
-                content_type = result.headers["Content-Type"]
+                content_type = result.headers.get("Content-Type", "")
                 is_json = content_type.endswith("json")
                 is_file = content_type.endswith("pdf")
 
@@ -832,10 +909,7 @@ def get_json_response(url, client, params=None, renewed=False, **kwargs):
                     json = {"message": message, "status_code": status_code}
 
         if not ok and kwargs.get("debug"):
-            header_names = ["Authorization", "Accept", "Content-Type"]
-
-            if client.prefix == "xero" and client.oauth2:
-                header_names.append("Xero-tenant-id")
+            header_names = ["Authorization", "Accept", "Content-Type"] + _client_headers
 
             for name in header_names:
                 logger.debug({name: result.request.headers.get(name, "")[:32]})
@@ -867,8 +941,13 @@ def get_json_response(url, client, params=None, renewed=False, **kwargs):
             msg = json.get("message", "")
 
         logger.debug(msg)
-        client.renew_token(status_code)
-        json = get_json_response(url, client, params=params, renewed=True, **kwargs)
+
+        try:
+            client.renew_token(status_code)
+        except AttributeError:
+            pass
+        else:
+            json = get_json_response(url, client, params=params, renewed=True, **kwargs)
     elif ok:
         try:
             json["links"] = get_links(app.url_map.iter_rules())
@@ -920,21 +999,6 @@ def get_redirect_url(prefix):
         cache.delete(f"{prefix}_callback_url")
     else:
         redirect_url = url_for(f".{prefix}-auth".lower())
-
-    if prefix == "xero" and client.oauth2:
-        api_url = f"{client.api_base_url}/connections"
-        json = get_json_response(api_url, client, **app.config)
-
-        # https://developer.xero.com/documentation/oauth2/auth-flow
-        result = json.get("result")
-        tenant_id = result[0].get("tenantId") if result else None
-
-        if tenant_id:
-            client.tenant_id = tenant_id
-            client.save()
-            logger.debug(f"Set Xero tenantId to {client.tenant_id}.")
-        else:
-            client.error = json.get("message", "No tenantId found.")
 
     return redirect_url, client
 

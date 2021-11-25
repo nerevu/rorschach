@@ -12,8 +12,11 @@ import pygogo as gogo
 
 from app.utils import CTYPES
 from app.routes.auth import Resource
+from app.helpers import flask_formatter as formatter
 
-logger = gogo.Gogo(__name__, monolog=True).logger
+logger = gogo.Gogo(
+    __name__, low_formatter=formatter, high_formatter=formatter, monolog=True
+).logger
 logger.propagate = False
 
 PREFIX = __name__.split(".")[-1]
@@ -37,12 +40,7 @@ class Domains(Postmark):
 class Templates(Postmark):
     def __init__(self, prefix=PREFIX, **kwargs):
         kwargs.update(
-            {
-                "subkey": "Templates",
-                "id_field": "TemplateId",
-                "name_field": "Name",
-                "options": "count=100&offset=0",
-            }
+            {"subkey": "Templates", "id_field": "TemplateId", "name_field": "Name"}
         )
         super().__init__(prefix, resource="templates", **kwargs)
 

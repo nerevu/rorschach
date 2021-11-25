@@ -20,10 +20,13 @@ import pygogo as gogo
 
 from app.routes import ProviderMixin
 from app.utils import get_links, jsonify, parse_request
+from app.helpers import flask_formatter as formatter
 
 # https://requests-oauthlib.readthedocs.io/en/latest/index.html
 # https://oauth-pythonclient.readthedocs.io/en/latest/index.html
-logger = gogo.Gogo(__name__, monolog=True).logger
+logger = gogo.Gogo(
+    __name__, low_formatter=formatter, high_formatter=formatter, monolog=True
+).logger
 logger.propagate = False
 
 

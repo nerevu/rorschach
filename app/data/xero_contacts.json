@@ -510,12 +510,6 @@
     "Name": "Arts Partners"
   },
   {
-    "ContactID": "effd9cf0-d539-44c9-a7f1-50d30044ae5f",
-    "FirstName": null,
-    "LastName": null,
-    "Name": "Urban League"
-  },
-  {
     "ContactID": "bdc5a2b0-069c-4d50-903c-4af5d9ef9b4b",
     "FirstName": null,
     "LastName": null,
@@ -880,5 +874,11 @@
     "FirstName": null,
     "LastName": null,
     "Name": "Distillery Labs"
+  },
+  {
+    "ContactID": "effd9cf0-d539-44c9-a7f1-50d30044ae5f",
+    "FirstName": "Dawn",
+    "LastName": "Jeffries",
+    "Name": "Tri-County Urban League"
   }
 ]

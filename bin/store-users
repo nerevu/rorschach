@@ -9,4 +9,4 @@ manage store -P timely -c users --dictify
 manage store -P timely -c contacts --dictify
 manage store -P xero -c users --dictify
 manage store -P xero -c contacts --dictify
-manage store -P gsheets -c users --dictify
+manage store -P airtable -c users --dictify

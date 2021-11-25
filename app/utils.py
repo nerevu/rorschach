@@ -27,11 +27,15 @@ from dateutil.relativedelta import relativedelta
 from riko.dotdict import DotDict
 from meza.fntools import CustomEncoder
 from meza.convert import records2csv
+
 from config import Config, get_seconds
 
 from app import cache
+from app.helpers import flask_formatter as formatter
 
-logger = gogo.Gogo(__name__, monolog=True).logger
+logger = gogo.Gogo(
+    __name__, low_formatter=formatter, high_formatter=formatter, monolog=True
+).logger
 logger.propagate = False
 
 ENCODING = "utf-8"

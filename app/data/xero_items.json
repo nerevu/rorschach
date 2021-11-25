@@ -33,6 +33,17 @@
     }
   },
   {
+    "Code": "consulting-1h-L1",
+    "Description": "1 hour of consulting services by a Junior Consultant",
+    "ItemID": "c870830a-0ef7-427a-8408-96c5607043ac",
+    "Name": "1 Hour Consulting (Junior Consultant)",
+    "SalesDetails": {
+      "AccountCode": "4010",
+      "TaxType": "NONE",
+      "UnitPrice": 50.0
+    }
+  },
+  {
     "Code": "consulting-1h-L2",
     "Description": "1 hour of consulting services by a Consultant",
     "ItemID": "a9f023cd-ba81-4a5e-b80d-077a268ad904",
@@ -227,6 +238,17 @@
       "AccountCode": "6900",
       "TaxType": "INPUT",
       "UnitPrice": 0.0
+    }
+  },
+  {
+    "Code": "research-1h-L1",
+    "Description": "1 Hour Research (Junior Consultant)",
+    "ItemID": "0d76da0e-9cd2-4b1a-9623-f047c4427a58",
+    "Name": "1 Hour Research (Junior Consultant)",
+    "SalesDetails": {
+      "AccountCode": "4030",
+      "TaxType": "NONE",
+      "UnitPrice": 50.0
     }
   },
   {

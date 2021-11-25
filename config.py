@@ -6,7 +6,7 @@
     Provides the flask config options
     ###########################################################################
     # WARNING: if running on a a staging server, you MUST set the 'STAGE' env
-    # heroku config:set STAGE=true --remote staging
+    # heroku config:set STAGE=true remote staging
 
     # WARNING: The heroku project must either have a postgres, redis, or memcache db to
     # be recognized as production. If it is not recognized as production, Talisman
@@ -126,21 +126,31 @@ class Config(object):
 
     # Authentication
     AUTHENTICATION = {
+        # https://airtable.com/apph4M6HDXw0rWaYW/api/docs
+        "airtable": {
+            "auth_type": "bearer",
+            "bearer": {
+                "api_base_url": "https://api.airtable.com/v0/{base_id}",
+                "token": getenv("AIRTABLE_API_KEY"),
+                "params": {"maxRecords": 2048, "pageSize": 100, "offset": None},
+                "attrs": {"base_id": getenv("AIRTABLE_BASE_ID"), "subkey": "records"},
+            },
+        },
         "mailgun": {
             "auth_type": "basic",
             "basic": {
-                "api_base_url": "https://api.mailgun.net/v3",
+                "api_base_url": "https://api.mailgun.net/v3/{domain}",
                 "username": "api",
                 "password": getenv("MAILGUN_API_KEY"),
-                "domain": MAILGUN_DOMAIN,
-                "json_data": False,
+                "attrs": {"domain": MAILGUN_DOMAIN, "json_data": False},
             },
         },
         # https://postmarkapp.com/developer/api/overview
         "postmark": {
-            "auth_type": "token",
-            "token": {
+            "auth_type": "custom",
+            "custom": {
                 "api_base_url": "https://api.postmarkapp.com",
+                "params": {"count": 100, "offset": 0},
                 "headers": {
                     "all": {
                         "X-Postmark-Server-Token": getenv("POSTMARK_SERVER_TOKEN"),
@@ -166,16 +176,20 @@ class Config(object):
         "timely": {
             "auth_type": "oauth2",
             "oauth2": {
-                "api_base_url": "https://api.timelyapp.com/1.1",
+                "api_base_url": "https://api.timelyapp.com/1.1/{account_id}",
+                "api_status_resource": "accounts",
                 "authorization_base_url": "https://api.timelyapp.com/1.1/oauth/authorize",
                 "token_url": "https://api.timelyapp.com/1.1/oauth/token",
                 "refresh_url": "https://api.timelyapp.com/1.1/oauth/token",
                 "redirect_uri": "/timely-callback",
-                "account_id": "777870",
+                "account_id": getenv("TIMELY_ACCOUNT_ID"),
                 "client_id": getenv("TIMELY_CLIENT_ID"),
                 "client_secret": getenv("TIMELY_SECRET"),
                 "username": getenv("TIMELY_USERNAME"),
                 "password": getenv("TIMELY_PASSWORD"),
+                "method_map": {"patch": "put"},
+                "param_map": {"start": "since", "end": "upto"},
+                "attrs": {"singularize": True},
                 "headless_elements": [
                     {
                         "selector": "#email",
@@ -210,16 +224,19 @@ class Config(object):
         "xero": {
             "auth_type": "oauth2",
             "oauth2": {
-                "api_base_url": "https://api.xero.com",
+                "api_base_url": "https://api.xero.com/{domain}.xro/2.0",
+                "api_status_resource": "connections",
                 "authorization_base_url": "https://login.xero.com/identity/connect/authorize",
                 "token_url": "https://identity.xero.com/connect/token",
                 "refresh_url": "https://identity.xero.com/connect/token",
                 "redirect_uri": "/xero-callback",
-                "domain": "projects",
+                "headers": {"all": {"Xero-tenant-id": "{tenant_id}"}},
                 "client_id": getenv("XERO_CLIENT_ID"),
                 "client_secret": getenv("XERO_SECRET"),
                 "username": getenv("XERO_USERNAME"),
                 "password": getenv("XERO_PASSWORD"),
+                "param_map": {"start": "dateAfterUtc", "end": "dateBeforeUtc"},
+                "attrs": {"domain": "projects"},
                 "scope": [
                     "projects",
                     "offline_access",
@@ -274,19 +291,6 @@ class Config(object):
                         "wait": 5,
                     },
                 ],
-            },
-            "oauth1": {
-                "api_base_url": "https://api.xero.com",
-                "request_url": "https://api.xero.com/oauth/RequestToken",
-                "authorization_base_url": "https://api.xero.com/oauth/Authorize",
-                "token_url": "https://api.xero.com/oauth/AccessToken",
-                "client_id": getenv("XERO_CONSUMER_KEY"),
-                "client_secret": getenv("XERO_CONSUMER_SECRET"),
-                "username": getenv("XERO_USERNAME"),
-                "password": getenv("XERO_PASSWORD"),
-                "headers": {
-                    "post": {"Content-Type": "application/x-www-form-urlencoded"},
-                },
             },
         },
     }

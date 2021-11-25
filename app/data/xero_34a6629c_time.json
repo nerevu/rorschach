@@ -1,1 +1,86 @@
-[]
+[
+  {
+    "dateEnteredUtc": "2020-04-16T03:42:11.3119777Z",
+    "dateUtc": "2020-04-06T12:00:00Z",
+    "day": "2020-04-06",
+    "description": "Investigating clozecart update",
+    "duration": 9,
+    "projectId": "34a6629c-6902-4436-881c-b909a285b8bd",
+    "status": "ACTIVE",
+    "taskId": "78ffc022-c213-46ea-94a3-b26cc810137d",
+    "timeEntryId": "7c1e4028-0e29-4c71-8372-ee32762b7a0c",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  },
+  {
+    "dateEnteredUtc": "2020-06-30T05:22:51.193741Z",
+    "dateUtc": "2020-06-08T12:00:00Z",
+    "day": "2020-06-08",
+    "description": "Fix bugs in ClozeCart",
+    "duration": 211,
+    "projectId": "34a6629c-6902-4436-881c-b909a285b8bd",
+    "status": "ACTIVE",
+    "taskId": "78ffc022-c213-46ea-94a3-b26cc810137d",
+    "timeEntryId": "afbf985e-fe98-4ea1-8cd4-617b49f36e30",
+    "userId": "3f7626f2-5064-4499-a96c-e73653e5aa01"
+  },
+  {
+    "dateEnteredUtc": "2020-06-30T05:22:54.4078037Z",
+    "dateUtc": "2020-06-09T12:00:00Z",
+    "day": "2020-06-09",
+    "description": "Fix Caching issues in ClozeCart",
+    "duration": 184,
+    "projectId": "34a6629c-6902-4436-881c-b909a285b8bd",
+    "status": "ACTIVE",
+    "taskId": "78ffc022-c213-46ea-94a3-b26cc810137d",
+    "timeEntryId": "11c2fe82-8222-405c-b834-43aad6315f98",
+    "userId": "3f7626f2-5064-4499-a96c-e73653e5aa01"
+  },
+  {
+    "dateEnteredUtc": "2020-06-30T05:30:49.4751301Z",
+    "dateUtc": "2020-06-10T12:00:00Z",
+    "day": "2020-06-10",
+    "description": "Make sure issues will be fixed in ClozeCart, find examples of fi…",
+    "duration": 105,
+    "projectId": "34a6629c-6902-4436-881c-b909a285b8bd",
+    "status": "ACTIVE",
+    "taskId": "78ffc022-c213-46ea-94a3-b26cc810137d",
+    "timeEntryId": "630f67c5-d661-4026-8627-c5894da8e9e8",
+    "userId": "3f7626f2-5064-4499-a96c-e73653e5aa01"
+  },
+  {
+    "dateEnteredUtc": "2020-07-01T19:53:36.8484295Z",
+    "dateUtc": "2020-06-10T12:00:00Z",
+    "day": "2020-06-10",
+    "description": "Make sure issues will be fixed in ClozeCart",
+    "duration": 15,
+    "projectId": "34a6629c-6902-4436-881c-b909a285b8bd",
+    "status": "ACTIVE",
+    "taskId": "78ffc022-c213-46ea-94a3-b26cc810137d",
+    "timeEntryId": "39cc56bb-bfb2-4fd3-a801-ba392f2b4c49",
+    "userId": "3f7626f2-5064-4499-a96c-e73653e5aa01"
+  },
+  {
+    "dateEnteredUtc": "2020-07-01T20:54:33.5925322Z",
+    "dateUtc": "2020-06-11T12:00:00Z",
+    "day": "2020-06-11",
+    "description": "Investigating/Fixing issues with Julian's orders that aren't upl…",
+    "duration": 100,
+    "projectId": "34a6629c-6902-4436-881c-b909a285b8bd",
+    "status": "ACTIVE",
+    "taskId": "78ffc022-c213-46ea-94a3-b26cc810137d",
+    "timeEntryId": "fd0dc85c-c75f-4ac0-a5de-83a5d9b5630a",
+    "userId": "3f7626f2-5064-4499-a96c-e73653e5aa01"
+  },
+  {
+    "dateEnteredUtc": "2020-07-01T20:55:41.3918782Z",
+    "dateUtc": "2020-06-12T12:00:00Z",
+    "day": "2020-06-12",
+    "description": "Add comments to Cloze issues",
+    "duration": 10,
+    "projectId": "34a6629c-6902-4436-881c-b909a285b8bd",
+    "status": "ACTIVE",
+    "taskId": "78ffc022-c213-46ea-94a3-b26cc810137d",
+    "timeEntryId": "2f6294ca-9002-4ca8-93bc-2ebb5b148dfb",
+    "userId": "3f7626f2-5064-4499-a96c-e73653e5aa01"
+  }
+]

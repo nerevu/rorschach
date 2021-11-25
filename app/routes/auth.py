@@ -22,20 +22,21 @@ from flask import (
 
 from flask.views import MethodView
 
-from config import Config
-
 from meza.fntools import listize, remove_keys
+from riko.dotdict import DotDict
+
+from config import Config
 
 from app import cache
 from app.routes import ProviderMixin
 from app.authclient import get_auth_client, get_json_response, callback
 from app.utils import jsonify, get_links, fetch_bool, extract_fields
 from app.mappings import reg_mapper
-from app.helpers import singularize, get_collection
+from app.helpers import singularize, get_collection, flask_formatter as formatter
 
-from riko.dotdict import DotDict
-
-logger = gogo.Gogo(__name__, monolog=True).logger
+logger = gogo.Gogo(
+    __name__, low_formatter=formatter, high_formatter=formatter, monolog=True
+).logger
 logger.propagate = False
 
 APP_DIR = Path(__file__).parents[1]
@@ -58,9 +59,14 @@ def process_result(result, fields=None, black_list=None, **kwargs):
 
 def store(prefix, collection_name, **kwargs):
     Collection = get_collection(prefix, collection_name)
-    collection = Collection(prefix, **kwargs)
-    response = collection.get(update_cache=True)
-    json = response.json
+
+    if Collection:
+        collection = Collection(prefix, **kwargs)
+        response = collection.get(update_cache=True)
+        json = response.json
+    else:
+        message = f"Collection `{collection_name}` doesn't exist in `{prefix}`."
+        json = {"ok": False, "message": message}
 
     if json["ok"]:
         logger.debug(f"Success storing {collection}!")
@@ -72,45 +78,39 @@ class BaseView(ProviderMixin, MethodView):
     def __init__(self, prefix=None, **kwargs):
         super().__init__(prefix)
 
-        self.START_PARMS = {
-            "timely": "since",
-            "xero": "dateAfterUtc",
-            "qb": "start_date",
-        }
-
-        self.END_PARMS = {
-            "timely": "upto",
-            "xero": "dateBeforeUtc",
-            "qb": "end_date",
-        }
-
+        self.rkwargs = kwargs
         self._dry_run = kwargs.get("dry_run")
-        self.ignore_domain = kwargs.get("ignore_domain")
+        params = kwargs.get("params", {})
         def_end = date.today()
 
         if self._dry_run:
             self.client = None
-            self.data_key = None
-            self.json_data = True
-            self.dump_data = False
-            self._params = {}
-            self.domain = None
+            self.param_map = {}
+            self.verb_map = {}
+            self.method_map = {}
+            self._params = params
+
+            attrs = {}
             def_start = def_end - timedelta(days=Config.REPORT_DAYS)
         else:
-            self.client = get_auth_client(self.prefix, **app.config, **kwargs)
-            self.data_key = self.client.data_key
-            self.json_data = self.client.json_data
-            self.dump_data = self.client.dump_data
-            self._params = {**kwargs.get("params", {}), **self.client.auth_params}
-            self.domain = kwargs.get("domain", self.client.domain)
+            self.client = client = get_auth_client(self.prefix, **app.config, **kwargs)
+            self.param_map = client.param_map
+            self.verb_map = client.verb_map
+            self.method_map = client.method_map
+            self._params = {**client.params, **params}
+
+            attrs = client.attrs
             def_start = def_end - timedelta(days=app.config["REPORT_DAYS"])
 
+        json_data = kwargs.get("json_data", attrs.get("json_data", True))
+        self.data_key = "json" if json_data else "data"
+
+        self.singularize = kwargs.get("singularize", attrs.get("singularize"))
+        self.dump_data = kwargs.get("dump_data", attrs.get("dump_data"))
+        self._subkey = kwargs.get("subkey", attrs.get("subkey"))
         self._end = kwargs.get("end", def_end)
         self._start = kwargs.get("start", def_start)
         self.headers = kwargs.get("headers", {})
-
-        if self.is_xero and self.client and self.client.oauth2:
-            self.headers["Xero-tenant-id"] = self.client.tenant_id
 
 
 class Callback(BaseView):
@@ -121,35 +121,15 @@ class Callback(BaseView):
 class Auth(BaseView):
     def __init__(self, prefix):
         super().__init__(prefix)
-
-        if self.client.oauth1:
-            xero_url = f"{self.client.api_base_url}/projects.xro/2.0/projectsusers"
-        else:
-            xero_url = f"{self.client.api_base_url}/connections"
-
-        qb_url = f"{self.client.api_base_url}/company/{self.client.realm_id}/"
-        qb_url += f"companyinfo/{self.client.realm_id}"
-
-        status_urls = {
-            # TODO: Timely Headless Auth returns an error message
-            # saying "invalid_grant", but it also returns the valid
-            # credentials with the error message. Authentication is
-            # working fine I guess, but we should really look into
-            # making this work a little smoother.
-            #
-            # Resource("timely", "accounts").api_url
-            # Resource("xero", "projects", subresource=users).get()
-            "timely": f"{self.client.api_base_url}/accounts",
-            "xero": xero_url,
-            "qb": qb_url,
-        }
-        self.status_url = status_urls.get(prefix)
+        self.status_url = (
+            f"{self.client.api_base_url}/{self.client.api_status_resource}"
+        )
 
     def get(self):
         """Step 1: User Authorization.
 
         Redirect the user/resource owner to the OAuth provider (i.e. Github)
-        using an URL with a few key OAuth parameters.
+        using a URL with a few key OAuth parameters.
         """
         cache.set(f"{self.prefix}_callback_url", request.args.get("callback_url"))
 
@@ -163,12 +143,15 @@ class Auth(BaseView):
         if self.client.verified and not self.client.expired:
             json = get_json_response(self.status_url, self.client, **app.config)
 
-            if self.is_xero and not self.client.tenant_id:
-                # TODO: figure out why this keeps getting cleared
+            if self.prefix == "xero" and not self.client.tenant_id:
+                # https://developer.xero.com/documentation/oauth2/auth-flow
                 self.client.tenant_id = json["result"][0].get("tenantId")
 
                 if self.client.tenant_id:
                     self.client.save()
+                    logger.debug(f"Set {self} tenantId to {self.client.tenant_id}.")
+                else:
+                    self.client.error = json.get("message", "No tenantId found.")
 
             json.update(
                 {
@@ -202,30 +185,6 @@ class Auth(BaseView):
 
 
 class Resource(BaseView):
-    def __repr__(self):
-        name = f"{self.lowered}-{self.lowered_resource}"
-
-        if self.subresource:
-            if self.rid and len(str(self.rid)) > 16:
-                trunc_rid = str(self.rid).split("-")[0]
-                prefix = f"[id:{trunc_rid}]"
-            elif self.rid:
-                prefix = f"[id:{self.rid}]"
-            else:
-                prefix = f"[pos:{self.pos}]" if self.use_default else "[id:None]"
-
-            name += f"{prefix}-{self.lowered_subresource}"
-
-        if self.id and len(str(self.id)) > 16:
-            trunc_id = str(self.id).split("-")[0]
-            name += f"[id:{trunc_id}]"
-        elif self.id:
-            name += f"[id:{self.id}]"
-        else:
-            name += f"[pos:{self.pos}]" if self.use_default else "[id:None]"
-
-        return name
-
     def __init__(self, prefix, resource=None, **kwargs):
         """ An API Resource.
 
@@ -244,8 +203,8 @@ class Resource(BaseView):
             >>> kwargs = {"subkey": "person"}
             >>> cloze_person = Resource("CLOZE", "people", **kwargs)
             >>>
-            >>> options = f"start_date={start}&end_date={end}&columns=name,net_amount"
-            >>> kwargs = {"options": options}
+            >>> params = {"start_date: start, "end_date": end, "columns": "name,net_amount"}
+            >>> kwargs = {"params": params}
             >>> qb_transactions = Resource("qb", "TransactionList", **kwargs)
         """
         super().__init__(prefix, **kwargs)
@@ -274,26 +233,25 @@ class Resource(BaseView):
         self.name_field = kwargs.get("name_field", def_name_field)
         self.processor = kwargs.get("processor", process_result)
         self.black_list = set(kwargs.get("black_list", []))
-        self.options = kwargs.get("options", "")
         self.populate = kwargs.get("populate")
         self.filterer = kwargs.get("filterer")
         self.id_hook = kwargs.get("id_hook")
         self.rid_hook = kwargs.get("rid_hook")
-        self.result_key = kwargs.get("result_key", "result")
+        self._result_key = kwargs.get("result_key", "result")
         self._rid = kwargs.get("rid")
         self._use_default = kwargs.get("use_default")
         self._dictify = kwargs.get("dictify")
-        self._subkey = kwargs.get("subkey")
         self._pos = kwargs.get("pos", 0)
         self._mapper = {}
         self._data = None
         self._mappings = None
         self._results = None
-        self.verb = "get"
         self.error_msg = ""
 
-        self.start_param = self.START_PARMS.get(self.prefix, "start")
-        self.end_param = self.END_PARMS.get(self.prefix, "end")
+        self.start_param = self.param_map.get("start")
+        self.end_param = self.param_map.get("end")
+        self.fields_param = self.param_map.get("fields")
+        self.id_param = self.param_map.get("id")
 
         results_filename = kwargs.get("results_filename", "sync_results.json")
         self.results_p = DATA_DIR.joinpath(results_filename)
@@ -303,6 +261,30 @@ class Resource(BaseView):
 
         if self.rid and self.rid_hook:
             self.rid_hook()
+
+    def __repr__(self):
+        name = f"{self.lowered}-{self.lowered_resource}"
+
+        if self.subresource:
+            if self.rid and len(str(self.rid)) > 16:
+                trunc_rid = str(self.rid).split("-")[0]
+                prefix = f"[id:{trunc_rid}]"
+            elif self.rid:
+                prefix = f"[id:{self.rid}]"
+            else:
+                prefix = f"[pos:{self.pos}]" if self.use_default else "[all ids]"
+
+            name += f"{prefix}-{self.lowered_subresource}"
+
+        if self.id and len(str(self.id)) > 16:
+            trunc_id = str(self.id).split("-")[0]
+            name += f"[id:{trunc_id}]"
+        elif self.id:
+            name += f"[id:{self.id}]"
+        else:
+            name += f"[pos:{self.pos}]" if self.use_default else "[all ids]"
+
+        return name
 
     def __iter__(self):
         yield from self.data.values() if self.dictify else self.data
@@ -420,6 +402,19 @@ class Resource(BaseView):
             self.rid_hook()
 
     @property
+    def result_key(self):
+        _result_key = self._result_key
+
+        if self.subkey:
+            _result_key += f".{self.subkey}.0"
+
+        return _result_key
+
+    @property
+    def single_result_key(self):
+        return self._result_key
+
+    @property
     def data_p(self):
         if self.subresource and self._rid:
             try:
@@ -450,7 +445,7 @@ class Resource(BaseView):
             try:
                 self.data_content = self.data_p.read_text()
             except (AttributeError, FileNotFoundError):
-                logger.error(f"{self.data_p} not found!")
+                logger.warning(f"{self.data_p} not found!")
                 self.data_content = None
 
             try:
@@ -477,16 +472,16 @@ class Resource(BaseView):
     def params(self):
         params = self._params or {}
 
-        if self.is_cloze and self.id:
-            params["uniqueid"] = self.id
+        if self.id_param and self.id:
+            params[self.id_param] = self.id
 
-        if self.is_qb and self.fields:
-            params["columns"] = ",".join(self.fields)
+        if self.fields_param and self.fields:
+            params[self.fields_param] = ",".join(self.fields)
 
-        if self.start:
+        if self.start_param and self.start:
             params[self.start_param] = self.start
 
-        if self.end:
+        if self.end_param and self.end:
             params[self.end_param] = self.end
 
         return params
@@ -494,39 +489,24 @@ class Resource(BaseView):
     @property
     def api_url(self):
         client = self.client
-        url = client.api_base_url
-
-        if self.domain and not self.ignore_domain:
-            url += f"/{self.domain}"
-
-        if self.is_xero:
-            url += ".xro/2.0"
-
-        if self.is_qb:
-            # https://developer.intuit.com/app/developer/qbo/docs/api/accounting/report-entities/transactionlist
-            url += f"/company/{client.realm_id}/reports"
-        if self.is_cloze:
-            url += f"/{self.verb}"
-        elif self.is_timely:
-            url += f"/{self.client.account_id}"
-
-        if url:
-            url += f"/{self.resource}"
-
-        if self.subresource and url:
-            if self.rid:
-                url += f"/{self.rid}/{self.subresource}"
-            elif not self.eof:
-                assert self.rid, (f"No {self} {self.resource} id provided!", 404)
-
-        if self.options and url and not self.id:
-            url += f"?{self.options}"
 
         if self.dry_run:
             url = ""
-
-        if self.resource == "status":
+        elif self.resource == "status":
             url = Auth(self.prefix).status_url
+        elif client.api_base_url:
+            # Some APIs urls (like mailgun) have a section that may or may not be present
+            fkwargs = {**client.__dict__, **client.attrs, **self.rkwargs}
+            url = client.api_base_url.format(**fkwargs).replace("/None", "")
+            url += f"/{self.resource}"
+
+            if self.subresource:
+                if self.rid:
+                    url += f"/{self.rid}/{self.subresource}"
+                elif not self.eof:
+                    assert self.rid, (f"No {self} {self.resource} id provided!", 404)
+        else:
+            url = ""
 
         return url
 
@@ -627,23 +607,26 @@ class Resource(BaseView):
             json = response.json
 
             if json["ok"]:
-                model = DotDict(json).get(self.result_key)
+                model = DotDict(json).get(self.single_result_key)
             else:
                 logger.error(json.get("message"))
 
         return model
 
-    def extract_model(self, _id=None, strict=False, **kwargs):
+    def extract_model(self, _id=None, strict=False, as_collection=False, **kwargs):
         response = self.get(_id, **kwargs)
         json = response.json
         result = [] if self.eof else json["result"]
 
-        try:
-            model = result[0]
-        except (IndexError, TypeError):
-            model = {}
-        except KeyError:
+        if as_collection:
             model = result
+        else:
+            try:
+                model = result[0]
+            except (IndexError, TypeError):
+                model = {}
+            except KeyError:
+                model = result
 
         if json["ok"]:
             error = (f"{self} doesn't exist!", 404)
@@ -653,7 +636,9 @@ class Resource(BaseView):
 
         if strict:
             assert model, error
-            assert model.get(self.id_field), (f"{self} has no ID!", 500)
+
+            if not as_collection:
+                assert model.get(self.id_field), (f"{self} has no ID!", 500)
 
         return model
 
@@ -737,9 +722,9 @@ class Resource(BaseView):
                 if dest_id:
                     dest_item = self.extract_model(dest_id, update_cache=True)
             elif not dest_item:
-                logger.warning(
-                    f"Unable to present {self.prefix} {self.resource} mapping choices without an id_func!"
-                )
+                message = f"Unable to present {self.prefix} {self.resource} "
+                message += "mapping choices without an id_func!"
+                logger.warning(message)
 
             self.dry_run = dry_run
 
@@ -811,6 +796,9 @@ class Resource(BaseView):
             >>> qb_transactions = Resource("qb", "TransactionList", **kwargs)
             >>> qb_transactions.get()
         """
+        if self.verb_map:
+            self.client.verb = self.verb_map.get("get")
+
         self.id = self.values.pop("id", _id) or self.id
         self.rid = self.values.pop("rid", rid) or self.rid
 
@@ -928,6 +916,9 @@ class Resource(BaseView):
             >>> kwargs = {"name": "name", "emails": ["value": "email"]}
             >>> cloze_person.post(**kwargs)
         """
+        if self.verb_map:
+            self.client.verb = self.verb_map.get("post")
+
         rkwargs = {"headers": self.headers, "method": "post", **app.config}
         black_list = {
             "dryRun",
@@ -941,9 +932,7 @@ class Resource(BaseView):
         values = remove_keys(self.values, black_list)
         data = {**values, **kwargs}
 
-        if self.is_cloze:
-            self.verb = "create"
-        elif self.is_timely:
+        if self.singularize:
             data = {singularize(self.resource): data}
 
         if self.dry_run:
@@ -986,10 +975,12 @@ class Resource(BaseView):
             >>> url = 'http://localhost:5000/v1/timely-time'
             >>> requests.patch(url, data={"rid": 165829339, "dryRun": True})
         """
+        if self.verb_map:
+            self.client.verb = self.verb_map.get("patch")
+
         self.id = self.values.pop("id", _id) or self.id
         self.rid = self.values.pop("rid", rid) or self.rid
 
-        rkwargs = {"headers": self.headers, "method": "post", **app.config}
         black_list = {
             "dryRun",
             "start",
@@ -1001,15 +992,13 @@ class Resource(BaseView):
         }
         values = remove_keys(self.values, black_list)
         data = {**values, **kwargs}
-        data[self.id_field] = self.id
         json = {}
 
         if not self.id:
             self.error_msg = f"No {self} ID given!"
             json = {"status_code": 404}
 
-        if self.is_timely:
-            rkwargs["method"] = "put"
+        if self.singularize:
             data = {singularize(self.resource): data}
 
         if self.dry_run:
@@ -1020,16 +1009,16 @@ class Resource(BaseView):
             }
         else:
             try:
-                self.client.response = self.patch_response(**data)
+                self.client.json = self.patch_response(**data)
             except NotImplementedError:
-                pass
+                url = f"{self.api_url}/{self.id}"
+                headers = {**self.headers, **kwargs.get("headers", {})}
+                method = self.method_map.get("patch", "patch")
+                rkwargs = {"headers": headers, "method": method, **app.config}
+                rkwargs[self.data_key] = dumps(data) if self.dump_data else data
+                json = get_json_response(url, self.client, **rkwargs)
             else:
                 json = get_json_response(None, self.client)
-
-        if not json:
-            url = f"{self.api_url}/{self.id}"
-            rkwargs[self.data_key] = dumps(data) if self.dump_data else data
-            json = get_json_response(url, self.client, **rkwargs)
 
         json["id"] = self.id
 
