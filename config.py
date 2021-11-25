@@ -160,6 +160,10 @@ class Config(object):
                 "responses": {"get": "access_token: {awsc}"},
             },
         },
+        "cloze": {
+            "Stages": {"auth_key": "api_key", "resource": "project_segments"},
+            "Status": {"auth_key": "api_key", "resource": "profile"},
+        },
         "gsheets": {
             "Table": {
                 "auth_key": "service",
@@ -173,6 +177,27 @@ class Config(object):
                 "auth_key": "service",
                 "collection": "GSheets",
                 "responses": {"get": "access_token: {gc.auth.token}"},
+            },
+        },
+        "gusto": {
+            "Companies": {"auth_key": "oauth2", "rid": getenv("GUSTO_COMPANY_ID")},
+            "Employees": {
+                "auth_key": "oauth2",
+                "resource": "companies",
+                "rid": getenv("GUSTO_COMPANY_ID"),
+                "subresource": "employees",
+            },
+            "Status": {"auth_key": "oauth2", "resource": "me"},
+            "Payments": {
+                "auth_key": "oauth2",
+                "resource": "companies",
+                "rid": getenv("GUSTO_COMPANY_ID"),
+                "subresource": "contractor_payments",
+            },
+            "Payrolls": {
+                "auth_key": "oauth2",
+                "rid": getenv("GUSTO_COMPANY_ID"),
+                "subresource": "contractor_payments",
             },
         },
         "keycdn": {
@@ -417,6 +442,21 @@ class Config(object):
                 "region_name": getenv("AWS_REGION"),
             },
         },
+        # https://api.cloze.com/api-docs
+        "cloze": {
+            # CLOZE_AUTH_PARAMS = {"user": client.username, "api_key": client.password}
+            # url = f"{CLOZE_BASE_URL}/{resource}/{verb}"
+            # params = {**CLOZE_AUTH_PARAMS, **kwargs}
+            # r = method(url, params=params)
+            "api_key": {
+                "auth_type": "custom",
+                "api_base_url": "https://api.cloze.com/v1",
+                "params": {
+                    "user": getenv("CLOZE_EMAIL"),
+                    "api_key": getenv("CLOZE_API_KEY"),
+                },
+            },
+        },
         "gsheets": {
             "service": {
                 "auth_type": "service",
@@ -424,6 +464,26 @@ class Config(object):
                 "scope": [
                     "https://spreadsheets.google.com/feeds",
                     "https://www.googleapis.com/auth/drive",
+                ],
+            },
+        },
+        # https://docs.gusto.com/docs/api
+        "gusto": {
+            "oauth2": {
+                "auth_type": "oauth2",
+                "api_base_url": "https://api.gusto-demo.com/v1",
+                "authorization_base_url": "https://api.gusto-demo.com/oauth/authorize",
+                "token_url": "https://api.gusto-demo.com/oauth/token",
+                "refresh_url": "https://api.gusto-demo.com/oauth/token",
+                "redirect_uri": "/gusto-callback",
+                "client_id": getenv("GUSTO_CLIENT_ID"),
+                "client_secret": getenv("GUSTO_SECRET"),
+                "param_map": {"start": "start_date", "end": "end_date"},
+                "scope": [
+                    "public",
+                    "payrolls.read",
+                    "employees.read",
+                    "companies.read",
                 ],
             },
         },
@@ -480,6 +540,35 @@ class Config(object):
                 "headers": {
                     "all": {"X-Postmark-Server-Token": getenv("POSTMARK_SERVER_TOKEN")},
                 },
+            },
+        },
+        "quickbooks": {
+            "oauth2": {
+                "auth_type": "oauth2",
+                "api_resource_prefix": "/company/{realm_id}",
+                "api_status_resource": "companyinfo",
+                "params": {
+                    "start": "start_date",
+                    "end": "end_date",
+                    "fields": "columns",
+                },
+                # https://developer.intuit.com/app/developer/qbo/docs/api/accounting/report-entities/transactionlist
+                "client_id": getenv("QB_CLIENT_ID"),
+                "client_secret": getenv("QB_CLIENT_SECRET"),
+                "redirect_uri": "/qb-callback",
+                "authorization_base_url": "https://appcenter.intuit.com/connect/oauth2",
+                "token_url": "https://oauth.platform.intuit.com/oauth2/v1/tokens/bearer",
+                "refresh_url": "https://oauth.platform.intuit.com/oauth2/v1/tokens/bearer",
+                "revoke_url": "https://developer.api.intuit.com/v2/oauth2/tokens/revoke",
+                "scope": ["com.intuit.quickbooks.accounting"],
+            },
+            "live": {
+                "parent": "base",
+                "api_base_url": "https://quickbooks.api.intuit.com/v3",
+            },
+            "sandbox": {
+                "parent": "base",
+                "api_base_url": "https://sandbox-quickbooks.api.intuit.com/v3",
             },
         },
         # https://app.timelyapp.com/777870/oauth_applications
@@ -650,6 +739,11 @@ class Config(object):
             "webhook_secret": getenv("AIRTABLE_WEBHOOK_SECRET"),
             "digest": None,
         },
+        "github": {
+            "webhook_secret": getenv("GITHUB_WEBHOOK_SECRET"),
+            "digest": "sha1",
+            "split_signature": True,
+        },
         "heroku": {
             "signature_header": "Heroku-Webhook-Hmac-SHA256",
             "webhook_secret": getenv("HEROKU_WEBHOOK_SECRET"),
@@ -657,6 +751,12 @@ class Config(object):
             "b64_encode": True,
             "payload_key": "action",
             "ignore_signature": True,
+        },
+        "stripe": {
+            "signature_header": "HTTP_STRIPE_SIGNATURE",
+            "webhook_secret": getenv("STRIPE_WEBHOOK_SECRET"),
+            "digest": "sha1",
+            "split_signature": True,
         },
         "xero": {
             "signature_header": "x-xero-signature",
@@ -677,6 +777,7 @@ class Config(object):
     RQ_DASHBOARD_REDIS_URL = redis_config.get("CACHE_REDIS_URL")
     RQ_DASHBOARD_DEBUG = False
 
+    # Whitelist
     APP_CONFIG_WHITELIST.update(REQUIRED_SETTINGS)
     APP_CONFIG_WHITELIST.update(REQUIRED_PROD_SETTINGS)
     APP_CONFIG_WHITELIST.update(OPTIONAL_SETTINGS)
