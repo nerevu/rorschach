@@ -3187,5 +3187,33 @@
       "project": "d2812acb-40dc-4ed2-8e83-e105ef21b9ef",
       "task": "bcfd5fab-a992-4371-8624-1a122e86314c"
     }
+  },
+  {
+    "airtable": {
+      "project": "workforce-equity-initiative-(wei)-website",
+      "task": "research",
+      "users": [
+        "austin",
+        "alice-seaborn"
+      ]
+    },
+    "xero": {
+      "project": "d2812acb-40dc-4ed2-8e83-e105ef21b9ef",
+      "task": "451535e8-3ab1-409c-a32f-f214dde0110d"
+    }
+  },
+  {
+    "airtable": {
+      "project": "workforce-equity-initiative-(wei)-website",
+      "task": "development",
+      "users": [
+        "austin",
+        "alice-seaborn"
+      ]
+    },
+    "xero": {
+      "project": "d2812acb-40dc-4ed2-8e83-e105ef21b9ef",
+      "task": "d8033b37-7783-4189-8457-f03d874f61a3"
+    }
   }
 ]
