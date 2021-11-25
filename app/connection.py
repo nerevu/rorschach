@@ -19,5 +19,5 @@ logger = gogo.Gogo(
 try:
     conn = redis.from_url(Config.RQ_DASHBOARD_REDIS_URL)
 except Exception as err:
-    logger.error(err)
+    logger.warning(err)
     conn = None

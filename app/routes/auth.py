@@ -440,7 +440,7 @@ class Resource(BaseView):
             try:
                 self.data_content = self.data_p.read_text()
             except (AttributeError, FileNotFoundError):
-                logger.error(f"{self.data_p} not found!")
+                logger.warning(f"{self.data_p} not found!")
                 self.data_content = None
 
             try:

@@ -6,6 +6,7 @@
     Provides misc helper functions
 """
 import pdb
+import logging
 
 from inspect import getmembers, isclass
 from importlib import import_module
@@ -120,11 +121,28 @@ def exception_hook(etype, value, tb, debug=False, callback=None, **kwargs):
     callback() if callback else None
 
 
+# https://stackoverflow.com/a/56944256/408556
+GREY = "\x1b[38;21m"
+YELLOW = "\x1b[33;21m"
+RED = "\x1b[31;21m"
+BOLD_RED = "\x1b[31;1m"
+RESET = "\x1b[0m"
+
+
 # https://flask.palletsprojects.com/en/1.1.x/logging/#injecting-request-information
 class RequestFormatter(Formatter):
     def format(self, record):
+        FORMATS = {
+            logging.DEBUG: f"{GREY} {self._fmt} {RESET}",
+            logging.INFO: f"{GREY} {self._fmt} {RESET}",
+            logging.WARNING: f"{YELLOW} {self._fmt} {RESET}",
+            logging.ERROR: f"{RED} {self._fmt} {RESET}",
+            logging.CRITICAL: f"{BOLD_RED} {self._fmt} {RESET}",
+        }
+
+        log_fmt = FORMATS.get(record.levelno)
         record.url = request.url if has_request_context() else "n/a"
-        return super().format(record)
+        return Formatter(log_fmt).format(record)
 
 
 flask_format = (
