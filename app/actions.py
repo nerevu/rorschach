@@ -59,11 +59,7 @@ def mark_billed(source_prefix, rid, **kwargs):
     provider = get_provider(source_prefix)
     time = provider.Time(dictify=True, rid=rid, **kwargs)
     data = time.get_patch_data()
-
-    json = {
-        "eof": False,
-        "event_id": time.rid,
-    }
+    json = {"eof": False, "event_id": time.rid}
 
     if data:
         response = time.patch(**data)

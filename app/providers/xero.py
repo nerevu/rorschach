@@ -42,7 +42,7 @@ def get_position_user_ids(xero_task_name):
     try:
         user_ids = POSITIONS[position_name]
     except KeyError:
-        logger.debug(f"Xero position map doesn't contain position '{position_name}'!")
+        logger.debug(f"Xero position map doesn't contain '{position_name}'!")
         user_ids = []
 
     return user_ids
