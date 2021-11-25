@@ -2,161 +2,7 @@
   {
     "active": true,
     "billable": true,
-    "budget": 100,
-    "client": {
-      "active": true,
-      "external_id": null,
-      "id": 1173714,
-      "name": "Nerevu [Internal]",
-      "updated_at": "2021-03-12T20:59:39-06:00"
-    },
-    "id": 3651005,
-    "name": "Business Development"
-  },
-  {
-    "active": true,
-    "billable": true,
-    "budget": 20,
-    "client": {
-      "active": true,
-      "external_id": null,
-      "id": 1404386,
-      "name": "Prospective",
-      "updated_at": "2021-02-16T08:56:04-06:00"
-    },
-    "id": 3695089,
-    "name": "IDOC EHR"
-  },
-  {
-    "active": true,
-    "billable": true,
-    "budget": 5000,
-    "client": {
-      "active": true,
-      "external_id": null,
-      "id": 1173714,
-      "name": "Nerevu [Internal]",
-      "updated_at": "2021-03-12T20:59:39-06:00"
-    },
-    "id": 2980115,
-    "name": "Hiring"
-  },
-  {
-    "active": true,
-    "billable": true,
-    "budget": 71000,
-    "client": {
-      "active": true,
-      "external_id": null,
-      "id": 1486931,
-      "name": "OSF",
-      "updated_at": "2021-02-12T13:21:30-06:00"
-    },
-    "id": 3463694,
-    "name": "OCC Dashboard"
-  },
-  {
-    "active": true,
-    "billable": true,
-    "budget": 100,
-    "client": {
-      "active": true,
-      "external_id": null,
-      "id": 1173714,
-      "name": "Nerevu [Internal]",
-      "updated_at": "2021-03-12T20:59:39-06:00"
-    },
-    "id": 2906240,
-    "name": "Misc Internal"
-  },
-  {
-    "active": true,
-    "billable": true,
-    "budget": 2500,
-    "client": {
-      "active": true,
-      "external_id": null,
-      "id": 1173714,
-      "name": "Nerevu [Internal]",
-      "updated_at": "2021-03-12T20:59:39-06:00"
-    },
-    "id": 2906239,
-    "name": "Company Website"
-  },
-  {
-    "active": true,
-    "billable": true,
-    "budget": 20,
-    "client": {
-      "active": true,
-      "external_id": null,
-      "id": 1404385,
-      "name": "Urban League",
-      "updated_at": "2020-02-07T11:06:29-06:00"
-    },
-    "id": 3147199,
-    "name": "IT Assistance"
-  },
-  {
-    "active": true,
-    "billable": false,
-    "budget": 100,
-    "client": {
-      "active": true,
-      "external_id": null,
-      "id": 1173714,
-      "name": "Nerevu [Internal]",
-      "updated_at": "2021-03-12T20:59:39-06:00"
-    },
-    "id": 3625328,
-    "name": "ERP"
-  },
-  {
-    "active": true,
-    "billable": true,
-    "budget": 6000,
-    "client": {
-      "active": true,
-      "external_id": null,
-      "id": 1547709,
-      "name": "Prairie Spine",
-      "updated_at": "2021-08-03T12:55:51-05:00"
-    },
-    "id": 3462020,
-    "name": "EMR Data Extraction"
-  },
-  {
-    "active": true,
-    "billable": false,
-    "budget": 0,
-    "client": {
-      "active": true,
-      "external_id": null,
-      "id": 1404386,
-      "name": "Prospective",
-      "updated_at": "2021-02-16T08:56:04-06:00"
-    },
-    "id": 3695124,
-    "name": "Client Dashboard"
-  },
-  {
-    "active": true,
-    "billable": true,
-    "budget": 1000,
-    "client": {
-      "active": true,
-      "external_id": null,
-      "id": 1492928,
-      "name": "Nerevu [External]",
-      "updated_at": "2021-03-12T20:59:25-06:00"
-    },
-    "id": 3481460,
-    "name": "Project Quotation Service"
-  },
-  {
-    "active": true,
-    "billable": true,
-    "budget": 20,
+    "budget": 20000,
     "client": {
       "active": true,
       "external_id": null,
@@ -164,8 +10,22 @@
       "name": "ICC",
       "updated_at": "2019-12-06T15:33:33-06:00"
     },
-    "id": 3478322,
-    "name": "WEI Maintenance"
+    "id": 3078744,
+    "name": "WEI Website"
+  },
+  {
+    "active": true,
+    "billable": true,
+    "budget": 50000,
+    "client": {
+      "active": true,
+      "external_id": null,
+      "id": 1492928,
+      "name": "Nerevu [External]",
+      "updated_at": "2021-03-12T20:59:25-06:00"
+    },
+    "id": 3013676,
+    "name": "Nerevu API"
   },
   {
     "active": true,
@@ -184,7 +44,105 @@
   {
     "active": true,
     "billable": true,
-    "budget": 50000,
+    "budget": 20,
+    "client": {
+      "active": true,
+      "external_id": null,
+      "id": 1390597,
+      "name": "ICC",
+      "updated_at": "2019-12-06T15:33:33-06:00"
+    },
+    "id": 3478322,
+    "name": "WEI Maintenance"
+  },
+  {
+    "active": true,
+    "billable": true,
+    "budget": 100,
+    "client": {
+      "active": true,
+      "external_id": null,
+      "id": 1173714,
+      "name": "Nerevu [Internal]",
+      "updated_at": "2021-03-12T20:59:39-06:00"
+    },
+    "id": 3651005,
+    "name": "Business Development"
+  },
+  {
+    "active": true,
+    "billable": false,
+    "budget": 100,
+    "client": {
+      "active": true,
+      "external_id": null,
+      "id": 1173714,
+      "name": "Nerevu [Internal]",
+      "updated_at": "2021-03-12T20:59:39-06:00"
+    },
+    "id": 3625328,
+    "name": "ERP"
+  },
+  {
+    "active": true,
+    "billable": true,
+    "budget": 71000,
+    "client": {
+      "active": true,
+      "external_id": null,
+      "id": 1486931,
+      "name": "OSF",
+      "updated_at": "2021-02-12T13:21:30-06:00"
+    },
+    "id": 3463694,
+    "name": "OCC Dashboard"
+  },
+  {
+    "active": true,
+    "billable": true,
+    "budget": 6000,
+    "client": {
+      "active": true,
+      "external_id": null,
+      "id": 1547709,
+      "name": "Prairie Spine",
+      "updated_at": "2021-08-03T12:55:51-05:00"
+    },
+    "id": 3462020,
+    "name": "EMR Data Extraction"
+  },
+  {
+    "active": true,
+    "billable": true,
+    "budget": 20,
+    "client": {
+      "active": true,
+      "external_id": null,
+      "id": 1404385,
+      "name": "Urban League",
+      "updated_at": "2020-02-07T11:06:29-06:00"
+    },
+    "id": 3147199,
+    "name": "IT Assistance"
+  },
+  {
+    "active": true,
+    "billable": true,
+    "budget": 100,
+    "client": {
+      "active": true,
+      "external_id": null,
+      "id": 1173714,
+      "name": "Nerevu [Internal]",
+      "updated_at": "2021-03-12T20:59:39-06:00"
+    },
+    "id": 2906240,
+    "name": "Misc Internal"
+  },
+  {
+    "active": true,
+    "billable": true,
+    "budget": 1000,
     "client": {
       "active": true,
       "external_id": null,
@@ -192,8 +150,64 @@
       "name": "Nerevu [External]",
       "updated_at": "2021-03-12T20:59:25-06:00"
     },
-    "id": 3013676,
-    "name": "Nerevu API"
+    "id": 3481460,
+    "name": "Project Quotation Service"
+  },
+  {
+    "active": true,
+    "billable": false,
+    "budget": 0,
+    "client": {
+      "active": true,
+      "external_id": null,
+      "id": 1404386,
+      "name": "Prospective",
+      "updated_at": "2021-02-16T08:56:04-06:00"
+    },
+    "id": 3695124,
+    "name": "Client Dashboard"
+  },
+  {
+    "active": true,
+    "billable": true,
+    "budget": 2500,
+    "client": {
+      "active": true,
+      "external_id": null,
+      "id": 1173714,
+      "name": "Nerevu [Internal]",
+      "updated_at": "2021-03-12T20:59:39-06:00"
+    },
+    "id": 2906239,
+    "name": "Company Website"
+  },
+  {
+    "active": true,
+    "billable": true,
+    "budget": 5000,
+    "client": {
+      "active": true,
+      "external_id": null,
+      "id": 1173714,
+      "name": "Nerevu [Internal]",
+      "updated_at": "2021-03-12T20:59:39-06:00"
+    },
+    "id": 2980115,
+    "name": "Hiring"
+  },
+  {
+    "active": true,
+    "billable": true,
+    "budget": 20,
+    "client": {
+      "active": true,
+      "external_id": null,
+      "id": 1404386,
+      "name": "Prospective",
+      "updated_at": "2021-02-16T08:56:04-06:00"
+    },
+    "id": 3695089,
+    "name": "IDOC EHR"
   },
   {
     "active": true,
@@ -222,20 +236,6 @@
     },
     "id": 3474778,
     "name": "Crypto Dashboard"
-  },
-  {
-    "active": true,
-    "billable": true,
-    "budget": 20000,
-    "client": {
-      "active": true,
-      "external_id": null,
-      "id": 1390597,
-      "name": "ICC",
-      "updated_at": "2019-12-06T15:33:33-06:00"
-    },
-    "id": 3078744,
-    "name": "WEI Website"
   },
   {
     "active": true,

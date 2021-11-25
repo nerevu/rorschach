@@ -130,5 +130,17 @@
     "taskId": "af835e4c-6c3e-4610-899d-c458d350cd56",
     "timeEntryId": "cfe76148-dc5f-4821-9e0a-b7fbb0bc0747",
     "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  },
+  {
+    "dateEnteredUtc": "2021-11-25T05:31:38.1616209Z",
+    "dateUtc": "2021-10-31T12:00:00Z",
+    "day": "2021-10-31",
+    "description": "Airtable",
+    "duration": 553,
+    "projectId": "493e13b7-ffa9-4833-8b77-176894aa8c9c",
+    "status": "ACTIVE",
+    "taskId": "af835e4c-6c3e-4610-899d-c458d350cd56",
+    "timeEntryId": "12f040f1-5e58-40a5-8d3e-dde3b79c04b7",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
   }
 ]

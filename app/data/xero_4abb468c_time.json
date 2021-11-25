@@ -298,5 +298,77 @@
     "taskId": "f4265009-fd12-422a-84f2-6142f87a2ced",
     "timeEntryId": "1a689070-be8b-410f-884a-82447cea04be",
     "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  },
+  {
+    "dateEnteredUtc": "2021-11-25T05:29:13.9005668Z",
+    "dateUtc": "2021-11-01T12:00:00Z",
+    "day": "2021-11-01",
+    "description": "ConnectWise Control Client • Fastmail",
+    "duration": 32,
+    "projectId": "4abb468c-ba2b-4820-9554-ef32fea342a3",
+    "status": "ACTIVE",
+    "taskId": "41a688bc-b17f-4be7-923b-c6d63fd6eb87",
+    "timeEntryId": "e7bdce5c-d90a-4060-afb8-c10d03891200",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  },
+  {
+    "dateEnteredUtc": "2021-11-25T05:29:14.8537303Z",
+    "dateUtc": "2021-10-29T12:00:00Z",
+    "day": "2021-10-29",
+    "description": "ConnectWise Control Client • How to Create Encrypted Zip or 7z A…",
+    "duration": 115,
+    "projectId": "4abb468c-ba2b-4820-9554-ef32fea342a3",
+    "status": "ACTIVE",
+    "taskId": "41a688bc-b17f-4be7-923b-c6d63fd6eb87",
+    "timeEntryId": "5f47fa50-ac73-4727-b3bb-f47be40d6613",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  },
+  {
+    "dateEnteredUtc": "2021-11-25T05:29:16.142591Z",
+    "dateUtc": "2021-10-28T12:00:00Z",
+    "day": "2021-10-28",
+    "description": "ConnectWise Control Client • Book1 • Fastmail",
+    "duration": 57,
+    "projectId": "4abb468c-ba2b-4820-9554-ef32fea342a3",
+    "status": "ACTIVE",
+    "taskId": "41a688bc-b17f-4be7-923b-c6d63fd6eb87",
+    "timeEntryId": "17173bc5-e68b-4272-b6e0-251ca24b72e6",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  },
+  {
+    "dateEnteredUtc": "2021-11-25T05:29:17.7927295Z",
+    "dateUtc": "2021-10-27T12:00:00Z",
+    "day": "2021-10-27",
+    "description": "ConnectWise Control Client • Sublime Text • Centricity Server In…",
+    "duration": 222,
+    "projectId": "4abb468c-ba2b-4820-9554-ef32fea342a3",
+    "status": "ACTIVE",
+    "taskId": "41a688bc-b17f-4be7-923b-c6d63fd6eb87",
+    "timeEntryId": "29f9b20e-0f63-4c32-9e5e-65795f9a9bb8",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  },
+  {
+    "dateEnteredUtc": "2021-11-25T05:29:18.8153278Z",
+    "dateUtc": "2021-10-15T12:00:00Z",
+    "day": "2021-10-15",
+    "description": "ConnectWise Control Client • How to split a string after specifi…",
+    "duration": 202,
+    "projectId": "4abb468c-ba2b-4820-9554-ef32fea342a3",
+    "status": "ACTIVE",
+    "taskId": "41a688bc-b17f-4be7-923b-c6d63fd6eb87",
+    "timeEntryId": "9497b120-1534-417b-be0f-f93f924da571",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  },
+  {
+    "dateEnteredUtc": "2021-11-25T05:29:20.3372963Z",
+    "dateUtc": "2021-10-13T12:00:00Z",
+    "day": "2021-10-13",
+    "description": "Dialpad Meetings • ConnectWise Control Client",
+    "duration": 75,
+    "projectId": "4abb468c-ba2b-4820-9554-ef32fea342a3",
+    "status": "ACTIVE",
+    "taskId": "d93d5cc8-3e02-4144-a9d1-6c71f4985da9",
+    "timeEntryId": "26c5cd83-5544-48d5-9649-a4ecfd18c4a8",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
   }
 ]

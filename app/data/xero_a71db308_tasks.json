@@ -26,5 +26,12 @@
     "rate.value": 0.0,
     "status": "ACTIVE",
     "taskId": "8521c134-c771-45a5-b137-887d0bf43b14"
+  },
+  {
+    "name": "1 Hour Development (Senior Developer)",
+    "projectId": "a71db308-8d99-4e01-ba9e-8b8a788d03ab",
+    "rate.value": 95.0,
+    "status": "ACTIVE",
+    "taskId": "8128a938-407f-4d90-8540-df91f1bb7ff2"
   }
 ]

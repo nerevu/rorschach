@@ -1,5 +1,41 @@
 [
   {
+    "dateEnteredUtc": "2019-11-26T22:48:35.6352895Z",
+    "dateUtc": "2019-11-11T12:00:00Z",
+    "day": "2019-11-11",
+    "description": "Data Marketing Funnels",
+    "duration": 13,
+    "projectId": "2e4c160d-a4bf-4eb4-b531-3cae6cfeb2fa",
+    "status": "INVOICED",
+    "taskId": "6177f871-1cd9-4cbd-a732-2cf231ecc7d8",
+    "timeEntryId": "ef4bc486-dcbb-4163-9844-7bdb26396bb4",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  },
+  {
+    "dateEnteredUtc": "2019-11-27T02:04:49.163424Z",
+    "dateUtc": "2019-11-18T12:00:00Z",
+    "day": "2019-11-18",
+    "description": "gSheets mockup",
+    "duration": 75,
+    "projectId": "2e4c160d-a4bf-4eb4-b531-3cae6cfeb2fa",
+    "status": "INVOICED",
+    "taskId": "db0e6752-7c1b-48a2-a411-f22b357ba78c",
+    "timeEntryId": "9aaa8f4b-e03d-4892-86e6-d0c55b97e914",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  },
+  {
+    "dateEnteredUtc": "2019-11-27T22:29:49.7150223Z",
+    "dateUtc": "2019-11-19T12:00:00Z",
+    "day": "2019-11-19",
+    "description": "Marketing Funnel Ideas • Google Hangouts • Chat • Calendar",
+    "duration": 26,
+    "projectId": "2e4c160d-a4bf-4eb4-b531-3cae6cfeb2fa",
+    "status": "INVOICED",
+    "taskId": "37033e43-1e77-4431-839e-7535da6f5f42",
+    "timeEntryId": "4f9ed9bc-4737-4537-ba27-2b813b33165d",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  },
+  {
     "dateEnteredUtc": "2019-12-05T20:24:21.5999028Z",
     "dateUtc": "2019-12-05T12:00:00Z",
     "day": "2019-12-05",
@@ -10,6 +46,42 @@
     "taskId": "51caaa33-d74c-490d-a8f7-cb61eb2d2b4b",
     "timeEntryId": "95bacdd1-1d2c-4049-a0d2-2d155ef4a18f",
     "userId": "3f7626f2-5064-4499-a96c-e73653e5aa01"
+  },
+  {
+    "dateEnteredUtc": "2019-12-09T18:11:47.8762673Z",
+    "dateUtc": "2019-11-26T12:00:00Z",
+    "day": "2019-11-26",
+    "description": "Client Meeting",
+    "duration": 45,
+    "projectId": "2e4c160d-a4bf-4eb4-b531-3cae6cfeb2fa",
+    "status": "INVOICED",
+    "taskId": "37033e43-1e77-4431-839e-7535da6f5f42",
+    "timeEntryId": "bfb72892-f2b0-416b-a991-61a3c37c30e0",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  },
+  {
+    "dateEnteredUtc": "2019-12-09T18:11:51.9432146Z",
+    "dateUtc": "2019-11-26T12:00:00Z",
+    "day": "2019-11-26",
+    "description": "Order Sync POC",
+    "duration": 45,
+    "projectId": "2e4c160d-a4bf-4eb4-b531-3cae6cfeb2fa",
+    "status": "INVOICED",
+    "taskId": "6177f871-1cd9-4cbd-a732-2cf231ecc7d8",
+    "timeEntryId": "1c756e3c-2893-4ddd-8bda-0a85065ef29a",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  },
+  {
+    "dateEnteredUtc": "2019-12-09T18:11:55.8914267Z",
+    "dateUtc": "2019-12-03T12:00:00Z",
+    "day": "2019-12-03",
+    "description": "Opencart REST API • Pricing",
+    "duration": 12,
+    "projectId": "2e4c160d-a4bf-4eb4-b531-3cae6cfeb2fa",
+    "status": "INVOICED",
+    "taskId": "6177f871-1cd9-4cbd-a732-2cf231ecc7d8",
+    "timeEntryId": "d0079656-cae3-4368-9239-8befda1fba6d",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
   },
   {
     "dateEnteredUtc": "2019-12-09T18:11:59.6810185Z",
@@ -598,6 +670,50 @@
     "taskId": "51caaa33-d74c-490d-a8f7-cb61eb2d2b4b",
     "timeEntryId": "296711d2-afbc-4405-944c-7ed1ca7da9b1",
     "userId": "3f7626f2-5064-4499-a96c-e73653e5aa01"
+  },
+  {
+    "dateEnteredUtc": "2020-01-30T06:25:42.2131092Z",
+    "dateUtc": "2019-01-28T06:00:00Z",
+    "day": "2019-01-28",
+    "duration": 1200,
+    "projectId": "2e4c160d-a4bf-4eb4-b531-3cae6cfeb2fa",
+    "status": "INVOICED",
+    "taskId": "db0e6752-7c1b-48a2-a411-f22b357ba78c",
+    "timeEntryId": "fb7a3ac3-ce10-4a70-86d8-537c99697518",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  },
+  {
+    "dateEnteredUtc": "2020-01-30T06:26:18.7219414Z",
+    "dateUtc": "2019-03-04T06:00:00Z",
+    "day": "2019-03-04",
+    "duration": 1200,
+    "projectId": "2e4c160d-a4bf-4eb4-b531-3cae6cfeb2fa",
+    "status": "INVOICED",
+    "taskId": "db0e6752-7c1b-48a2-a411-f22b357ba78c",
+    "timeEntryId": "48e455e5-5dd9-4cf3-b95c-3f5845a1d4d1",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  },
+  {
+    "dateEnteredUtc": "2020-01-30T06:26:48.3779376Z",
+    "dateUtc": "2018-12-23T06:00:00Z",
+    "day": "2018-12-23",
+    "duration": 1200,
+    "projectId": "2e4c160d-a4bf-4eb4-b531-3cae6cfeb2fa",
+    "status": "INVOICED",
+    "taskId": "db0e6752-7c1b-48a2-a411-f22b357ba78c",
+    "timeEntryId": "1ec36a07-45ff-411c-bcc6-8c7f7f11b07c",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  },
+  {
+    "dateEnteredUtc": "2020-01-30T06:28:20.4618744Z",
+    "dateUtc": "2019-04-01T05:00:00Z",
+    "day": "2019-04-01",
+    "duration": 1200,
+    "projectId": "2e4c160d-a4bf-4eb4-b531-3cae6cfeb2fa",
+    "status": "INVOICED",
+    "taskId": "db0e6752-7c1b-48a2-a411-f22b357ba78c",
+    "timeEntryId": "a2f2e335-3b93-44f0-ae5e-df3f9a7a5e33",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
   },
   {
     "dateEnteredUtc": "2020-02-04T21:32:38.0879777Z",

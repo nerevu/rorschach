@@ -3154,5 +3154,29 @@
     "taskId": "451535e8-3ab1-409c-a32f-f214dde0110d",
     "timeEntryId": "d6e456c5-1a09-42ee-8ffe-46b153fe23ec",
     "userId": "fb903808-9569-4597-a287-1e1170a0cd7d"
+  },
+  {
+    "dateEnteredUtc": "2021-11-25T05:35:41.839409Z",
+    "dateUtc": "2021-10-29T12:00:00Z",
+    "day": "2021-10-29",
+    "description": "Terminal • KeyCDN Support • Zones • API - Airtable Community For…",
+    "duration": 33,
+    "projectId": "d2812acb-40dc-4ed2-8e83-e105ef21b9ef",
+    "status": "ACTIVE",
+    "taskId": "2056a412-9e15-4fe8-b05d-656f374d7410",
+    "timeEntryId": "f5da3024-40a9-4e4c-a354-8c9bfa5bd556",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  },
+  {
+    "dateEnteredUtc": "2021-11-25T05:38:47.951391Z",
+    "dateUtc": "2021-11-02T12:00:00Z",
+    "day": "2021-11-02",
+    "description": "WEI Website Update",
+    "duration": 30,
+    "projectId": "d2812acb-40dc-4ed2-8e83-e105ef21b9ef",
+    "status": "ACTIVE",
+    "taskId": "bcfd5fab-a992-4371-8624-1a122e86314c",
+    "timeEntryId": "39f73bf0-1c11-4e3a-9a67-7b0da0e03f96",
+    "userId": "9dffcd83-581d-4a02-bdde-317c0c334e68"
   }
 ]

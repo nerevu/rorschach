@@ -20,6 +20,11 @@
     "status": "CLOSED"
   },
   {
+    "name": "Client Dashboard",
+    "projectId": "7b20600a-fcc9-430c-b0c5-552759cffa7f",
+    "status": "INPROGRESS"
+  },
+  {
     "name": "ClozeCart",
     "projectId": "34a6629c-6902-4436-881c-b909a285b8bd",
     "status": "INPROGRESS"
@@ -98,6 +103,11 @@
     "name": "Hiring",
     "projectId": "c74d4b92-4a5c-4301-80ac-a601593b41ba",
     "status": "CLOSED"
+  },
+  {
+    "name": "IDOC EHR",
+    "projectId": "7e003381-90b6-418a-b767-9fbec6e5f6c7",
+    "status": "INPROGRESS"
   },
   {
     "name": "IPA/AEA Site",

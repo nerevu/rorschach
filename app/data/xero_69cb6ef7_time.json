@@ -1,5 +1,41 @@
 [
   {
+    "dateEnteredUtc": "2019-12-10T15:17:41.7502621Z",
+    "dateUtc": "2019-07-02T12:00:00Z",
+    "day": "2019-07-02",
+    "description": "Invoice payment app",
+    "duration": 104,
+    "projectId": "69cb6ef7-7886-4172-8112-bbc70e949a9e",
+    "status": "ACTIVE",
+    "taskId": "13c4fce8-fdc4-4c3a-8802-fff77fef1e99",
+    "timeEntryId": "a6ed6d51-d0b9-4900-996a-4d575e5654aa",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  },
+  {
+    "dateEnteredUtc": "2019-12-10T15:17:42.1264645Z",
+    "dateUtc": "2019-07-02T12:00:00Z",
+    "day": "2019-07-02",
+    "description": "iTerm2 • Passport.js • Finder",
+    "duration": 95,
+    "projectId": "69cb6ef7-7886-4172-8112-bbc70e949a9e",
+    "status": "ACTIVE",
+    "taskId": "13c4fce8-fdc4-4c3a-8802-fff77fef1e99",
+    "timeEntryId": "4faa8004-4508-477d-b8bb-cf1d7d451fad",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  },
+  {
+    "dateEnteredUtc": "2019-12-10T15:17:55.718893Z",
+    "dateUtc": "2019-07-03T12:00:00Z",
+    "day": "2019-07-03",
+    "description": "iTerm2 • Sublime Text • kelektiv/node.bcrypt.js: bcrypt for Node…",
+    "duration": 55,
+    "projectId": "69cb6ef7-7886-4172-8112-bbc70e949a9e",
+    "status": "ACTIVE",
+    "taskId": "13c4fce8-fdc4-4c3a-8802-fff77fef1e99",
+    "timeEntryId": "1dde5861-91fc-4aaf-814b-a701ecdc7dbe",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  },
+  {
     "dateEnteredUtc": "2020-01-27T17:38:25.7552412Z",
     "dateUtc": "2020-01-25T12:00:00Z",
     "day": "2020-01-25",

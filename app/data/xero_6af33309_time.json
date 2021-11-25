@@ -154,5 +154,41 @@
     "taskId": "98fde092-de4d-4302-a40a-66745891ec65",
     "timeEntryId": "b13074d8-48bd-46e3-ba9a-c5df1a394189",
     "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  },
+  {
+    "dateEnteredUtc": "2021-11-25T05:28:51.2546912Z",
+    "dateUtc": "2021-11-02T12:00:00Z",
+    "day": "2021-11-02",
+    "description": "Meeting: Proposal Review - Dr. Jeffries",
+    "duration": 30,
+    "projectId": "6af33309-b00b-4f9c-991f-25f0b4506582",
+    "status": "ACTIVE",
+    "taskId": "135f041f-97e1-4f6d-91bb-621ed03ae8d3",
+    "timeEntryId": "4f2cb09d-718c-4f9f-b757-3989a1b29c5e",
+    "userId": "9dffcd83-581d-4a02-bdde-317c0c334e68"
+  },
+  {
+    "dateEnteredUtc": "2021-11-25T05:28:52.4831418Z",
+    "dateUtc": "2021-11-02T12:00:00Z",
+    "day": "2021-11-02",
+    "description": "Urban League Website Development Statement of Work by Nerevu Gro…",
+    "duration": 150,
+    "projectId": "6af33309-b00b-4f9c-991f-25f0b4506582",
+    "status": "ACTIVE",
+    "taskId": "135f041f-97e1-4f6d-91bb-621ed03ae8d3",
+    "timeEntryId": "b1abc242-19f3-4478-b559-48ceca892258",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  },
+  {
+    "dateEnteredUtc": "2021-11-25T05:28:53.3865436Z",
+    "dateUtc": "2021-10-29T12:00:00Z",
+    "day": "2021-10-29",
+    "description": "Urban League Website Development Proposal by Nerevu Group.pages …",
+    "duration": 131,
+    "projectId": "6af33309-b00b-4f9c-991f-25f0b4506582",
+    "status": "ACTIVE",
+    "taskId": "135f041f-97e1-4f6d-91bb-621ed03ae8d3",
+    "timeEntryId": "7df9fd0b-b666-4a99-8411-6e1b45d3109c",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
   }
 ]

@@ -154,5 +154,53 @@
     "taskId": "88c368e1-9085-4798-a748-a5de806e230e",
     "timeEntryId": "93fd8bf5-ca77-4d20-9888-3a3d6d50cd35",
     "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  },
+  {
+    "dateEnteredUtc": "2021-11-25T05:36:10.2494469Z",
+    "dateUtc": "2021-10-29T12:00:00Z",
+    "day": "2021-10-29",
+    "description": "Sublime Text • Fork • MIT LOA • Missions • Airtable • Council of…",
+    "duration": 181,
+    "projectId": "3ef944e3-1cc1-4489-9385-3fdc9d4a3a63",
+    "status": "ACTIVE",
+    "taskId": "e4e5b1cd-d624-458e-9298-67c5e06a3ca5",
+    "timeEntryId": "b5001788-c580-4563-b78e-5e5afb9dfcb1",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  },
+  {
+    "dateEnteredUtc": "2021-11-25T05:36:11.674211Z",
+    "dateUtc": "2021-10-28T12:00:00Z",
+    "day": "2021-10-28",
+    "description": "Sublime Text • Council of Voices • Airtable • Missions • Lunar O…",
+    "duration": 236,
+    "projectId": "3ef944e3-1cc1-4489-9385-3fdc9d4a3a63",
+    "status": "ACTIVE",
+    "taskId": "e4e5b1cd-d624-458e-9298-67c5e06a3ca5",
+    "timeEntryId": "9d71e63a-12dc-4fe2-a59d-3d65ba9d0e7b",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  },
+  {
+    "dateEnteredUtc": "2021-11-25T05:36:33.7208077Z",
+    "dateUtc": "2021-10-27T12:00:00Z",
+    "day": "2021-10-27",
+    "description": "Fastmail • Lunar Open Architecture • Airtable",
+    "duration": 28,
+    "projectId": "3ef944e3-1cc1-4489-9385-3fdc9d4a3a63",
+    "status": "ACTIVE",
+    "taskId": "88c368e1-9085-4798-a748-a5de806e230e",
+    "timeEntryId": "adedd39f-6a69-49b3-85b7-1f6887ed80d1",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  },
+  {
+    "dateEnteredUtc": "2021-11-25T05:36:35.0590729Z",
+    "dateUtc": "2021-10-14T12:00:00Z",
+    "day": "2021-10-14",
+    "description": "Missions • Actors • nvALT • MIT LOA • zoom.us • Technologies • V…",
+    "duration": 32,
+    "projectId": "3ef944e3-1cc1-4489-9385-3fdc9d4a3a63",
+    "status": "ACTIVE",
+    "taskId": "88c368e1-9085-4798-a748-a5de806e230e",
+    "timeEntryId": "02314b80-cae6-4fde-8a49-66188ab0731d",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
   }
 ]

@@ -226,5 +226,89 @@
     "taskId": "b21c23f1-19a7-4958-88ac-3608c90f5a34",
     "timeEntryId": "b2071bb5-ffbe-490a-8d19-2fcb864da0a6",
     "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  },
+  {
+    "dateEnteredUtc": "2021-11-25T05:28:57.8829114Z",
+    "dateUtc": "2021-11-08T12:00:00Z",
+    "day": "2021-11-08",
+    "description": "Airtable • Prospect Checkout",
+    "duration": 126,
+    "projectId": "55a55be8-f4c6-4fe5-b395-2c1dd2bf8465",
+    "status": "ACTIVE",
+    "taskId": "b21c23f1-19a7-4958-88ac-3608c90f5a34",
+    "timeEntryId": "42cccb34-26d2-4437-b580-937e3ae1ca5d",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  },
+  {
+    "dateEnteredUtc": "2021-11-25T05:28:59.249538Z",
+    "dateUtc": "2021-11-04T12:00:00Z",
+    "day": "2021-11-04",
+    "description": "Airtable",
+    "duration": 205,
+    "projectId": "55a55be8-f4c6-4fe5-b395-2c1dd2bf8465",
+    "status": "ACTIVE",
+    "taskId": "b21c23f1-19a7-4958-88ac-3608c90f5a34",
+    "timeEntryId": "a8a49afb-ac11-4feb-8dfc-47c894fe1c7d",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  },
+  {
+    "dateEnteredUtc": "2021-11-25T05:29:00.3612068Z",
+    "dateUtc": "2021-11-03T12:00:00Z",
+    "day": "2021-11-03",
+    "description": "Airtable • Gnucash • DinerDiver • TCPUL Website • Nerevu • IT As…",
+    "duration": 392,
+    "projectId": "55a55be8-f4c6-4fe5-b395-2c1dd2bf8465",
+    "status": "ACTIVE",
+    "taskId": "b21c23f1-19a7-4958-88ac-3608c90f5a34",
+    "timeEntryId": "251ed8eb-ffec-4cfe-aa9e-9c2ae62ddbbd",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  },
+  {
+    "dateEnteredUtc": "2021-11-25T05:29:01.415535Z",
+    "dateUtc": "2021-11-02T12:00:00Z",
+    "day": "2021-11-02",
+    "description": "Service Pricelist • Airtable • Sublime Text",
+    "duration": 479,
+    "projectId": "55a55be8-f4c6-4fe5-b395-2c1dd2bf8465",
+    "status": "ACTIVE",
+    "taskId": "b21c23f1-19a7-4958-88ac-3608c90f5a34",
+    "timeEntryId": "6fb772d1-2d80-406f-9215-2031416bd0c9",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  },
+  {
+    "dateEnteredUtc": "2021-11-25T05:29:02.673312Z",
+    "dateUtc": "2021-11-01T12:00:00Z",
+    "day": "2021-11-01",
+    "description": "Airtable • Service Pricelist",
+    "duration": 450,
+    "projectId": "55a55be8-f4c6-4fe5-b395-2c1dd2bf8465",
+    "status": "ACTIVE",
+    "taskId": "b21c23f1-19a7-4958-88ac-3608c90f5a34",
+    "timeEntryId": "030bfd7f-4d10-432c-9fb3-e667b472e0f4",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  },
+  {
+    "dateEnteredUtc": "2021-11-25T05:29:04.1013676Z",
+    "dateUtc": "2021-10-20T12:00:00Z",
+    "day": "2021-10-20",
+    "description": "Airtable • Timely Hours • Employee Hours • Timely • Zapier • Pro…",
+    "duration": 343,
+    "projectId": "55a55be8-f4c6-4fe5-b395-2c1dd2bf8465",
+    "status": "ACTIVE",
+    "taskId": "b21c23f1-19a7-4958-88ac-3608c90f5a34",
+    "timeEntryId": "13e55db7-c3e6-462e-83c3-d9c25fcbab33",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
+  },
+  {
+    "dateEnteredUtc": "2021-11-25T05:29:05.2102945Z",
+    "dateUtc": "2021-10-18T12:00:00Z",
+    "day": "2021-10-18",
+    "description": "Airtable • Nerevu • Sublime Text • Zapier",
+    "duration": 60,
+    "projectId": "55a55be8-f4c6-4fe5-b395-2c1dd2bf8465",
+    "status": "ACTIVE",
+    "taskId": "b21c23f1-19a7-4958-88ac-3608c90f5a34",
+    "timeEntryId": "76e31f26-7443-45eb-8650-43e4f665e46d",
+    "userId": "a76380db-eb5f-4fe4-8975-99ad2fabbd13"
   }
 ]
