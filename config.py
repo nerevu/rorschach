@@ -292,20 +292,6 @@ class Config(object):
                     },
                 ],
             },
-            "oauth1": {
-                "api_base_url": "https://api.xero.com",
-                "api_status_resource": "projects.xro/2.0/projectsusers",
-                "request_url": "https://api.xero.com/oauth/RequestToken",
-                "authorization_base_url": "https://api.xero.com/oauth/Authorize",
-                "token_url": "https://api.xero.com/oauth/AccessToken",
-                "client_id": getenv("XERO_CONSUMER_KEY"),
-                "client_secret": getenv("XERO_CONSUMER_SECRET"),
-                "username": getenv("XERO_USERNAME"),
-                "password": getenv("XERO_PASSWORD"),
-                "headers": {
-                    "post": {"Content-Type": "application/x-www-form-urlencoded"},
-                },
-            },
         },
     }
 
