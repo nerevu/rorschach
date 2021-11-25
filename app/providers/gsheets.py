@@ -24,8 +24,14 @@ logger.propagate = False
 class GSheets(Resource):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.gc = gspread.authorize(self.client.credentials) if self.client else None
-        self.chunksize = kwargs.get("chunksize")
+        self._gc = None
+
+    @property
+    def gc(self):
+        if self.client and self._gc is None:
+            self._gc = gspread.authorize(self.client.credentials)
+
+        return self._gc
 
     def retry_method(self, attr, *args, obj_attr="worksheet", **kwargs):
         obj = getattr(self, obj_attr)
@@ -101,8 +107,3 @@ class Worksheet(Spreadsheet):
                 {"row": pos + 2, **record} for (pos, record) in enumerate(records)
             ]
         }
-
-
-class Status(GSheets):
-    def get_json_response(self):
-        return {"result": {"access_token": self.gc.auth.token}}

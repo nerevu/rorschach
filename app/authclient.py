@@ -67,8 +67,6 @@ class BaseClient(object):
         self.oauth1 = self.oauth_version == 1
         self.oauth2 = self.oauth_version == 2
         self.api_base_url = kwargs.get("api_base_url", "")
-        self.api_status_url = kwargs.get("api_status_url", "")
-        self.api_status_resource = kwargs.get("api_status_resource", "status")
         self.debug = kwargs.get("debug")
         self.username = kwargs.get("username")
         self.password = kwargs.get("password")

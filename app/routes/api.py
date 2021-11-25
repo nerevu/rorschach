@@ -7,6 +7,8 @@
 """
 import pygogo as gogo
 
+from inspect import getmembers
+
 from flask import Blueprint, current_app as app
 from faker import Faker
 
@@ -114,6 +116,15 @@ def create_class(cls_name, *bases, lookup=None, **kwargs):
     for prop_name, value in kwargs.pop("props", {}).items():
         attrs[prop_name] = property(get_value(value, **lookup))
 
+    if response := kwargs.get("response"):
+
+        def get_json_response(Resource, *args, **kwargs):
+            lookup.update(getmembers(Resource))
+            result = get_value(response, obj=Resource, **lookup)
+            return {"result": result}
+
+        attrs["get_json_response"] = get_json_response
+
     return type(cls_name, bases, attrs, **kwargs)
 
 
@@ -145,42 +156,41 @@ def ipsum():
     return jsonify(**json)
 
 
+for prefix, classes in RESOURCES.items():
+    auth = AUTHENTICATION[prefix]
+    classes.setdefault("Status", {})
+
+    # TODO: perform toposort firts
+    for cls_name, kwargs in classes.items():
+        if collection := kwargs.pop("collection", None):
+            base = get_collection(prefix, collection=collection)
+            assert base, f"Base {collection} not found in {prefix}"
+        elif _base := kwargs.pop("base", None):
+            base = BASE._registry[prefix].get(_base)
+            assert base, f"Base {collection} not found in {prefix}"
+        else:
+            base = kwargs.pop("base", BASE)
+
+        hidden = kwargs.pop("hidden", False)
+        auth_key = kwargs.get("auth_key", base.auth_key)
+        assert auth_key, f"{prefix}/{cls_name} is missing auth_key!"
+
+        lookup = auth[auth_key].get("attrs", {})
+
+        if auth_parent := auth[auth_key].get("parent"):
+            attrs = auth[auth_parent].get("attrs", {})
+            [lookup.setdefault(k, v) for k, v in attrs.items()]
+
+        kwargs.setdefault("resource", base.resource or cls_name.lower())
+        methods = kwargs.pop("methods", ["GET"])
+        view = create_class(cls_name, base, lookup=lookup, prefix=prefix, **kwargs)
+
+        if not hidden:
+            create_route(view, prefix, cls_name.lower(), *methods)
+
+
 for name, options in METHOD_VIEWS.items():
     for prefix in options.get("providers", [None]):
         view = get_collection(prefix, **options) or options.get("view")
         methods = options.get("methods", ["GET"])
         create_route(view, prefix, name, *methods)
-
-
-for prefix, classes in RESOURCES.items():
-    auth = AUTHENTICATION[prefix]
-    classes.setdefault("Status", {})
-
-    for cls_name, kwargs in classes.items():
-        if "collection" in kwargs:
-            collection = kwargs.pop("collection")
-            base = get_collection(prefix, collection=collection)
-        else:
-            base = kwargs.pop("base", BASE)
-
-        hidden = kwargs.pop("hidden", False)
-
-        if auth_key := kwargs.get("auth_key"):
-            lookup = auth[auth_key].get("attrs", {})
-
-            if auth_parent := auth[auth_key].get("parent"):
-                attrs = auth[auth_parent].get("attrs", {})
-                [lookup.setdefault(k, v) for k, v in attrs.items()]
-        else:
-            lookup = {}
-
-        kwargs.setdefault("resource", cls_name.lower())
-        resource = kwargs.get("resource")
-        methods = kwargs.pop("methods", ["GET"])
-        view = get_collection(prefix, collection=cls_name)
-
-        if not view:
-            view = create_class(cls_name, base, lookup=lookup, prefix=prefix, **kwargs)
-
-        if not hidden:
-            create_route(view, prefix, cls_name.lower(), *methods)

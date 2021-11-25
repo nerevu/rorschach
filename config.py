@@ -126,20 +126,27 @@ class Config(object):
 
     RESOURCES = {
         "airtable": {
-            "Table": {"auth_key": "bearer", "resource": getenv("AIRTABLE_TABLE")}
+            "Table": {"auth_key": "bearer", "resource": getenv("AIRTABLE_TABLE")},
+            "Status": {"base": "Table"},
         },
         "gsheets": {
             "Table": {
+                "auth_key": "service",
                 "collection": "Worksheet",
                 "use_default": True,
-                "auth_key": "service",
                 "resource": getenv("GSHEETS_SHEETNAME"),
                 "rid": getenv("GSHEETS_SHEET_ID"),
                 "subresource": getenv("GSHEETS_WORKSHEET_NAME"),
-            }
+            },
+            "Status": {
+                "auth_key": "service",
+                "collection": "GSheets",
+                "response": "access_token: {gc.auth.token}",
+            },
         },
         "mailgun": {
             "Domains": {"auth_key": "account", "subkey": "domain"},
+            "Status": {"base": "Domains"},
             "EmailLists": {
                 "auth_key": "account",
                 "id_field": "address",
@@ -151,8 +158,7 @@ class Config(object):
                 },
             },
             "EmailListMembers": {
-                "auth_key": "account",
-                "parent": "EmailLists",
+                "base": "EmailLists",
                 "subresource": "members",
                 "attrs": {
                     "subkey": {"conditional": "rid", "result": ["items", "list"]}
@@ -173,6 +179,7 @@ class Config(object):
                 "id_field": "ID",
                 "name_field": "Name",
             },
+            "Status": {"base": "Domains"},
             "Templates": {
                 "auth_key": "server",
                 "subkey": "Templates",
@@ -250,6 +257,7 @@ class Config(object):
                 "fields": ["id", "name", "children"],
             },
             "Users": {"auth_key": "oauth2", "fields": ["id", "name"]},
+            "Status": {"auth_key": "oauth2", "resource": "accounts"},
             "Contacts": {
                 "auth_key": "oauth2",
                 "resource": "clients",
@@ -257,6 +265,7 @@ class Config(object):
             },
         },
         "xero": {
+            "Status": {"auth_key": "simple", "resource": "connections"},
             "Projects": {
                 "auth_key": "project",
                 "fields": ["projectId", "name", "status"],
@@ -342,7 +351,6 @@ class Config(object):
                     "offset": None,
                     "view": None,
                 },
-                "api_status_resource": "Employee%20Hours",
                 "attrs": {"base_id": getenv("AIRTABLE_BASE_ID"), "subkey": "records"},
             },
         },
@@ -350,10 +358,6 @@ class Config(object):
             "service": {
                 "auth_type": "service",
                 "keyfile_path": "internal-256716-b2f899ddbdc5.json",
-                "attrs": {
-                    "sheet_id": "1Q-0R_q5-dWeaIAktvxRirZGXJZmMxd8qjVTujauMdak",
-                    "worksheet_name": "options",
-                },
                 "scope": [
                     "https://spreadsheets.google.com/feeds",
                     "https://www.googleapis.com/auth/drive",
@@ -371,12 +375,10 @@ class Config(object):
             "server": {
                 "parent": "base",
                 "api_base_url": "https://api.mailgun.net/v3/{domain}",
-                "api_status_resource": "??",
             },
             "account": {
                 "parent": "base",
                 "api_base_url": "https://api.mailgun.net/v3",
-                "api_status_resource": "domains",
             },
         },
         # https://postmarkapp.com/developer/api/overview
@@ -389,7 +391,6 @@ class Config(object):
             },
             "account": {
                 "parent": "base",
-                "api_status_resource": "domains",
                 "headers": {
                     "all": {
                         "X-Postmark-Account-Token": getenv("POSTMARK_ACCOUNT_TOKEN")
@@ -398,7 +399,6 @@ class Config(object):
             },
             "server": {
                 "parent": "base",
-                "api_status_resource": "server",
                 "headers": {
                     "all": {"X-Postmark-Server-Token": getenv("POSTMARK_SERVER_TOKEN")},
                 },
@@ -409,7 +409,6 @@ class Config(object):
             "oauth2": {
                 "auth_type": "oauth2",
                 "api_base_url": "https://api.timelyapp.com/1.1/{account_id}",
-                "api_status_url": "https://api.timelyapp.com/1.1/accounts",
                 "authorization_base_url": "https://api.timelyapp.com/1.1/oauth/authorize",
                 "token_url": "https://api.timelyapp.com/1.1/oauth/token",
                 "refresh_url": "https://api.timelyapp.com/1.1/oauth/token",
@@ -456,7 +455,6 @@ class Config(object):
         "xero": {
             "base": {
                 "auth_type": "oauth2",
-                "api_status_url": "https://api.xero.com/connections",
                 "authorization_base_url": "https://login.xero.com/identity/connect/authorize",
                 "token_url": "https://identity.xero.com/connect/token",
                 "refresh_url": "https://identity.xero.com/connect/token",
@@ -524,6 +522,7 @@ class Config(object):
                     },
                 ],
             },
+            "simple": {"parent": "base", "api_base_url": "https://api.xero.com",},
             "api": {
                 "parent": "base",
                 "api_base_url": "https://api.xero.com/api.xro/2.0",
