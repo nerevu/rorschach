@@ -183,9 +183,8 @@ class OAuth2BaseClient(BaseClient):
         except RuntimeError:
             def_state = None
 
-        def_expires_at = dt.now(timezone.utc) + timedelta(
-            seconds=int(OAUTH_EXPIRY_SECONDS)
-        )
+        seconds = int(OAUTH_EXPIRY_SECONDS)
+        def_expires_at = dt.now(timezone.utc) + timedelta(seconds=seconds)
 
         self.state = def_state or cache.get(f"{self.prefix}_state")
         self.access_token = cache.get(f"{self.prefix}_access_token")
@@ -988,13 +987,15 @@ def get_redirect_url(prefix):
     json = dict(parse_qsl(query), **request.args)
     state = json.get("state") or session.get(f"{prefix}_state")
     realm_id = json.get("realm_id") or session.get(f"{prefix}_realm_id")
-    valid = all(map(json.get, ["oauth_token", "oauth_verifier", "org"]))
+    valid = state or all(map(json.get, ["oauth_token", "oauth_verifier", "org"]))
     client = get_auth_client(prefix, state=state, realm_id=realm_id, **app.config)
 
-    if state or valid:
+    if valid:
         session[f"{prefix}_state"] = client.state
         session[f"{prefix}_realm_id"] = client.realm_id
         client.fetch_token()
+    else:
+        client.error = json.get("message", "Invalid access token!")
 
     redirect_url = cache.get(f"{prefix}_callback_url")
 

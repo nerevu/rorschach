@@ -205,10 +205,8 @@ class BaseView(ProviderMixin, MethodView):
                     if self.rid:
                         url += f"/{self.rid}/{self.subresource}"
                     elif not self.eof:
-                        assert self.rid, (
-                            f"No {self} {self.resource} id provided!",
-                            404,
-                        )
+                        message = f"No {self} {self.resource} id provided!"
+                        assert self.rid, (message, 404)
 
         return url
 

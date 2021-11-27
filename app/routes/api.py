@@ -120,14 +120,14 @@ method_views = {
 }
 
 for name, options in method_views.items():
-    for provider in options.get("providers", [None]):
-        view = options.get("view", get_collection(provider, **options))
+    for prefix in options.get("providers", [None]):
+        view = options.get("view", get_collection(prefix, **options))
 
         if not view:
             continue
 
-        route_name = f"{provider}-{name}".lower() if provider else name
-        view_func = view.as_view(route_name, provider)
+        route_name = f"{prefix}-{name}".lower() if prefix else name
+        view_func = view.as_view(route_name, prefix)
         methods = options.get("methods", ["GET"])
         url = f"{PREFIX}/{route_name}"
 
@@ -150,10 +150,10 @@ def gen_actions(activities=None, **kwargs):
         yield (activity["name"], action)
 
 
-for provider, options in WEBHOOKS.items():
-    view = get_collection(provider, "Hooks")
+for prefix, options in WEBHOOKS.items():
+    view = get_collection(prefix, "Hooks")
     _actions = dict(gen_actions(**options))
-    route_name = f"{provider}-hooks".lower()
+    route_name = f"{prefix}-hooks".lower()
     view_func = view.as_view(route_name, actions=_actions, **options)
     url = f"{PREFIX}/{route_name}"
     methods = ["GET", "POST"]
