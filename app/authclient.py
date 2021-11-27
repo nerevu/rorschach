@@ -98,8 +98,8 @@ class OAuth2BaseClient(BaseClient):
         self.state = kwargs.get("state")
         self.access_token = None
         self.refresh_token = None
-        self.tenant_id = kwargs.get("tenant_id", "")
         self.realm_id = kwargs.get("realm_id")
+        self.tenant_id = kwargs.get("tenant_id")
         self.expires_at = dt.now(timezone.utc)
         self.expires_in = 0
 
@@ -171,8 +171,8 @@ class OAuth2BaseClient(BaseClient):
         cache.set(f"{self.prefix}_refresh_token", self.refresh_token)
         cache.set(f"{self.prefix}_created_at", self.created_at)
         cache.set(f"{self.prefix}_expires_at", self.expires_at)
-        cache.set(f"{self.prefix}_tenant_id", self.tenant_id)
         cache.set(f"{self.prefix}_realm_id", self.realm_id)
+        cache.set(f"{self.prefix}_tenant_id", self.tenant_id)
 
     def restore(self):
         logger.debug(f"restoring {self}")
@@ -192,8 +192,8 @@ class OAuth2BaseClient(BaseClient):
         self.created_at = cache.get(f"{self.prefix}_created_at")
         self.expires_at = cache.get(f"{self.prefix}_expires_at") or def_expires_at
         self.expires_in = (self.expires_at - dt.now(timezone.utc)).total_seconds()
-        self.tenant_id = cache.get(f"{self.prefix}_tenant_id")
         self.realm_id = cache.get(f"{self.prefix}_realm_id")
+        self.tenant_id = cache.get(f"{self.prefix}_tenant_id")
 
 
 class OAuth2Client(OAuth2BaseClient):
@@ -733,6 +733,7 @@ def get_auth_client(prefix, state=None, API_URL="", **kwargs):
         client.param_map = auth_kwargs.get("param_map", {})
         client.verb_map = auth_kwargs.get("verb_map", {})
         client.method_map = auth_kwargs.get("method_map", {})
+        client.tenant_path = auth_kwargs.get("tenant_path")
 
         try:
             restore_from_headless = client.restore_from_headless

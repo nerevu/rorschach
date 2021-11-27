@@ -30,7 +30,7 @@ from config import Config
 from app import cache
 from app.routes import ProviderMixin
 from app.authclient import get_auth_client, get_json_response, callback
-from app.utils import jsonify, get_links, fetch_bool, extract_fields
+from app.utils import jsonify, get_links, fetch_bool, extract_field, extract_fields
 from app.mappings import reg_mapper
 from app.helpers import singularize, get_collection, flask_formatter as formatter
 
@@ -88,6 +88,7 @@ class BaseView(ProviderMixin, MethodView):
             self.param_map = {}
             self.verb_map = {}
             self.method_map = {}
+            self.tenant_path = ""
             self._params = params
 
             attrs = {}
@@ -97,6 +98,7 @@ class BaseView(ProviderMixin, MethodView):
             self.param_map = client.param_map
             self.verb_map = client.verb_map
             self.method_map = client.method_map
+            self.tenant_path = client.tenant_path
             self._params = {**client.params, **params}
 
             attrs = client.attrs
@@ -142,25 +144,18 @@ class Auth(BaseView):
         # Step 2: User authorization, this happens on the provider.
         if self.client.verified and not self.client.expired:
             json = get_json_response(self.status_url, self.client, **app.config)
+            json.update({k: getattr(client, k) for k in ["token", "state", "realm_id"]})
 
-            if self.prefix == "xero" and not self.client.tenant_id:
-                # https://developer.xero.com/documentation/oauth2/auth-flow
-                self.client.tenant_id = json["result"][0].get("tenantId")
+            if self.tenant_path:
+                client.tenant_id = extract_field(json, self.tenant_path)
 
-                if self.client.tenant_id:
-                    self.client.save()
-                    logger.debug(f"Set {self} tenantId to {self.client.tenant_id}.")
+                if client.tenant_id:
+                    client.save()
+                    json.update({"tenant_id": client.tenant_id})
+                    logger.debug(f"Set {self} tenant_id to {client.tenant_id}.")
                 else:
-                    self.client.error = json.get("message", "No tenantId found.")
+                    client.error = "{tenant_path} not found!"
 
-            json.update(
-                {
-                    "token": self.client.token,
-                    "state": self.client.state,
-                    "realm_id": self.client.realm_id,
-                    "tenant_id": self.client.tenant_id,
-                }
-            )
             result = jsonify(**json)
         else:
             if self.client.oauth1:

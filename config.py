@@ -236,6 +236,8 @@ class Config(object):
                 "username": getenv("XERO_USERNAME"),
                 "password": getenv("XERO_PASSWORD"),
                 "param_map": {"start": "dateAfterUtc", "end": "dateBeforeUtc"},
+                # https://developer.xero.com/documentation/guides/oauth2/auth-flow/#xero-tenants
+                "tenant_path": "result[0].tenantId",
                 "attrs": {"domain": "projects"},
                 "scope": [
                     "projects",
