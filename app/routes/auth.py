@@ -197,6 +197,8 @@ class BaseView(ProviderMixin, MethodView):
                 self.resource = client.api_status_resource
 
             if not url:
+                assert self.resource, (f"No {self} resource provided!", 404)
+
                 # Some APIs urls (like mailgun) have a section that may or may not be present
                 url = client.api_base_url.format(**fkwargs).replace("/None", "")
                 url += f"/{self.resource}"
