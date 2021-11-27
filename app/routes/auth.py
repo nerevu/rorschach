@@ -75,11 +75,18 @@ def store(prefix, collection_name, **kwargs):
 
 
 class BaseView(ProviderMixin, MethodView):
-    def __init__(self, prefix=None, **kwargs):
+    def __init__(self, prefix=None, resource="", **kwargs):
         super().__init__(prefix)
 
         self.rkwargs = kwargs
+        self.resource = resource
         self._dry_run = kwargs.get("dry_run")
+        self._rid = kwargs.get("rid")
+        self._use_default = kwargs.get("use_default")
+        self.subresource = kwargs.get("subresource", "")
+        self.subresource_id = kwargs.get("subresource_id")
+        self.url = None
+
         params = kwargs.get("params", {})
         def_end = date.today()
 
@@ -114,6 +121,219 @@ class BaseView(ProviderMixin, MethodView):
         self._start = kwargs.get("start", def_start)
         self.headers = kwargs.get("headers", {})
 
+        self.start_param = self.param_map.get("start")
+        self.end_param = self.param_map.get("end")
+        self.fields_param = self.param_map.get("fields")
+        self.id_param = self.param_map.get("id")
+
+    def refresh_values(self):
+        """
+        HACK: Not sure if this is pythonic, but this is in case there is a new matching
+        request that needs to set self.values after it was already set to {}
+        """
+        self._values = None
+        self.values
+
+    def refresh_kwargs(self):
+        """
+        HACK: Not sure if this is pythonic, but this is in case there is a new matching
+        request that needs to set self.kwargs after it was already set to {}
+        """
+        self._kwargs = None
+        self.kwargs
+
+    def get_json_response(self, *args, **kwargs):
+        raise NotImplementedError
+
+    @property
+    def start(self):
+        value = self.values.get("start", self._start)
+
+        try:
+            value = value.strftime("%Y-%m-%d")
+        except AttributeError:
+            pass
+
+        return value
+
+    @start.setter
+    def start(self, value):
+        self._values["start"] = value
+
+    @property
+    def end(self):
+        value = self.values.get("end", self._end)
+
+        try:
+            value = value.strftime("%Y-%m-%d")
+        except AttributeError:
+            pass
+
+        return value
+
+    @end.setter
+    def end(self, value):
+        self._values["end"] = value
+
+    @property
+    def dry_run(self):
+        return self.values.get("dryRun", self._dry_run)
+
+    @dry_run.setter
+    def dry_run(self, value):
+        self._values["dryRun"] = value
+
+    @property
+    def api_url(self):
+        client = self.client
+        url = ""
+
+        if client.api_base_url and not self.dry_run:
+            fkwargs = {**client.__dict__, **client.attrs, **self.rkwargs}
+
+            if self.resource == "status" and client.api_status_url:
+                url = client.api_status_url
+            elif self.resource == "status":
+                self.resource = client.api_status_resource
+
+            if not url:
+                # Some APIs urls (like mailgun) have a section that may or may not be present
+                url = client.api_base_url.format(**fkwargs).replace("/None", "")
+                url += f"/{self.resource}"
+
+                if self.subresource:
+                    if self.rid:
+                        url += f"/{self.rid}/{self.subresource}"
+                    elif not self.eof:
+                        assert self.rid, (
+                            f"No {self} {self.resource} id provided!",
+                            404,
+                        )
+
+        return url
+
+    @property
+    def params(self):
+        params = self._params or {}
+
+        if self.id_param and self.id:
+            params[self.id_param] = self.id
+
+        if self.fields_param and self.fields:
+            params[self.fields_param] = ",".join(self.fields)
+
+        if self.start_param and self.start:
+            params[self.start_param] = self.start
+
+        if self.end_param and self.end:
+            params[self.end_param] = self.end
+
+        return params
+
+    @property
+    def use_default(self):
+        return self.values.get("useDefault", self._use_default)
+
+    @use_default.setter
+    def use_default(self, value):
+        self._values["useDefault"] = value
+
+    @property
+    def rid(self):
+        if self.use_default and not self._rid:
+            name = f"{self.lowered}-{self.lowered_resource}"
+
+            if self.subresource:
+                name += f"-{self.lowered_subresource}"
+
+            msg = f"{name}[{self.pos}]"
+
+            try:
+                item = list(islice(self, self.pos, self.pos + 1))[0]
+            except (IndexError, TypeError):
+                self.eof = True
+                logger.error(f"{msg} not found in cache!")
+
+                if not self.data:
+                    logger.error(f"No {name} cached data available!")
+            else:
+                self._rid = item.get(self.id_field)
+
+        return self._rid
+
+    @rid.setter
+    def rid(self, value):
+        self._rid = value
+
+        if self.rid_hook:
+            self.rid_hook()
+
+    @property
+    def id(self):
+        def_id = self.subresource_id if self.subresource else self.rid
+        return self.values.get("id", def_id)
+
+    @id.setter
+    def id(self, value):
+        if self.subresource:
+            self.subresource_id = value
+        else:
+            self.rid = value
+
+        if self.id_hook:
+            self.id_hook()
+
+    def get_dry_run_json(self, source_rid=None, source_name=None, **kwargs):
+        if self.id and self.dictify:
+            try:
+                result = self.data.get(int(self.id), {})
+            except ValueError:
+                result = self.data.get(str(self.id), {})
+        elif self.id:
+            try:
+                result = next(x for x in self if str(self.id) == str(x[self.id_field]))
+            except StopIteration:
+                result = {}
+        elif source_name or source_rid:
+            result = {}
+        else:
+            result = self.data
+
+        status_code = 200 if result else 404
+        ok = status_code == 200
+        return {"result": result, "ok": ok, "status_code": status_code}
+
+    def get_live_json(self, source_rid=None, source_name=None, **kwargs):
+        try:
+            self.client.json = self.get_json_response()
+        except NotImplementedError:
+            try:
+                self.url = self.api_url
+            except AssertionError as err:
+                self.url = None
+                self.error_msg, status_code = err.args[0]
+            else:
+                if self.url and self.id:
+                    self.url += f"/{self.id}"
+                elif source_name or source_rid:
+                    self.url = None
+
+            if self.url:
+                headers = {**self.headers, **kwargs.get("headers", {})}
+                rkwargs = {"headers": headers, "params": self.params, **app.config}
+                json = get_json_response(self.url, self.client, **rkwargs)
+            else:
+                json = {
+                    "message": "No API url provided!",
+                    "result": {},
+                    "ok": False,
+                    "status_code": 404,
+                }
+        else:
+            json = get_json_response(None, self.client)
+
+        return json
+
 
 class Callback(BaseView):
     def get(self):
@@ -121,12 +341,6 @@ class Callback(BaseView):
 
 
 class Auth(BaseView):
-    def __init__(self, prefix):
-        super().__init__(prefix)
-        self.status_url = (
-            f"{self.client.api_base_url}/{self.client.api_status_resource}"
-        )
-
     def get(self):
         """Step 1: User Authorization.
 
@@ -134,16 +348,25 @@ class Auth(BaseView):
         using a URL with a few key OAuth parameters.
         """
         cache.set(f"{self.prefix}_callback_url", request.args.get("callback_url"))
+        Status = get_collection(self.prefix, "Status")
 
-        # https://gist.github.com/ib-lundgren/6507798#gistcomment-1006218
-        # State is used to prevent CSRF, keep this for later.
-        authorization_url, state = self.client.authorization_url
-        self.client.state = session[f"{self.prefix}_state"] = state
-        self.client.save()
+        if Status:
+            json = Status().get_live_json()
+        else:
+            self.resource = 'status'
+            json = self.get_live_json()
+
+        client = self.client
+
+        if client.oauth_version:
+            # https://gist.github.com/ib-lundgren/6507798#gistcomment-1006218
+            # State is used to prevent CSRF, keep this for later.
+            authorization_url, state = client.authorization_url
+            client.state = session[f"{self.prefix}_state"] = state
+            client.save()
 
         # Step 2: User authorization, this happens on the provider.
-        if self.client.verified and not self.client.expired:
-            json = get_json_response(self.status_url, self.client, **app.config)
+        if client.oauth_version and client.verified and not client.expired:
             json.update({k: getattr(client, k) for k in ["token", "state", "realm_id"]})
 
             if self.tenant_path:
@@ -157,15 +380,17 @@ class Auth(BaseView):
                     client.error = "{tenant_path} not found!"
 
             result = jsonify(**json)
-        else:
-            if self.client.oauth1:
+        elif client.oauth_version:
+            if client.oauth1:
                 # clear previously cached token
-                self.client.renew_token()
-                authorization_url = self.client.authorization_url[0]
+                client.renew_token()
+                authorization_url = client.authorization_url[0]
 
             redirect_url = authorization_url
             logger.info("redirecting to %s", redirect_url)
             result = redirect(redirect_url)
+        else:
+            result = jsonify(**json)
 
         return result
 
@@ -203,9 +428,6 @@ class Resource(BaseView):
             >>> qb_transactions = Resource("qb", "TransactionList", **kwargs)
         """
         super().__init__(prefix, **kwargs)
-        self.resource = resource
-        self.subresource = kwargs.get("subresource", "")
-        self.subresource_id = kwargs.get("subresource_id")
         self.lowered_resource = self.resource.lower()
         self.lowered_subresource = self.subresource.lower()
 
@@ -233,8 +455,6 @@ class Resource(BaseView):
         self.id_hook = kwargs.get("id_hook")
         self.rid_hook = kwargs.get("rid_hook")
         self._result_key = kwargs.get("result_key", "result")
-        self._rid = kwargs.get("rid")
-        self._use_default = kwargs.get("use_default")
         self._dictify = kwargs.get("dictify")
         self._pos = kwargs.get("pos", 0)
         self._mapper = {}
@@ -242,11 +462,6 @@ class Resource(BaseView):
         self._mappings = None
         self._results = None
         self.error_msg = ""
-
-        self.start_param = self.param_map.get("start")
-        self.end_param = self.param_map.get("end")
-        self.fields_param = self.param_map.get("fields")
-        self.id_param = self.param_map.get("id")
 
         results_filename = kwargs.get("results_filename", "sync_results.json")
         self.results_p = DATA_DIR.joinpath(results_filename)
@@ -288,9 +503,6 @@ class Resource(BaseView):
         return self.data[key]
 
     def patch_response(self, *args, **kwargs):
-        raise NotImplementedError
-
-    def get_json_response(self, *args, **kwargs):
         raise NotImplementedError
 
     @property
@@ -350,51 +562,6 @@ class Resource(BaseView):
                 dump(value, mappings_f, indent=2, sort_keys=True, ensure_ascii=False)
                 mappings_f.write("\n")
                 self._mappings = None
-
-    @property
-    def id(self):
-        def_id = self.subresource_id if self.subresource else self.rid
-        return self.values.get("id", def_id)
-
-    @id.setter
-    def id(self, value):
-        if self.subresource:
-            self.subresource_id = value
-        else:
-            self.rid = value
-
-        if self.id_hook:
-            self.id_hook()
-
-    @property
-    def rid(self):
-        if self.use_default and not self._rid:
-            name = f"{self.lowered}-{self.lowered_resource}"
-
-            if self.subresource:
-                name += f"-{self.lowered_subresource}"
-
-            msg = f"{name}[{self.pos}]"
-
-            try:
-                item = list(islice(self, self.pos, self.pos + 1))[0]
-            except (IndexError, TypeError):
-                self.eof = True
-                logger.error(f"{msg} not found in cache!")
-
-                if not self.data:
-                    logger.error(f"No {name} cached data available!")
-            else:
-                self._rid = item.get(self.id_field)
-
-        return self._rid
-
-    @rid.setter
-    def rid(self, value):
-        self._rid = value
-
-        if self.rid_hook:
-            self.rid_hook()
 
     @property
     def result_key(self):
@@ -464,64 +631,6 @@ class Resource(BaseView):
                 self._data = None
 
     @property
-    def params(self):
-        params = self._params or {}
-
-        if self.id_param and self.id:
-            params[self.id_param] = self.id
-
-        if self.fields_param and self.fields:
-            params[self.fields_param] = ",".join(self.fields)
-
-        if self.start_param and self.start:
-            params[self.start_param] = self.start
-
-        if self.end_param and self.end:
-            params[self.end_param] = self.end
-
-        return params
-
-    @property
-    def api_url(self):
-        client = self.client
-
-        if self.dry_run:
-            url = ""
-        elif self.resource == "status":
-            url = Auth(self.prefix).status_url
-        elif client.api_base_url:
-            # Some APIs urls (like mailgun) have a section that may or may not be present
-            fkwargs = {**client.__dict__, **client.attrs, **self.rkwargs}
-            url = client.api_base_url.format(**fkwargs).replace("/None", "")
-            url += f"/{self.resource}"
-
-            if self.subresource:
-                if self.rid:
-                    url += f"/{self.rid}/{self.subresource}"
-                elif not self.eof:
-                    assert self.rid, (f"No {self} {self.resource} id provided!", 404)
-        else:
-            url = ""
-
-        return url
-
-    @property
-    def dry_run(self):
-        return self.values.get("dryRun", self._dry_run)
-
-    @dry_run.setter
-    def dry_run(self, value):
-        self._values["dryRun"] = value
-
-    @property
-    def use_default(self):
-        return self.values.get("useDefault", self._use_default)
-
-    @use_default.setter
-    def use_default(self, value):
-        self._values["useDefault"] = value
-
-    @property
     def dictify(self):
         return self.values.get("dictify", self._dictify)
 
@@ -544,36 +653,6 @@ class Resource(BaseView):
     @pos.setter
     def pos(self, value):
         self._values["pos"] = value
-
-    @property
-    def start(self):
-        value = self.values.get("start", self._start)
-
-        try:
-            value = value.strftime("%Y-%m-%d")
-        except AttributeError:
-            pass
-
-        return value
-
-    @start.setter
-    def start(self, value):
-        self._values["start"] = value
-
-    @property
-    def end(self):
-        value = self.values.get("end", self._end)
-
-        try:
-            value = value.strftime("%Y-%m-%d")
-        except AttributeError:
-            pass
-
-        return value
-
-    @end.setter
-    def end(self, value):
-        self._values["end"] = value
 
     def mapper(self, prefix):
         _mapper = self._mapper.get(prefix)
@@ -636,22 +715,6 @@ class Resource(BaseView):
                 assert model.get(self.id_field), (f"{self} has no ID!", 500)
 
         return model
-
-    def refresh_values(self):
-        """
-        HACK: Not sure if this is pythonic, but this is in case there is a new matching
-        request that needs to set self.values after it was already set to {}
-        """
-        self._values = None
-        self.values
-
-    def refresh_kwargs(self):
-        """
-        HACK: Not sure if this is pythonic, but this is in case there is a new matching
-        request that needs to set self.kwargs after it was already set to {}
-        """
-        self._kwargs = None
-        self.kwargs
 
     def update_mappings(self, rid, prefix=None):
         entry = {}
@@ -809,54 +872,9 @@ class Resource(BaseView):
             self.id = self.map_rid(source_rid, **kwargs)
 
         if self.dry_run:
-            if self.id and self.dictify:
-                try:
-                    result = self.data.get(int(self.id), {})
-                except ValueError:
-                    result = self.data.get(str(self.id), {})
-            elif self.id:
-                try:
-                    result = next(
-                        x for x in self if str(self.id) == str(x[self.id_field])
-                    )
-                except StopIteration:
-                    result = {}
-            elif source_name or source_rid:
-                result = {}
-            else:
-                result = self.data
-
-            status_code = 200 if result else 404
-            ok = status_code == 200
-            json = {"result": result, "ok": ok, "status_code": status_code}
+            json = self.get_dry_run_json(source_rid=None, source_name=None, **kwargs)
         else:
-            try:
-                self.client.json = self.get_json_response()
-            except NotImplementedError:
-                try:
-                    url = self.api_url
-                except AssertionError as err:
-                    url = None
-                    self.error_msg, status_code = err.args[0]
-                else:
-                    if url and self.id:
-                        url += f"/{self.id}"
-                    elif source_name or source_rid:
-                        url = None
-
-                if url:
-                    headers = {**self.headers, **kwargs.get("headers", {})}
-                    rkwargs = {"headers": headers, "params": self.params, **app.config}
-                    json = get_json_response(url, self.client, **rkwargs)
-                else:
-                    json = {
-                        "message": "No API url provided!",
-                        "result": {},
-                        "ok": False,
-                        "status_code": 404,
-                    }
-            else:
-                json = get_json_response(None, self.client)
+            json = self.get_live_json(source_rid=None, source_name=None, **kwargs)
 
         result = json.get("result")
 
@@ -892,7 +910,7 @@ class Resource(BaseView):
 
         if self.error_msg:
             logger.error(self.error_msg)
-            json["message"] = f"{self.error_msg}: {url}"
+            json["message"] = f"{self.error_msg}: {self.url}"
 
         json["result"] = result
         return jsonify(**json)

@@ -64,6 +64,7 @@ class BaseClient(object):
         self.oauth1 = self.oauth_version == 1
         self.oauth2 = self.oauth_version == 2
         self.api_base_url = kwargs.get("api_base_url", "")
+        self.api_status_url = kwargs.get("api_status_url", "")
         self.api_status_resource = kwargs.get("api_status_resource", "status")
         self.debug = kwargs.get("debug")
         self.username = kwargs.get("username")
@@ -707,8 +708,8 @@ def get_auth_client(prefix, state=None, API_URL="", **kwargs):
         available_auths = {
             "oauth1": {"oauth_version": 1, "auth_client": OAuth1Client},
             "oauth2": {"oauth_version": 2, "auth_client": OAuth2Client, "state": state},
-            "service": {"oauth_version": 2, "auth_client": ServiceAuthClient},
-            "bearer": {"oauth_version": 1, "auth_client": BearerAuthClient},
+            "service": {"auth_client": ServiceAuthClient},
+            "bearer": {"auth_client": BearerAuthClient},
             "basic": {"auth_client": BasicAuthClient},
             "custom": {"auth_client": AuthClient},
         }

@@ -13,7 +13,6 @@ from decimal import Decimal
 
 import pygogo as gogo
 
-from app import providers
 from app.utils import fetch_choice
 from app.helpers import get_collection, get_provider, flask_formatter as formatter
 from app.mappings import USERS, POSITIONS, gen_task_mapping
@@ -97,11 +96,6 @@ class Xero(Resource):
 ###########################################################################
 # Resources
 ###########################################################################
-class Status(providers.Status):
-    def __init__(self, prefix=PREFIX, **kwargs):
-        super().__init__(prefix, **kwargs)
-
-
 class Projects(Xero):
     def __init__(self, prefix=PREFIX, **kwargs):
         fields = ["projectId", "name", "status"]

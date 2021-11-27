@@ -202,6 +202,9 @@ class Status(GSheets):
     def __init__(self, prefix=PREFIX, **kwargs):
         super().__init__(prefix, resource="status", **kwargs)
 
+    def get_json_response(self):
+        return {"result": {"access_token": self.gc.auth.token}}
+
 
 class Projects(GSheets):
     def __init__(self, prefix=PREFIX, **kwargs):

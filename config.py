@@ -133,15 +133,18 @@ class Config(object):
                 "api_base_url": "https://api.airtable.com/v0/{base_id}",
                 "token": getenv("AIRTABLE_API_KEY"),
                 "params": {"maxRecords": 2048, "pageSize": 100, "offset": None},
+                "api_status_resource": "Employee%20Hours",
                 "attrs": {"base_id": getenv("AIRTABLE_BASE_ID"), "subkey": "records"},
             },
         },
+        # https://documentation.mailgun.com/en/latest/api_reference.html
         "mailgun": {
             "auth_type": "basic",
             "basic": {
                 "api_base_url": "https://api.mailgun.net/v3/{domain}",
                 "username": "api",
                 "password": getenv("MAILGUN_API_KEY"),
+                "api_status_url": "https://api.mailgun.net/v3/domains",
                 "attrs": {"domain": MAILGUN_DOMAIN, "json_data": False},
             },
         },
@@ -150,6 +153,7 @@ class Config(object):
             "auth_type": "custom",
             "custom": {
                 "api_base_url": "https://api.postmarkapp.com",
+                "api_status_resource": "server",
                 "params": {"count": 100, "offset": 0},
                 "headers": {
                     "all": {
@@ -177,7 +181,7 @@ class Config(object):
             "auth_type": "oauth2",
             "oauth2": {
                 "api_base_url": "https://api.timelyapp.com/1.1/{account_id}",
-                "api_status_resource": "accounts",
+                "api_status_url": "https://api.timelyapp.com/1.1/accounts",
                 "authorization_base_url": "https://api.timelyapp.com/1.1/oauth/authorize",
                 "token_url": "https://api.timelyapp.com/1.1/oauth/token",
                 "refresh_url": "https://api.timelyapp.com/1.1/oauth/token",
@@ -225,7 +229,7 @@ class Config(object):
             "auth_type": "oauth2",
             "oauth2": {
                 "api_base_url": "https://api.xero.com/{domain}.xro/2.0",
-                "api_status_resource": "connections",
+                "api_status_url": "https://api.xero.com/connections",
                 "authorization_base_url": "https://login.xero.com/identity/connect/authorize",
                 "token_url": "https://identity.xero.com/connect/token",
                 "refresh_url": "https://identity.xero.com/connect/token",

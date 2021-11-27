@@ -9,7 +9,6 @@ from itertools import chain
 
 import pygogo as gogo
 
-from app import providers
 from app.routes.auth import Resource, process_result
 from app.routes.webhook import Webhook
 from app.helpers import flask_formatter as formatter
@@ -70,11 +69,6 @@ class Timely(Resource):
 ###########################################################################
 # Resources
 ###########################################################################
-class Status(providers.Status):
-    def __init__(self, prefix=PREFIX, **kwargs):
-        super().__init__(prefix, **kwargs)
-
-
 class Projects(Timely):
     def __init__(self, prefix=PREFIX, **kwargs):
         kwargs["fields"] = ["id", "name", "active", "billable", "client", "budget"]
