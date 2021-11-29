@@ -75,11 +75,11 @@ def store(prefix, collection_name, **kwargs):
 
 
 class BaseView(ProviderMixin, MethodView):
-    def __init__(self, prefix=None, resource="", **kwargs):
+    def __init__(self, prefix=None, resource=None, **kwargs):
         super().__init__(prefix)
 
         self.rkwargs = kwargs
-        self.resource = resource
+        self.resource = resource or ""
         self._dry_run = kwargs.get("dry_run")
         self._rid = kwargs.get("rid")
         self._use_default = kwargs.get("use_default")
@@ -405,7 +405,7 @@ class Auth(BaseView):
 
 
 class Resource(BaseView):
-    def __init__(self, prefix, resource=None, **kwargs):
+    def __init__(self, prefix, **kwargs):
         """ An API Resource.
 
         Args:
