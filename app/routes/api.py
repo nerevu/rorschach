@@ -7,8 +7,6 @@
 """
 import pygogo as gogo
 
-from functools import partial, wraps
-
 from flask import Blueprint, current_app as app
 from faker import Faker
 
@@ -21,9 +19,8 @@ from app.utils import (
     get_links,
 )
 
-from app import actions
-from app.routes import auth, Memoization, subscription
-from app.helpers import get_collection, get_member, flask_formatter as formatter
+from app.routes import auth, Memoization
+from app.helpers import get_collection, flask_formatter as formatter
 
 logger = gogo.Gogo(
     __name__, low_formatter=formatter, high_formatter=formatter, monolog=True
@@ -116,7 +113,6 @@ method_views = {
         "providers": AUTHENTICATION,
     },
     "onlineinvoices": {"collection": "OnlineInvoices", "providers": AUTHENTICATION},
-    "subscription": {"view": subscription.Subscription, "methods": ["GET", "POST"]},
 }
 
 for name, options in method_views.items():
@@ -135,27 +131,3 @@ for name, options in method_views.items():
             url += f"/<{param}>"
 
         add_rule(url, view_func=view_func, methods=methods)
-
-
-def gen_actions(activities=None, **kwargs):
-    activities = activities or []
-
-    for activity in activities:
-        action = get_member(actions, activity["action"], classes_only=False)
-
-        if activity.get("kwargs"):
-            wrapped = partial(action, **activity["kwargs"])
-            action = wraps(action)(wrapped)
-
-        yield (activity["name"], action)
-
-
-for prefix, options in WEBHOOKS.items():
-    view = get_collection(prefix, "Hooks")
-    _actions = dict(gen_actions(**options))
-    route_name = f"{prefix}-hooks".lower()
-    view_func = view.as_view(route_name, actions=_actions, **options)
-    url = f"{PREFIX}/{route_name}"
-    methods = ["GET", "POST"]
-    add_rule(url, view_func=view_func, methods=methods)
-    add_rule(f"{url}/<string:activity_name>", view_func=view_func, methods=methods)

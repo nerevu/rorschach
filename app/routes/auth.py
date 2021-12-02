@@ -30,8 +30,7 @@ from config import Config
 from app import cache
 from app.routes import ProviderMixin
 from app.authclient import get_auth_client, get_json_response, callback
-from app.utils import jsonify, get_links, fetch_bool, extract_field, extract_fields
-from app.mappings import reg_mapper
+from app.utils import jsonify, get_links, extract_field, extract_fields
 from app.helpers import singularize, get_collection, flask_formatter as formatter
 
 logger = gogo.Gogo(
@@ -41,7 +40,6 @@ logger.propagate = False
 
 APP_DIR = Path(__file__).parents[1]
 DATA_DIR = APP_DIR.joinpath("data")
-MAPPINGS_DIR = APP_DIR.joinpath("mappings")
 
 
 def process_result(result, fields=None, black_list=None, **kwargs):
@@ -265,9 +263,6 @@ class BaseView(ProviderMixin, MethodView):
     def rid(self, value):
         self._rid = value
 
-        if self.rid_hook:
-            self.rid_hook()
-
     @property
     def id(self):
         def_id = self.subresource_id if self.subresource else self.rid
@@ -280,10 +275,7 @@ class BaseView(ProviderMixin, MethodView):
         else:
             self.rid = value
 
-        if self.id_hook:
-            self.id_hook()
-
-    def get_dry_run_json(self, source_rid=None, source_name=None, **kwargs):
+    def get_dry_run_json(self, **kwargs):
         if self.id and self.dictify:
             try:
                 result = self.data.get(int(self.id), {})
@@ -294,8 +286,6 @@ class BaseView(ProviderMixin, MethodView):
                 result = next(x for x in self if str(self.id) == str(x[self.id_field]))
             except StopIteration:
                 result = {}
-        elif source_name or source_rid:
-            result = {}
         else:
             result = self.data
 
@@ -303,7 +293,7 @@ class BaseView(ProviderMixin, MethodView):
         ok = status_code == 200
         return {"result": result, "ok": ok, "status_code": status_code}
 
-    def get_live_json(self, source_rid=None, source_name=None, **kwargs):
+    def get_live_json(self, **kwargs):
         try:
             self.client.json = self.get_json_response()
         except NotImplementedError:
@@ -315,8 +305,6 @@ class BaseView(ProviderMixin, MethodView):
             else:
                 if self.url and self.id:
                     self.url += f"/{self.id}"
-                elif source_name or source_rid:
-                    self.url = None
 
             if self.url:
                 headers = {**self.headers, **kwargs.get("headers", {})}
@@ -353,7 +341,7 @@ class Auth(BaseView):
         if Status:
             json = Status().get_live_json()
         else:
-            self.resource = 'status'
+            self.resource = "status"
             json = self.get_live_json()
 
         client = self.client
@@ -432,7 +420,6 @@ class Resource(BaseView):
         self.lowered_subresource = self.subresource.lower()
 
         self.fields = kwargs.get("fields", [])
-        self.map_factory = kwargs.get("map_factory", reg_mapper)
         self.entry_factory = kwargs.get("entry_factory")
         self.eof = False
 
@@ -452,25 +439,15 @@ class Resource(BaseView):
         self.black_list = set(kwargs.get("black_list", []))
         self.populate = kwargs.get("populate")
         self.filterer = kwargs.get("filterer")
-        self.id_hook = kwargs.get("id_hook")
-        self.rid_hook = kwargs.get("rid_hook")
         self._result_key = kwargs.get("result_key", "result")
         self._dictify = kwargs.get("dictify")
         self._pos = kwargs.get("pos", 0)
-        self._mapper = {}
         self._data = None
-        self._mappings = None
         self._results = None
         self.error_msg = ""
 
         results_filename = kwargs.get("results_filename", "sync_results.json")
         self.results_p = DATA_DIR.joinpath(results_filename)
-
-        if self.id and self.id_hook:
-            self.id_hook()
-
-        if self.rid and self.rid_hook:
-            self.rid_hook()
 
     def __repr__(self):
         name = f"{self.lowered}-{self.lowered_resource}"
@@ -530,38 +507,6 @@ class Resource(BaseView):
                 dump(value, results_f, indent=2, sort_keys=True, ensure_ascii=False)
                 results_f.write("\n")
                 self._results = None
-
-    @property
-    def mappings(self):
-        if self._mappings is None:
-            if self.subresource:
-                mappings_filename = f"{self.lowered_subresource}.json"
-            else:
-                mappings_filename = f"{self.lowered_resource}.json"
-
-            self.mappings_p = MAPPINGS_DIR.joinpath(mappings_filename)
-            mappings_content = self.mappings_p.read_text()
-
-            try:
-                mappings = loads(mappings_content)
-            except JSONDecodeError as e:
-                mappings = []
-                self.error_msg = f"{self.mappings_p} {e}!"
-
-            if self.error_msg:
-                logger.error(self.error_msg)
-
-            self._mappings = mappings
-
-        return self._mappings
-
-    @mappings.setter
-    def mappings(self, value):
-        if value:
-            with self.mappings_p.open(mode="w+", encoding="utf8") as mappings_f:
-                dump(value, mappings_f, indent=2, sort_keys=True, ensure_ascii=False)
-                mappings_f.write("\n")
-                self._mappings = None
 
     @property
     def result_key(self):
@@ -654,25 +599,6 @@ class Resource(BaseView):
     def pos(self, value):
         self._values["pos"] = value
 
-    def mapper(self, prefix):
-        _mapper = self._mapper.get(prefix)
-
-        if _mapper is None:
-            if self.mappings and self.map_factory:
-                map_factory_args = (self.mappings, prefix.lower(), self.lowered)
-                _mapper = dict(self.map_factory(*map_factory_args))
-            else:
-                _mapper = {} if self.map_factory else None
-
-            self._mapper[prefix] = _mapper
-
-        return _mapper
-
-    def get_post_data(self, item, name, rid, prefix=None, **kwargs):
-        data = {}
-        data[self.name_field] = name
-        return data
-
     def create_model(self, data):
         model = {}
 
@@ -716,21 +642,6 @@ class Resource(BaseView):
 
         return model
 
-    def update_mappings(self, rid, prefix=None):
-        entry = {}
-
-        if self.entry_factory:
-            entry = self.entry_factory(self.id, rid, prefix=prefix)
-        elif rid:
-            entry[prefix.lower()] = rid
-            entry[self.lowered] = self.id
-
-        if entry:
-            self.mappings = self.mappings + [entry]
-
-            if self._mapper.get(prefix):
-                self._mapper[prefix] = None
-
     def update_data(self, **kwargs):
         if kwargs:
             entry = dict(extract_fields(kwargs, *self.fields))
@@ -741,102 +652,7 @@ class Resource(BaseView):
             else:
                 self.data = list(self.data) + [entry]
 
-    def map_rid(self, rid, prefix=None, **kwargs):
-        return self.mapper(prefix).get(rid)
-
-    def convert(self, source):
-        if self.subresource:
-            assert self.rid, (f"No rid entered for {self}.", 404)
-
-        try:
-            has_id_func = self.id_func
-        except AttributeError:
-            has_id_func = False
-
-        def converter(source_item, rid=None):
-            dry_run, self.dry_run = self.dry_run, True
-            source_name = dispaly_name = source_item[source.name_field]
-            ekwargs = {"prefix": source.prefix}
-
-            if rid:
-                dispaly_name += f" {rid}"
-            else:
-                rid = source_item[source.id_field]
-                ekwargs["source_name"] = source_name
-
-            dest_id = self.map_rid(rid, prefix=source.prefix)
-            needs_update = not dest_id
-            ekwargs.update({"_id": dest_id, "source_rid": rid})
-            dest_item = self.extract_model(**ekwargs)
-
-            args = (source_item, source_name, rid)
-
-            if has_id_func and not dest_item:
-                logger.info(
-                    f"{dispaly_name} not found in {self} cache. Select a mapping."
-                )
-                dest_id = self.id_func(*args, prefix=source.prefix)
-
-                if dest_id:
-                    dest_item = self.extract_model(dest_id, update_cache=True)
-            elif not dest_item:
-                message = f"Unable to present {self.prefix} {self.resource} "
-                message += "mapping choices without an id_func!"
-                logger.warning(message)
-
-            self.dry_run = dry_run
-
-            if not (dest_item or dry_run):
-                message = f"No mapping available for {dispaly_name} in {self}. "
-                message += f"Do you want to create a new {self.prefix} {self.resource}"
-
-                if self.subresource:
-                    message += f"-{self.subresource}"
-
-                message += " entry for it?"
-                answer = fetch_bool(message)
-
-                if answer == "y":
-                    data = self.get_post_data(
-                        *args, prefix=source.prefix, source_prefix=source.prefix
-                    )
-                else:
-                    data = {}
-
-                if data:
-                    dest_item = self.create_model(data)
-
-            if dry_run:
-                error_msg = f"Disable dry_run mode to create {self} mapping."
-            else:
-                error_msg = f"Manually add {dispaly_name} to {self}."
-
-            assert dest_item, (error_msg, 404)
-
-            if needs_update:
-                self.id = dest_item[self.id_field]
-                self.update_mappings(rid, prefix=source.prefix)
-                self.update_data(**dest_item)
-
-            return dest_item
-
-        return converter
-
-    @classmethod
-    def from_source(
-        cls, source_item, dry_run=True, rid=None, source_rid=None, **kwargs
-    ):
-        dest_prefix = kwargs["dest_prefix"]
-        dest_collection = get_collection(dest_prefix, cls.__name__)
-        dest = dest_collection(dry_run=dry_run, prefix=dest_prefix, rid=rid)
-
-        source_prefix = kwargs["source_prefix"]
-        source_collection = get_collection(source_prefix, cls.__name__)
-        source = source_collection(dry_run=dry_run, prefix=source_prefix)
-        converter = dest.convert(source)
-        return converter(source_item, rid=source_rid)
-
-    def get(self, _id=None, rid=None, source_rid=None, source_name=None, **kwargs):
+    def get(self, _id=None, rid=None, **kwargs):
         """ Get an API Resource.
         Kwargs:
             rid (str): The API resource_id.
@@ -860,21 +676,10 @@ class Resource(BaseView):
         self.id = self.values.pop("id", _id) or self.id
         self.rid = self.values.pop("rid", rid) or self.rid
 
-        if self.data and not self.id and source_name is not None:
-            try:
-                result = next(x for x in self if source_name == x[self.name_field])
-            except StopIteration:
-                pass
-            else:
-                self.id = result[self.id_field]
-
-        if not self.id and source_rid:
-            self.id = self.map_rid(source_rid, **kwargs)
-
         if self.dry_run:
-            json = self.get_dry_run_json(source_rid=None, source_name=None, **kwargs)
+            json = self.get_dry_run_json(**kwargs)
         else:
-            json = self.get_live_json(source_rid=None, source_name=None, **kwargs)
+            json = self.get_live_json(**kwargs)
 
         result = json.get("result")
 

@@ -5,103 +5,39 @@
 """ A script to manage development tasks """
 import sys
 
-from datetime import date, timedelta
 from os import path as p, environ
 from subprocess import call, check_call, CalledProcessError
 from urllib.parse import urlparse
-from itertools import count, chain
 from sys import exit
-from inspect import getmembers, isclass
 from functools import partial
 
 import pygogo as gogo
 import click
 
 from flask import current_app as app
-from click import Choice, DateTime
+from click import Choice
 from flask.cli import FlaskGroup, pass_script_info, with_appcontext
 from flask.config import Config as FlaskConfig
 
 from config import Config
 from worker import initialize
 
-from app import create_app, actions, check_settings
+from app import create_app, check_settings
 from app.helpers import (
     configure,
-    get_collection,
-    get_provider,
     email_hdlr,
     exception_hook,
-    log,
 )
 from app.authclient import get_auth_client, get_json_response
-from app.routes.auth import store as _store
-from app.providers.xero import ProjectTime, ProjectTasks
-
-# collections
-xero_project_tasks = ProjectTasks(dictify=True, dry_run=True)
-xero_project_time = ProjectTime(dictify=True, dry_run=True)
 
 BASEDIR = p.dirname(__file__)
 DEF_WHERE = ["app", "manage.py", "config.py"]
 AUTHENTICATION = Config.AUTHENTICATION
-ACTIONS = {
-    "invoice": actions.send_invoice_notification,
-    "charge": actions.send_invoice_notification,
-    "payment": actions.send_invoice_notification,
-}
-
-DEF_END = date.today().strftime("%Y-%m-%d")
-DEF_START = (date.today() - timedelta(days=Config.REPORT_DAYS)).strftime("%Y-%m-%d")
-
-
-def gen_collection_names(prefixes):
-    for prefix in prefixes:
-        provider = get_provider(prefix)
-
-        for member in getmembers(provider, isclass):
-            yield member[0]
-
-
-COLLECTION_NAMES = set(gen_collection_names(AUTHENTICATION))
-
-
-# mappings
-sync_results = xero_project_time.results
-added_events = set()
-skipped_events = set()
-patched_events = set()
-unpatched_events = set()
 
 logger = gogo.Gogo(__name__, high_hdlr=email_hdlr).logger
 logger.propagate = False
 
-
-def save_results(dry_run=False, **kwargs):
-    if not dry_run:
-        logger.debug("Saving results…\n")
-        all_events = set(
-            chain(added_events, skipped_events, patched_events, unpatched_events)
-        )
-
-        for event in all_events:
-            sync_results[str(event)] = {
-                "added": event in added_events,
-                "patched": event in patched_events,
-            }
-
-        xero_project_time.results = sync_results
-
-
 sys.excepthook = partial(exception_hook, debug=True)
-
-
-def gen_collections(collection):
-    for prefix in AUTHENTICATION:
-        Collection = get_collection(prefix, collection)
-
-        if Collection:
-            yield (prefix, Collection)
 
 
 @click.group(cls=FlaskGroup, create_app=create_app)
@@ -136,115 +72,6 @@ def help(ctx):
     commands = ", ".join(manager.list_commands(ctx))
     print("Usage: manage <command> [OPTIONS]")
     print(f"commands: {commands}")
-
-
-@manager.command()
-@click.option(
-    "-P",
-    "--source-prefix",
-    type=Choice(["timely", "airtable"], case_sensitive=False),
-    default="timely",
-)
-@click.option(
-    "-c",
-    "--collection-name",
-    type=Choice(COLLECTION_NAMES, case_sensitive=False),
-    default="users",
-)
-def prune(source_prefix, collection_name, **kwargs):
-    """Remove duplicated and outdated mappings entries"""
-    provider = get_provider(source_prefix)
-    added_names = set()
-    collection_name = collection_name.lower()
-    is_tasks = collection_name == "projecttasks"
-
-    project_tasks = provider.ProjectTasks(dictify=True, dry_run=True)
-    XeroCollection = get_collection("xero", collection_name)
-    mappings = XeroCollection(dictify=True, dry_run=True).mappings
-    COLLECTIONS = dict(gen_collections(collection_name))
-
-    def gen_items():
-        # if there are dupes, keep the most recent
-        for item in reversed(mappings):
-            if is_tasks:
-                if source_prefix not in item:
-                    continue
-
-                project_id = item[source_prefix]["project"]
-                task_id = item[source_prefix]["task"]
-                project_tasks.rid = project_id
-                has_task = task_id in project_tasks.data
-
-                if not has_task:
-                    continue
-
-                xero_project_id = item["xero"]["project"]
-                xero_project_tasks.rid = xero_project_id
-                xero_task_ids = {t["taskId"] for t in xero_project_tasks}
-                valid = item["xero"]["task"] in xero_task_ids
-            else:
-                for prefix in AUTHENTICATION:
-                    if prefix not in COLLECTIONS:
-                        continue
-
-                    Collection = COLLECTIONS[prefix]
-                    data = Collection(prefix, dictify=True, dry_run=True).data
-
-                    if prefix.lower() not in item:
-                        continue
-
-                    valid = str(item[prefix.lower()]) in data
-
-                    if not valid:
-                        continue
-
-            if valid:
-                to_check = item["xero"]
-
-                if is_tasks:
-                    to_check = (to_check["task"], to_check["project"])
-
-                if to_check not in added_names:
-                    added_names.add(to_check)
-                    yield item
-
-    mappings = list(reversed(list(gen_items())))
-
-
-@manager.command()
-@click.option(
-    "-P",
-    "--prefix",
-    type=Choice(["timely", "xero", "airtable"], case_sensitive=False),
-    default="xero",
-)
-@click.option(
-    "-c",
-    "--collection-name",
-    type=Choice(COLLECTION_NAMES, case_sensitive=False),
-    default="users",
-)
-@click.option("-i", "--rid", help="resource ID")
-@click.option("-d", "--dictify/--no-dictify", default=False)
-@click.option("-e", "--debug", help="Debug mode", is_flag=True)
-@click.option("-h", "--headless/--no-headless", default=False)
-@click.option(
-    "-s",
-    "--start",
-    help="the start date",
-    type=DateTime(["%Y-%m-%d", "%m/%d/%y"]),
-    default=DEF_START,
-)
-@click.option(
-    "-E",
-    "--end",
-    help="the end date",
-    type=DateTime(["%Y-%m-%d", "%m/%d/%y"]),
-    default=DEF_END,
-)
-def store(prefix, collection_name, **kwargs):
-    """Save user info to cache"""
-    _store(prefix, collection_name, **kwargs)
 
 
 @manager.command()
@@ -337,170 +164,6 @@ def test_oauth(method=None, resource=None, project_id=None, **kwargs):
 
     if json.get("result"):
         print(json["result"])
-
-
-@manager.command()
-@click.option(
-    "-P",
-    "--source-prefix",
-    type=Choice(["timely", "airtable"], case_sensitive=False),
-    default="timely",
-)
-@click.option("-p", "--project-id", help="The Timely Project ID", default="2389295")
-@click.option(
-    "-S", "--start-pos", help="The Timely event start position", type=int, default=0
-)
-@click.option("-D", "--end-pos", help="The Timely event end position", type=int)
-@click.option("-e", "--debug", help="Debug mode", is_flag=True)
-@click.option("-d", "--dry-run/--no-dry-run", help="Perform a dry run", default=False)
-@click.option(
-    "-s",
-    "--start",
-    help="the start date",
-    type=DateTime(["%Y-%m-%d", "%m/%d/%y"]),
-    default=DEF_START,
-)
-@click.option(
-    "-E",
-    "--end",
-    help="the end date",
-    type=DateTime(["%Y-%m-%d", "%m/%d/%y"]),
-    default=DEF_END,
-)
-def sync(source_prefix, **kwargs):
-    """Sync Timely/Airtable events with Xero time entries"""
-    sys.excepthook = partial(exception_hook, debug=True, callback=save_results)
-    provider = get_provider(source_prefix)
-    message = f"{source_prefix} Project {kwargs['project_id']}"
-    logger.info(f"\n{message}")
-    logger.info("—" * len(message))
-
-    if kwargs["end_pos"]:
-        _range = range(kwargs["start_pos"], kwargs["end_pos"])
-    else:
-        _range = count(kwargs["start_pos"])
-
-    logger.info("Adding events…")
-
-    for pos in _range:
-        result = actions.add_xero_time(source_prefix, position=pos, **kwargs)
-        event_id = result.get("event_id")
-
-        if result["ok"] or result["conflict"]:
-            added_events.add(str(event_id))
-            message = result.get("message") or f"Added {source_prefix} event {event_id}"
-            logger.info(f"- {message}")
-        else:
-            message = result.get("message") or "Unknown error!"
-
-            if result["eof"]:
-                break
-            elif event_id:
-                skipped_events.add(event_id)
-
-            logger.info(f"- {message}")
-
-            if result["status_code"] == 401:
-                exit(1)
-
-        save_results(**kwargs)
-
-    num_added_events = len(added_events)
-    num_skipped_events = len(skipped_events)
-    num_total_events = num_added_events + num_skipped_events
-
-    if added_events:
-        logger.info("\nPatching events…")
-
-    events = provider.Time(dictify=True, dry_run=True)
-    tasks = provider.Tasks(dictify=True, dry_run=True)
-    users = provider.Users(dictify=True, dry_run=True)
-    projects = provider.Projects(dictify=True, dry_run=True)
-
-    for event_id in added_events:
-        result = actions.mark_billed(source_prefix, event_id, **kwargs)
-        message = result.get("message")
-
-        if result["ok"] or result["conflict"]:
-            patched_events.add(event_id)
-            event = events.extract_model(event_id)
-
-            if message:
-                logger.info(f"- {message}")
-            elif event:
-                user_id = event["user.id"]
-                user = users.extract_model(user_id)
-                user_name = user.get(users.name_field, "Unknown")
-
-                project_id = event["project.id"]
-                project = projects.extract_model(project_id)
-                project_name = project.get(projects.name_field, "Unknown")
-
-                label_id = event["label_id"]
-                task = tasks.extract_model(label_id)
-                task_name = task.get(tasks.name_field, "Unknown").split(" ")[0]
-
-                event_time = event["duration.total_minutes"]
-                event_day = event["day"]
-                msg = f"- {user_name} did {event_time}m of {task_name} on {event_day} "
-                msg += f"for {project_name}"
-                logger.debug(msg)
-            else:
-                msg = f"- Event {event_id} patched, but not found in {events.data_p}."
-                logger.info(msg)
-        else:
-            unpatched_events.add(event_id)
-            logger.info(f"- {message or 'Unknown error!'}")
-
-        save_results(**kwargs)
-
-    num_patched_events = len(patched_events)
-
-    msg = f"Of {num_total_events} events: {num_added_events} added and "
-    msg += f"{num_patched_events} patched"
-    logger.info("-" * len(msg))
-    logger.info(msg)
-    logger.info("-" * len(msg))
-    num_errors = len(skipped_events) + len(unpatched_events)
-    exit(num_errors)
-
-
-@manager.command()
-@click.argument("resource-id")
-@click.option(
-    "-a",
-    "--activity",
-    type=Choice(["invoice", "charge", "payment"], case_sensitive=False),
-    help="The activity to perform.",
-    default="invoice",
-)
-@click.option(
-    "-e",
-    "--sender-email",
-    help="The sender's email address",
-    default="billing@nerevu.com",
-)
-@click.option(
-    "-n", "--sender-name", help="The sender's name", default="Nerevu Billing Team"
-)
-@click.option("-r", "--recipient-email", help="The recipient's email address")
-@click.option("-m", "--recipient-name", help="The recipient's name")
-@click.option("-c", "--copied-email", help="The cc'd email address")
-@click.option("-t", "--template-id", help="The Postmark template ID")
-@click.option("-e", "--debug", help="Debug mode", is_flag=True)
-@click.option("-d", "--dry-run/--no-dry-run", help="Perform a dry run", default=False)
-@click.option(
-    "-p", "--prompt/--no-prompt", help="Prompt before sending email", default=False
-)
-def notify(resource_id, activity, **kwargs):
-    """Send Xero invoice notification"""
-    action = ACTIONS[activity]
-    json = action(resource_id, **kwargs)
-
-    try:
-        log(**json, exit_on_completion=True)
-    except Exception:
-        pass
 
 
 @manager.command()
