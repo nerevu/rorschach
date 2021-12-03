@@ -12,6 +12,7 @@ from functools import partial
 from json import JSONDecodeError, load
 from pathlib import Path
 from tempfile import NamedTemporaryFile
+from graphlib import TopologicalSorter
 
 import requests
 import pygogo as gogo
@@ -30,7 +31,7 @@ from flask import (
 
 from oauthlib.oauth2 import TokenExpiredError
 from google.oauth2.service_account import Credentials
-from google.auth import transport
+from google.auth.transport.requests import Request
 
 from requests_oauthlib import OAuth1Session, OAuth2Session
 from requests_oauthlib.oauth1_session import TokenRequestDenied
@@ -594,8 +595,6 @@ class ServiceAuthClient(OAuth2BaseClient):
         self.client_email = None
         self.token_uri = None
         self.keyfile_path = keyfile_path
-        self.worksheet_name = kwargs.get("worksheet_name")
-        self.sheet_id = kwargs.get("sheet_id")
         self.restore()
         self._init_credentials()
 
@@ -675,7 +674,7 @@ class ServiceAuthClient(OAuth2BaseClient):
     def renew_token(self, source):
         logger.debug(f"renew {self} from {source}")
         logger.info("Renewing token using credentials refresh…")
-        self.credentials.refresh(transport.requests.Request())
+        self.credentials.refresh(Request())
 
         if self.verified:
             self.token = self._token
@@ -693,55 +692,68 @@ class ServiceAuthClient(OAuth2BaseClient):
         return self
 
 
-def get_auth_client(prefix, state=None, API_URL="", **kwargs):
-    auth_client_name = f"{prefix}_auth_client"
+def get_auth(prefix, auth_key=None, **kwargs):
+    authentication = kwargs["AUTHENTICATION"].get(prefix.lower(), {})
 
-    available_auths = {
-        "oauth1": {"oauth_version": 1, "auth_client": OAuth1Client},
-        "oauth2": {"oauth_version": 2, "auth_client": OAuth2Client, "state": state},
-        "service": {"auth_client": ServiceAuthClient},
-        "bearer": {"auth_client": BearerAuthClient},
-        "basic": {"auth_client": BasicAuthClient},
-        "custom": {"auth_client": AuthClient},
-    }
+    if not auth_key:
+        graph = {k: {v.get("parent")} for k, v in authentication.items()}
+        sorted = tuple(TopologicalSorter(graph).static_order())
+        auth_key = sorted[-1]
+
+    auth_kwargs = authentication[auth_key]
+
+    if auth_kwargs.get("parent"):
+        auth_kwargs = {**authentication[auth_kwargs["parent"]], **auth_kwargs}
+
+    return (auth_key, auth_kwargs)
+
+
+def get_auth_client(prefix, state=None, API_URL="", **kwargs):
+    auth_key, auth_kwargs = get_auth(prefix, **kwargs)
+    auth_client_name = f"{prefix}_{auth_key}_auth_client"
 
     if auth_client_name not in g:
-        authentication = kwargs["AUTHENTICATION"].get(prefix.lower(), {})
+        available_auths = {
+            "oauth1": {"oauth_version": 1, "auth_client": OAuth1Client},
+            "oauth2": {"oauth_version": 2, "auth_client": OAuth2Client, "state": state},
+            "service": {"auth_client": ServiceAuthClient},
+            "bearer": {"auth_client": BearerAuthClient},
+            "basic": {"auth_client": BasicAuthClient},
+            "custom": {"auth_client": AuthClient},
+        }
 
-        for auth_key, auth_kwargs in authentication.items():
-            auth_type = auth_kwargs["auth_type"]
+        auth_type = auth_kwargs["auth_type"]
+        extra_auth_kwargs = available_auths[auth_type]
+        MyAuthClient = extra_auth_kwargs.pop("auth_client")
+        auth_kwargs.update(extra_auth_kwargs)
+        redirect_uri = auth_kwargs.get("redirect_uri") or ""
 
-            extra_auth_kwargs = available_auths[auth_type]
-            MyAuthClient = extra_auth_kwargs.pop("auth_client")
-            auth_kwargs.update(extra_auth_kwargs)
-            redirect_uri = auth_kwargs.get("redirect_uri") or ""
+        if redirect_uri.startswith("/") and API_URL:
+            auth_kwargs["redirect_uri"] = f"{API_URL}{redirect_uri}"
 
-            if redirect_uri.startswith("/") and API_URL:
-                auth_kwargs["redirect_uri"] = f"{API_URL}{redirect_uri}"
+        if "debug" in kwargs:
+            auth_kwargs["debug"] = kwargs["debug"]
 
-            if "debug" in kwargs:
-                auth_kwargs["debug"] = kwargs["debug"]
+        if "headless" in kwargs:
+            auth_kwargs["headless"] = kwargs["headless"]
 
-            if "headless" in kwargs:
-                auth_kwargs["headless"] = kwargs["headless"]
+        client = MyAuthClient(prefix, **auth_kwargs)
+        client.attrs = auth_kwargs.get("attrs", {})
+        client.params = auth_kwargs.get("params", {})
+        client.param_map = auth_kwargs.get("param_map", {})
+        client.verb_map = auth_kwargs.get("verb_map", {})
+        client.method_map = auth_kwargs.get("method_map", {})
+        client.tenant_path = auth_kwargs.get("tenant_path")
 
-            client = MyAuthClient(prefix, **auth_kwargs)
-            client.attrs = auth_kwargs.get("attrs", {})
-            client.params = auth_kwargs.get("params", {})
-            client.param_map = auth_kwargs.get("param_map", {})
-            client.verb_map = auth_kwargs.get("verb_map", {})
-            client.method_map = auth_kwargs.get("method_map", {})
-            client.tenant_path = auth_kwargs.get("tenant_path")
+        try:
+            restore_from_headless = client.restore_from_headless
+        except AttributeError:
+            restore_from_headless = False
 
-            try:
-                restore_from_headless = client.restore_from_headless
-            except AttributeError:
-                restore_from_headless = False
-
-            if restore_from_headless:
-                logger.debug("restoring client from headless session")
-                client.restore()
-                client.renew_token("headless")
+        if restore_from_headless:
+            logger.debug("restoring client from headless session")
+            client.restore()
+            client.renew_token("headless")
 
         setattr(g, auth_client_name, client)
 

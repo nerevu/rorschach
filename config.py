@@ -124,6 +124,210 @@ class Config(object):
     MAILGUN_SMTP_PASSWORD = getenv("MAILGUN_SMTP_PASSWORD")
     REQUIRED_PROD_SETTINGS += ["MAILGUN_DOMAIN", "MAILGUN_SMTP_PASSWORD"]
 
+    RESOURCES = {
+        "airtable": {
+            "Table": {"auth_key": "bearer", "resource": getenv("AIRTABLE_TABLE")}
+        },
+        "gsheets": {
+            "Table": {
+                "collection": "Worksheet",
+                "use_default": True,
+                "auth_key": "service",
+                "resource": getenv("GSHEETS_SHEETNAME"),
+                "rid": getenv("GSHEETS_SHEET_ID"),
+                "subresource": getenv("GSHEETS_WORKSHEET_NAME"),
+            }
+        },
+        "mailgun": {
+            "Domains": {"auth_key": "account", "subkey": "domain"},
+            "EmailLists": {
+                "auth_key": "server",
+                "id_field": "address",
+                "resource": "lists",
+                "subkey": "list",
+                "attrs": {
+                    "list_prefix": getenv("MAILGUN_LIST_PREFIX"),
+                    # "rid": "{list_prefix}@{domain}"
+                },
+            },
+            "EmailListMembers": {
+                "auth_key": "account",
+                "parent": "EmailLists",
+                "subresource": "members",
+                "attrs": {
+                    "subkey": {"conditional": "rid", "result": ["items", "list"]}
+                },
+            },
+            "Email": {
+                "auth_key": "account",
+                "id_field": "MessageID",
+                "resource": "messages",
+                "attrs": {"admin_email": ADMIN.email, "admin_name": ADMIN.name},
+                "methods": ["POST"],
+            },
+        },
+        "postmark": {
+            "Domains": {
+                "auth_key": "account",
+                "subkey": "Domains",
+                "id_field": "ID",
+                "name_field": "Name",
+            },
+            "Templates": {
+                "auth_key": "server",
+                "subkey": "Templates",
+                "id_field": "TemplateId",
+                "name_field": "Name",
+            },
+            "Email": {
+                "auth_key": "account",
+                "id_field": "MessageID",
+                "methods": ["POST"],
+                "name_field": "To",
+                "attrs": {
+                    "template_id": None,
+                    "sender_name": ADMIN.name,
+                    "sender_email": ADMIN.email,
+                },
+                "props": {"sender": "{sender_name} <{sender_email}>"},
+            },
+        },
+        "timely": {
+            "Projects": {
+                "auth_key": "oauth2",
+                "fields": [
+                    "id",
+                    "name",
+                    "active",
+                    "billable",
+                    "client.id",
+                    "client.name",
+                    "budget",
+                ],
+                "methods": ["GET", "POST"],
+            },
+            "Time": {
+                "auth_key": "oauth2",
+                "resource": "events",
+                "fields": [
+                    "id",
+                    "day",
+                    "duration.total_minutes",
+                    "label_ids",
+                    "project.id",
+                    "user.id",
+                    "note",
+                    "billed",
+                ],
+                "methods": ["GET", "PATCH"],
+            },
+            "ProjectTime": {
+                "auth_key": "oauth2",
+                "resource": "projects",
+                "subresource": "events",
+                "fields": [
+                    "id",
+                    "day",
+                    "duration.total_minutes",
+                    "label_ids",
+                    "project.id",
+                    "user.id",
+                    "note",
+                    "billed",
+                ],
+                "methods": ["GET", "POST"],
+            },
+            "ProjectTasks": {
+                "auth_key": "oauth2",
+                "subkey": "labels",
+                "resource": "projects",
+                "use_default": True,
+                "methods": ["GET", "POST"],
+            },
+            "Tasks": {
+                "auth_key": "oauth2",
+                "resource": "labels",
+                "fields": ["id", "name", "children"],
+            },
+            "Users": {"auth_key": "oauth2", "fields": ["id", "name"]},
+            "Contacts": {
+                "auth_key": "oauth2",
+                "resource": "clients",
+                "fields": ["id", "name"],
+            },
+        },
+        "xero": {
+            "Projects": {
+                "auth_key": "project",
+                "fields": ["projectId", "name", "status"],
+                "id_field": "projectId",
+                "subkey": "items",
+                "methods": ["GET", "POST"],
+            },
+            "Users": {
+                "auth_key": "project",
+                "resource": "projectsusers",
+                "fields": ["userId", "name"],
+                "id_field": "userId",
+                "subkey": "items",
+            },
+            "Contacts": {
+                "auth_key": "api",
+                "fields": ["ContactID", "Name", "FirstName", "LastName"],
+                "id_field": "ContactID",
+                "subkey": "Contacts",
+                "resource": "Contacts",
+            },
+            "Payments": {
+                "auth_key": "api",
+                "id_field": "PaymentID",
+                "subkey": "Payments",
+                "resource": "Payments",
+            },
+            "Invoices": {
+                "auth_key": "api",
+                "id_field": "InvoiceID",
+                "subkey": "Invoices",
+                "name_field": "InvoiceNumber",
+                "resource": "Invoices",
+                "methods": ["GET", "POST"],
+            },
+            "OnlineInvoices": {
+                "auth_key": "api",
+                "id_field": "OnlineInvoiceUrl",
+                "subkey": "OnlineInvoices",
+                "resource": "Invoices",
+                "subresource": "OnlineInvoice",
+            },
+            "Inventory": {
+                "auth_key": "api",
+                "fields": ["ItemID", "Name", "Code", "Description", "SalesDetails"],
+                "id_field": "ItemID",
+                "subkey": "Items",
+                "name_field": "Name",
+                "resource": "Items",
+            },
+            "ProjectTasks": {
+                "auth_key": "project",
+                "fields": ["taskId", "name", "status", "rate.value", "projectId"],
+                "id_field": "taskId",
+                "resource": "projects",
+                "subkey": "items",
+                "subresource": "tasks",
+                "methods": ["GET", "POST"],
+            },
+            "ProjectTime": {
+                "auth_key": "project",
+                "attrs": {"event_pos": 0, "event_id": ""},
+                "id_field": "timeEntryId",
+                "resource": "projects",
+                "subkey": "items",
+                "subresource": "time",
+                "methods": ["GET", "POST"],
+            },
+        },
+    }
+
     # Authentication
     AUTHENTICATION = {
         # https://airtable.com/apph4M6HDXw0rWaYW/api/docs

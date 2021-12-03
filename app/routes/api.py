@@ -32,7 +32,89 @@ fake = Faker()
 ROUTE_TIMEOUT = Config.ROUTE_TIMEOUT
 PREFIX = Config.API_URL_PREFIX
 AUTHENTICATION = Config.AUTHENTICATION
+RESOURCES = Config.RESOURCES
 WEBHOOKS = Config.WEBHOOKS
+
+METHOD_VIEWS = {
+    "memoization": {
+        "view": Memoization,
+        "params": ["string:path"],
+        "methods": ["GET", "DELETE"],
+    },
+    "callback": {"view": auth.Callback, "providers": AUTHENTICATION},
+    "auth": {
+        "view": auth.Auth,
+        "providers": AUTHENTICATION,
+        "methods": ["GET", "PATCH"],
+    },
+}
+
+BASE = auth.Resource
+
+add_rule = blueprint.add_url_rule
+
+
+def create_route(view, prefix, name, *args, **kwargs):
+    route_name = f"{prefix}-{name}".lower() if prefix else name
+    view_func = view.as_view(route_name, prefix)
+    url = f"{PREFIX}/{route_name}"
+
+    for param in kwargs.get("params", []):
+        url += f"/<{param}>"
+
+    add_rule(url, view_func=view_func, methods=args)
+
+
+def _format(value, **kwargs):
+    try:
+        return value.format(**kwargs)
+    except AttributeError:
+        return value
+
+
+def get_value(value, **kwargs):
+    try:
+        func = value.get("func")
+    except AttributeError:
+        func = args = key = conditional = result = None
+    else:
+        args = value.get("args", [])
+        key = value.get("key")
+        conditional = value.get("conditional")
+        result = value.get("result")
+
+    if func:
+        _attr_value = _format(func, **kwargs)(*(_format(a, **kwargs) for a in args))
+        attr_value = _attr_value[_format(key, **kwargs)] if key else _attr_value
+    elif conditional and _format(conditional, **kwargs):
+        attr_value = _format(result[0], **kwargs)
+    elif conditional:
+        attr_value = _format(result[1], **kwargs)
+    else:
+        attr_value = _format(value, **kwargs)
+
+    return attr_value
+
+
+def create_class(cls_name, *bases, lookup=None, **kwargs):
+    lookup = lookup or {}
+    attrs = {}
+    base = bases[0]
+
+    try:
+        lookup.update(base._registry)
+    except AttributeError:
+        pass
+
+    for attr_name, value in kwargs.pop("attrs", {}).items():
+        attrs[attr_name] = get_value(value, **lookup)
+
+    lookup.update(attrs)
+
+    for prop_name, value in kwargs.pop("props", {}).items():
+        attrs[prop_name] = property(get_value(value, **lookup))
+
+    return type(cls_name, bases, attrs, **kwargs)
 
 
 ###########################################################################
@@ -63,71 +145,38 @@ def ipsum():
     return jsonify(**json)
 
 
-add_rule = blueprint.add_url_rule
-
-method_views = {
-    "memoization": {
-        "view": Memoization,
-        "params": ["string:path"],
-        "methods": ["GET", "DELETE"],
-    },
-    "callback": {"view": auth.Callback, "providers": AUTHENTICATION},
-    "auth": {
-        "view": auth.Auth,
-        "providers": AUTHENTICATION,
-        "methods": ["GET", "PATCH"],
-    },
-    "status": {"collection": "Status", "providers": AUTHENTICATION},
-    "projects": {
-        "collection": "Projects",
-        "providers": AUTHENTICATION,
-        "methods": ["GET", "POST"],
-    },
-    "contacts": {"collection": "Contacts", "providers": AUTHENTICATION},
-    "users": {"collection": "Users", "providers": AUTHENTICATION},
-    "inventory": {"collection": "Inventory", "providers": AUTHENTICATION},
-    "tasks": {"collection": "Tasks", "providers": AUTHENTICATION},
-    "time": {
-        "collection": "Time",
-        "providers": AUTHENTICATION,
-        "methods": ["GET", "PATCH"],
-    },
-    "projecttasks": {
-        "collection": "ProjectTasks",
-        "providers": AUTHENTICATION,
-        "methods": ["GET", "POST"],
-    },
-    "projecttime": {
-        "collection": "ProjectTime",
-        "providers": AUTHENTICATION,
-        "methods": ["GET", "POST"],
-    },
-    "email": {"collection": "Email", "providers": AUTHENTICATION, "methods": ["POST"]},
-    "invoices": {
-        "collection": "Invoices",
-        "providers": AUTHENTICATION,
-        "methods": ["GET", "POST"],
-    },
-    "invoicenotification": {
-        "collection": "InvoiceNotification",
-        "providers": AUTHENTICATION,
-    },
-    "onlineinvoices": {"collection": "OnlineInvoices", "providers": AUTHENTICATION},
-}
-
-for name, options in method_views.items():
+for name, options in METHOD_VIEWS.items():
     for prefix in options.get("providers", [None]):
-        view = options.get("view", get_collection(prefix, **options))
-
-        if not view:
-            continue
-
-        route_name = f"{prefix}-{name}".lower() if prefix else name
-        view_func = view.as_view(route_name, prefix)
+        view = get_collection(prefix, **options) or options.get("view")
         methods = options.get("methods", ["GET"])
-        url = f"{PREFIX}/{route_name}"
+        create_route(view, prefix, name, *methods)
 
-        for param in options.get("params", []):
-            url += f"/<{param}>"
 
-        add_rule(url, view_func=view_func, methods=methods)
+for prefix, classes in RESOURCES.items():
+    view = create_class("Status", BASE, prefix=prefix, resource="status")
+    create_route(view, prefix, "status", "GET")
+    auth = AUTHENTICATION[prefix]
+
+    for cls_name, kwargs in classes.items():
+        if "collection" in kwargs:
+            collection = kwargs.pop("collection")
+            base = get_collection(prefix, collection=collection)
+        else:
+            base = kwargs.pop("base", BASE)
+
+        hidden = kwargs.pop("hidden", False)
+        auth_key = kwargs["auth_key"]
+        lookup = auth[auth_key].get("attrs", {})
+
+        if auth_parent := auth[auth_key].get("parent"):
+            attrs = auth[auth_parent].get("attrs", {})
+            [lookup.setdefault(k, v) for k, v in attrs.items()]
+
+        kwargs.setdefault("resource", cls_name.lower())
+        resource = kwargs.get("resource")
+        methods = kwargs.pop("methods", ["GET"])
+
+        view = create_class(cls_name, base, lookup=lookup, prefix=prefix, **kwargs)
+
+        if not hidden:
+            create_route(view, prefix, cls_name.lower(), *methods)
