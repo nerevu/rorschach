@@ -417,7 +417,11 @@ def gen_links(rules):
 
     Examples:
         >>> gen_links(rules)
-        {"rel": "data", "href": f"https://alegna-api.nerevu.com/v1/data", "method": "GET"}
+        {
+            "rel": "data",
+            "href": f"https://alegna-api.nerevu.com/v1/data",
+            "method": "GET"
+        }
     """
     url_root = get_url_root()
 

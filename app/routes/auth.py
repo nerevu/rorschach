@@ -83,6 +83,8 @@ class BaseView(ProviderMixin, MethodView):
         self._use_default = kwargs.get("use_default")
         self.subresource = kwargs.get("subresource", "")
         self.subresource_id = kwargs.get("subresource_id")
+        self.lowered_resource = self.resource.lower()
+        self.lowered_subresource = self.subresource.lower()
         self.url = None
 
         params = kwargs.get("params", {})
@@ -322,6 +324,37 @@ class BaseView(ProviderMixin, MethodView):
 
         return json
 
+    def patch_live_json(self, data=None, **kwargs):
+        try:
+            self.client.json = self.patch_response(**data)
+        except NotImplementedError:
+            try:
+                self.url = self.api_url
+            except AssertionError as err:
+                self.url = None
+                self.error_msg, status_code = err.args[0]
+            else:
+                if self.url and self.id:
+                    self.url += f"/{self.id}"
+
+            if self.url:
+                headers = {**self.headers, **kwargs.get("headers", {})}
+                method = self.method_map.get("patch", "patch")
+                rkwargs = {"headers": headers, "method": method, **app.config}
+                rkwargs[self.data_key] = dumps(data) if self.dump_data else data
+                json = get_json_response(self.url, self.client, **rkwargs)
+            else:
+                json = {
+                    "message": "No API url provided!",
+                    "result": {},
+                    "ok": False,
+                    "status_code": 404,
+                }
+        else:
+            json = get_json_response(None, self.client)
+
+        return json
+
 
 class Callback(BaseView):
     def get(self):
@@ -411,14 +444,15 @@ class Resource(BaseView):
             >>> kwargs = {"subkey": "person"}
             >>> cloze_person = Resource("CLOZE", "people", **kwargs)
             >>>
-            >>> params = {"start_date: start, "end_date": end, "columns": "name,net_amount"}
+            >>> params = {
+            ...     "start_date: start,
+            ...     "end_date": end,
+            ...     "columns": "name,net_amount"
+            ... }
             >>> kwargs = {"params": params}
             >>> qb_transactions = Resource("qb", "TransactionList", **kwargs)
         """
         super().__init__(prefix, **kwargs)
-        self.lowered_resource = self.resource.lower()
-        self.lowered_subresource = self.subresource.lower()
-
         self.fields = kwargs.get("fields", [])
         self.entry_factory = kwargs.get("entry_factory")
         self.eof = False
@@ -652,6 +686,24 @@ class Resource(BaseView):
             else:
                 self.data = list(self.data) + [entry]
 
+    def filter_result(self, *args):
+        if self.filterer and not self.id:
+            result = list(filter(self.filterer, args))
+        else:
+            result = args
+
+        return result
+
+    def parse_result(self, *args):
+        try:
+            result = args[self.pos]
+        except (IndexError, TypeError):
+            self.eof = True
+        else:
+            self.id = result.get(self.id_field)
+
+        return result
+
     def get(self, _id=None, rid=None, **kwargs):
         """ Get an API Resource.
         Kwargs:
@@ -685,30 +737,18 @@ class Resource(BaseView):
 
         if self.dry_run:
             result = listize(result)
-
-            if self.filterer and not self.id:
-                result = list(filter(self.filterer, result))
+            result = self.filter_result(*result)
         elif json["ok"]:
             if self.subkey:
-                try:
-                    result = result.get(self.subkey, result)
-                except AttributeError:
-                    pass
+                result = result.get(self.subkey, result)
 
             result = listize(result)
             pkwargs = {"black_list": self.black_list}
             result = list(self.processor(result, self.fields, **pkwargs))
-
-            if self.filterer and not self.id:
-                result = list(filter(self.filterer, result))
+            result = self.filter_result(*result)
 
             if self.use_default and not self.id:
-                try:
-                    result = result[self.pos]
-                except (IndexError, TypeError):
-                    self.eof = True
-                else:
-                    self.id = result.get(self.id_field)
+                result = self.parse_result(*result)
 
             if result is not None and kwargs.get("update_cache") and not self.id:
                 self.data = result
@@ -826,17 +866,7 @@ class Resource(BaseView):
                 "message": f"Disable dry_run mode to PATCH {self}.",
             }
         else:
-            try:
-                self.client.json = self.patch_response(**data)
-            except NotImplementedError:
-                url = f"{self.api_url}/{self.id}"
-                headers = {**self.headers, **kwargs.get("headers", {})}
-                method = self.method_map.get("patch", "patch")
-                rkwargs = {"headers": headers, "method": method, **app.config}
-                rkwargs[self.data_key] = dumps(data) if self.dump_data else data
-                json = get_json_response(url, self.client, **rkwargs)
-            else:
-                json = get_json_response(None, self.client)
+            json = self.patch_live_json(data=data, **kwargs)
 
         json["id"] = self.id
 

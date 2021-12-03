@@ -9,6 +9,7 @@ from pathlib import Path
 from subprocess import check_output, CalledProcessError
 from time import sleep
 from sys import platform
+from functools import partial
 
 import pygogo as gogo
 
@@ -116,6 +117,38 @@ def save_page(browser, page_name, with_html=True):
         f.write(browser.page_source)
 
 
+def act_on_element(browser, element, pos=0, debug=False):
+    if element.get("wait"):
+        sleep(element["wait"])
+
+    selector = element["selector"]
+    el = find_element_loop(browser, selector)
+    error_msg = None
+
+    if not el:
+        error_msg = "'{description}' selector '{selector}' not found!"
+    elif element.get("content"):
+        el.clear()
+        el.send_keys(element["content"])
+    elif element.get("prompt"):
+        el.clear()
+        content = fetch_value(element["description"])
+        el.send_keys(content)
+    elif "content" in element:
+        error_msg = "No content supplied!"
+
+    if debug:
+        save_page(browser, "{0} - {description}".format(pos + 1, **element))
+
+    if element.get("action"):
+        action = getattr(el, element["action"])
+        action()
+
+    if error_msg:
+        browser.close()
+        raise AssertionError(error_msg.format(**element))
+
+
 def _headless_auth(redirect_url, prefix, username=None, password=None, **kwargs):
     options = Options()
     options.headless = True
@@ -124,44 +157,14 @@ def _headless_auth(redirect_url, prefix, username=None, password=None, **kwargs)
     debug = kwargs.get("debug")
 
     browser = webdriver.Chrome(executable_path=chrome_path, chrome_options=options)
-
-    # navigate to auth page
     browser.get(redirect_url)
     browser.implicitly_wait(3)
 
     if debug:
         save_page(browser, "0 - initial")
 
-    for pos, element in enumerate(elements):
-        if element.get("wait"):
-            sleep(element["wait"])
-
-        selector = element["selector"]
-        el = find_element_loop(browser, selector)
-        error_msg = None
-
-        if not el:
-            error_msg = "'{description}' selector '{selector}' not found!"
-        elif element.get("content"):
-            el.clear()
-            el.send_keys(element["content"])
-        elif element.get("prompt"):
-            el.clear()
-            content = fetch_value(element["description"])
-            el.send_keys(content)
-        elif "content" in element:
-            error_msg = "No content supplied!"
-
-        if debug:
-            save_page(browser, "{0} - {description}".format(pos + 1, **element))
-
-        if element.get("action"):
-            action = getattr(el, element["action"])
-            action()
-
-        if error_msg:
-            browser.close()
-            raise AssertionError(error_msg.format(**element))
+    act = partial(act_on_element, browser, debug=debug)
+    [act(element, pos) for pos, element in enumerate(elements)]
 
     # TODO: Error if there are any button elements on the page
     browser.close()

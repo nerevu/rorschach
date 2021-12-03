@@ -16,6 +16,7 @@ from tempfile import NamedTemporaryFile
 import requests
 import pygogo as gogo
 
+
 from flask import (
     request,
     session,
@@ -24,6 +25,7 @@ from flask import (
     current_app as app,
     after_this_request,
     url_for,
+    has_app_context,
 )
 
 from oauthlib.oauth2 import TokenExpiredError
@@ -694,6 +696,15 @@ class ServiceAuthClient(OAuth2BaseClient):
 def get_auth_client(prefix, state=None, API_URL="", **kwargs):
     auth_client_name = f"{prefix}_auth_client"
 
+    available_auths = {
+        "oauth1": {"oauth_version": 1, "auth_client": OAuth1Client},
+        "oauth2": {"oauth_version": 2, "auth_client": OAuth2Client, "state": state},
+        "service": {"auth_client": ServiceAuthClient},
+        "bearer": {"auth_client": BearerAuthClient},
+        "basic": {"auth_client": BasicAuthClient},
+        "custom": {"auth_client": AuthClient},
+    }
+
     if auth_client_name not in g:
         authentication = kwargs["AUTHENTICATION"].get(prefix.lower())
 
@@ -703,15 +714,6 @@ def get_auth_client(prefix, state=None, API_URL="", **kwargs):
         else:
             auth_type = ""
             auth_kwargs = {}
-
-        available_auths = {
-            "oauth1": {"oauth_version": 1, "auth_client": OAuth1Client},
-            "oauth2": {"oauth_version": 2, "auth_client": OAuth2Client, "state": state},
-            "service": {"auth_client": ServiceAuthClient},
-            "bearer": {"auth_client": BearerAuthClient},
-            "basic": {"auth_client": BasicAuthClient},
-            "custom": {"auth_client": AuthClient},
-        }
 
         extra_auth_kwargs = available_auths[auth_type]
         MyAuthClient = extra_auth_kwargs.pop("auth_client")
@@ -752,11 +754,227 @@ def get_auth_client(prefix, state=None, API_URL="", **kwargs):
     if client.oauth_version == 2 and client.expires_in < RENEW_TIME:
         client.renew_token("expired")
 
-    return g.get(auth_client_name)
+    return client
+
+
+def get_quickbooks_error(**kwargs):
+    fault = kwargs["fault"]
+
+    if fault.get("type") == "AUTHENTICATION":
+        json = {"message": "Client not authorized.", "status_code": 401}
+    elif fault.get("error"):
+        error = fault["error"][0]
+        detail = error.get("detail", "")
+
+        if detail.startswith("Token expired"):
+            json = {"message": "Token Expired.", "status_code": 401}
+
+        err_message = error["message"]
+        _json = dict(pair.split("=") for pair in err_message.split("; "))
+        _message = _json["message"]
+        message = f"{_message}: {detail}" if detail else _message
+        json = {
+            "message": message,
+            "status_code": int(_json["statusCode"]),
+        }
+    else:
+        json = {"message": fault.get("type"), "status_code": 500}
+
+    return json
+
+
+def get_other_errors(result, **kwargs):
+    message_keys = ["message", "Message", "detail", "error"]
+
+    try:
+        message = next(kwargs[key] for key in message_keys if kwargs.get(key))
+    except StopIteration:
+        logger.debug(kwargs)
+        message = ""
+
+    if kwargs.get("modelState"):
+        items = kwargs["modelState"].items()
+        message += " "
+        message += ". ".join(f"{k}: {', '.join(v)}" for k, v in items)
+    elif kwargs.get("Elements"):
+        items = chain.from_iterable(e.items() for e in kwargs["Elements"])
+        message += " "
+        message += ". ".join(
+            f"{k}: {', '.join(e['Message'] for e in v)}" for k, v in items
+        )
+
+    if 200 <= result.status_code < 300:
+        status_code = 500
+    else:
+        status_code = result.status_code
+
+    return {"message": message, "status_code": status_code}
+
+
+def get_json_error(url, result):
+    content_type = result.headers.get("Content-Type", "")
+    is_json = content_type.endswith("json")
+    is_file = content_type.endswith("pdf")
+
+    if is_json and 200 <= result.status_code < 300:
+        status_code = 500
+    else:
+        status_code = result.status_code
+
+    if "404 Not Found" in result.text:
+        status_code = 404
+        message = f"Endpoint {url} not found!"
+    elif "Bad Request" in result.text:
+        message = "Bad Request."
+    elif "<!DOCTYPE html>" in result.text:
+        message = "Got HTML response."
+    elif "oauth_problem_advice" in result.text:
+        message = parse_qs(result.text)["oauth_problem_advice"][0]
+    elif is_file:
+        f = NamedTemporaryFile(delete=False)
+        f.write(result.content)
+        message = f"saved file to {f.name}"
+    else:
+        message = result.text
+
+    json = {"message": message, "status_code": status_code}
+
+    if is_file:
+        json["result"] = {f.name}
+
+    return json
+
+
+def debug_header(result):
+    for key, value in result.request.headers.items():
+        logger.debug({key: value[:32]})
+
+    body = result.request.body or ""
+
+    try:
+        parsed = parse_qs(body)
+    except UnicodeEncodeError:
+        decoded = body.decode("utf-8")
+        parsed = parse_qs(decoded)
+
+    if parsed:
+        logger.debug({k: v[0] for k, v in parsed.items()})
+
+
+def debug_json(url, method="get", status_code=200, **kwargs):
+    try:
+
+        @after_this_request
+        def clear_cache(response):
+            _clear_cache()
+            return uncache_header(response)
+
+    except AttributeError:
+        pass
+
+    message = kwargs.get("message", "")
+
+    if url:
+        logger.error(f"Error {method}ing {url}!")
+
+    logger.error(f"Server returned {status_code}: {message}")
+
+
+def debug_status(client, unscoped=False, status_code=200, **kwargs):
+    if unscoped:
+        message = f"Insufficient scope: {client.scope}."
+    elif status_code == 401:
+        message = "Token expired!"
+    else:
+        message = kwargs.get("message", "")
+
+    logger.debug(message)
+
+
+def get_result(url, client, params=None, method="get", **kwargs):
+    params = params or {}
+    data = kwargs.get("data", {})
+    json_data = kwargs.get("json", {})
+    def_headers = kwargs.get("headers", {})
+    all_headers = client.headers.get("all", {})
+    method_headers = client.headers.get(method, {})
+    __headers = {**all_headers, **method_headers}
+    _headers = {k: v.format(**client.__dict__) for k, v in __headers.items()}
+    headers = {**HEADERS, **_headers, **def_headers}
+
+    try:
+        requestor = client.oauth_session
+    except AttributeError:
+        requestor = requests
+
+    verb = getattr(requestor, method)
+
+    try:
+        verb = partial(verb, auth=client.auth)
+    except AttributeError:
+        pass
+
+    return verb(url, params=params, data=data, json=json_data, headers=headers)
+
+
+def get_errors(result, _json):
+    ok = result.ok
+
+    try:
+        # in case the json result is list
+        item = _json[0]
+    except (AttributeError, KeyError):
+        item = _json
+    except IndexError:
+        item = {}
+
+    if item.get("errorcode") or item.get("error") or item.get("fault"):
+        ok = False
+
+    if item.get("fault"):
+        json = get_quickbooks_error(**item)
+    elif ok:
+        json = {"result": _json}
+    else:
+        json = get_other_errors(result, **item)
+
+    return json
+
+
+def get_json(url, client, params=None, method="get", success_code=200, **kwargs):
+    try:
+        result = get_result(url, client, params=params, method=method, **kwargs)
+    except TokenExpiredError:
+        unscoped = False
+        result = None
+        json = {"message": "Token Expired", "status_code": 401}
+    else:
+        unscoped = result.headers.get("WWW-Authenticate") == "insufficient_scope"
+
+        try:
+            json = result.json()
+        except AttributeError:
+            json = {"message": result.text, "status_code": result.status_code}
+        except JSONDecodeError:
+            json = get_json_error(url, result)
+        else:
+            json = get_errors(result, json)
+
+    ok = is_ok(success_code, **json)
+
+    if result and not ok and kwargs.get("debug"):
+        debug_header(result)
+
+    return (json, unscoped)
+
+
+def is_ok(success_code=200, **kwargs):
+    status_code = kwargs.get("status_code", success_code)
+    ok = 200 <= status_code < 300
+    return (status_code, ok)
 
 
 def get_json_response(url, client, params=None, renewed=False, **kwargs):
-    ok = False
     unscoped = False
     success_code = kwargs.get("success_code", 200)
     method = kwargs.get("method", "get")
@@ -770,179 +988,22 @@ def get_json_response(url, client, params=None, renewed=False, **kwargs):
     elif client.error:
         json = {"message": client.error, "status_code": 500}
     elif url:
-        params = params or {}
-        data = kwargs.get("data", {})
-        json_data = kwargs.get("json", {})
-        def_headers = kwargs.get("headers", {})
-        all_headers = client.headers.get("all", {})
-        method_headers = client.headers.get(method, {})
-        _client_headers = {**all_headers, **method_headers}
-        client_headers = {
-            k: v.format(**client.__dict__) for k, v in _client_headers.items()
-        }
-        headers = {**HEADERS, **client_headers, **def_headers}
-
-        try:
-            requestor = client.oauth_session
-        except AttributeError:
-            requestor = requests
-
-        verb = getattr(requestor, method)
-
-        try:
-            verb = partial(verb, auth=client.auth)
-        except AttributeError:
-            pass
-
-        try:
-            result = verb(
-                url, params=params, data=data, json=json_data, headers=headers
-            )
-        except TokenExpiredError:
-            ok = unscoped = False
-            result = None
-            json = {"message": "Token Expired", "status_code": 401}
-        else:
-            unscoped = result.headers.get("WWW-Authenticate") == "insufficient_scope"
-            ok = result.ok
-
-            try:
-                json = result.json()
-            except AttributeError:
-                json = {"message": result.text, "status_code": result.status_code}
-            except JSONDecodeError:
-                content_type = result.headers.get("Content-Type", "")
-                is_json = content_type.endswith("json")
-                is_file = content_type.endswith("pdf")
-
-                if is_json and 200 <= result.status_code < 300:
-                    status_code = 500
-                else:
-                    status_code = result.status_code
-
-                if "404 Not Found" in result.text:
-                    status_code = 404
-                    message = f"Endpoint {url} not found!"
-                elif "Bad Request" in result.text:
-                    message = "Bad Request."
-                elif "<!DOCTYPE html>" in result.text:
-                    message = "Got HTML response."
-                elif "oauth_problem_advice" in result.text:
-                    message = parse_qs(result.text)["oauth_problem_advice"][0]
-                elif is_file:
-                    f = NamedTemporaryFile(delete=False)
-                    f.write(result.content)
-                    message = f"saved file to {f.name}"
-                else:
-                    message = result.text
-
-                json = {"message": message, "status_code": status_code}
-
-                if is_file:
-                    json["result"] = {f.name}
-            else:
-                try:
-                    # in case the json result is list
-                    item = json[0]
-                except (AttributeError, KeyError):
-                    item = json
-                except IndexError:
-                    item = {}
-
-                if item.get("errorcode") or item.get("error"):
-                    ok = False
-
-                if item.get("fault"):
-                    # QuickBooks
-                    ok = False
-                    fault = item["fault"]
-
-                    if fault.get("type") == "AUTHENTICATION":
-                        json = {"message": "Client not authorized.", "status_code": 401}
-                    elif fault.get("error"):
-                        error = fault["error"][0]
-                        detail = error.get("detail", "")
-
-                        if detail.startswith("Token expired"):
-                            json = {"message": "Token Expired.", "status_code": 401}
-
-                        err_message = error["message"]
-                        _json = dict(
-                            pair.split("=") for pair in err_message.split("; ")
-                        )
-                        _message = _json["message"]
-                        message = f"{_message}: {detail}" if detail else _message
-                        json = {
-                            "message": message,
-                            "status_code": int(_json["statusCode"]),
-                        }
-                    else:
-                        json = {"message": fault.get("type"), "status_code": 500}
-                elif ok:
-                    json = {"result": json}
-                else:
-                    message_keys = ["message", "Message", "detail", "error"]
-
-                    try:
-                        message = next(
-                            item[key] for key in message_keys if item.get(key)
-                        )
-                    except StopIteration:
-                        logger.debug(item)
-                        message = ""
-
-                    if item.get("modelState"):
-                        items = item["modelState"].items()
-                        message += " "
-                        message += ". ".join(f"{k}: {', '.join(v)}" for k, v in items)
-                    elif item.get("Elements"):
-                        items = chain.from_iterable(e.items() for e in item["Elements"])
-                        message += " "
-                        message += ". ".join(
-                            f"{k}: {', '.join(e['Message'] for e in v)}"
-                            for k, v in items
-                        )
-
-                    if 200 <= result.status_code < 300:
-                        status_code = 500
-                    else:
-                        status_code = result.status_code
-
-                    json = {"message": message, "status_code": status_code}
-
-        if not ok and kwargs.get("debug"):
-            header_names = ["Authorization", "Accept", "Content-Type"] + _client_headers
-
-            for name in header_names:
-                logger.debug({name: result.request.headers.get(name, "")[:32]})
-
-            body = result.request.body or ""
-
-            try:
-                parsed = parse_qs(body)
-            except UnicodeEncodeError:
-                decoded = body.decode("utf-8")
-                parsed = parse_qs(decoded)
-
-            if parsed:
-                logger.debug({k: v[0] for k, v in parsed.items()})
+        json, unscoped = get_json(
+            url,
+            client,
+            params=params,
+            method=method,
+            success_code=success_code,
+            **kwargs,
+        )
     else:
         json = client.json
-        status_code = json.get("status_code", success_code)
-        ok = 200 <= status_code < 300
 
-    status_code = json.get("status_code", success_code)
+    status_code, ok = is_ok(success_code, **json)
     json["ok"] = ok
 
     if status_code in {400, 401} and not renewed:
-        if unscoped:
-            msg = f"Insufficient scope: {client.scope}."
-        elif status_code == 401:
-            msg = "Token expired!"
-        else:
-            msg = json.get("message", "")
-
-        logger.debug(msg)
+        debug_status(client, unscoped, **json)
 
         try:
             client.renew_token(status_code)
@@ -950,28 +1011,10 @@ def get_json_response(url, client, params=None, renewed=False, **kwargs):
             pass
         else:
             json = get_json_response(url, client, params=params, renewed=True, **kwargs)
-    elif ok:
-        try:
-            json["links"] = get_links(app.url_map.iter_rules())
-        except RuntimeError:
-            pass
+    elif ok and has_app_context():
+        json["links"] = get_links(app.url_map.iter_rules())
     else:
-        try:
-
-            @after_this_request
-            def clear_cache(response):
-                _clear_cache()
-                return uncache_header(response)
-
-        except AttributeError:
-            pass
-
-        message = json.get("message", "")
-
-        if url:
-            logger.error(f"Error {method}ing {url}!")
-
-        logger.error(f"Server returned {status_code}: {message}")
+        debug_json(url, method=method, **json)
 
     return json
 
