@@ -128,58 +128,82 @@ class Config(object):
     AUTHENTICATION = {
         # https://airtable.com/apph4M6HDXw0rWaYW/api/docs
         "airtable": {
-            "auth_type": "bearer",
             "bearer": {
+                "auth_type": "bearer",
                 "api_base_url": "https://api.airtable.com/v0/{base_id}",
                 "token": getenv("AIRTABLE_API_KEY"),
-                "params": {"maxRecords": 2048, "pageSize": 100, "offset": None},
+                "params": {
+                    "maxRecords": 2048,
+                    "pageSize": 100,
+                    "offset": None,
+                    "view": None,
+                },
                 "api_status_resource": "Employee%20Hours",
                 "attrs": {"base_id": getenv("AIRTABLE_BASE_ID"), "subkey": "records"},
             },
         },
-        # https://documentation.mailgun.com/en/latest/api_reference.html
-        "mailgun": {
-            "auth_type": "basic",
-            "basic": {
-                "api_base_url": "https://api.mailgun.net/v3/{domain}",
-                "username": "api",
-                "password": getenv("MAILGUN_API_KEY"),
-                "api_status_url": "https://api.mailgun.net/v3/domains",
-                "attrs": {"domain": MAILGUN_DOMAIN, "json_data": False},
-            },
-        },
-        # https://postmarkapp.com/developer/api/overview
-        "postmark": {
-            "auth_type": "custom",
-            "custom": {
-                "api_base_url": "https://api.postmarkapp.com",
-                "api_status_resource": "server",
-                "params": {"count": 100, "offset": 0},
-                "headers": {
-                    "all": {
-                        "X-Postmark-Server-Token": getenv("POSTMARK_SERVER_TOKEN"),
-                        "X-Postmark-Account-Token": getenv("POSTMARK_ACCOUNT_TOKEN"),
-                        "Content-Type": "application/json",
-                    },
-                },
-            },
-        },
         "gsheets": {
-            "auth_type": "service",
             "service": {
+                "auth_type": "service",
                 "keyfile_path": "internal-256716-b2f899ddbdc5.json",
-                "sheet_id": "1Q-0R_q5-dWeaIAktvxRirZGXJZmMxd8qjVTujauMdak",
-                "worksheet_name": "options",
+                "attrs": {
+                    "sheet_id": "1Q-0R_q5-dWeaIAktvxRirZGXJZmMxd8qjVTujauMdak",
+                    "worksheet_name": "options",
+                },
                 "scope": [
                     "https://spreadsheets.google.com/feeds",
                     "https://www.googleapis.com/auth/drive",
                 ],
             },
         },
+        # https://documentation.mailgun.com/en/latest/api_reference.html
+        "mailgun": {
+            "base": {
+                "auth_type": "basic",
+                "username": "api",
+                "password": getenv("MAILGUN_API_KEY"),
+                "attrs": {"domain": MAILGUN_DOMAIN, "json_data": False},
+            },
+            "server": {
+                "parent": "base",
+                "api_base_url": "https://api.mailgun.net/v3/{domain}",
+                "api_status_resource": "??",
+            },
+            "account": {
+                "parent": "base",
+                "api_base_url": "https://api.mailgun.net/v3",
+                "api_status_resource": "domains",
+            },
+        },
+        # https://postmarkapp.com/developer/api/overview
+        "postmark": {
+            "base": {
+                "auth_type": "custom",
+                "api_base_url": "https://api.postmarkapp.com",
+                "params": {"count": 100, "offset": 0},
+                "headers": {"all": {"Content-Type": "application/json"}},
+            },
+            "account": {
+                "parent": "base",
+                "api_status_resource": "domains",
+                "headers": {
+                    "all": {
+                        "X-Postmark-Account-Token": getenv("POSTMARK_ACCOUNT_TOKEN")
+                    },
+                },
+            },
+            "server": {
+                "parent": "base",
+                "api_status_resource": "server",
+                "headers": {
+                    "all": {"X-Postmark-Server-Token": getenv("POSTMARK_SERVER_TOKEN")},
+                },
+            },
+        },
         # https://app.timelyapp.com/777870/oauth_applications
         "timely": {
-            "auth_type": "oauth2",
             "oauth2": {
+                "auth_type": "oauth2",
                 "api_base_url": "https://api.timelyapp.com/1.1/{account_id}",
                 "api_status_url": "https://api.timelyapp.com/1.1/accounts",
                 "authorization_base_url": "https://api.timelyapp.com/1.1/oauth/authorize",
@@ -226,9 +250,8 @@ class Config(object):
         },
         # https://developer.xero.com/myapps/
         "xero": {
-            "auth_type": "oauth2",
-            "oauth2": {
-                "api_base_url": "https://api.xero.com/{domain}.xro/2.0",
+            "base": {
+                "auth_type": "oauth2",
                 "api_status_url": "https://api.xero.com/connections",
                 "authorization_base_url": "https://login.xero.com/identity/connect/authorize",
                 "token_url": "https://identity.xero.com/connect/token",
@@ -242,7 +265,6 @@ class Config(object):
                 "param_map": {"start": "dateAfterUtc", "end": "dateBeforeUtc"},
                 # https://developer.xero.com/documentation/guides/oauth2/auth-flow/#xero-tenants
                 "tenant_path": "result[0].tenantId",
-                "attrs": {"domain": "projects"},
                 "scope": [
                     "projects",
                     "offline_access",
@@ -297,6 +319,14 @@ class Config(object):
                         "wait": 5,
                     },
                 ],
+            },
+            "api": {
+                "parent": "base",
+                "api_base_url": "https://api.xero.com/api.xro/2.0",
+            },
+            "project": {
+                "parent": "base",
+                "api_base_url": "https://api.xero.com/projects.xro/2.0",
             },
         },
     }

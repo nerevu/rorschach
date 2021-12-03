@@ -706,46 +706,42 @@ def get_auth_client(prefix, state=None, API_URL="", **kwargs):
     }
 
     if auth_client_name not in g:
-        authentication = kwargs["AUTHENTICATION"].get(prefix.lower())
+        authentication = kwargs["AUTHENTICATION"].get(prefix.lower(), {})
 
-        if authentication:
-            auth_type = authentication["auth_type"]
-            auth_kwargs = authentication[auth_type]
-        else:
-            auth_type = ""
-            auth_kwargs = {}
+        for auth_key, auth_kwargs in authentication.items():
+            auth_type = auth_kwargs["auth_type"]
 
-        extra_auth_kwargs = available_auths[auth_type]
-        MyAuthClient = extra_auth_kwargs.pop("auth_client")
-        auth_kwargs.update(extra_auth_kwargs)
-        redirect_uri = auth_kwargs.get("redirect_uri") or ""
+            extra_auth_kwargs = available_auths[auth_type]
+            MyAuthClient = extra_auth_kwargs.pop("auth_client")
+            auth_kwargs.update(extra_auth_kwargs)
+            redirect_uri = auth_kwargs.get("redirect_uri") or ""
 
-        if redirect_uri.startswith("/") and API_URL:
-            auth_kwargs["redirect_uri"] = f"{API_URL}{redirect_uri}"
+            if redirect_uri.startswith("/") and API_URL:
+                auth_kwargs["redirect_uri"] = f"{API_URL}{redirect_uri}"
 
-        if "debug" in kwargs:
-            auth_kwargs["debug"] = kwargs["debug"]
+            if "debug" in kwargs:
+                auth_kwargs["debug"] = kwargs["debug"]
 
-        if "headless" in kwargs:
-            auth_kwargs["headless"] = kwargs["headless"]
+            if "headless" in kwargs:
+                auth_kwargs["headless"] = kwargs["headless"]
 
-        client = MyAuthClient(prefix, **auth_kwargs)
-        client.attrs = auth_kwargs.get("attrs", {})
-        client.params = auth_kwargs.get("params", {})
-        client.param_map = auth_kwargs.get("param_map", {})
-        client.verb_map = auth_kwargs.get("verb_map", {})
-        client.method_map = auth_kwargs.get("method_map", {})
-        client.tenant_path = auth_kwargs.get("tenant_path")
+            client = MyAuthClient(prefix, **auth_kwargs)
+            client.attrs = auth_kwargs.get("attrs", {})
+            client.params = auth_kwargs.get("params", {})
+            client.param_map = auth_kwargs.get("param_map", {})
+            client.verb_map = auth_kwargs.get("verb_map", {})
+            client.method_map = auth_kwargs.get("method_map", {})
+            client.tenant_path = auth_kwargs.get("tenant_path")
 
-        try:
-            restore_from_headless = client.restore_from_headless
-        except AttributeError:
-            restore_from_headless = False
+            try:
+                restore_from_headless = client.restore_from_headless
+            except AttributeError:
+                restore_from_headless = False
 
-        if restore_from_headless:
-            logger.debug("restoring client from headless session")
-            client.restore()
-            client.renew_token("headless")
+            if restore_from_headless:
+                logger.debug("restoring client from headless session")
+                client.restore()
+                client.renew_token("headless")
 
         setattr(g, auth_client_name, client)
 
