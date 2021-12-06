@@ -417,7 +417,11 @@ def gen_links(rules):
 
     Examples:
         >>> gen_links(rules)
-        {"rel": "data", "href": f"https://alegna-api.nerevu.com/v1/data", "method": "GET"}
+        {
+            "rel": "data",
+            "href": f"https://alegna-api.nerevu.com/v1/data",
+            "method": "GET"
+        }
     """
     url_root = get_url_root()
 
@@ -529,21 +533,34 @@ def fetch_bool(message):
     return answer
 
 
-def extract_fields(record, *fields, **kwargs):
+def extract_field(record, field, **kwargs):
+    # TODO: add this to DotDict
     item = DotDict(record)
+    split_field = field.split("[")
 
+    if len(split_field) > 1:
+        real_field, _pos, rest = split_field[0], split_field[1], split_field[2:]
+        pos, rest0 = _pos.split("]")
+        values = item.get(real_field, [])
+
+        try:
+            value = values[int(pos)]
+        except IndexError:
+            value = None
+
+        if rest0:
+            rest = [rest0] + rest
+    else:
+        rest = []
+        value = item.get(field)
+
+    if rest:
+        value = extract_field(value, "[".join(rest), **kwargs)
+
+    return value
+
+
+def extract_fields(record, *fields, **kwargs):
     for field in fields:
-        if "[" in field:
-            split_field = field.split("[")
-            real_field = split_field[0]
-            pos = int(split_field[1].split("]")[0])
-            values = item.get(real_field, [])
-
-            try:
-                value = values[pos]
-            except IndexError:
-                value = None
-        else:
-            value = item.get(field)
-
+        value = extract_field(record, field, **kwargs)
         yield (field, value)

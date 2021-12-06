@@ -124,60 +124,292 @@ class Config(object):
     MAILGUN_SMTP_PASSWORD = getenv("MAILGUN_SMTP_PASSWORD")
     REQUIRED_PROD_SETTINGS += ["MAILGUN_DOMAIN", "MAILGUN_SMTP_PASSWORD"]
 
+    RESOURCES = {
+        "airtable": {
+            "Table": {"auth_key": "bearer", "resource": getenv("AIRTABLE_TABLE")}
+        },
+        "gsheets": {
+            "Table": {
+                "collection": "Worksheet",
+                "use_default": True,
+                "auth_key": "service",
+                "resource": getenv("GSHEETS_SHEETNAME"),
+                "rid": getenv("GSHEETS_SHEET_ID"),
+                "subresource": getenv("GSHEETS_WORKSHEET_NAME"),
+            }
+        },
+        "mailgun": {
+            "Domains": {"auth_key": "account", "subkey": "domain"},
+            "EmailLists": {
+                "auth_key": "server",
+                "id_field": "address",
+                "resource": "lists",
+                "subkey": "list",
+                "attrs": {
+                    "list_prefix": getenv("MAILGUN_LIST_PREFIX"),
+                    # "rid": "{list_prefix}@{domain}"
+                },
+            },
+            "EmailListMembers": {
+                "auth_key": "account",
+                "parent": "EmailLists",
+                "subresource": "members",
+                "attrs": {
+                    "subkey": {"conditional": "rid", "result": ["items", "list"]}
+                },
+            },
+            "Email": {
+                "auth_key": "account",
+                "id_field": "MessageID",
+                "resource": "messages",
+                "attrs": {"admin_email": ADMIN.email, "admin_name": ADMIN.name},
+                "methods": ["POST"],
+            },
+        },
+        "postmark": {
+            "Domains": {
+                "auth_key": "account",
+                "subkey": "Domains",
+                "id_field": "ID",
+                "name_field": "Name",
+            },
+            "Templates": {
+                "auth_key": "server",
+                "subkey": "Templates",
+                "id_field": "TemplateId",
+                "name_field": "Name",
+            },
+            "Email": {
+                "auth_key": "account",
+                "id_field": "MessageID",
+                "methods": ["POST"],
+                "name_field": "To",
+                "attrs": {
+                    "template_id": None,
+                    "sender_name": ADMIN.name,
+                    "sender_email": ADMIN.email,
+                },
+                "props": {"sender": "{sender_name} <{sender_email}>"},
+            },
+        },
+        "timely": {
+            "Projects": {
+                "auth_key": "oauth2",
+                "fields": [
+                    "id",
+                    "name",
+                    "active",
+                    "billable",
+                    "client.id",
+                    "client.name",
+                    "budget",
+                ],
+                "methods": ["GET", "POST"],
+            },
+            "Time": {
+                "auth_key": "oauth2",
+                "resource": "events",
+                "fields": [
+                    "id",
+                    "day",
+                    "duration.total_minutes",
+                    "label_ids",
+                    "project.id",
+                    "user.id",
+                    "note",
+                    "billed",
+                ],
+                "methods": ["GET", "PATCH"],
+            },
+            "ProjectTime": {
+                "auth_key": "oauth2",
+                "resource": "projects",
+                "subresource": "events",
+                "fields": [
+                    "id",
+                    "day",
+                    "duration.total_minutes",
+                    "label_ids",
+                    "project.id",
+                    "user.id",
+                    "note",
+                    "billed",
+                ],
+                "methods": ["GET", "POST"],
+            },
+            "ProjectTasks": {
+                "auth_key": "oauth2",
+                "subkey": "labels",
+                "resource": "projects",
+                "use_default": True,
+                "methods": ["GET", "POST"],
+            },
+            "Tasks": {
+                "auth_key": "oauth2",
+                "resource": "labels",
+                "fields": ["id", "name", "children"],
+            },
+            "Users": {"auth_key": "oauth2", "fields": ["id", "name"]},
+            "Contacts": {
+                "auth_key": "oauth2",
+                "resource": "clients",
+                "fields": ["id", "name"],
+            },
+        },
+        "xero": {
+            "Projects": {
+                "auth_key": "project",
+                "fields": ["projectId", "name", "status"],
+                "id_field": "projectId",
+                "subkey": "items",
+                "methods": ["GET", "POST"],
+            },
+            "Users": {
+                "auth_key": "project",
+                "resource": "projectsusers",
+                "fields": ["userId", "name"],
+                "id_field": "userId",
+                "subkey": "items",
+            },
+            "Contacts": {
+                "auth_key": "api",
+                "fields": ["ContactID", "Name", "FirstName", "LastName"],
+                "id_field": "ContactID",
+                "subkey": "Contacts",
+                "resource": "Contacts",
+            },
+            "Payments": {
+                "auth_key": "api",
+                "id_field": "PaymentID",
+                "subkey": "Payments",
+                "resource": "Payments",
+            },
+            "Invoices": {
+                "auth_key": "api",
+                "id_field": "InvoiceID",
+                "subkey": "Invoices",
+                "name_field": "InvoiceNumber",
+                "resource": "Invoices",
+                "methods": ["GET", "POST"],
+            },
+            "OnlineInvoices": {
+                "auth_key": "api",
+                "id_field": "OnlineInvoiceUrl",
+                "subkey": "OnlineInvoices",
+                "resource": "Invoices",
+                "subresource": "OnlineInvoice",
+            },
+            "Inventory": {
+                "auth_key": "api",
+                "fields": ["ItemID", "Name", "Code", "Description", "SalesDetails"],
+                "id_field": "ItemID",
+                "subkey": "Items",
+                "name_field": "Name",
+                "resource": "Items",
+            },
+            "ProjectTasks": {
+                "auth_key": "project",
+                "fields": ["taskId", "name", "status", "rate.value", "projectId"],
+                "id_field": "taskId",
+                "resource": "projects",
+                "subkey": "items",
+                "subresource": "tasks",
+                "methods": ["GET", "POST"],
+            },
+            "ProjectTime": {
+                "auth_key": "project",
+                "attrs": {"event_pos": 0, "event_id": ""},
+                "id_field": "timeEntryId",
+                "resource": "projects",
+                "subkey": "items",
+                "subresource": "time",
+                "methods": ["GET", "POST"],
+            },
+        },
+    }
+
     # Authentication
     AUTHENTICATION = {
         # https://airtable.com/apph4M6HDXw0rWaYW/api/docs
         "airtable": {
-            "auth_type": "bearer",
             "bearer": {
+                "auth_type": "bearer",
                 "api_base_url": "https://api.airtable.com/v0/{base_id}",
                 "token": getenv("AIRTABLE_API_KEY"),
-                "params": {"maxRecords": 2048, "pageSize": 100, "offset": None},
+                "params": {
+                    "maxRecords": 2048,
+                    "pageSize": 100,
+                    "offset": None,
+                    "view": None,
+                },
+                "api_status_resource": "Employee%20Hours",
                 "attrs": {"base_id": getenv("AIRTABLE_BASE_ID"), "subkey": "records"},
             },
         },
-        "mailgun": {
-            "auth_type": "basic",
-            "basic": {
-                "api_base_url": "https://api.mailgun.net/v3/{domain}",
-                "username": "api",
-                "password": getenv("MAILGUN_API_KEY"),
-                "attrs": {"domain": MAILGUN_DOMAIN, "json_data": False},
-            },
-        },
-        # https://postmarkapp.com/developer/api/overview
-        "postmark": {
-            "auth_type": "custom",
-            "custom": {
-                "api_base_url": "https://api.postmarkapp.com",
-                "params": {"count": 100, "offset": 0},
-                "headers": {
-                    "all": {
-                        "X-Postmark-Server-Token": getenv("POSTMARK_SERVER_TOKEN"),
-                        "X-Postmark-Account-Token": getenv("POSTMARK_ACCOUNT_TOKEN"),
-                        "Content-Type": "application/json",
-                    },
-                },
-            },
-        },
         "gsheets": {
-            "auth_type": "service",
             "service": {
+                "auth_type": "service",
                 "keyfile_path": "internal-256716-b2f899ddbdc5.json",
-                "sheet_id": "1Q-0R_q5-dWeaIAktvxRirZGXJZmMxd8qjVTujauMdak",
-                "worksheet_name": "options",
+                "attrs": {
+                    "sheet_id": "1Q-0R_q5-dWeaIAktvxRirZGXJZmMxd8qjVTujauMdak",
+                    "worksheet_name": "options",
+                },
                 "scope": [
                     "https://spreadsheets.google.com/feeds",
                     "https://www.googleapis.com/auth/drive",
                 ],
             },
         },
+        # https://documentation.mailgun.com/en/latest/api_reference.html
+        "mailgun": {
+            "base": {
+                "auth_type": "basic",
+                "username": "api",
+                "password": getenv("MAILGUN_API_KEY"),
+                "attrs": {"domain": MAILGUN_DOMAIN, "json_data": False},
+            },
+            "server": {
+                "parent": "base",
+                "api_base_url": "https://api.mailgun.net/v3/{domain}",
+                "api_status_resource": "??",
+            },
+            "account": {
+                "parent": "base",
+                "api_base_url": "https://api.mailgun.net/v3",
+                "api_status_resource": "domains",
+            },
+        },
+        # https://postmarkapp.com/developer/api/overview
+        "postmark": {
+            "base": {
+                "auth_type": "custom",
+                "api_base_url": "https://api.postmarkapp.com",
+                "params": {"count": 100, "offset": 0},
+                "headers": {"all": {"Content-Type": "application/json"}},
+            },
+            "account": {
+                "parent": "base",
+                "api_status_resource": "domains",
+                "headers": {
+                    "all": {
+                        "X-Postmark-Account-Token": getenv("POSTMARK_ACCOUNT_TOKEN")
+                    },
+                },
+            },
+            "server": {
+                "parent": "base",
+                "api_status_resource": "server",
+                "headers": {
+                    "all": {"X-Postmark-Server-Token": getenv("POSTMARK_SERVER_TOKEN")},
+                },
+            },
+        },
         # https://app.timelyapp.com/777870/oauth_applications
         "timely": {
-            "auth_type": "oauth2",
             "oauth2": {
+                "auth_type": "oauth2",
                 "api_base_url": "https://api.timelyapp.com/1.1/{account_id}",
-                "api_status_resource": "accounts",
+                "api_status_url": "https://api.timelyapp.com/1.1/accounts",
                 "authorization_base_url": "https://api.timelyapp.com/1.1/oauth/authorize",
                 "token_url": "https://api.timelyapp.com/1.1/oauth/token",
                 "refresh_url": "https://api.timelyapp.com/1.1/oauth/token",
@@ -222,10 +454,9 @@ class Config(object):
         },
         # https://developer.xero.com/myapps/
         "xero": {
-            "auth_type": "oauth2",
-            "oauth2": {
-                "api_base_url": "https://api.xero.com/{domain}.xro/2.0",
-                "api_status_resource": "connections",
+            "base": {
+                "auth_type": "oauth2",
+                "api_status_url": "https://api.xero.com/connections",
                 "authorization_base_url": "https://login.xero.com/identity/connect/authorize",
                 "token_url": "https://identity.xero.com/connect/token",
                 "refresh_url": "https://identity.xero.com/connect/token",
@@ -236,7 +467,8 @@ class Config(object):
                 "username": getenv("XERO_USERNAME"),
                 "password": getenv("XERO_PASSWORD"),
                 "param_map": {"start": "dateAfterUtc", "end": "dateBeforeUtc"},
-                "attrs": {"domain": "projects"},
+                # https://developer.xero.com/documentation/guides/oauth2/auth-flow/#xero-tenants
+                "tenant_path": "result[0].tenantId",
                 "scope": [
                     "projects",
                     "offline_access",
@@ -292,6 +524,14 @@ class Config(object):
                     },
                 ],
             },
+            "api": {
+                "parent": "base",
+                "api_base_url": "https://api.xero.com/api.xro/2.0",
+            },
+            "project": {
+                "parent": "base",
+                "api_base_url": "https://api.xero.com/projects.xro/2.0",
+            },
         },
     }
 
@@ -334,7 +574,6 @@ class Config(object):
             "digest": "sha256",
             "b64_encode": True,
             "payload_key": "events",
-            "activities": [],
         },
         "heroku": {
             "signature_header": "Heroku-Webhook-Hmac-SHA256",
@@ -343,63 +582,6 @@ class Config(object):
             "b64_encode": True,
             "payload_key": "action",
             "ignore_signature": True,
-            "activities": [{"name": "update", "action": "invalidate_cf_distribution"}],
-        },
-        "timely": {"activities": [{"name": "new_event", "action": "add_xero_time"}]},
-        "gsheets": {"activities": [{"name": "new_row", "action": "add_xero_time"}]},
-        "nerevu": {
-            "payload_key": "resourceId",
-            "ignore_signature": True,
-            "activities": [
-                {
-                    "name": "new_invoice",
-                    "action": "send_invoice_notification",
-                    "kwargs": {
-                        "sender_email": "billing@nerevu.com",
-                        "sender_name": "Nerevu Billing Team",
-                        "recipient_email": "rcummings@nerevu.com",
-                        "recipient_name": "Reuben Cummings",
-                        "copied_email": None,
-                        "blind_copied_email": "billing@nerevu.com",
-                        "template_id": 12058975,
-                        "debug": True,
-                        "dry_run": False,
-                        "prompt": True,
-                    },
-                },
-                {
-                    "name": "new_charge",
-                    "action": "send_invoice_notification",
-                    "kwargs": {
-                        "sender_email": "billing@nerevu.com",
-                        "sender_name": "Nerevu Billing Team",
-                        "recipient_email": "rcummings@nerevu.com",
-                        "recipient_name": "Reuben Cummings",
-                        "copied_email": None,
-                        "blind_copied_email": "billing@nerevu.com",
-                        "template_id": 16342429,
-                        "debug": True,
-                        "dry_run": False,
-                        "prompt": True,
-                    },
-                },
-                {
-                    "name": "new_payment",
-                    "action": "send_payment_notification",
-                    "kwargs": {
-                        "sender_email": "billing@nerevu.com",
-                        "sender_name": "Nerevu Billing Team",
-                        "recipient_email": "rcummings@nerevu.com",
-                        "recipient_name": "Reuben Cummings",
-                        "copied_email": None,
-                        "blind_copied_email": "billing@nerevu.com",
-                        "template_id": 9956182,
-                        "debug": True,
-                        "dry_run": False,
-                        "prompt": True,
-                    },
-                },
-            ],
         },
     }
 
