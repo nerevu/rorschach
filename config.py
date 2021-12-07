@@ -173,6 +173,29 @@ class Config(object):
                 "responses": {"get": "access_token: {gc.auth.token}"},
             },
         },
+        "keycdn": {
+            "Zones": {
+                "auth_key": "basic",
+                "methods": ["GET", "PATCH", "POST", "DELETE"],
+                "subkey": "data.zones",
+            },
+            "Status": {"base": "Zones"},
+            "ZoneCache": {
+                "auth_key": "basic",
+                "resource": "zones",
+                "subresource": "purge",
+                "methods": ["GET", "DELETE", "POST"],
+                "use_default": True,
+            },
+            # DELETE https://api.keycdn.com/zones/purgeurl/209797
+            # --data '{"urls":["examplepull-hexid.kxcdn.com/css/style.css"]}'
+            "ZoneURLCache": {
+                "auth_key": "basic",
+                "resource": "zones",
+                "subresource": "purgeurl",
+                "methods": ["DELETE"],
+            },
+        },
         "mailgun": {
             "Domains": {"auth_key": "account", "subkey": "domain"},
             "Status": {"base": "Domains"},
@@ -400,6 +423,21 @@ class Config(object):
                     "https://spreadsheets.google.com/feeds",
                     "https://www.googleapis.com/auth/drive",
                 ],
+            },
+        },
+        # https://www.keycdn.com/api#overview
+        "keycdn": {
+            "base": {
+                "api_base_url": "https://api.keycdn.com",
+                "rid_last": True,
+                "api_ext": "json",
+                "verb_map": {"patch": "put"},
+            },
+            "basic": {
+                "parent": "base",
+                "auth_type": "basic",
+                "username": getenv("KEYCDN_API_KEY"),
+                "password": "",
             },
         },
         # https://documentation.mailgun.com/en/latest/api_reference.html

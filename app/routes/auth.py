@@ -343,11 +343,16 @@ class Resource(BaseView):
             url = f"{api_base_url}/{self.resource}"
 
             if self.subresource:
-                if self.rid:
+                if self.rid and client.rid_last:
+                    url += f"/{self.subresource}/{self.rid}"
+                elif self.rid:
                     url += f"/{self.rid}/{self.subresource}"
                 elif not self.eof:
                     message = f"No {self} {self.resource} id provided!"
                     assert self.rid, (message, 404)
+
+            if client.api_ext:
+                url += f".{client.api_ext}"
         else:
             url = ""
 

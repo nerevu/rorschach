@@ -783,6 +783,8 @@ def get_auth_client(prefix, state=None, API_URL="", **kwargs):
         client.verb_map = auth_kwargs.get("verb_map", {})
         client.method_map = auth_kwargs.get("method_map", {})
         client.tenant_path = auth_kwargs.get("tenant_path")
+        client.api_ext = auth_kwargs.get("api_ext")
+        client.rid_last = auth_kwargs.get("rid_last")
 
         try:
             restore_from_headless = client.restore_from_headless
@@ -931,7 +933,7 @@ def debug_status(client, unscoped=False, status_code=200, **kwargs):
     if unscoped:
         message = f"Insufficient scope: {client.scope}."
     elif status_code == 401:
-        message = "Token expired!"
+        message = kwargs.get("message", "Token expired!")
     else:
         message = kwargs.get("message", "")
 
