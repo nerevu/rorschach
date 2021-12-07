@@ -21,8 +21,8 @@ from app.utils import (
     get_links,
 )
 
-from app.routes import auth, Memoization
-from app.helpers import get_collection, flask_formatter as formatter
+from app.routes import auth, Memoization, webhook
+from app.helpers import get_collection, get_member, flask_formatter as formatter
 
 logger = gogo.Gogo(
     __name__, low_formatter=formatter, high_formatter=formatter, monolog=True
@@ -58,7 +58,7 @@ add_rule = blueprint.add_url_rule
 
 def create_route(view, prefix, name, *args, **kwargs):
     route_name = f"{prefix}-{name}".lower() if prefix else name
-    view_func = view.as_view(route_name, prefix)
+    view_func = view.as_view(route_name, prefix, **kwargs)
     url = f"{PREFIX}/{route_name}"
 
     for param in kwargs.get("params", []):
@@ -211,3 +211,8 @@ for name, options in METHOD_VIEWS.items():
         view = get_collection(prefix, **options) or options.get("view")
         methods = options.get("methods", ["GET"])
         create_route(view, prefix, name, *methods)
+
+
+for prefix, options in WEBHOOKS.items():
+    if view := get_member(webhook, f"{prefix.title()}Hook"):
+        create_route(view, prefix, "hooks", "GET", "POST", **kwargs)

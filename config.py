@@ -643,12 +643,10 @@ class Config(object):
 
     # Webhooks
     WEBHOOKS = {
-        "xero": {
-            "signature_header": "x-xero-signature",
-            "webhook_secret": getenv("XERO_WEBHOOK_SECRET"),
-            "digest": "sha256",
-            "b64_encode": True,
-            "payload_key": "events",
+        "airtable": {
+            "signature_header": "X-Airtable-Signature",
+            "webhook_secret": getenv("AIRTABLE_WEBHOOK_SECRET"),
+            "digest": None,
         },
         "heroku": {
             "signature_header": "Heroku-Webhook-Hmac-SHA256",
@@ -657,6 +655,13 @@ class Config(object):
             "b64_encode": True,
             "payload_key": "action",
             "ignore_signature": True,
+        },
+        "xero": {
+            "signature_header": "x-xero-signature",
+            "webhook_secret": getenv("XERO_WEBHOOK_SECRET"),
+            "digest": "sha256",
+            "b64_encode": True,
+            "payload_key": "events",
         },
     }
 
