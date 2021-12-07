@@ -141,7 +141,7 @@ class Config(object):
         "mailgun": {
             "Domains": {"auth_key": "account", "subkey": "domain"},
             "EmailLists": {
-                "auth_key": "server",
+                "auth_key": "account",
                 "id_field": "address",
                 "resource": "lists",
                 "subkey": "list",

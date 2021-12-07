@@ -108,7 +108,7 @@ class Auth(BaseView):
         cache.set(f"{self.prefix}_callback_url", request.args.get("callback_url"))
         CStatus = get_collection(self.prefix, "Status")
         RStatus = None if CStatus else Resource._registry[self.prefix]["Status"]
-        status = (CStatus or RStatus)()
+        status = (CStatus or RStatus)(prefix=self.prefix)
         json = status.get_live_json()
         client = self.client
 

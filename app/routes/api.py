@@ -153,9 +153,8 @@ for name, options in METHOD_VIEWS.items():
 
 
 for prefix, classes in RESOURCES.items():
-    view = create_class("Status", BASE, prefix=prefix, resource="status")
-    create_route(view, prefix, "status", "GET")
     auth = AUTHENTICATION[prefix]
+    classes.setdefault("Status", {})
 
     for cls_name, kwargs in classes.items():
         if "collection" in kwargs:
@@ -165,18 +164,23 @@ for prefix, classes in RESOURCES.items():
             base = kwargs.pop("base", BASE)
 
         hidden = kwargs.pop("hidden", False)
-        auth_key = kwargs["auth_key"]
-        lookup = auth[auth_key].get("attrs", {})
 
-        if auth_parent := auth[auth_key].get("parent"):
-            attrs = auth[auth_parent].get("attrs", {})
-            [lookup.setdefault(k, v) for k, v in attrs.items()]
+        if auth_key := kwargs.get("auth_key"):
+            lookup = auth[auth_key].get("attrs", {})
+
+            if auth_parent := auth[auth_key].get("parent"):
+                attrs = auth[auth_parent].get("attrs", {})
+                [lookup.setdefault(k, v) for k, v in attrs.items()]
+        else:
+            lookup = {}
 
         kwargs.setdefault("resource", cls_name.lower())
         resource = kwargs.get("resource")
         methods = kwargs.pop("methods", ["GET"])
+        view = get_collection(prefix, collection=cls_name)
 
-        view = create_class(cls_name, base, lookup=lookup, prefix=prefix, **kwargs)
+        if not view:
+            view = create_class(cls_name, base, lookup=lookup, prefix=prefix, **kwargs)
 
         if not hidden:
             create_route(view, prefix, cls_name.lower(), *methods)

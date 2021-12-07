@@ -104,8 +104,5 @@ class Worksheet(Spreadsheet):
 
 
 class Status(GSheets):
-    def __init__(self, **kwargs):
-        super().__init__(resource="status", **kwargs)
-
     def get_json_response(self):
         return {"result": {"access_token": self.gc.auth.token}}
