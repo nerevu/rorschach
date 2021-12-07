@@ -170,7 +170,7 @@ def ipsum():
 
 
 for prefix, classes in RESOURCES.items():
-    auth = AUTHENTICATION[prefix]
+    _auth = AUTHENTICATION[prefix]
     classes.setdefault("Status", {})
 
     # TODO: perform toposort firts
@@ -188,10 +188,10 @@ for prefix, classes in RESOURCES.items():
         auth_key = kwargs.get("auth_key", base.auth_key)
         assert auth_key, f"{prefix}/{cls_name} is missing auth_key!"
 
-        lookup = auth[auth_key].get("attrs", {})
+        lookup = _auth[auth_key].get("attrs", {})
 
-        if auth_parent := auth[auth_key].get("parent"):
-            attrs = auth[auth_parent].get("attrs", {})
+        if auth_parent := _auth[auth_key].get("parent"):
+            attrs = _auth[auth_parent].get("attrs", {})
             [lookup.setdefault(k, v) for k, v in attrs.items()]
 
         kwargs.setdefault("resource", base.resource or cls_name.lower())
