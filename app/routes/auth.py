@@ -637,7 +637,7 @@ class Resource(BaseView):
 
         return result
 
-    def get_json_response(self, *args, **kwargs):
+    def get_response(self, *args, **kwargs):
         raise NotImplementedError
 
     def patch_response(self, *args, **kwargs):
@@ -663,7 +663,7 @@ class Resource(BaseView):
 
     def get_live_json(self, **kwargs):
         try:
-            self.client.json = self.get_json_response()
+            self.client.json = self.get_response()
         except NotImplementedError:
             try:
                 self.url = self.api_url
@@ -756,7 +756,7 @@ class Resource(BaseView):
             result = self.filter_result(*listize(result))
         elif json["ok"]:
             if self.subkey:
-                result = result.get(self.subkey, result)
+                result = DotDict(result).get(self.subkey, result)
 
             pkwargs = {"black_list": self.black_list}
             _result = list(self.processor(listize(result), self.fields, **pkwargs))

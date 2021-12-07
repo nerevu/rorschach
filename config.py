@@ -129,6 +129,35 @@ class Config(object):
             "Table": {"auth_key": "bearer", "resource": getenv("AIRTABLE_TABLE")},
             "Status": {"base": "Table"},
         },
+        "aws": {
+            "Distribution": {
+                "auth_key": "boto",
+                "collection": "AWS",
+                "attrs": {"items": ["/*.svg", "/*.json", "/images*", "/favicon.*"]},
+                "id_field": "distribution_id",
+                "resource": "cloudfront",
+                "subkey": "DistributionList.Items",
+                "subresource_id": getenv("CLOUDFRONT_DISTRIBUTION_ID"),
+                "responses": {
+                    "get": {"func": "awsc.list_distributions"},
+                    # https://boto3.amazonaws.com/v1/documentation/api/latest/reference/
+                    # services/cloudfront.html#CloudFront.Client.create_invalidation
+                    "delete": {
+                        "func": "awsc.create_invalidation",
+                        "kwargs": [
+                            ("DistributionId", "{subresource_id}"),
+                            ("InvalidationBatch", "{invalidation_batch}"),
+                        ],
+                    },
+                },
+            },
+            "Status": {
+                "auth_key": "boto",
+                "collection": "AWS",
+                "resource": "cloudfront",
+                "responses": {"get": "access_token: {awsc}"},
+            },
+        },
         "gsheets": {
             "Table": {
                 "auth_key": "service",
@@ -141,7 +170,7 @@ class Config(object):
             "Status": {
                 "auth_key": "service",
                 "collection": "GSheets",
-                "response": "access_token: {gc.auth.token}",
+                "responses": {"get": "access_token: {gc.auth.token}"},
             },
         },
         "mailgun": {
@@ -352,6 +381,15 @@ class Config(object):
                     "view": None,
                 },
                 "attrs": {"base_id": getenv("AIRTABLE_BASE_ID"), "subkey": "records"},
+            },
+        },
+        "aws": {
+            "boto": {
+                "auth_type": "boto",
+                "profile_name": getenv("AWS_PROFILE"),
+                "aws_access_key_id": getenv("AWS_ACCESS_KEY_ID"),
+                "aws_secret_access_key": getenv("AWS_SECRET_ACCESS_KEY"),
+                "region_name": getenv("AWS_REGION"),
             },
         },
         "gsheets": {

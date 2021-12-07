@@ -74,19 +74,32 @@ def _format(value, **kwargs):
         return value
 
 
-def get_value(value, **kwargs):
+def getattrs(obj, *attrs):
+    attr = getattr(obj, attrs[0])
+
+    if len(attrs) > 1:
+        attr = getattrs(attr, *attrs[1:])
+
+    return attr
+
+
+def get_value(value, obj=None, **kwargs):
     try:
-        func = value.get("func")
+        _func = value.get("func")
     except AttributeError:
-        func = args = key = conditional = result = None
+        _func = fargs = key = conditional = result = None
     else:
-        args = value.get("args", [])
+        fargs = value.get("args", [])
+        fkwargs = value.get("kwargs", [])
         key = value.get("key")
         conditional = value.get("conditional")
         result = value.get("result")
 
-    if func:
-        _attr_value = _format(func, **kwargs)(*(_format(a, **kwargs) for a in args))
+    if _func:
+        func = getattrs(obj, *_func.split("."))
+        _args = (_format(a, **kwargs) for a in fargs)
+        _kwargs = {k: _format(v, **kwargs) for k, v in fkwargs}
+        _attr_value = func(*_args, **_kwargs)
         attr_value = _attr_value[_format(key, **kwargs)] if key else _attr_value
     elif conditional and _format(conditional, **kwargs):
         attr_value = _format(result[0], **kwargs)
@@ -116,14 +129,14 @@ def create_class(cls_name, *bases, lookup=None, **kwargs):
     for prop_name, value in kwargs.pop("props", {}).items():
         attrs[prop_name] = property(get_value(value, **lookup))
 
-    if response := kwargs.get("response"):
+    for method, response in kwargs.get("responses", {}).items():
 
-        def get_json_response(Resource, *args, **kwargs):
+        def method_response(Resource, *args, **kwargs):
             lookup.update(getmembers(Resource))
             result = get_value(response, obj=Resource, **lookup)
             return {"result": result}
 
-        attrs["get_json_response"] = get_json_response
+        attrs[f"{method}_response"] = method_response
 
     return type(cls_name, bases, attrs, **kwargs)
 
