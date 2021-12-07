@@ -188,7 +188,11 @@ for prefix, classes in RESOURCES.items():
         auth_key = kwargs.get("auth_key", base.auth_key)
         assert auth_key, f"{prefix}/{cls_name} is missing auth_key!"
 
-        lookup = _auth[auth_key].get("attrs", {})
+        try:
+            lookup = _auth[auth_key].get("attrs", {})
+        except KeyError:
+            logger.error(f"{prefix} doesn't have auth method {auth_key}!")
+            lookup = {}
 
         if auth_parent := _auth[auth_key].get("parent"):
             attrs = _auth[auth_parent].get("attrs", {})
