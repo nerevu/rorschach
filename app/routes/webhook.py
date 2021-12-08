@@ -12,6 +12,7 @@ Endpoints:
 import hmac
 
 from base64 import b64encode
+from datetime import datetime as dt
 
 from flask import request, current_app as app
 from flask.views import MethodView
@@ -34,9 +35,10 @@ logger.propagate = False
 # METHODVIEW ROUTES
 ###########################################################################
 class Webhook(ProviderMixin, MethodView):
-    def __init__(self, *args, actions=None, digest="sha256", **kwargs):
+    def __init__(self, *args, actions=None, activities=None, digest="sha256", **kwargs):
         super().__init__(*args, **kwargs)
         self.actions = actions or {}
+        self.activities = activities or []
         self.digest = digest
         self.payload_key = kwargs.get("payload_key")
         self.signature_header = kwargs.get("signature_header")
@@ -44,7 +46,6 @@ class Webhook(ProviderMixin, MethodView):
         self.split_signature = kwargs.get("split_signature")
         self.b64_encode = kwargs.get("b64_encode")
         self.ignore_signature = kwargs.get("ignore_signature")
-        self.activities = kwargs.get("activities", {})
 
     # https://github.com/bloomberg/python-github-webhook
     # https://github.com/carlos-jenkins/python-github-webhooks
@@ -65,9 +66,11 @@ class Webhook(ProviderMixin, MethodView):
             if self.b64_encode:
                 mac_digest = hmac.digest(secret, request.data, self.digest)
                 calculated_hmac = b64encode(mac_digest)
-            else:
+            elif self.digest:
                 mac = hmac.new(secret, request.data, self.digest)
                 calculated_hmac = mac.hexdigest()
+            else:
+                calculated_hmac = secret
 
             is_valid = hmac.compare_digest(calculated_hmac, signature)
         else:
@@ -75,9 +78,8 @@ class Webhook(ProviderMixin, MethodView):
 
         return is_valid
 
-    def process_value(self, value, activity_name=None, **kwargs):
-        action = self.actions.get(activity_name or value)
-        return action(value, **kwargs) if action else {}
+    def process(self, value, *args, **kwargs):
+        raise NotImplementedError
 
     def get(self, activity_name=None):
         json = {
@@ -111,7 +113,7 @@ class Webhook(ProviderMixin, MethodView):
 
         return jsonify(**json)
 
-    def post(self, activity_name=None):
+    def post(self, *args, **kwargs):
         """ Respond to a Webhook post.
         """
         if self.verified:
@@ -122,7 +124,7 @@ class Webhook(ProviderMixin, MethodView):
                 message = f"Invalid payload! Ensure key {self.payload_key} is present"
                 json = {"message": message, "status_code": 400}
             else:
-                json = self.process_value(value, activity_name, **payload)
+                json = self.process(value, *args, **payload)
         elif self.payload_key:
             json = {"message": "Invalid signature!", "status_code": 401}
         else:
@@ -131,3 +133,39 @@ class Webhook(ProviderMixin, MethodView):
         json.pop("links", None)
         json.pop("Attachments", None)
         return jsonify(**json)
+
+
+class XeroHook(Webhook):
+    def process(self, value, *args, **kwargs):
+        result = {}
+
+        for event in value:
+            event_category = event["eventCategory"].lower()
+            event_type = event["eventType"].lower()
+            activity_name = f"{event_category}_{event_type}"
+            action = self.actions.get(activity_name)
+
+            if action:
+                json = action(event["ResourceId"], **kwargs)
+                result[event["eventId"]] = json.get("response")
+            else:
+                logger.warning(f"Activity {activity_name} doesn't exist!")
+
+        return result
+
+
+class AirtableHook(Webhook):
+    def process(self, *args, base=None, **kwargs):
+        event_category = kwargs["eventCategory"]
+        event_type = kwargs["eventType"]
+        activity_name = f"{base}_{event_category}_{event_type}"
+        action = self.actions.get(activity_name)
+
+        if action:
+            json = action(event["ResourceId"], **kwargs)
+            result = json.get("response")
+        else:
+            logger.warning(f"Activity {activity_name} doesn't exist!")
+            result = {}
+
+        return result

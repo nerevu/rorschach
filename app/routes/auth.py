@@ -106,9 +106,8 @@ class Auth(BaseView):
         using a URL with a few key OAuth parameters.
         """
         cache.set(f"{self.prefix}_callback_url", request.args.get("callback_url"))
-        CStatus = get_collection(self.prefix, "Status")
-        RStatus = None if CStatus else Resource._registry[self.prefix]["Status"]
-        status = (CStatus or RStatus)()
+        Status = Resource._registry[self.prefix]["Status"]
+        status = Status(prefix=self.prefix, resource="status")
         json = status.get_live_json()
         client = self.client
 
@@ -163,13 +162,15 @@ class Resource(BaseView):
     rkwargs = {}
     prefix = None
     resource = None
+    auth_key = None
 
     @classmethod
-    def __init_subclass__(cls, prefix=None, resource=None, **kwargs):
+    def __init_subclass__(cls, prefix=None, resource=None, auth_key=None, **kwargs):
         if prefix is not None:
             cls.rkwargs = kwargs
             cls.prefix = prefix
             cls.resource = resource
+            cls.auth_key = auth_key
             cls._registry[prefix][cls.__name__] = cls
 
     def __init__(self, prefix=None, resource=None, **kwargs):
@@ -198,7 +199,8 @@ class Resource(BaseView):
             >>> kwargs = {"params": params}
             >>> qb_transactions = Resource("qb", "TransactionList", **kwargs)
         """
-        self.prefix = self.prefix or prefix
+        self.prefix = prefix or self.prefix
+        self.rkwargs["resource"] = resource or self.resource
         super().__init__(self.prefix, **self.rkwargs, **kwargs)
 
         self._data = None
@@ -282,6 +284,12 @@ class Resource(BaseView):
         return name
 
     @property
+    def fkwargs(self):
+        fkwargs = {**self.client.__dict__, **self.client.attrs} if self.client else {}
+        fkwargs.update({**self.__dict__, **self.rkwargs})
+        return fkwargs
+
+    @property
     def default_rid(self):
         try:
             item = list(islice(self, self.pos, self.pos + 1))[0]
@@ -328,28 +336,26 @@ class Resource(BaseView):
     @property
     def api_url(self):
         client = self.client
-        url = ""
 
         if client.api_base_url and not self.dry_run:
-            fkwargs = {**client.__dict__, **client.attrs, **self.rkwargs}
+            assert self.resource, (f"No {self} resource provided!", 404)
+            api_base_url = client.api_base_url.format(**self.fkwargs)
+            url = f"{api_base_url}/{self.resource}"
 
-            if self.resource == "status" and client.api_status_url:
-                url = client.api_status_url
-            elif self.resource == "status" and client.api_status_resource:
-                self.resource = client.api_status_resource
+            if self.subresource:
+                if self.rid and client.rid_last:
+                    url += f"/{self.subresource}/{self.rid}"
+                elif self.rid:
+                    url += f"/{self.rid}/{self.subresource}"
+                elif not self.eof:
+                    message = f"No {self} {self.resource} id provided!"
+                    assert self.rid, (message, 404)
 
-            if not url:
-                assert self.resource, (f"No {self} resource provided!", 404)
+            if client.api_ext:
+                url += f".{client.api_ext}"
+        else:
+            url = ""
 
-                api_base_url = client.api_base_url.format(**fkwargs)
-                url = f"{api_base_url}/{self.resource}"
-
-                if self.subresource:
-                    if self.rid:
-                        url += f"/{self.rid}/{self.subresource}"
-                    elif not self.eof:
-                        message = f"No {self} {self.resource} id provided!"
-                        assert self.rid, (message, 404)
         return url
 
     @property
@@ -636,7 +642,7 @@ class Resource(BaseView):
 
         return result
 
-    def get_json_response(self, *args, **kwargs):
+    def get_response(self, *args, **kwargs):
         raise NotImplementedError
 
     def patch_response(self, *args, **kwargs):
@@ -662,7 +668,7 @@ class Resource(BaseView):
 
     def get_live_json(self, **kwargs):
         try:
-            self.client.json = self.get_json_response()
+            self.client.json = self.get_response()
         except NotImplementedError:
             try:
                 self.url = self.api_url
@@ -755,7 +761,7 @@ class Resource(BaseView):
             result = self.filter_result(*listize(result))
         elif json["ok"]:
             if self.subkey:
-                result = result.get(self.subkey, result)
+                result = DotDict(result).get(self.subkey, result)
 
             pkwargs = {"black_list": self.black_list}
             _result = list(self.processor(listize(result), self.fields, **pkwargs))

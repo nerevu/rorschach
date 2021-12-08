@@ -126,22 +126,81 @@ class Config(object):
 
     RESOURCES = {
         "airtable": {
-            "Table": {"auth_key": "bearer", "resource": getenv("AIRTABLE_TABLE")}
+            "Table": {"auth_key": "bearer", "resource": getenv("AIRTABLE_TABLE")},
+            "Status": {"base": "Table"},
+        },
+        "aws": {
+            "Distribution": {
+                "auth_key": "boto",
+                "collection": "AWS",
+                "attrs": {"items": ["/*.svg", "/*.json", "/images*", "/favicon.*"]},
+                "id_field": "distribution_id",
+                "resource": "cloudfront",
+                "subkey": "DistributionList.Items",
+                "subresource_id": getenv("CLOUDFRONT_DISTRIBUTION_ID"),
+                "responses": {
+                    "get": {"func": "awsc.list_distributions"},
+                    # https://boto3.amazonaws.com/v1/documentation/api/latest/reference/
+                    # services/cloudfront.html#CloudFront.Client.create_invalidation
+                    "delete": {
+                        "func": "awsc.create_invalidation",
+                        "kwargs": [
+                            ("DistributionId", "{subresource_id}"),
+                            ("InvalidationBatch", "{invalidation_batch}"),
+                        ],
+                    },
+                },
+            },
+            "Status": {
+                "auth_key": "boto",
+                "collection": "AWS",
+                "resource": "cloudfront",
+                "responses": {"get": "access_token: {awsc}"},
+            },
         },
         "gsheets": {
             "Table": {
+                "auth_key": "service",
                 "collection": "Worksheet",
                 "use_default": True,
-                "auth_key": "service",
                 "resource": getenv("GSHEETS_SHEETNAME"),
                 "rid": getenv("GSHEETS_SHEET_ID"),
                 "subresource": getenv("GSHEETS_WORKSHEET_NAME"),
-            }
+            },
+            "Status": {
+                "auth_key": "service",
+                "collection": "GSheets",
+                "responses": {"get": "access_token: {gc.auth.token}"},
+            },
+        },
+        "keycdn": {
+            "Zones": {
+                "auth_key": "basic",
+                "methods": ["GET", "PATCH", "POST", "DELETE"],
+                "subkey": "data.zones",
+            },
+            "Status": {"base": "Zones"},
+            "ZoneCache": {
+                "auth_key": "basic",
+                "resource": "zones",
+                "subresource": "purge",
+                "methods": ["GET", "DELETE", "POST"],
+                "use_default": True,
+            },
+            # DELETE https://api.keycdn.com/zones/purgeurl/209797
+            # --data '{"urls":["examplepull-hexid.kxcdn.com/css/style.css"]}'
+            "ZoneURLCache": {
+                "auth_key": "basic",
+                "resource": "zones",
+                "subresource": "purgeurl",
+                "methods": ["DELETE"],
+            },
         },
         "mailgun": {
             "Domains": {"auth_key": "account", "subkey": "domain"},
+            "Status": {"base": "Domains"},
             "EmailLists": {
-                "auth_key": "server",
+                "auth_key": "account",
                 "id_field": "address",
                 "resource": "lists",
                 "subkey": "list",
@@ -151,8 +210,7 @@ class Config(object):
                 },
             },
             "EmailListMembers": {
-                "auth_key": "account",
-                "parent": "EmailLists",
+                "base": "EmailLists",
                 "subresource": "members",
                 "attrs": {
                     "subkey": {"conditional": "rid", "result": ["items", "list"]}
@@ -173,6 +231,7 @@ class Config(object):
                 "id_field": "ID",
                 "name_field": "Name",
             },
+            "Status": {"base": "Domains"},
             "Templates": {
                 "auth_key": "server",
                 "subkey": "Templates",
@@ -250,6 +309,7 @@ class Config(object):
                 "fields": ["id", "name", "children"],
             },
             "Users": {"auth_key": "oauth2", "fields": ["id", "name"]},
+            "Status": {"auth_key": "oauth2", "resource": "accounts"},
             "Contacts": {
                 "auth_key": "oauth2",
                 "resource": "clients",
@@ -257,6 +317,7 @@ class Config(object):
             },
         },
         "xero": {
+            "Status": {"auth_key": "simple", "resource": "connections"},
             "Projects": {
                 "auth_key": "project",
                 "fields": ["projectId", "name", "status"],
@@ -342,22 +403,41 @@ class Config(object):
                     "offset": None,
                     "view": None,
                 },
-                "api_status_resource": "Employee%20Hours",
                 "attrs": {"base_id": getenv("AIRTABLE_BASE_ID"), "subkey": "records"},
+            },
+        },
+        "aws": {
+            "boto": {
+                "auth_type": "boto",
+                "profile_name": getenv("AWS_PROFILE"),
+                "aws_access_key_id": getenv("AWS_ACCESS_KEY_ID"),
+                "aws_secret_access_key": getenv("AWS_SECRET_ACCESS_KEY"),
+                "region_name": getenv("AWS_REGION"),
             },
         },
         "gsheets": {
             "service": {
                 "auth_type": "service",
                 "keyfile_path": "internal-256716-b2f899ddbdc5.json",
-                "attrs": {
-                    "sheet_id": "1Q-0R_q5-dWeaIAktvxRirZGXJZmMxd8qjVTujauMdak",
-                    "worksheet_name": "options",
-                },
                 "scope": [
                     "https://spreadsheets.google.com/feeds",
                     "https://www.googleapis.com/auth/drive",
                 ],
+            },
+        },
+        # https://www.keycdn.com/api#overview
+        "keycdn": {
+            "base": {
+                "api_base_url": "https://api.keycdn.com",
+                "rid_last": True,
+                "api_ext": "json",
+                "verb_map": {"patch": "put"},
+            },
+            "basic": {
+                "parent": "base",
+                "auth_type": "basic",
+                "username": getenv("KEYCDN_API_KEY"),
+                "password": "",
             },
         },
         # https://documentation.mailgun.com/en/latest/api_reference.html
@@ -371,12 +451,10 @@ class Config(object):
             "server": {
                 "parent": "base",
                 "api_base_url": "https://api.mailgun.net/v3/{domain}",
-                "api_status_resource": "??",
             },
             "account": {
                 "parent": "base",
                 "api_base_url": "https://api.mailgun.net/v3",
-                "api_status_resource": "domains",
             },
         },
         # https://postmarkapp.com/developer/api/overview
@@ -389,7 +467,6 @@ class Config(object):
             },
             "account": {
                 "parent": "base",
-                "api_status_resource": "domains",
                 "headers": {
                     "all": {
                         "X-Postmark-Account-Token": getenv("POSTMARK_ACCOUNT_TOKEN")
@@ -398,7 +475,6 @@ class Config(object):
             },
             "server": {
                 "parent": "base",
-                "api_status_resource": "server",
                 "headers": {
                     "all": {"X-Postmark-Server-Token": getenv("POSTMARK_SERVER_TOKEN")},
                 },
@@ -409,7 +485,6 @@ class Config(object):
             "oauth2": {
                 "auth_type": "oauth2",
                 "api_base_url": "https://api.timelyapp.com/1.1/{account_id}",
-                "api_status_url": "https://api.timelyapp.com/1.1/accounts",
                 "authorization_base_url": "https://api.timelyapp.com/1.1/oauth/authorize",
                 "token_url": "https://api.timelyapp.com/1.1/oauth/token",
                 "refresh_url": "https://api.timelyapp.com/1.1/oauth/token",
@@ -456,7 +531,6 @@ class Config(object):
         "xero": {
             "base": {
                 "auth_type": "oauth2",
-                "api_status_url": "https://api.xero.com/connections",
                 "authorization_base_url": "https://login.xero.com/identity/connect/authorize",
                 "token_url": "https://identity.xero.com/connect/token",
                 "refresh_url": "https://identity.xero.com/connect/token",
@@ -524,6 +598,7 @@ class Config(object):
                     },
                 ],
             },
+            "simple": {"parent": "base", "api_base_url": "https://api.xero.com",},
             "api": {
                 "parent": "base",
                 "api_base_url": "https://api.xero.com/api.xro/2.0",
@@ -568,12 +643,10 @@ class Config(object):
 
     # Webhooks
     WEBHOOKS = {
-        "xero": {
-            "signature_header": "x-xero-signature",
-            "webhook_secret": getenv("XERO_WEBHOOK_SECRET"),
-            "digest": "sha256",
-            "b64_encode": True,
-            "payload_key": "events",
+        "airtable": {
+            "signature_header": "X-Airtable-Signature",
+            "webhook_secret": getenv("AIRTABLE_WEBHOOK_SECRET"),
+            "digest": None,
         },
         "heroku": {
             "signature_header": "Heroku-Webhook-Hmac-SHA256",
@@ -582,6 +655,13 @@ class Config(object):
             "b64_encode": True,
             "payload_key": "action",
             "ignore_signature": True,
+        },
+        "xero": {
+            "signature_header": "x-xero-signature",
+            "webhook_secret": getenv("XERO_WEBHOOK_SECRET"),
+            "digest": "sha256",
+            "b64_encode": True,
+            "payload_key": "events",
         },
     }
 

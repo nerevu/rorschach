@@ -7,6 +7,8 @@
 """
 import pygogo as gogo
 
+from inspect import getmembers
+
 from flask import Blueprint, current_app as app
 from faker import Faker
 
@@ -19,8 +21,8 @@ from app.utils import (
     get_links,
 )
 
-from app.routes import auth, Memoization
-from app.helpers import get_collection, flask_formatter as formatter
+from app.routes import auth, Memoization, webhook
+from app.helpers import get_collection, get_member, flask_formatter as formatter
 
 logger = gogo.Gogo(
     __name__, low_formatter=formatter, high_formatter=formatter, monolog=True
@@ -56,7 +58,7 @@ add_rule = blueprint.add_url_rule
 
 def create_route(view, prefix, name, *args, **kwargs):
     route_name = f"{prefix}-{name}".lower() if prefix else name
-    view_func = view.as_view(route_name, prefix)
+    view_func = view.as_view(route_name, prefix, **kwargs)
     url = f"{PREFIX}/{route_name}"
 
     for param in kwargs.get("params", []):
@@ -72,19 +74,32 @@ def _format(value, **kwargs):
         return value
 
 
-def get_value(value, **kwargs):
+def getattrs(obj, *attrs):
+    attr = getattr(obj, attrs[0])
+
+    if len(attrs) > 1:
+        attr = getattrs(attr, *attrs[1:])
+
+    return attr
+
+
+def get_value(value, obj=None, **kwargs):
     try:
-        func = value.get("func")
+        _func = value.get("func")
     except AttributeError:
-        func = args = key = conditional = result = None
+        _func = fargs = key = conditional = result = None
     else:
-        args = value.get("args", [])
+        fargs = value.get("args", [])
+        fkwargs = value.get("kwargs", [])
         key = value.get("key")
         conditional = value.get("conditional")
         result = value.get("result")
 
-    if func:
-        _attr_value = _format(func, **kwargs)(*(_format(a, **kwargs) for a in args))
+    if _func:
+        func = getattrs(obj, *_func.split("."))
+        _args = (_format(a, **kwargs) for a in fargs)
+        _kwargs = {k: _format(v, **kwargs) for k, v in fkwargs}
+        _attr_value = func(*_args, **_kwargs)
         attr_value = _attr_value[_format(key, **kwargs)] if key else _attr_value
     elif conditional and _format(conditional, **kwargs):
         attr_value = _format(result[0], **kwargs)
@@ -113,6 +128,15 @@ def create_class(cls_name, *bases, lookup=None, **kwargs):
 
     for prop_name, value in kwargs.pop("props", {}).items():
         attrs[prop_name] = property(get_value(value, **lookup))
+
+    for method, response in kwargs.get("responses", {}).items():
+
+        def method_response(Resource, *args, **kwargs):
+            lookup.update(getmembers(Resource))
+            result = get_value(response, obj=Resource, **lookup)
+            return {"result": result}
+
+        attrs[f"{method}_response"] = method_response
 
     return type(cls_name, bases, attrs, **kwargs)
 
@@ -145,6 +169,43 @@ def ipsum():
     return jsonify(**json)
 
 
+for prefix, classes in RESOURCES.items():
+    _auth = AUTHENTICATION[prefix]
+    classes.setdefault("Status", {})
+
+    # TODO: perform toposort firts
+    for cls_name, kwargs in classes.items():
+        if collection := kwargs.pop("collection", None):
+            base = get_collection(prefix, collection=collection)
+            assert base, f"Base {collection} not found in {prefix}"
+        elif _base := kwargs.pop("base", None):
+            base = BASE._registry[prefix].get(_base)
+            assert base, f"Base {collection} not found in {prefix}"
+        else:
+            base = kwargs.pop("base", BASE)
+
+        hidden = kwargs.pop("hidden", False)
+        auth_key = kwargs.get("auth_key", base.auth_key)
+        assert auth_key, f"{prefix}/{cls_name} is missing auth_key!"
+
+        try:
+            lookup = _auth[auth_key].get("attrs", {})
+        except KeyError:
+            logger.error(f"{prefix} doesn't have auth method {auth_key}!")
+            lookup = {}
+
+        if auth_parent := _auth[auth_key].get("parent"):
+            attrs = _auth[auth_parent].get("attrs", {})
+            [lookup.setdefault(k, v) for k, v in attrs.items()]
+
+        kwargs.setdefault("resource", base.resource or cls_name.lower())
+        methods = kwargs.pop("methods", ["GET"])
+        view = create_class(cls_name, base, lookup=lookup, prefix=prefix, **kwargs)
+
+        if not hidden:
+            create_route(view, prefix, cls_name.lower(), *methods)
+
+
 for name, options in METHOD_VIEWS.items():
     for prefix in options.get("providers", [None]):
         view = get_collection(prefix, **options) or options.get("view")
@@ -152,31 +213,6 @@ for name, options in METHOD_VIEWS.items():
         create_route(view, prefix, name, *methods)
 
 
-for prefix, classes in RESOURCES.items():
-    view = create_class("Status", BASE, prefix=prefix, resource="status")
-    create_route(view, prefix, "status", "GET")
-    auth = AUTHENTICATION[prefix]
-
-    for cls_name, kwargs in classes.items():
-        if "collection" in kwargs:
-            collection = kwargs.pop("collection")
-            base = get_collection(prefix, collection=collection)
-        else:
-            base = kwargs.pop("base", BASE)
-
-        hidden = kwargs.pop("hidden", False)
-        auth_key = kwargs["auth_key"]
-        lookup = auth[auth_key].get("attrs", {})
-
-        if auth_parent := auth[auth_key].get("parent"):
-            attrs = auth[auth_parent].get("attrs", {})
-            [lookup.setdefault(k, v) for k, v in attrs.items()]
-
-        kwargs.setdefault("resource", cls_name.lower())
-        resource = kwargs.get("resource")
-        methods = kwargs.pop("methods", ["GET"])
-
-        view = create_class(cls_name, base, lookup=lookup, prefix=prefix, **kwargs)
-
-        if not hidden:
-            create_route(view, prefix, cls_name.lower(), *methods)
+for prefix, options in WEBHOOKS.items():
+    if view := get_member(webhook, f"{prefix.title()}Hook"):
+        create_route(view, prefix, "hooks", "GET", "POST", **kwargs)

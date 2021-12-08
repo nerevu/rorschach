@@ -15,6 +15,7 @@ from tempfile import NamedTemporaryFile
 from graphlib import TopologicalSorter
 
 import requests
+import boto3
 import pygogo as gogo
 
 
@@ -32,6 +33,7 @@ from flask import (
 from oauthlib.oauth2 import TokenExpiredError
 from google.oauth2.service_account import Credentials
 from google.auth.transport.requests import Request
+from botocore.exceptions import ProfileNotFound
 
 from requests_oauthlib import OAuth1Session, OAuth2Session
 from requests_oauthlib.oauth1_session import TokenRequestDenied
@@ -67,8 +69,6 @@ class BaseClient(object):
         self.oauth1 = self.oauth_version == 1
         self.oauth2 = self.oauth_version == 2
         self.api_base_url = kwargs.get("api_base_url", "")
-        self.api_status_url = kwargs.get("api_status_url", "")
-        self.api_status_resource = kwargs.get("api_status_resource", "status")
         self.debug = kwargs.get("debug")
         self.username = kwargs.get("username")
         self.password = kwargs.get("password")
@@ -581,6 +581,44 @@ class BearerAuthClient(AuthClient):
         self.auth = BearerAuth(token)
 
 
+class BotoAuthClient(AuthClient):
+    def __init__(self, prefix=None, profile_name=None, **kwargs):
+        super().__init__(prefix, **kwargs)
+        self.auth_type = "boto"
+        self.profile_name = profile_name
+        self.aws_access_key_id = kwargs.get("aws_access_key_id")
+        self.aws_secret_access_key = kwargs.get("aws_secret_access_key")
+        self.region_name = kwargs.get("region_name")
+        self._session = None
+        self._init_credentials()
+
+    @property
+    def kwargs(self):
+        return {
+            "aws_access_key_id": self.aws_access_key_id,
+            "aws_secret_access_key": self.aws_secret_access_key,
+            "region_name": self.region_name,
+        }
+
+    @property
+    def session(self):
+        if not self._session:
+            try:
+                _session = boto3.Session(profile_name=self.profile_name)
+            except ProfileNotFound:
+                _session = boto3.Session(**self.kwargs)
+                logger.debug("Loaded session from config.")
+            else:
+                logger.debug(f"Loaded session from profile {self.profile_name}.")
+
+            self._session = _session
+
+        return self._session
+
+    def _init_credentials(self):
+        self.session
+
+
 class ServiceAuthClient(OAuth2BaseClient):
     def __init__(self, prefix=None, keyfile_path=None, **kwargs):
         super().__init__(prefix, **kwargs)
@@ -718,6 +756,7 @@ def get_auth_client(prefix, state=None, API_URL="", **kwargs):
             "oauth2": {"oauth_version": 2, "auth_client": OAuth2Client, "state": state},
             "service": {"auth_client": ServiceAuthClient},
             "bearer": {"auth_client": BearerAuthClient},
+            "boto": {"auth_client": BotoAuthClient},
             "basic": {"auth_client": BasicAuthClient},
             "custom": {"auth_client": AuthClient},
         }
@@ -744,6 +783,8 @@ def get_auth_client(prefix, state=None, API_URL="", **kwargs):
         client.verb_map = auth_kwargs.get("verb_map", {})
         client.method_map = auth_kwargs.get("method_map", {})
         client.tenant_path = auth_kwargs.get("tenant_path")
+        client.api_ext = auth_kwargs.get("api_ext")
+        client.rid_last = auth_kwargs.get("rid_last")
 
         try:
             restore_from_headless = client.restore_from_headless
@@ -892,7 +933,7 @@ def debug_status(client, unscoped=False, status_code=200, **kwargs):
     if unscoped:
         message = f"Insufficient scope: {client.scope}."
     elif status_code == 401:
-        message = "Token expired!"
+        message = kwargs.get("message", "Token expired!")
     else:
         message = kwargs.get("message", "")
 
