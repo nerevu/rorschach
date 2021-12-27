@@ -107,6 +107,8 @@ class Config(object):
 
     APP_CONFIG_WHITELIST = {
         "CHUNK_SIZE",
+        "CHUNK_SIZE",
+        "DEBUG",
         "ROW_LIMIT",
         "ERR_LIMIT",
         "ADMIN",

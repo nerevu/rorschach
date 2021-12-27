@@ -681,7 +681,7 @@ class Resource(BaseView):
 
             if self.url:
                 headers = {**self.headers, **kwargs.get("headers", {})}
-                rkwargs = {"headers": headers, "params": self.params, **app.config}
+                rkwargs = {"headers": headers, "params": self.params, **self.kwargs}
                 json = get_json_response(self.url, self.client, **rkwargs)
             else:
                 json = {
@@ -711,7 +711,7 @@ class Resource(BaseView):
             if self.url:
                 headers = {**self.headers, **kwargs.get("headers", {})}
                 method = self.method_map.get("patch", "patch")
-                rkwargs = {"headers": headers, "method": method, **app.config}
+                rkwargs = {"headers": headers, "method": method, **self.kwargs}
                 rkwargs[self.data_key] = dumps(data) if self.dump_data else data
                 json = get_json_response(self.url, self.client, **rkwargs)
             else:
@@ -797,7 +797,7 @@ class Resource(BaseView):
         if self.verb_map:
             self.client.verb = self.verb_map.get("post")
 
-        rkwargs = {"headers": self.headers, "method": "post", **app.config}
+        rkwargs = {"headers": self.headers, "method": "post", **self.kwargs}
         black_list = {
             "dryRun",
             "start",

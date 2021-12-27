@@ -885,9 +885,7 @@ def get_json_error(url, result):
 
 
 def debug_header(result):
-    for key, value in result.request.headers.items():
-        logger.debug({key: value[:32]})
-
+    logger.debug({k: v[:32] for k, v in result.request.headers.items()})
     body = result.request.body or ""
 
     try:
@@ -928,6 +926,12 @@ def debug_status(client, unscoped=False, status_code=200, **kwargs):
         message = kwargs.get("message", "")
 
     logger.debug(message)
+
+
+def is_ok(success_code=200, **kwargs):
+    status_code = kwargs.get("status_code", success_code)
+    ok = 200 <= status_code < 300
+    return (status_code, ok)
 
 
 def get_result(url, client, params=None, method="get", **kwargs):
@@ -999,18 +1003,12 @@ def get_json(url, client, params=None, method="get", success_code=200, **kwargs)
         else:
             json = get_errors(result, json)
 
-    ok = is_ok(success_code, **json)
+    status_code, ok = is_ok(success_code, **json)
 
-    if result and not ok and kwargs.get("debug"):
+    if (result is not None) and (not ok) and kwargs.get("debug"):
         debug_header(result)
 
     return (json, unscoped)
-
-
-def is_ok(success_code=200, **kwargs):
-    status_code = kwargs.get("status_code", success_code)
-    ok = 200 <= status_code < 300
-    return (status_code, ok)
 
 
 def get_json_response(url, client, params=None, renewed=False, **kwargs):
