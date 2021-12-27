@@ -62,8 +62,10 @@ def _clear_cache():
 
 
 class BaseClient(object):
-    def __init__(self, prefix, **kwargs):
+    def __init__(self, prefix, client_id=None, client_secret=None, **kwargs):
         self.prefix = prefix
+        self.client_id = client_id
+        self.client_secret = client_secret
         self.auth = None
         self.oauth_version = kwargs.get("oauth_version")
         self.oauth1 = self.oauth_version == 1
@@ -90,12 +92,7 @@ class AuthClient(BaseClient):
 
 class OAuth2BaseClient(BaseClient):
     def __init__(
-        self,
-        prefix=None,
-        client_id=None,
-        client_secret=None,
-        refresh_url=None,
-        **kwargs,
+        self, prefix=None, refresh_url=None, **kwargs,
     ):
         super().__init__(prefix, **kwargs)
         self.scope = kwargs.get("scope", "")
@@ -201,18 +198,11 @@ class OAuth2BaseClient(BaseClient):
 
 class OAuth2Client(OAuth2BaseClient):
     def __init__(
-        self,
-        prefix=None,
-        client_id=None,
-        client_secret=None,
-        refresh_url=None,
-        **kwargs,
+        self, prefix=None, refresh_url=None, **kwargs,
     ):
         super().__init__(prefix, **kwargs)
         self.auth_type = "oauth2"
         self.token_type = "Bearer"
-        self.client_id = client_id
-        self.client_secret = client_secret
         self.refresh_url = refresh_url
         self.oauth_session = None
 
