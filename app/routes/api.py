@@ -22,7 +22,12 @@ from app.utils import (
 )
 
 from app.routes import auth, Memoization, webhook
-from app.helpers import get_collection, get_member, flask_formatter as formatter
+from app.helpers import (
+    get_collection,
+    get_member,
+    flask_formatter as formatter,
+    toposort,
+)
 
 logger = gogo.Gogo(
     __name__, low_formatter=formatter, high_formatter=formatter, monolog=True
@@ -173,8 +178,7 @@ for prefix, classes in RESOURCES.items():
     _auth = AUTHENTICATION[prefix]
     classes.setdefault("Status", {})
 
-    # TODO: perform toposort firts
-    for cls_name, kwargs in classes.items():
+    for cls_name, kwargs in toposort("base", **classes):
         if collection := kwargs.pop("collection", None):
             base = get_collection(prefix, collection=collection)
             assert base, f"Base {collection} not found in {prefix}"

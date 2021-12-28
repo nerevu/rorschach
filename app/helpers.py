@@ -15,6 +15,7 @@ from os import getenv
 from traceback import format_exception
 from json.decoder import JSONDecodeError
 from logging import Formatter
+from graphlib import TopologicalSorter
 
 import inflect
 import pygogo as gogo
@@ -207,3 +208,11 @@ def parse_date(date_str):
         parsed = date(year, month, day).isoformat()
 
     return parsed
+
+
+def toposort(parent_key="parent", **kwargs):
+    graph = {k: {v.get(parent_key)} for k, v in kwargs.items()}
+
+    for name in tuple(TopologicalSorter(graph).static_order()):
+        if name:
+            yield (name, kwargs[name])
