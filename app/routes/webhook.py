@@ -12,7 +12,6 @@ Endpoints:
 import hmac
 
 from base64 import b64encode
-from datetime import datetime as dt
 
 from flask import request, current_app as app
 from flask.views import MethodView
@@ -162,7 +161,7 @@ class AirtableHook(Webhook):
         action = self.actions.get(activity_name)
 
         if action:
-            json = action(event["ResourceId"], **kwargs)
+            json = action(**kwargs)
             result = json.get("response")
         else:
             logger.warning(f"Activity {activity_name} doesn't exist!")
