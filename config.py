@@ -497,9 +497,20 @@ class Config(object):
             },
             "basic": {
                 "parent": "base",
+                "default": True,
                 "auth_type": "basic",
                 "username": getenv("KEYCDN_API_KEY"),
                 "password": "",
+            },
+            "custom": {
+                "parent": "base",
+                "auth_type": "custom",
+                "headers": {
+                    "all": {
+                        "Content-Type": "application/json",
+                        "X-Auth-Token": getenv("KEYCDN_API_KEY"),
+                    }
+                },
             },
         },
         # https://documentation.mailgun.com/en/latest/api_reference.html
@@ -529,6 +540,7 @@ class Config(object):
             },
             "account": {
                 "parent": "base",
+                "default": True,
                 "headers": {
                     "all": {
                         "X-Postmark-Account-Token": getenv("POSTMARK_ACCOUNT_TOKEN")
@@ -689,7 +701,11 @@ class Config(object):
                     },
                 ],
             },
-            "simple": {"parent": "base", "api_base_url": "https://api.xero.com",},
+            "simple": {
+                "parent": "base",
+                "default": True,
+                "api_base_url": "https://api.xero.com",
+            },
             "api": {
                 "parent": "base",
                 "api_base_url": "https://api.xero.com/api.xro/2.0",

@@ -723,12 +723,19 @@ class ServiceAuthClient(OAuth2BaseClient):
 def get_auth(prefix, auth_key=None, **kwargs):
     authentication = kwargs["AUTHENTICATION"].get(prefix.lower(), {})
 
-    if not auth_key:
+    if auth_key:
+        auth_kwargs = authentication[auth_key]
+    else:
         graph = {k: {v.get("parent")} for k, v in authentication.items()}
-        sorted = tuple(TopologicalSorter(graph).static_order())
-        auth_key = sorted[-1]
 
-    auth_kwargs = authentication[auth_key]
+        for auth_key in tuple(TopologicalSorter(graph).static_order()):
+            if not auth_key:
+                continue
+
+            auth_kwargs = authentication[auth_key]
+
+            if auth_kwargs.get("default"):
+                break
 
     if auth_kwargs.get("parent"):
         auth_kwargs = {**authentication[auth_kwargs["parent"]], **auth_kwargs}
