@@ -5,6 +5,8 @@
 
     Provides AWS Sheets API related functions
 """
+from datetime import datetime as dt
+
 import pygogo as gogo
 
 from app.routes.auth import Resource
