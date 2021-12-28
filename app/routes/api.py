@@ -14,15 +14,15 @@ from faker import Faker
 
 from config import Config
 
-from app.utils import (
-    jsonify,
-    cache_header,
-    make_cache_key,
-    get_links,
+from app.utils import cache_header, get_links, jsonify, make_cache_key
+from app.routes import auth, Memoization, webhook
+from app.helpers import (
+    flask_formatter as formatter,
+    get_member,
+    toposort,
+    get_collection,
 )
 
-from app.routes import auth, Memoization, webhook
-from app.helpers import get_collection, get_member, flask_formatter as formatter
 
 logger = gogo.Gogo(
     __name__, low_formatter=formatter, high_formatter=formatter, monolog=True
@@ -173,8 +173,7 @@ for prefix, classes in RESOURCES.items():
     _auth = AUTHENTICATION[prefix]
     classes.setdefault("Status", {})
 
-    # TODO: perform toposort firts
-    for cls_name, kwargs in classes.items():
+    for cls_name, kwargs in toposort("base", **classes):
         if collection := kwargs.pop("collection", None):
             base = get_collection(prefix, collection=collection)
             assert base, f"Base {collection} not found in {prefix}"

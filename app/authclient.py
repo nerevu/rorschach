@@ -12,7 +12,6 @@ from functools import partial
 from json import JSONDecodeError, load
 from pathlib import Path
 from tempfile import NamedTemporaryFile
-from graphlib import TopologicalSorter
 
 import requests
 import boto3
@@ -43,7 +42,7 @@ from config import Config
 from app import cache
 from app.utils import uncache_header, make_cache_key, jsonify, get_links
 from app.headless import headless_auth
-from app.helpers import flask_formatter as formatter
+from app.helpers import flask_formatter as formatter, toposort
 
 logger = gogo.Gogo(
     __name__, low_formatter=formatter, high_formatter=formatter, monolog=True
@@ -726,14 +725,7 @@ def get_auth(prefix, auth_key=None, **kwargs):
     if auth_key:
         auth_kwargs = authentication[auth_key]
     else:
-        graph = {k: {v.get("parent")} for k, v in authentication.items()}
-
-        for auth_key in tuple(TopologicalSorter(graph).static_order()):
-            if not auth_key:
-                continue
-
-            auth_kwargs = authentication[auth_key]
-
+        for auth_key, auth_kwargs in toposort(**authentication):
             if auth_kwargs.get("default"):
                 break
 
