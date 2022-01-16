@@ -1,0 +1,54 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://raw.githubusercontent.com/nerevu/rorschach/master/app/schemas/webhook.schema.json",
+  "title": "Webhook",
+  "description": "A product from Acme's catalog",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "documentationURL": {
+      "description": "URL to API resource documentation",
+      "type": "string",
+      "examples": [
+        "https://developer.xero.com/documentation/guides/webhooks/overview"
+      ]
+    },
+    "signatureHeader": {
+      "description": "The HTTP header to extract the webhook signature from",
+      "type": "string",
+      "examples": [
+        "x-xero-signature"
+      ]
+    },
+    "webhookSecret": {
+      "description": "The password to decrypt the webhook payload",
+      "type": "string"
+    },
+    "digest": {
+      "description": "The webhook digest algorithm",
+      "type": "string",
+      "default": "sha256",
+      "pattern": "sha1|sha256|null"
+    },
+    "b64Encode": {
+      "description": "Use Base64 encoding instead of Hexadecimal",
+      "type": "boolean"
+    },
+    "splitSignature": {
+      "description": "Split signature at the `=` character",
+      "type": "boolean"
+    },
+    "ignoreSignature": {
+      "description": "Disable verification by ignoring the signature (insecure!)",
+      "type": "boolean"
+    },
+    "payloadKey": {
+      "description": "Key to extract from the payload request",
+      "type": "string"
+    }
+  },
+  "required": [
+    "signatureHeader",
+    "webhookSecret"
+  ]
+}

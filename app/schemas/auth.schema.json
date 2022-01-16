@@ -1,0 +1,299 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://raw.githubusercontent.com/nerevu/rorschach/master/app/schemas/auth.schema.json",
+  "title": "Authentication",
+  "description": "API authentication",
+  "type": "object",
+  "definitions": {
+    "header": {
+      "description": "An HTTP header",
+      "type": "object",
+      "default": {},
+      "$ref": "https://raw.githubusercontent.com/nerevu/rorschach/master/app/schemas/attribute.schema.json"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "documentationURL": {
+      "description": "URL to API reference documentation",
+      "type": "string",
+      "examples": [
+        "https://developer.xero.com/documentation/api/accounting/overview"
+      ]
+    },
+    "apiBaseURL": {
+      "description": "Base API URL",
+      "examples": [
+        "https://api.xero.com/api.xro/2.0",
+        "https://api.xero.com/projects.xro/2.0"
+      ],
+      "type": "string"
+    },
+    "authorizationBaseURL": {
+      "description": "API OAuth authorization URL",
+      "examples": [
+        "https://login.xero.com/identity/connect/authorize"
+      ],
+      "type": "string"
+    },
+    "tokenURL": {
+      "description": "API OAuth token URL",
+      "examples": [
+        "https://identity.xero.com/connect/token"
+      ],
+      "type": "string"
+    },
+    "refreshURL": {
+      "description": "API OAuth token refresh URL (defaults to the `tokenURL`)",
+      "examples": [
+        "https://identity.xero.com/connect/token"
+      ],
+      "type": "string"
+    },
+    "redirectURI": {
+      "description": "API OAuth flow callback entry point",
+      "examples": [
+        "/xero-callback"
+      ],
+      "type": "string"
+    },
+    "authId": {
+      "description": "Unique identifier for the API resource",
+      "type": "string",
+      "pattern": "^[a-z]+(_[a-z]+)*$",
+      "default": "",
+      "examples": [
+        "status",
+        "users",
+        "project_tasks"
+      ]
+    },
+    "authType": {
+      "description": "The API authentication type",
+      "type": "string",
+      "default": "oauth2",
+      "pattern": "oauth1|oauth2|service|bearer|boto|basic|custom"
+    },
+    "clientId": {
+      "description": "The API client ID",
+      "type": "string",
+      "examples": [
+        "$CLIENT_ID"
+      ]
+    },
+    "clientSecret": {
+      "description": "The API client secret",
+      "type": "string",
+      "examples": [
+        "$SECRET"
+      ]
+    },
+    "tenantPath": {
+      "description": "Path to the tenant ID",
+      "type": "string",
+      "default": "",
+      "examples": [
+        "result[0].tenantId"
+      ]
+    },
+    "username": {
+      "description": "The application username",
+      "type": "string",
+      "examples": [
+        "$USERNAME"
+      ]
+    },
+    "password": {
+      "description": "The application password",
+      "type": "string",
+      "examples": [
+        "$PASSWORD"
+      ]
+    },
+    "scope": {
+      "description": "The API permissions scope",
+      "type": "array",
+      "items": {
+        "type": "string",
+        "examples": [
+          "projects",
+          "offline_access"
+        ]
+      }
+    },
+    "attrs": {
+      "type": "object",
+      "default": {},
+      "$ref": "https://raw.githubusercontent.com/nerevu/rorschach/master/app/schemas/attribute.schema.json"
+    },
+    "params": {
+      "type": "object",
+      "default": {},
+      "$ref": "attribute.schema.json"
+    },
+    "ridLast": {
+      "description": "Place the resource ID *after* the subresource instead of before",
+      "type": "boolean"
+    },
+    "headless": {
+      "description": "Allow headless authentication",
+      "type": "boolean",
+      "default": false
+    },
+    "debug": {
+      "description": "Enable debug mode",
+      "type": "boolean",
+      "default": false
+    },
+    "apiExt": {
+      "description": "Extension to place  at the end of API urls",
+      "type": "string",
+      "examples": [
+        "json"
+      ]
+    },
+    "headers": {
+      "description": "HTTP headers to include with requests (case sensitive)",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "ALL": {
+          "description": "Include in all requests",
+          "type": "object",
+          "default": {},
+          "$ref": "#/definitions/header"
+        },
+        "GET": {
+          "description": "Include only in GET requests",
+          "type": "object",
+          "default": {},
+          "$ref": "#/definitions/header"
+        },
+        "POST": {
+          "description": "Include only in POST requests",
+          "type": "object",
+          "default": {},
+          "$ref": "#/definitions/header"
+        },
+        "PUT": {
+          "description": "Include only in PUT requests",
+          "type": "object",
+          "default": {},
+          "$ref": "#/definitions/header"
+        },
+        "PATCH": {
+          "description": "Include only in PATCH requests",
+          "type": "object",
+          "default": {},
+          "$ref": "#/definitions/header"
+        },
+        "DELETE": {
+          "description": "Include only in DELETE requests",
+          "type": "object",
+          "default": {},
+          "$ref": "#/definitions/header"
+        }
+      }
+    },
+    "methodMap": {
+      "description": "Maps standard HTTP methods to API specific methods (case sensitive)",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "GET": {
+          "description": "Map GET requests",
+          "type": "string",
+          "examples": [
+            "POST"
+          ]
+        },
+        "POST": {
+          "description": "Map POST requests",
+          "type": "string",
+          "examples": [
+            "GET"
+          ]
+        },
+        "PUT": {
+          "description": "Map PUT requests",
+          "type": "string",
+          "examples": [
+            "POST"
+          ]
+        },
+        "PATCH": {
+          "description": "Map PATCH requests",
+          "type": "string",
+          "examples": [
+            "POST"
+          ]
+        },
+        "DELETE": {
+          "description": "Map DELETE requests",
+          "type": "string",
+          "examples": [
+            "POST"
+          ]
+        }
+      }
+    },
+    "paramMap": {
+      "description": "Maps standard parameters to API specific parameters",
+      "type": "object",
+      "properties": {
+        "id": {
+          "description": "",
+          "type": "string",
+          "default": "",
+          "examples": [
+            ""
+          ]
+        },
+        "fields": {
+          "description": "",
+          "type": "string",
+          "default": "",
+          "examples": [
+            ""
+          ]
+        },
+        "start": {
+          "description": "The start date",
+          "type": "string",
+          "examples": [
+            "dateAfterUtc"
+          ]
+        },
+        "end": {
+          "description": "The end date",
+          "type": "string",
+          "examples": [
+            "dateBeforeUtc"
+          ]
+        }
+      }
+    },
+    "headlessElements": {
+      "description": "Web element used to navigate a provider's application login page",
+      "type": "array",
+      "items": {
+        "$ref": "https://raw.githubusercontent.com/nerevu/rorschach/master/app/schemas/headless.schema.json"
+      }
+    },
+    "parent": {
+      "description": "The base authentication object",
+      "type": "string",
+      "default": "",
+      "examples": [
+        "base"
+      ]
+    },
+    "isDefault": {
+      "description": "Use this authentication object if one isn't provided",
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "authId"
+  ]
+}

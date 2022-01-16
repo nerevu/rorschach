@@ -1,0 +1,134 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://raw.githubusercontent.com/nerevu/rorschach/master/app/schemas/resource.schema.json",
+  "title": "Resource",
+  "description": "An API resource",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "documentationURL": {
+      "description": "URL to API resource documentation",
+      "type": "string",
+      "examples": [
+        "https://developer.xero.com/documentation/api/accounting/accounts"
+      ]
+    },
+    "authId": {
+      "description": "The authorization object used to authenticate",
+      "type": "string",
+      "pattern": "^[a-z]+(_[a-z]+)*$",
+      "default": "",
+      "examples": [
+        "simple",
+        "base",
+        "api_key"
+      ]
+    },
+    "parent": {
+      "description": "resourceId of the base resource object",
+      "type": "string",
+      "default": "",
+      "examples": [
+        "base"
+      ]
+    },
+    "hidden": {
+      "description": "Hide the resource from",
+      "type": "boolean",
+      "default": false
+    },
+    "resourceId": {
+      "description": "Unique identifier for the API resource",
+      "type": "string",
+      "pattern": "^[a-z]+(_[a-z]+)*$",
+      "default": "",
+      "examples": [
+        "status",
+        "users",
+        "project_tasks"
+      ]
+    },
+    "idField": {
+      "description": "Field representing the resource ID",
+      "type": "string",
+      "default": "id"
+    },
+    "nameField": {
+      "description": "Field representing the resource name",
+      "type": "string",
+      "default": "name"
+    },
+    "resource": {
+      "description": "What the resource is named in the API URL",
+      "type": "string",
+      "examples": [
+        "connections",
+        "projectsusers",
+        "Contacts"
+      ]
+    },
+    "rid": {
+      "description": "Currently active resource",
+      "type": "string",
+      "examples": [
+        "$COMPANY_ID",
+        "$SHEET_ID",
+        "nerevugroup"
+      ]
+    },
+    "subkey": {
+      "description": "The path to extract from the parsed API response (should return a list of items)",
+      "type": "string",
+      "examples": [
+        "items",
+        "result"
+      ]
+    },
+    "subresource": {
+      "description": "What the sub resource is named in the API URL",
+      "type": "string",
+      "examples": [
+        "OnlineInvoice",
+        "tasks"
+      ]
+    },
+    "srid": {
+      "description": "Currently active sub resource",
+      "type": "string",
+      "examples": [
+        "$CLOUDFRONT_DISTRIBUTION_ID",
+        "quick_brown_fox",
+        "shy-black-bear"
+      ]
+    },
+    "fields": {
+      "description": "Resource fields to save from the parsed API response",
+      "type": "array",
+      "items": {
+        "type": "string",
+        "examples": [
+          "id",
+          "name",
+          "createdBy"
+        ]
+      }
+    },
+    "methods": {
+      "description": "HTTP methods this resource allows",
+      "type": "array",
+      "items": {
+        "type": "string",
+        "default": "GET",
+        "pattern": "GET|POST|PATCH|PUT|DELETE"
+      }
+    },
+    "attrs": {
+      "type": "object",
+      "default": {},
+      "$ref": "https://raw.githubusercontent.com/nerevu/rorschach/master/app/schemas/attribute.schema.json"
+    }
+  },
+  "required": [
+    "resourceId"
+  ]
+}

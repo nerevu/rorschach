@@ -173,15 +173,15 @@ for prefix, classes in RESOURCES.items():
     _auth = AUTHENTICATION[prefix]
     classes.setdefault("Status", {})
 
-    for cls_name, kwargs in toposort("base", **classes):
+    for cls_name, kwargs in toposort("parent", **classes):
         if collection := kwargs.pop("collection", None):
             base = get_collection(prefix, collection=collection)
-            assert base, f"Base {collection} not found in {prefix}"
-        elif _base := kwargs.pop("base", None):
+            assert base, f"Parent {collection} not found in {prefix}"
+        elif _base := kwargs.pop("parent", None):
             base = BASE._registry[prefix].get(_base)
-            assert base, f"Base {collection} not found in {prefix}"
+            assert base, f"Parent {collection} not found in {prefix}"
         else:
-            base = kwargs.pop("base", BASE)
+            base = kwargs.pop("parent", BASE)
 
         hidden = kwargs.pop("hidden", False)
         auth_key = kwargs.get("auth_key", base.auth_key)

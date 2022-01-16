@@ -129,7 +129,7 @@ class Config(object):
     RESOURCES = {
         "airtable": {
             "Table": {"auth_key": "bearer", "resource": getenv("AIRTABLE_TABLE")},
-            "Status": {"base": "Table"},
+            "Status": {"parent": "Table"},
         },
         "aws": {
             "Distribution": {
@@ -139,7 +139,7 @@ class Config(object):
                 "id_field": "distribution_id",
                 "resource": "cloudfront",
                 "subkey": "DistributionList.Items",
-                "subresource_id": getenv("CLOUDFRONT_DISTRIBUTION_ID"),
+                "srid": getenv("CLOUDFRONT_DISTRIBUTION_ID"),
                 "responses": {
                     "get": {"func": "awsc.list_distributions"},
                     # https://boto3.amazonaws.com/v1/documentation/api/latest/reference/
@@ -147,7 +147,7 @@ class Config(object):
                     "delete": {
                         "func": "awsc.create_invalidation",
                         "kwargs": [
-                            ("DistributionId", "{subresource_id}"),
+                            ("DistributionId", "{srid}"),
                             ("InvalidationBatch", "{invalidation_batch}"),
                         ],
                     },
@@ -206,7 +206,7 @@ class Config(object):
                 "methods": ["GET", "PATCH", "POST", "DELETE"],
                 "subkey": "data.zones",
             },
-            "Status": {"base": "Zones"},
+            "Status": {"parent": "Zones"},
             "ZoneCache": {
                 "auth_key": "basic",
                 "resource": "zones",
@@ -225,7 +225,7 @@ class Config(object):
         },
         "mailgun": {
             "Domains": {"auth_key": "account", "subkey": "domain"},
-            "Status": {"base": "Domains"},
+            "Status": {"parent": "Domains"},
             "EmailLists": {
                 "auth_key": "account",
                 "id_field": "address",
@@ -237,11 +237,9 @@ class Config(object):
                 },
             },
             "EmailListMembers": {
-                "base": "EmailLists",
+                "parent": "EmailLists",
                 "subresource": "members",
-                "attrs": {
-                    "subkey": {"conditional": "rid", "result": ["items", "list"]}
-                },
+                "subkey": {"conditional": "rid", "result": ["items", "list"]},
             },
             "Email": {
                 "auth_key": "account",
@@ -258,7 +256,7 @@ class Config(object):
                 "id_field": "ID",
                 "name_field": "Name",
             },
-            "Status": {"base": "Domains"},
+            "Status": {"parent": "Domains"},
             "Templates": {
                 "auth_key": "server",
                 "subkey": "Templates",
@@ -430,7 +428,10 @@ class Config(object):
                     "offset": None,
                     "view": None,
                 },
-                "attrs": {"base_id": getenv("AIRTABLE_BASE_ID"), "subkey": "records"},
+                "subkey": "records",
+                "attrs": {
+                    "base_id": getenv("AIRTABLE_BASE_ID"),
+                },
             },
         },
         "aws": {
@@ -599,7 +600,7 @@ class Config(object):
                 "password": getenv("TIMELY_PASSWORD"),
                 "method_map": {"patch": "put"},
                 "param_map": {"start": "since", "end": "upto"},
-                "attrs": {"singularize": True},
+                "singularize": True,
                 "headless_elements": [
                     {
                         "selector": "#email",
