@@ -341,77 +341,6 @@ class Config(object):
                 "fields": ["id", "name"],
             },
         },
-        "xero": {
-            "Status": {"auth_key": "simple", "resource": "connections"},
-            "Projects": {
-                "auth_key": "project",
-                "fields": ["projectId", "name", "status"],
-                "id_field": "projectId",
-                "subkey": "items",
-                "methods": ["GET", "POST"],
-            },
-            "Users": {
-                "auth_key": "project",
-                "resource": "projectsusers",
-                "fields": ["userId", "name"],
-                "id_field": "userId",
-                "subkey": "items",
-            },
-            "Contacts": {
-                "auth_key": "api",
-                "fields": ["ContactID", "Name", "FirstName", "LastName"],
-                "id_field": "ContactID",
-                "subkey": "Contacts",
-                "resource": "Contacts",
-            },
-            "Payments": {
-                "auth_key": "api",
-                "id_field": "PaymentID",
-                "subkey": "Payments",
-                "resource": "Payments",
-            },
-            "Invoices": {
-                "auth_key": "api",
-                "id_field": "InvoiceID",
-                "subkey": "Invoices",
-                "name_field": "InvoiceNumber",
-                "resource": "Invoices",
-                "methods": ["GET", "POST"],
-            },
-            "OnlineInvoices": {
-                "auth_key": "api",
-                "id_field": "OnlineInvoiceUrl",
-                "subkey": "OnlineInvoices",
-                "resource": "Invoices",
-                "subresource": "OnlineInvoice",
-            },
-            "Inventory": {
-                "auth_key": "api",
-                "fields": ["ItemID", "Name", "Code", "Description", "SalesDetails"],
-                "id_field": "ItemID",
-                "subkey": "Items",
-                "name_field": "Name",
-                "resource": "Items",
-            },
-            "ProjectTasks": {
-                "auth_key": "project",
-                "fields": ["taskId", "name", "status", "rate.value", "projectId"],
-                "id_field": "taskId",
-                "resource": "projects",
-                "subkey": "items",
-                "subresource": "tasks",
-                "methods": ["GET", "POST"],
-            },
-            "ProjectTime": {
-                "auth_key": "project",
-                "attrs": {"event_pos": 0, "event_id": ""},
-                "id_field": "timeEntryId",
-                "resource": "projects",
-                "subkey": "items",
-                "subresource": "time",
-                "methods": ["GET", "POST"],
-            },
-        },
     }
 
     # Authentication
@@ -631,91 +560,6 @@ class Config(object):
                 ],
             },
         },
-        # https://developer.xero.com/myapps/
-        "xero": {
-            "base": {
-                "auth_type": "oauth2",
-                "authorization_base_url": "https://login.xero.com/identity/connect/authorize",
-                "token_url": "https://identity.xero.com/connect/token",
-                "refresh_url": "https://identity.xero.com/connect/token",
-                "redirect_uri": "/xero-callback",
-                "headers": {"all": {"Xero-tenant-id": "{tenant_id}"}},
-                "client_id": getenv("XERO_CLIENT_ID"),
-                "client_secret": getenv("XERO_SECRET"),
-                "username": getenv("XERO_USERNAME"),
-                "password": getenv("XERO_PASSWORD"),
-                "param_map": {"start": "dateAfterUtc", "end": "dateBeforeUtc"},
-                # https://developer.xero.com/documentation/guides/oauth2/auth-flow/#xero-tenants
-                "tenant_path": "result[0].tenantId",
-                "scope": [
-                    "projects",
-                    "offline_access",
-                    "accounting.transactions",
-                    "accounting.settings",
-                    "accounting.contacts",
-                    "accounting.attachments",
-                    "files",
-                    "assets",
-                ],
-                "headless_elements": [
-                    {
-                        "selector": "#xl-form-email",
-                        "description": "xero username",
-                        "content": getenv("XERO_USERNAME"),
-                    },
-                    {
-                        "selector": "#xl-form-password",
-                        "description": "xero password",
-                        "content": getenv("XERO_PASSWORD"),
-                    },
-                    {
-                        "selector": "#xl-form-submit",
-                        "description": "xero sign in",
-                        "action": "click",
-                    },
-                    {
-                        "selector": '[placeholder="Authentication code"]',
-                        "description": "xero 2fa code",
-                        "prompt": True,
-                    },
-                    {
-                        "selector": '[type="submit"]',
-                        "description": "xero confirm",
-                        "action": "click",
-                    },
-                    {
-                        "selector": "#approveButton",
-                        "description": "xero connect",
-                        "action": "click",
-                    },
-                    {
-                        "selector": "#approveButton",
-                        "description": "xero allow access",
-                        "action": "click",
-                        "wait": 5,
-                    },
-                    {
-                        "selector": "#approveButton",
-                        "description": "xero select org",
-                        "action": "click",
-                        "wait": 5,
-                    },
-                ],
-            },
-            "simple": {
-                "parent": "base",
-                "default": True,
-                "api_base_url": "https://api.xero.com",
-            },
-            "api": {
-                "parent": "base",
-                "api_base_url": "https://api.xero.com/api.xro/2.0",
-            },
-            "project": {
-                "parent": "base",
-                "api_base_url": "https://api.xero.com/projects.xro/2.0",
-            },
-        },
     }
 
     OPTIONAL_SETTINGS += [
@@ -774,13 +618,6 @@ class Config(object):
             "webhook_secret": getenv("STRIPE_WEBHOOK_SECRET"),
             "digest": "sha1",
             "split_signature": True,
-        },
-        "xero": {
-            "signature_header": "x-xero-signature",
-            "webhook_secret": getenv("XERO_WEBHOOK_SECRET"),
-            "digest": "sha256",
-            "b64_encode": True,
-            "payload_key": "events",
         },
     }
 

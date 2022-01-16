@@ -1,0 +1,62 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://raw.githubusercontent.com/nerevu/rorschach/master/app/schemas/provider.schema.json",
+  "title": "Provider",
+  "description": "A 3rd party API provider",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "prefix": {
+      "description": "Unique 3rd party identifier",
+      "type": "string",
+      "pattern": "^[a-z]+(-[a-z]+)*$",
+      "default": "",
+      "examples": [
+        "xero",
+        "quickbooks",
+        "aws",
+        "google-analytics"
+      ]
+    },
+    "resources": {
+      "description": "Resources exposed by 3rd party API",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "default": {},
+        "$ref": "https://raw.githubusercontent.com/nerevu/rorschach/master/app/schemas/resource.schema.json"
+      }
+    },
+    "statusResource": {
+      "description": "The id of a resource to redirect to after authenticating the user",
+      "type": "string",
+      "pattern": "^[a-z]+(_[a-z]+)*$",
+      "default": "status",
+      "examples": [
+        "status",
+        "account",
+        "domains"
+      ]
+    },
+    "auths": {
+      "description": "Authentication methods accepted by 3rd party API",
+      "type": "array",
+      "default": [],
+      "items": {
+        "type": "object",
+        "default": {},
+        "$ref": "https://raw.githubusercontent.com/nerevu/rorschach/master/app/schemas/auth.schema.json"
+      }
+    },
+    "webhook": {
+      "type": "object",
+      "default": {},
+      "$ref": "https://raw.githubusercontent.com/nerevu/rorschach/master/app/schemas/webhook.schema.json"
+    }
+  },
+  "required": [
+    "resources",
+    "auths",
+    "prefix"
+  ]
+}
