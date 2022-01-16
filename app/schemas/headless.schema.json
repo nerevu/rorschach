@@ -1,0 +1,68 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://raw.githubusercontent.com/nerevu/rorschach/master/app/schemas/headless.schema.json",
+  "title": "Headless Element",
+  "description": "An element on a provider's application login page",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "description": {
+      "description": "User friendly identification of the element",
+      "type": "string",
+      "examples": [
+        "password"
+      ]
+    },
+    "selector": {
+      "description": "CSS selector of the element",
+      "type": "string",
+      "examples": [
+        "#xl-form-password"
+      ]
+    },
+    "action": {
+      "description": "Action to perform on the element",
+      "type": "string",
+      "default": "",
+      "pattern": "submit|click|clear"
+    },
+    "content": {
+      "description": "Text to send to the element (can't be mixed with `prompt`)",
+      "type": "string",
+      "examples": [
+        "$PASSWORD"
+      ]
+    },
+    "prompt": {
+      "description": "Text to display when requesting user input (can't be mixed with `content`).",
+      "type": "string",
+      "examples": [
+        "Enter 2fa code"
+      ]
+    },
+    "wait": {
+      "description": "Amount of seconds to wait before executing action",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "selector",
+    "description"
+  ],
+  "dependencies": {
+    "content": {
+      "not": {
+        "required": [
+          "prompt"
+        ]
+      }
+    },
+    "prompt": {
+      "not": {
+        "required": [
+          "content"
+        ]
+      }
+    }
+  }
+}
