@@ -1,0 +1,42 @@
+{
+  "title": "Project",
+  "description": "An abstract project",
+  "domains": [
+    "xero.com",
+    "timely.com"
+  ],
+  "tags": [
+    "accounting",
+    "time-tracking"
+  ],
+  "fields": [
+    {
+      "id": "project_id",
+      "description": "The project's unique identifier",
+      "type": "string",
+      "required": true
+    },
+    {
+      "id": "project_name",
+      "description": "The project's name",
+      "type": "string",
+      "required": true
+    },
+    {
+      "id": "client_id",
+      "description": "The client's unique identifier",
+      "type": "string",
+      "required": true
+    },
+    {
+      "id": "start_date",
+      "description": "The project's unique identifier",
+      "type": "timestamp"
+    },
+    {
+      "id": "end_date",
+      "description": "The project's unique identifier",
+      "type": "timestamp"
+    }
+  ]
+}

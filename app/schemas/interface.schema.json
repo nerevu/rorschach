@@ -1,0 +1,65 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://raw.githubusercontent.com/nerevu/rorschach/master/app/schemas/interface.schema.json",
+  "title": "Interface",
+  "description": "Translates a provider instance resource to an abstract resource",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "provider": {
+      "description": "Path to the provider instance",
+      "type": "string",
+      "default": "",
+      "examples": [
+        "https://raw.githubusercontent.com/nerevu/rorschach/master/app/provider/xero.json"
+      ]
+    },
+    "providerResourceId": {
+      "description": "Unique identifier for the provider instance resource",
+      "type": "string",
+      "pattern": "^[a-z]+(_[a-z]+)*$",
+      "default": "",
+      "examples": [
+        "projects",
+        "users",
+        "contacts",
+        "project_tasks"
+      ]
+    },
+    "abstraction": {
+      "description": "Path to the abstract resource",
+      "type": "string",
+      "default": "",
+      "examples": [
+        "https://raw.githubusercontent.com/nerevu/rorschach/master/app/abstractions/abstract-project.json"
+      ]
+    },
+    "implementation": {
+      "description": "Maps reference abstract resource properties to API resource properties",
+      "type": "object",
+      "default": {},
+      "additionalProperties": {
+        "oneOf": [
+          {
+            "type": "string",
+            "default": ""
+          },
+          {
+            "type": "boolean",
+            "default": false
+          },
+          {
+            "type": "integer",
+            "default": 0
+          }
+        ]
+      }
+    }
+  },
+  "required": [
+    "provider",
+    "providerResourceId",
+    "abstraction",
+    "implementation"
+  ]
+}

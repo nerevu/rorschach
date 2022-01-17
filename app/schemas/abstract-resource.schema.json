@@ -11,7 +11,11 @@
       "type": "string",
       "default": "",
       "examples": [
-        "Project", "Task", "Sheet", "Workbook", "Invoice"
+        "Project",
+        "Task",
+        "Sheet",
+        "Workbook",
+        "Invoice"
       ]
     },
     "description": {
@@ -30,7 +34,9 @@
         "type": "string",
         "default": "",
         "examples": [
-          "accounting", "productivity", "devops"
+          "accounting",
+          "productivity",
+          "devops"
         ]
       }
     },
@@ -42,7 +48,9 @@
         "type": "string",
         "default": "",
         "examples": [
-          "xero.com", "timely.com", "github.com"
+          "xero.com",
+          "timely.com",
+          "github.com"
         ]
       }
     },
@@ -60,7 +68,10 @@
             "pattern": "^[a-z]+(_[a-z]+)*$",
             "default": "",
             "examples": [
-              "project_id", "task_name", "start_date", "status"
+              "project_id",
+              "task_name",
+              "start_date",
+              "status"
             ]
           },
           "description": {
@@ -68,20 +79,16 @@
             "type": "string",
             "default": "",
             "examples": [
-              "The project's unique identifier", "The task's name", "The project start date"
+              "The project's unique identifier",
+              "The task's name",
+              "The project start date"
             ]
           },
           "type": {
             "description": "The field type",
             "type": "string",
             "default": "",
-            "enum": [
-              "string",
-              "number",
-              "integer",
-              "boolean",
-              "timestamp"
-            ]
+            "pattern": "string|number|integer|boolean|timestamp"
           },
           "required": {
             "description": "Whether or not an implementer is required to have this field",

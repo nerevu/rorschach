@@ -1,0 +1,12 @@
+{
+  "provider": "https://raw.githubusercontent.com/nerevu/rorschach/master/app/provider/xero.json",
+  "providerResourceId": "projects",
+  "abstraction": "https://raw.githubusercontent.com/nerevu/rorschach/master/app/abstractions/abstract-project.json",
+  "implementation": {
+    "project_id": "projectId",
+    "project_name": "name",
+    "client_id": "",
+    "start_date": "",
+    "end_date": ""
+  }
+}
