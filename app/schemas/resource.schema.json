@@ -9,6 +9,7 @@
     "documentationURL": {
       "description": "URL to API resource documentation",
       "type": "string",
+      "default": "",
       "examples": [
         "https://developer.xero.com/documentation/api/accounting/accounts"
       ]
@@ -61,6 +62,7 @@
     "resource": {
       "description": "What the resource is named in the API URL",
       "type": "string",
+      "default": "",
       "examples": [
         "connections",
         "projectsusers",
@@ -70,6 +72,7 @@
     "rid": {
       "description": "Currently active resource",
       "type": "string",
+      "default": "",
       "examples": [
         "$COMPANY_ID",
         "$SHEET_ID",
@@ -79,6 +82,7 @@
     "subkey": {
       "description": "The path to extract from the parsed API response (should return a list of items)",
       "type": "string",
+      "default": "",
       "examples": [
         "items",
         "result"
@@ -87,6 +91,7 @@
     "subresource": {
       "description": "What the sub resource is named in the API URL",
       "type": "string",
+      "default": "",
       "examples": [
         "OnlineInvoice",
         "tasks"
@@ -95,6 +100,7 @@
     "srid": {
       "description": "Currently active sub resource",
       "type": "string",
+      "default": "",
       "examples": [
         "$CLOUDFRONT_DISTRIBUTION_ID",
         "quick_brown_fox",
@@ -104,8 +110,10 @@
     "fields": {
       "description": "Resource fields to save from the parsed API response",
       "type": "array",
+      "default": [],
       "items": {
         "type": "string",
+        "default": "",
         "examples": [
           "id",
           "name",
@@ -116,6 +124,7 @@
     "methods": {
       "description": "HTTP methods this resource allows",
       "type": "array",
+      "default": [],
       "items": {
         "type": "string",
         "default": "GET",

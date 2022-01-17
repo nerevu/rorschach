@@ -9,6 +9,7 @@
     "description": {
       "description": "User friendly identification of the element",
       "type": "string",
+      "default": "",
       "examples": [
         "password"
       ]
@@ -16,6 +17,7 @@
     "selector": {
       "description": "CSS selector of the element",
       "type": "string",
+      "default": "",
       "examples": [
         "#xl-form-password"
       ]
@@ -29,6 +31,7 @@
     "content": {
       "description": "Text to send to the element (can't be mixed with `prompt`)",
       "type": "string",
+      "default": "",
       "examples": [
         "$PASSWORD"
       ]
@@ -36,13 +39,15 @@
     "prompt": {
       "description": "Text to display when requesting user input (can't be mixed with `content`).",
       "type": "string",
+      "default": "",
       "examples": [
         "Enter 2fa code"
       ]
     },
     "wait": {
       "description": "Amount of seconds to wait before executing action",
-      "type": "integer"
+      "type": "integer",
+      "default": 0
     }
   },
   "required": [

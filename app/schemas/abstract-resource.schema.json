@@ -1,0 +1,105 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://raw.githubusercontent.com/nerevu/rorschach/master/app/schemas/abstract-resource.schema.json",
+  "title": "Abstract Resource",
+  "description": "An abstract resource",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "title": {
+      "description": "An abstract resource",
+      "type": "string",
+      "default": "",
+      "examples": [
+        "Project", "Task", "Sheet", "Workbook", "Invoice"
+      ]
+    },
+    "description": {
+      "description": "The resource description",
+      "type": "string",
+      "default": "",
+      "examples": [
+        "An abstract project"
+      ]
+    },
+    "tags": {
+      "description": "The subject areas applicable to this resource",
+      "type": "array",
+      "default": [],
+      "items": {
+        "type": "string",
+        "default": "",
+        "examples": [
+          "accounting", "productivity", "devops"
+        ]
+      }
+    },
+    "domains": {
+      "description": "Example 3rd party applications applicable to this resource",
+      "type": "array",
+      "default": [],
+      "items": {
+        "type": "string",
+        "default": "",
+        "examples": [
+          "xero.com", "timely.com", "github.com"
+        ]
+      }
+    },
+    "fields": {
+      "description": "The resources properties to include",
+      "type": "array",
+      "default": [],
+      "items": {
+        "type": "object",
+        "default": {},
+        "properties": {
+          "id": {
+            "description": "Unique identifier for the field",
+            "type": "string",
+            "pattern": "^[a-z]+(_[a-z]+)*$",
+            "default": "",
+            "examples": [
+              "project_id", "task_name", "start_date", "status"
+            ]
+          },
+          "description": {
+            "description": "The field description",
+            "type": "string",
+            "default": "",
+            "examples": [
+              "The project's unique identifier", "The task's name", "The project start date"
+            ]
+          },
+          "type": {
+            "description": "The field type",
+            "type": "string",
+            "default": "",
+            "enum": [
+              "string",
+              "number",
+              "integer",
+              "boolean",
+              "timestamp"
+            ]
+          },
+          "required": {
+            "description": "Whether or not an implementer is required to have this field",
+            "type": "boolean",
+            "default": false
+          }
+        },
+        "required": [
+          "id",
+          "description"
+        ]
+      }
+    }
+  },
+  "required": [
+    "title",
+    "description",
+    "domains",
+    "fields"
+  ]
+}

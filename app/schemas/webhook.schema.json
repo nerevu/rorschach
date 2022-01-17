@@ -22,7 +22,8 @@
     },
     "webhookSecret": {
       "description": "The password to decrypt the webhook payload",
-      "type": "string"
+      "type": "string",
+      "default": false
     },
     "digest": {
       "description": "The webhook digest algorithm",
@@ -32,15 +33,18 @@
     },
     "b64Encode": {
       "description": "Use Base64 encoding instead of Hexadecimal",
-      "type": "boolean"
+      "type": "boolean",
+      "default": false
     },
     "splitSignature": {
       "description": "Split signature at the `=` character",
-      "type": "boolean"
+      "type": "boolean",
+      "default": false
     },
     "ignoreSignature": {
       "description": "Disable verification by ignoring the signature (insecure!)",
-      "type": "boolean"
+      "type": "boolean",
+      "default": false
     },
     "payloadKey": {
       "description": "Key to extract from the payload request",

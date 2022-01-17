@@ -17,45 +17,51 @@
     "documentationURL": {
       "description": "URL to API reference documentation",
       "type": "string",
+      "default": "",
       "examples": [
         "https://developer.xero.com/documentation/api/accounting/overview"
       ]
     },
     "apiBaseURL": {
       "description": "Base API URL",
+      "type": "string",
+      "default": "",
       "examples": [
         "https://api.xero.com/api.xro/2.0",
         "https://api.xero.com/projects.xro/2.0"
-      ],
-      "type": "string"
+      ]
     },
     "authorizationBaseURL": {
       "description": "API OAuth authorization URL",
+      "type": "string",
+      "default": "",
       "examples": [
         "https://login.xero.com/identity/connect/authorize"
-      ],
-      "type": "string"
+      ]
     },
     "tokenURL": {
       "description": "API OAuth token URL",
+      "type": "string",
+      "default": "",
       "examples": [
         "https://identity.xero.com/connect/token"
-      ],
-      "type": "string"
+      ]
     },
     "refreshURL": {
       "description": "API OAuth token refresh URL (defaults to the `tokenURL`)",
+      "type": "string",
+      "default": "",
       "examples": [
         "https://identity.xero.com/connect/token"
-      ],
-      "type": "string"
+      ]
     },
     "redirectURI": {
       "description": "API OAuth flow callback entry point",
+      "type": "string",
+      "default": "",
       "examples": [
         "/xero-callback"
-      ],
-      "type": "string"
+      ]
     },
     "authId": {
       "description": "Unique identifier for the API resource",
@@ -77,6 +83,7 @@
     "clientId": {
       "description": "The API client ID",
       "type": "string",
+      "default": "",
       "examples": [
         "$CLIENT_ID"
       ]
@@ -84,6 +91,7 @@
     "clientSecret": {
       "description": "The API client secret",
       "type": "string",
+      "default": "",
       "examples": [
         "$SECRET"
       ]
@@ -99,6 +107,7 @@
     "username": {
       "description": "The application username",
       "type": "string",
+      "default": "",
       "examples": [
         "$USERNAME"
       ]
@@ -106,6 +115,7 @@
     "password": {
       "description": "The application password",
       "type": "string",
+      "default": "",
       "examples": [
         "$PASSWORD"
       ]
@@ -113,8 +123,10 @@
     "scope": {
       "description": "The API permissions scope",
       "type": "array",
+      "default": [],
       "items": {
         "type": "string",
+        "default": "",
         "examples": [
           "projects",
           "offline_access"
@@ -133,7 +145,8 @@
     },
     "ridLast": {
       "description": "Place the resource ID *after* the subresource instead of before",
-      "type": "boolean"
+      "type": "boolean",
+      "default": false
     },
     "headless": {
       "description": "Allow headless authentication",
@@ -148,6 +161,7 @@
     "apiExt": {
       "description": "Extension to place  at the end of API urls",
       "type": "string",
+      "default": "",
       "examples": [
         "json"
       ]
@@ -155,6 +169,7 @@
     "headers": {
       "description": "HTTP headers to include with requests (case sensitive)",
       "type": "object",
+      "default": {},
       "additionalProperties": false,
       "properties": {
         "ALL": {
@@ -198,11 +213,13 @@
     "methodMap": {
       "description": "Maps standard HTTP methods to API specific methods (case sensitive)",
       "type": "object",
+      "default": {},
       "additionalProperties": false,
       "properties": {
         "GET": {
           "description": "Map GET requests",
           "type": "string",
+          "default": "GET",
           "examples": [
             "POST"
           ]
@@ -210,6 +227,7 @@
         "POST": {
           "description": "Map POST requests",
           "type": "string",
+          "default": "POST",
           "examples": [
             "GET"
           ]
@@ -217,6 +235,7 @@
         "PUT": {
           "description": "Map PUT requests",
           "type": "string",
+          "default": "PUT",
           "examples": [
             "POST"
           ]
@@ -224,6 +243,7 @@
         "PATCH": {
           "description": "Map PATCH requests",
           "type": "string",
+          "default": "PATCH",
           "examples": [
             "POST"
           ]
@@ -231,6 +251,7 @@
         "DELETE": {
           "description": "Map DELETE requests",
           "type": "string",
+          "default": "DELETE",
           "examples": [
             "POST"
           ]
@@ -240,6 +261,7 @@
     "paramMap": {
       "description": "Maps standard parameters to API specific parameters",
       "type": "object",
+      "default": {},
       "properties": {
         "id": {
           "description": "",
@@ -260,6 +282,7 @@
         "start": {
           "description": "The start date",
           "type": "string",
+          "default": "",
           "examples": [
             "dateAfterUtc"
           ]
@@ -267,6 +290,7 @@
         "end": {
           "description": "The end date",
           "type": "string",
+          "default": "",
           "examples": [
             "dateBeforeUtc"
           ]
@@ -276,6 +300,7 @@
     "headlessElements": {
       "description": "Web element used to navigate a provider's application login page",
       "type": "array",
+      "default": [],
       "items": {
         "$ref": "https://raw.githubusercontent.com/nerevu/rorschach/master/app/schemas/headless.schema.json"
       }
@@ -290,7 +315,8 @@
     },
     "isDefault": {
       "description": "Use this authentication object if one isn't provided",
-      "type": "boolean"
+      "type": "boolean",
+      "default": false
     }
   },
   "required": [

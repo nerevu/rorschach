@@ -21,6 +21,7 @@
     "resources": {
       "description": "Resources exposed by 3rd party API",
       "type": "array",
+      "default": [],
       "items": {
         "type": "object",
         "default": {},
