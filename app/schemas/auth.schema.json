@@ -9,7 +9,7 @@
       "description": "An HTTP header",
       "type": "object",
       "default": {},
-      "$ref": "https://raw.githubusercontent.com/nerevu/rorschach/master/app/schemas/attribute.schema.json"
+      "$ref": "attribute.schema.json"
     }
   },
   "additionalProperties": false,
@@ -136,7 +136,7 @@
     "attrs": {
       "type": "object",
       "default": {},
-      "$ref": "https://raw.githubusercontent.com/nerevu/rorschach/master/app/schemas/attribute.schema.json"
+      "$ref": "attribute.schema.json"
     },
     "params": {
       "type": "object",
@@ -302,7 +302,7 @@
       "type": "array",
       "default": [],
       "items": {
-        "$ref": "https://raw.githubusercontent.com/nerevu/rorschach/master/app/schemas/headless.schema.json"
+        "$ref": "headless.schema.json"
       }
     },
     "parent": {

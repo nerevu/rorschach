@@ -134,7 +134,7 @@
     "attrs": {
       "type": "object",
       "default": {},
-      "$ref": "https://raw.githubusercontent.com/nerevu/rorschach/master/app/schemas/attribute.schema.json"
+      "$ref": "attribute.schema.json"
     }
   },
   "required": [
