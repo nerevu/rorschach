@@ -25,7 +25,6 @@ from app import cache
 from app.utils import jsonify, parse, get_request_base, get_links
 from app.connection import conn
 
-q = Queue(connection=conn)
 blueprint = Blueprint("API", __name__)
 
 # these don't change based on mode, so no need to do app.config['...']

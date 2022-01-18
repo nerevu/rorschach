@@ -626,11 +626,6 @@ class Config(object):
         "HEROKU_WEBHOOK_SECRET",
     ]
 
-    # RQ
-    REQUIRED_PROD_SETTINGS += ["RQ_DASHBOARD_USERNAME", "RQ_DASHBOARD_PASSWORD"]
-    RQ_DASHBOARD_REDIS_URL = redis_config.get("CACHE_REDIS_URL")
-    RQ_DASHBOARD_DEBUG = False
-
     # Whitelist
     APP_CONFIG_WHITELIST.update(REQUIRED_SETTINGS)
     APP_CONFIG_WHITELIST.update(REQUIRED_PROD_SETTINGS)
@@ -695,7 +690,6 @@ class Development(Config):
     base = "sqlite:///{}?check_same_thread=False"
     ENV = "development"
     SQLALCHEMY_DATABASE_URI = base.format(p.join(PARENT_DIR, "app.db"))
-    RQ_DASHBOARD_DEBUG = True
     DEBUG = True
     DEBUG_MEMCACHE = False
     DEBUG_QB_CLIENT = False
