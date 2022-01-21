@@ -1,0 +1,29 @@
+{
+  "name": "default",
+  "description": "Authenticates with various 3rd party services!",
+  "message": "Welcome to the Nerevu API!",
+  "methodViewRouteParams": [
+    {
+      "name": "memoization",
+      "module": "app.routes",
+      "className": "Memoization",
+      "params": [
+        "string:path"
+      ],
+      "methods": [
+        "GET",
+        "DELETE"
+      ]
+    }
+  ],
+  "blueprintRouteParams": [
+    {
+      "name": "ipsum",
+      "module": "app.routes",
+      "funcName": "ipsum"
+    }
+  ],
+  "providerNames": [
+    "xero"
+  ]
+}

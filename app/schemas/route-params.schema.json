@@ -1,0 +1,31 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://raw.githubusercontent.com/nerevu/rorschach/master/app/schemas/route-params.schema.json",
+  "title": "Flask Route Params",
+  "description": "Flask route parameters",
+  "type": "object",
+  "properties": {
+    "name": {
+      "description": "Unique identifier for the route",
+      "type": "string",
+      "pattern": "^[a-z]+(-[a-z]+)*$",
+      "default": "",
+      "examples": [
+        "memoization",
+        "health-check"
+      ]
+    },
+    "module": {
+      "description": "The class or function module",
+      "type": "string",
+      "default": "",
+      "examples": [
+        "app.routes"
+      ]
+    }
+  },
+  "required": [
+    "name",
+    "module"
+  ]
+}

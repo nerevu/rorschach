@@ -1,0 +1,79 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://raw.githubusercontent.com/nerevu/rorschach/master/app/schemas/config.schema.json",
+  "title": "API Config",
+  "description": "An exposed API Configuration",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "name": {
+      "description": "Unique identifier for the API",
+      "type": "string",
+      "pattern": "^[a-z]+(-[a-z]+)*$",
+      "default": "",
+      "examples": [
+        "default",
+        "awesome-api"
+      ]
+    },
+    "description": {
+      "description": "The API description",
+      "type": "string",
+      "default": "",
+      "examples": [
+        "Authenticates with various 3rd party services!"
+      ]
+    },
+    "message": {
+      "description": "Text to display on the API root route",
+      "type": "string",
+      "default": "",
+      "examples": [
+        "Welcome to the Nerevu API!"
+      ]
+    },
+    "methodViewRouteParams": {
+      "description": "Exposed MethodView route params",
+      "type": "array",
+      "default": [],
+      "items": {
+        "type": "object",
+        "default": {},
+        "$ref": "https://raw.githubusercontent.com/nerevu/rorschach/master/app/schemas/method-view-route-params.schema.json"
+      }
+    },
+    "blueprintRouteParams": {
+      "description": "Exposed Blueprint route params",
+      "type": "array",
+      "default": [],
+      "items": {
+        "type": "object",
+        "default": {},
+        "$ref": "https://raw.githubusercontent.com/nerevu/rorschach/master/app/schemas/blueprint-route-params.schema.json"
+      }
+    },
+    "providerNames": {
+      "description": "Exposed resource provider prefixes",
+      "type": "array",
+      "default": [],
+      "items": {
+        "type": "string",
+        "pattern": "^[a-z]+(-[a-z]+)*$",
+        "default": "",
+        "examples": [
+          "xero",
+          "quickbooks",
+          "aws",
+          "google-analytics"
+        ]
+      }
+    }
+  },
+  "required": [
+    "name",
+    "description",
+    "message",
+    "methodViewRouteParams",
+    "blueprintRouteParams"
+  ]
+}

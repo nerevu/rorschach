@@ -1,0 +1,27 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://raw.githubusercontent.com/nerevu/rorschach/master/app/schemas/blueprint-route-params.schema.json",
+  "title": "Blueprint Route Params",
+  "description": "Blueprint route parameters",
+  "type": "object",
+  "allOf": [
+    {
+      "$ref": "https://raw.githubusercontent.com/nerevu/rorschach/master/app/schemas/route-params.schema.json"
+    }
+  ],
+  "properties": {
+    "funcName": {
+      "description": "The function name",
+      "type": "string",
+      "pattern": "^[a-z]+(_[a-z]+)*$",
+      "default": "",
+      "examples": [
+        "ipsum",
+        "health_check"
+      ]
+    }
+  },
+  "required": [
+    "funcName"
+  ]
+}

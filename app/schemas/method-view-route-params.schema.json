@@ -1,0 +1,51 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://raw.githubusercontent.com/nerevu/rorschach/master/app/schemas/method-view-route-params.schema.json",
+  "title": "MethodView Route Params",
+  "description": "MethodView route parameters",
+  "type": "object",
+  "allOf": [
+    {
+      "$ref": "https://raw.githubusercontent.com/nerevu/rorschach/master/app/schemas/route-params.schema.json"
+    }
+  ],
+  "properties": {
+    "className": {
+      "description": "The MethodView class name",
+      "type": "string",
+      "pattern": "^[A-Z]+([a-zA-Z]+)*$",
+      "default": "",
+      "examples": [
+        "Memoization",
+        "HealthCheck"
+      ]
+    },
+    "methods": {
+      "description": "HTTP methods this route allows",
+      "type": "array",
+      "default": [],
+      "items": {
+        "type": "string",
+        "default": "GET",
+        "pattern": "GET|POST|PATCH|PUT|DELETE"
+      }
+    },
+    "params": {
+      "description": "Query parameters this route accepts (in the form of `<type>:<name>`",
+      "type": "array",
+      "default": [],
+      "items": {
+        "type": "string",
+        "default": "",
+        "pattern": "^[a-z]+(:[a-zA-Z]+)*$"
+      },
+      "examples": [
+        "string:path",
+        "int:numItems"
+      ]
+    }
+  },
+  "required": [
+    "className"
+  ]
+}
