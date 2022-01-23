@@ -190,7 +190,7 @@ def delete_cache(*args, cache_key=None, **kwargs):
     if cache_key or has_request_context():
         cache_key = cache_key or make_cache_key(False, *args, **kwargs)
 
-        if len(cache_key.split(":")) < 3:
+        if len(cache_key.split(":")) == 3:
             # remove all downstream keys since they are also stale, e.g., all pages of
             # a paginated route
             cache.clear()

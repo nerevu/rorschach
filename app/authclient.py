@@ -56,10 +56,6 @@ RENEW_TIME = 60
 HEADERS = {"Accept": "application/json"}
 
 
-def _clear_cache():
-    cache.delete(make_cache_key())
-
-
 @dataclass
 class BaseClient(Authentication):
     prefix: str = ""
@@ -905,8 +901,7 @@ def debug_json(client, url, method="get", status_code=200, **kwargs):
 
         @after_this_request
         def clear_cache(response):
-            _clear_cache()
-            return uncache_header(response)
+            return uncache_header(response, cache_key=f"{client.prefix}_access_token")
 
     except AttributeError:
         pass
