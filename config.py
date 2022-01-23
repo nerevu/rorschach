@@ -13,9 +13,9 @@
     # will not be run.
     ###########################################################################
 """
-from os import getenv, urandom, path as p
-from datetime import timedelta
 from collections import namedtuple
+from datetime import timedelta
+from os import getenv, path as p, urandom
 
 from dotenv import load_dotenv
 from mezmorize.utils import get_cache_config, get_cache_type

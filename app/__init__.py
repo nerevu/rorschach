@@ -15,21 +15,20 @@
     ###########################################################################
 """
 from functools import partial
-from os import path as p, getenv
+from logging import DEBUG, WARNING
+from os import getenv, path as p
 from pathlib import Path
 from pickle import DEFAULT_PROTOCOL
-from logging import WARNING, DEBUG
 
 from flask import Flask
 from flask.logging import default_handler
-from flask_cors import CORS
 from flask_caching import Cache
 from flask_compress import Compress
+from flask_cors import CORS
+from meza.fntools import CustomEncoder
+from mezmorize.utils import get_cache_config, get_cache_type
 
 from app.helpers import configure, email_hdlr, flask_formatter
-
-from mezmorize.utils import get_cache_config, get_cache_type
-from meza.fntools import CustomEncoder
 
 __version__ = "0.33.0"
 __title__ = "Nerevu API"

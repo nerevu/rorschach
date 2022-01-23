@@ -4,35 +4,32 @@
 Provides Auth routes.
 
 """
-from pathlib import Path
-from datetime import date, timedelta, datetime as dt
-from json import loads, dumps, dump
+from datetime import date, datetime as dt, timedelta
 from itertools import islice
+from json import dump, dumps, loads
 from json.decoder import JSONDecodeError
+from pathlib import Path
 
 import pygogo as gogo
 
 from flask import (
     current_app as app,
-    request,
-    url_for,
-    redirect,
-    session,
     has_app_context,
+    redirect,
+    request,
+    session,
+    url_for,
 )
-
 from flask.views import MethodView
-
 from meza.fntools import listize, remove_keys
 from riko.dotdict import DotDict
 
-from config import Config
-
 from app import cache
+from app.authclient import callback, get_auth_client, get_json_response
+from app.helpers import flask_formatter as formatter, get_collection, singularize
 from app.routes import ProviderMixin
-from app.authclient import get_auth_client, get_json_response, callback
-from app.utils import jsonify, get_links, extract_field, extract_fields
-from app.helpers import singularize, get_collection, flask_formatter as formatter
+from app.utils import extract_field, extract_fields, get_links, jsonify
+from config import Config
 
 logger = gogo.Gogo(
     __name__, low_formatter=formatter, high_formatter=formatter, monolog=True

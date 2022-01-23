@@ -7,7 +7,7 @@
 """
 from sys import exc_info
 
-from flask import Blueprint, redirect, request, current_app as app
+from flask import Blueprint, current_app as app, redirect, request
 from werkzeug.exceptions import HTTPException
 
 from app.helpers import exception_hook

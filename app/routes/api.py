@@ -5,23 +5,23 @@
 
     Provides additional api endpoints
 """
-import pygogo as gogo
-
 from inspect import getmembers
 
-from flask import Blueprint, current_app as app
+import pygogo as gogo
+
 from faker import Faker
+from flask import Blueprint, current_app as app
 
-from config import Config
-
-from app.utils import cache_header, get_links, jsonify, make_cache_key
-from app.routes import auth, Memoization, webhook
 from app.helpers import (
     flask_formatter as formatter,
+    get_collection,
     get_member,
     toposort,
     get_collection,
 )
+from app.routes import auth, Memoization, webhook
+from app.utils import cache_header, get_links, jsonify, make_cache_key
+from config import Config
 
 
 logger = gogo.Gogo(

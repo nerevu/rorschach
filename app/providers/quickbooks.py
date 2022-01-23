@@ -13,45 +13,45 @@ import random
 import re
 import sys
 
+from datetime import date, datetime as dt, timedelta
+from decimal import Decimal
+from functools import lru_cache
+from json.decoder import JSONDecodeError
+from pathlib import Path
+from urllib.parse import parse_qsl, urlencode, urlparse
+
 import gspread
 import requests
 
-from datetime import date
-from datetime import datetime as dt
-from datetime import timedelta
-from decimal import Decimal, InvalidOperation
-from functools import lru_cache
-from pathlib import Path
-from traceback import format_exception
-from urllib.parse import parse_qsl, urlencode, urlparse
-from json.decoder import JSONDecodeError
-
-from faker import Faker
-from flask import Blueprint, after_this_request
-from flask import current_app as app
-from flask import redirect, request, session, url_for
+from flask import (
+    Blueprint,
+    after_this_request,
+    current_app as app,
+    redirect,
+    request,
+    session,
+    url_for,
+)
 from flask.views import MethodView
 from gspread.exceptions import APIError
-
-from config import Config
-from app import cache, __version__
-from app.utils import (
-    responsify,
-    jsonify,
-    parse,
-    cache_header,
-    make_cache_key,
-    uncache_header,
-    title_case,
-    get_common_rel,
-)
-
+from meza import convert as cv, io, process as pr
 from oauth2client.service_account import ServiceAccountCredentials
 from oauthlib.oauth2 import TokenExpiredError
 from requests_oauthlib import OAuth2Session
 
-from meza import io, process as pr, convert as cv
+from app import __version__, cache
 from app.authclient import get_auth_client
+from app.utils import (
+    cache_header,
+    get_common_rel,
+    jsonify,
+    make_cache_key,
+    parse,
+    responsify,
+    title_case,
+    uncache_header,
+)
+from config import Config
 
 # https://requests-oauthlib.readthedocs.io/en/latest/index.html
 # https://oauth-pythonclient.readthedocs.io/en/latest/index.html

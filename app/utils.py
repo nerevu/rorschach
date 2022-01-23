@@ -5,33 +5,31 @@
 
     Provides misc utility functions
 """
-import re
 import hmac
+import re
 
-from json import load, loads, dumps
 from ast import literal_eval
-from datetime import datetime as dt, date, timedelta
-from time import gmtime
-from functools import wraps, partial
+from datetime import date, datetime as dt, timedelta
+from functools import partial, wraps
 from hashlib import md5
 from http.client import responses
+from json import dumps, load, loads
 from json.decoder import JSONDecodeError
-from subprocess import call
 from pprint import pprint
+from subprocess import call
+from time import gmtime
 
 import pygogo as gogo
 
-from flask import make_response, request, has_request_context
 from dateutil.relativedelta import relativedelta
-
-from riko.dotdict import DotDict
-from meza.fntools import CustomEncoder
+from flask import has_request_context, make_response, request
 from meza.convert import records2csv
-
-from config import Config, get_seconds
+from meza.fntools import CustomEncoder
+from riko.dotdict import DotDict
 
 from app import cache
 from app.helpers import flask_formatter as formatter
+from config import Config, get_seconds
 
 logger = gogo.Gogo(
     __name__, low_formatter=formatter, high_formatter=formatter, monolog=True

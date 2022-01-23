@@ -5,25 +5,27 @@
 
     Provides misc helper functions
 """
-import pdb
 import logging
+import pdb
 
 from datetime import date
-from inspect import getmembers, isclass
+from graphlib import TopologicalSorter
 from importlib import import_module
-from os import getenv
-from traceback import format_exception
+from inspect import getmembers, isclass
 from json.decoder import JSONDecodeError
 from logging import Formatter
-from graphlib import TopologicalSorter
+from os import getenv
+from traceback import format_exception
 
 import inflect
 import pygogo as gogo
-import config
 
 from flask import current_app as app, has_request_context, request
-from config import Config, __APP_NAME__
 from pygogo.formatters import DATEFMT
+
+import config
+
+from config import __APP_NAME__, Config
 
 p = inflect.engine()
 singularize = p.singular_noun

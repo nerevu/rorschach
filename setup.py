@@ -4,7 +4,6 @@
 import sys
 
 from os import path as p
-from dotenv import load_dotenv
 
 import pkutils
 
@@ -12,6 +11,7 @@ try:
     from setuptools import setup, find_packages
 except ImportError:
     from distutils.core import setup, find_packages
+from dotenv import load_dotenv
 
 PARENT_DIR = p.abspath(p.dirname(__file__))
 

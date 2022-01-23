@@ -5,44 +5,40 @@
 
     Provides OAuth authentication functionality
 """
-from datetime import timezone, timedelta, datetime as dt
-from urllib.parse import urlencode, urlparse, parse_qs, parse_qsl
-from itertools import chain
+from datetime import datetime as dt, timedelta, timezone
 from functools import partial
+from itertools import chain
 from json import JSONDecodeError, load
 from pathlib import Path
 from tempfile import NamedTemporaryFile
+from urllib.parse import parse_qs, parse_qsl, urlencode, urlparse
 
-import requests
 import boto3
 import pygogo as gogo
+import requests
 
-
+from botocore.exceptions import ProfileNotFound
 from flask import (
+    after_this_request,
+    current_app as app,
+    g,
+    has_app_context,
+    redirect,
     request,
     session,
-    redirect,
-    g,
-    current_app as app,
-    after_this_request,
     url_for,
-    has_app_context,
 )
-
-from oauthlib.oauth2 import TokenExpiredError
-from google.oauth2.service_account import Credentials
 from google.auth.transport.requests import Request
-from botocore.exceptions import ProfileNotFound
-
+from google.oauth2.service_account import Credentials
+from oauthlib.oauth2 import TokenExpiredError
 from requests_oauthlib import OAuth1Session, OAuth2Session
 from requests_oauthlib.oauth1_session import TokenRequestDenied
 
-from config import Config
-
 from app import cache
-from app.utils import uncache_header, make_cache_key, jsonify, get_links
 from app.headless import headless_auth
 from app.helpers import flask_formatter as formatter, toposort
+from app.utils import get_links, jsonify, make_cache_key, uncache_header
+from config import Config
 
 logger = gogo.Gogo(
     __name__, low_formatter=formatter, high_formatter=formatter, monolog=True

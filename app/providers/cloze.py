@@ -8,22 +8,21 @@ Live Site:
 Endpoints:
     Visit the live site for a list of all available endpoints
 """
-import os
 import json
+import os
 import time
+
+from datetime import date, datetime, timedelta
+from itertools import cycle, dropwhile, islice
+
 import requests
 
-from datetime import timedelta, date, datetime
-from itertools import cycle, islice, dropwhile
-
-from flask import Blueprint, current_app as app, request, url_for, Flask
+from flask import Blueprint, Flask, current_app as app, request, url_for
 from flask.views import MethodView
-from rq import Queue
 
-from config import Config
 from app import cache
-from app.utils import jsonify, parse, get_request_base, get_links
-from app.connection import conn
+from app.utils import get_links, get_request_base, jsonify, parse
+from config import Config
 
 blueprint = Blueprint("API", __name__)
 

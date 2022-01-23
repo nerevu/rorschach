@@ -5,18 +5,17 @@
 
     Provides Chrome headless browser login functionality
 """
-from pathlib import Path
-from subprocess import check_output, CalledProcessError
-from time import sleep
-from sys import platform
 from functools import partial
+from pathlib import Path
+from subprocess import CalledProcessError, check_output
+from sys import platform
+from time import sleep
 
 import pygogo as gogo
 
-from config import Config
-
-from app.utils import fetch_value
 from app.helpers import flask_formatter as formatter
+from app.utils import fetch_value
+from config import Config
 
 try:
     from selenium import webdriver

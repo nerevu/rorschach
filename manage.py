@@ -5,33 +5,31 @@
 """ A script to manage development tasks """
 import sys
 
-from os import path as p, environ
-from subprocess import call, check_call, CalledProcessError
-from urllib.parse import urlparse
-from sys import exit
 from functools import partial
+from glob import glob
+from itertools import chain
+from os import environ, path as p
+from subprocess import CalledProcessError, call, check_call
+from sys import exit
+from urllib.parse import urlparse
 
-import pygogo as gogo
 import click
+import pygogo as gogo
 
-from flask import current_app as app
 from click import Choice
+from flask import current_app as app
 from flask.cli import FlaskGroup, pass_script_info, with_appcontext
 from flask.config import Config as FlaskConfig
 
+from app import check_settings, create_app
+from app.authclient import get_auth_client, get_json_response
+from app.helpers import configure, email_hdlr, exception_hook
 from config import Config
 
-from app import create_app, check_settings
-from app.helpers import (
-    configure,
-    email_hdlr,
-    exception_hook,
-)
-from app.authclient import get_auth_client, get_json_response
 
 BASEDIR = p.dirname(__file__)
-DEF_WHERE = ["app", "manage.py", "config.py"]
 AUTHENTICATION = Config.AUTHENTICATION
+DEF_PY_WHERE = "app *.py"
 
 logger = gogo.Gogo(__name__, high_hdlr=email_hdlr).logger
 logger.propagate = False
@@ -165,6 +163,31 @@ def test_oauth(method=None, resource=None, project_id=None, **kwargs):
         print(json["result"])
 
 
+def _lint_py(where, strict):
+    """Check Python style with flake8"""
+    where = where or DEF_PY_WHERE
+    paths = list(chain(*map(glob, where.split(" "))))
+    check_call(["flake8"] + paths)
+
+    if strict:
+        cmd_args = ["pylint", "--rcfile=tests/standard.rc", "-rn", "-fparseable", "app"]
+        check_call(cmd_args)
+
+
+def _black(where):
+    """Prettify code with black"""
+    where = where or DEF_PY_WHERE
+    paths = list(chain(*map(glob, where.split(" "))))
+    check_call(["black"] + paths)
+
+
+def _isort(where):
+    """Prettify imports with isort"""
+    where = where or DEF_PY_WHERE
+    paths = list(chain(*map(glob, where.split(" "))))
+    check_call(["isort"] + paths)
+
+
 @manager.command()
 def check():
     """Check staged changes for lint errors"""
@@ -172,49 +195,47 @@ def check():
 
 
 @manager.command()
-@click.option("-w", "--where", help="Requirement file", default=None)
+@click.option("-w", "--where", help="Locations to check (space separated)")
 @with_appcontext
 def test(where):
     """Run nose tests"""
-    extra = where.split(" ") if where else DEF_WHERE
-    return_code = 0
-
-    try:
-        check_call(["black"] + extra)
-    except CalledProcessError as e:
-        return_code = e.returncode
-    else:
-        return_code = 1 if check_settings(app) else 0
-
-    exit(return_code)
+    exit("Not implemented!")
 
 
 @manager.command()
-@click.option("-w", "--where", help="Modules to check")
+@click.option("-w", "--where", help="Locations to check (space separated)")
 def prettify(where):
     """Prettify code with black"""
-    extra = where.split(" ") if where else DEF_WHERE
+    errors = []
 
     try:
-        check_call(["black"] + extra)
+        _black(where)
     except CalledProcessError as e:
-        exit(e.returncode)
+        errors += [e]
+
+    try:
+        _isort(where)
+    except CalledProcessError as e:
+        errors += [e]
+
+    exit(len(errors))
 
 
 @manager.command()
-@click.option("-w", "--where", help="Modules to check")
-@click.option("-s", "--strict/--no-strict", help="Check with pylint", default=False)
+@click.option("-w", "--where", help="Locations to check (space separated)")
+@click.option(
+    "-s", "--strict/--no-strict", help="Check Python files with pylint", default=False
+)
 def lint(where, strict):
     """Check style with linters"""
-    extra = where.split(" ") if where else DEF_WHERE
-
-    args = ["pylint", "--rcfile=tests/standard.rc", "-rn", "-fparseable", "app"]
+    errors = []
 
     try:
-        check_call(["flake8"] + extra)
-        check_call(args) if strict else None
+        _lint_py(where, strict)
     except CalledProcessError as e:
-        exit(e.returncode)
+        errors += [e]
+
+    exit(len(errors))
 
 
 @manager.command()

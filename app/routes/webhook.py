@@ -13,14 +13,14 @@ import hmac
 
 from base64 import b64encode
 
-from flask import request, current_app as app
-from flask.views import MethodView
-
 import pygogo as gogo
 
+from flask import current_app as app, request
+from flask.views import MethodView
+
+from app.helpers import flask_formatter as formatter
 from app.routes import ProviderMixin
 from app.utils import get_links, jsonify, parse_request
-from app.helpers import flask_formatter as formatter
 
 # https://requests-oauthlib.readthedocs.io/en/latest/index.html
 # https://oauth-pythonclient.readthedocs.io/en/latest/index.html
