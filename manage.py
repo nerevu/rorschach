@@ -29,6 +29,7 @@ from config import Config
 
 BASEDIR = p.dirname(__file__)
 AUTHENTICATION = Config.AUTHENTICATION
+CONFIG_MODES = ["Test", "Development", "Production", "Ngrok", "Custom", "Heroku"]
 DEF_PY_WHERE = "app *.py"
 
 logger = gogo.Gogo(__name__, high_hdlr=email_hdlr).logger
@@ -38,7 +39,12 @@ sys.excepthook = partial(exception_hook, debug=True)
 
 
 @click.group(cls=FlaskGroup, create_app=create_app)
-@click.option("-m", "--config-mode", default="Development")
+@click.option(
+    "-m",
+    "--config-mode",
+    type=Choice(CONFIG_MODES, case_sensitive=False),
+    default="Development",
+)
 @click.option("-f", "--config-file", type=p.abspath)
 @click.option("-e", "--config-envvar")
 @pass_script_info
@@ -57,7 +63,7 @@ def manager(script_info, **kwargs):
 @manager.command()
 @click.pass_context
 def serve(ctx):
-    """Check staged changes for lint errors"""
+    """Runs the Flask server"""
     print("Deprecated. Use `manage run` instead.")
     # manager.get_command(ctx, 'run')()
 
@@ -65,8 +71,8 @@ def serve(ctx):
 @manager.command()
 @click.pass_context
 def help(ctx):
-    """Check staged changes for lint errors"""
-    commands = ", ".join(manager.list_commands(ctx))
+    """Shows the help message"""
+    commands = "\n          ".join(manager.list_commands(ctx))
     print("Usage: manage <command> [OPTIONS]")
     print(f"commands: {commands}")
 
@@ -242,8 +248,8 @@ def lint(where, strict):
 @click.option("-r", "--remote", help="the heroku branch", default="staging")
 def add_keys(remote):
     """Deploy staging app"""
-    cmd = "heroku keys:add ~/.ssh/id_rsa.pub --remote {}"
-    check_call(cmd.format(remote).split(" "))
+    command = f"heroku keys:add ~/.ssh/id_rsa.pub --remote {remote}"
+    exit(call(command.split(" ")))
 
 
 @manager.command()
@@ -251,17 +257,17 @@ def add_keys(remote):
 def deploy(remote):
     """Deploy staging app"""
     branch = "master" if remote == "production" else "features"
-    cmd = "git push origin {}"
-    check_call(cmd.format(branch).split(" "))
+    command = f"git push origin {branch}"
+    exit(call(command.split(" ")))
 
 
 @manager.command()
 def require():
     """Create requirements.txt"""
-    cmd = "pip freeze -l | grep -vxFf dev-requirements.txt "
-    cmd += "| grep -vxFf requirements.txt "
-    cmd += "> base-requirements.txt"
-    call(cmd.split(" "))
+    command = "pip freeze -l | grep -vxFf dev-requirements.txt "
+    command += "| grep -vxFf requirements.txt "
+    command += "> base-requirements.txt"
+    exit(call(command.split(" ")))
 
 
 if __name__ == "__main__":

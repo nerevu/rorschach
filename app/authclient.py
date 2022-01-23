@@ -1052,7 +1052,7 @@ def get_json_response(url, client, params=None, renewed=False, **kwargs):
 
 
 def get_redirect_url(prefix):
-    """ Step 3: Retrieving an access token.
+    """Step 3: Retrieving an access token.
 
     The user has been redirected back from the provider to your registered
     callback URL. With this redirection comes an authorization code included

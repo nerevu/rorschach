@@ -113,8 +113,7 @@ class Webhook(ProviderMixin, MethodView):
         return jsonify(**json)
 
     def post(self, *args, **kwargs):
-        """ Respond to a Webhook post.
-        """
+        """Respond to a Webhook post."""
         if self.verified:
             payload = parse_request()
             value = payload.get(self.payload_key) if self.payload_key else payload

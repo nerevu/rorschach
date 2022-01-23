@@ -78,7 +78,7 @@ YESTERDAY = TODAY - timedelta(days=1)
 
 
 def responsify(mimetype, status_code=200, indent=2, sort_keys=True, **kwargs):
-    """ Creates a jsonified response. Necessary because the default
+    """Creates a jsonified response. Necessary because the default
     flask.jsonify doesn't correctly handle sets, dates, or iterators
 
     Args:
@@ -116,7 +116,7 @@ jsonify = partial(responsify, "application/json")
 
 
 def parse(string):
-    """ Parses a string into an equivalent Python object
+    """Parses a string into an equivalent Python object
 
     Args:
         string (str): The string to parse
@@ -147,7 +147,7 @@ def parse(string):
 
 
 def make_cache_key(*args, **kwargs):
-    """ Creates a memcache key for a url and its query/form parameters
+    """Creates a memcache key for a url and its query/form parameters
 
     Returns:
         (obj): Flask request url
@@ -157,7 +157,7 @@ def make_cache_key(*args, **kwargs):
 
 
 def fmt_elapsed(elapsed):
-    """ Generates a human readable representation of elapsed time.
+    """Generates a human readable representation of elapsed time.
 
     Args:
         elapsed (float): Number of elapsed seconds.
@@ -301,7 +301,7 @@ def get_common_rel(resourceName, method):
 
 
 def get_resource_name(rule):
-    """ Returns resourceName from endpoint
+    """Returns resourceName from endpoint
 
     Args:
         rule (str): the endpoint path (e.g. '/v1/data')
@@ -319,7 +319,7 @@ def get_resource_name(rule):
 
 
 def get_params(rule):
-    """ Returns params from the url
+    """Returns params from the url
 
     Args:
         rule (str): the endpoint path (e.g. '/v1/data/<int:id>')
@@ -342,7 +342,7 @@ def get_params(rule):
 
 
 def get_rel(href, method, rule):
-    """ Returns the `rel` of an endpoint (see `Returns` below).
+    """Returns the `rel` of an endpoint (see `Returns` below).
 
     If the rule is a common rule as specified in the utils.py file, then that rel is
     returned.
@@ -408,7 +408,7 @@ def get_request_base():
 
 
 def gen_links(rules):
-    """ Makes a generator of all endpoints, their methods,
+    """Makes a generator of all endpoints, their methods,
     and their rels (strings representing purpose of the endpoint)
 
     Yields: (dict)
@@ -432,8 +432,7 @@ def gen_links(rules):
 
 
 def get_links(rules):
-    """ Sorts endpoint links alphabetically by their href
-    """
+    """Sorts endpoint links alphabetically by their href"""
     links = gen_links(rules)
     return sorted(links, key=lambda link: link["href"])
 

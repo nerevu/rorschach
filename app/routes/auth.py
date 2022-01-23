@@ -724,7 +724,7 @@ class Resource(BaseView):
         return json
 
     def get(self, _id=None, rid=None, **kwargs):
-        """ Get an API Resource.
+        """Get an API Resource.
         Kwargs:
             rid (str): The API resource_id.
 
@@ -778,7 +778,7 @@ class Resource(BaseView):
         return jsonify(**json)
 
     def post(self, **kwargs):
-        """ Create an API Resource.
+        """Create an API Resource.
 
         Args:
             kwargs (dict): The data to post.
@@ -833,7 +833,7 @@ class Resource(BaseView):
         return jsonify(**json)
 
     def patch(self, _id=None, rid=None, **kwargs):
-        """ Upate an API Resource.
+        """Upate an API Resource.
         Kwargs:
             rid (str): The API resource_id.
             data (dict): The data to patch.
