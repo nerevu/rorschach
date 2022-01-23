@@ -27,8 +27,10 @@ from app.helpers import configure, email_hdlr, exception_hook
 from config import Config
 
 
+ARGS_KEY = f"{__name__}.args"
 BASEDIR = p.dirname(__file__)
 AUTHENTICATION = Config.AUTHENTICATION
+CLICK_COMMAND_SETTINGS = {"show_default": True}
 CONFIG_MODES = ["Test", "Development", "Production", "Ngrok", "Custom", "Heroku"]
 DEF_PY_WHERE = "app *.py"
 
@@ -38,7 +40,15 @@ logger.propagate = False
 sys.excepthook = partial(exception_hook, debug=True)
 
 
-@click.group(cls=FlaskGroup, create_app=create_app)
+class HookGroup(FlaskGroup):
+    def invoke(self, ctx):
+        ctx.meta[ARGS_KEY] = ctx.args
+        return super().invoke(ctx)
+
+
+@click.group(
+    cls=HookGroup, create_app=create_app, context_settings=CLICK_COMMAND_SETTINGS
+)
 @click.option(
     "-m",
     "--config-mode",
@@ -47,11 +57,26 @@ sys.excepthook = partial(exception_hook, debug=True)
 )
 @click.option("-f", "--config-file", type=p.abspath)
 @click.option("-e", "--config-envvar")
+@click.option(
+    "-v",
+    "--verbose",
+    help="Specify multiple times to increase logging verbosity",
+    count=True,
+)
+@click.pass_context
 @pass_script_info
-def manager(script_info, **kwargs):
+def manager(script_info, ctx, verbose=0, **kwargs):
+    script_info.command = ctx.invoked_subcommand
+
+    if ctx.invoked_subcommand == "run":
+        _run = ctx.command.get_command(ctx, "run")
+        _run.parse_args(ctx, ctx.meta.get(ARGS_KEY))
+        script_info.port = ctx.params["port"]
     flask_config = FlaskConfig(BASEDIR)
     configure(flask_config, **kwargs)
     script_info.flask_config = flask_config
+
+    environ["VERBOSE"] = str(verbose)
 
     if flask_config.get("ENV"):
         environ["FLASK_ENV"] = flask_config["ENV"]

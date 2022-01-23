@@ -54,7 +54,8 @@ def process_result(result, fields=None, black_list=None, **kwargs):
     return result
 
 
-def store(prefix, collection_name, **kwargs):
+def store(prefix, collection_name, verbose=0, **kwargs):
+    logger.setLevel(LOG_LEVELS[verbose])
     Collection = get_collection(prefix, collection_name)
 
     if Collection:

@@ -101,12 +101,13 @@ class Config(object):
     SEND_FILE_MAX_AGE_DEFAULT = ROUTE_TIMEOUT
     EMPTY_TIMEOUT = ROUTE_TIMEOUT * 10
     API_URL_PREFIX = "/v1"
-    API_URL = f"http://localhost:5000{API_URL_PREFIX}"
+    API_URL = "http://localhost:{port}{API_URL_PREFIX}"
     SECRET_KEY = SECRET = getenv(SECRET_ENV, urandom(24))
     CHROME_DRIVER_VERSIONS = [None] + list(range(87, 77, -1))
 
     APP_CONFIG_WHITELIST = {
         "CHUNK_SIZE",
+        "API_URL",
         "CHUNK_SIZE",
         "DEBUG",
         "ROW_LIMIT",
