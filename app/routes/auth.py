@@ -74,7 +74,7 @@ def store(prefix, collection_name, verbose=0, **kwargs):
         json = {"ok": False, "message": message}
 
     if json["ok"]:
-        logger.debug(f"Success storing {collection}!")
+        logger.info(f"Success storing {collection}!")
     else:
         logger.error(json["message"])
 

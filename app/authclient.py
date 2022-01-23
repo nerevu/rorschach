@@ -217,16 +217,17 @@ class OAuth2Client(OAuth2BaseClient):
             logger.warning(f"{self.prefix} token expired. Attempting to renew...")
             self.renew_token("TokenExpiredError")
         except Exception as e:
-            self.error = str(e)
-            logger.error(
-                f"{self.prefix} error authenticating: {self.error}", exc_info=True
-            )
+            self.error = f"{self.prefix} error authenticating: {str(e)}"
         else:
             if self.verified:
-                logger.info(f"{self.prefix} successfully authenticated!")
+                self.error = ""
+                logger.debug(f"{self.prefix} successfully authenticated!")
             else:
                 logger.warning(f"{self.prefix} not authorized. Attempting to renew...")
                 self.renew_token("init")
+
+        if self.error:
+            logger.error(self.error)
 
     @property
     def failed_or_tried_headless(self):
@@ -298,8 +299,7 @@ class OAuth2Client(OAuth2BaseClient):
         try:
             token = self.oauth_session.fetch_token(self.token_url, **kwargs)
         except Exception as e:
-            self.error = str(e)
-            logger.error(f"Failed to fetch token: {self.error}", exc_info=True)
+            self.error = f"Failed to fetch token: {str(e)}"
             token = {}
         else:
             self.error = ""
@@ -314,7 +314,7 @@ class OAuth2Client(OAuth2BaseClient):
         logger.debug(f"renew {self} from {source}")
 
         if self.refresh_token and self.refresh_url:
-            logger.info(f"Renewing token using {self.refresh_url}…")
+            logger.debug(f"Renewing token using {self.refresh_url}…")
             args = (self.refresh_url, self.refresh_token)
 
             if self.client_id and self.client_secret:
@@ -326,20 +326,19 @@ class OAuth2Client(OAuth2BaseClient):
                 token = self.oauth_session.refresh_token(*args, auth=auth)
             except Exception as e:
                 self.error = f"Failed to renew {self}: {str(e)} Please re-authenticate!"
-                logger.error(self.error)
                 self.oauth_token = None
                 self.access_token = None
                 cache.set(f"{self.prefix}_access_token", self.access_token)
                 cache.set(f"{self.prefix}_oauth_token", self.oauth_token)
             else:
                 if self.oauth_session.authorized:
-                    logger.info(f"Successfully renewed {self}!")
+                    self.error = ""
+                    logger.debug(f"Successfully renewed {self}!")
                     self.token = token
                 else:
                     self.error = f"Failed to renew {self}!"
-                    logger.error(self.error)
         elif self.refresh_token:
-            logger.error("No refresh_url provided!")
+            self.error = "No refresh_url provided!"
         elif self.can_headlessly_auth:
             logger.info(f"Attempting to renew {self} using headless authentication")
             url = self.authorization_url[0]
@@ -355,7 +354,6 @@ class OAuth2Client(OAuth2BaseClient):
                     f" Previous headless authentication attempt {self.headless_status}."
                 )
 
-            logger.error(error)
             self.error = error
 
         return self
@@ -398,8 +396,12 @@ class OAuth1Client(AuthClient):
             try:
                 self.token = self.oauth_session.fetch_request_token(self.request_url)
             except TokenRequestDenied as e:
-                self.error = str(e)
-                logger.error(f"Error authenticating: {self.error}", exc_info=True)
+                self.error = f"Error authenticating: {str(e)}"
+            else:
+                self.error = ""
+
+        if self.error:
+            logger.error(self.error)
 
     @property
     def expired(self):
@@ -483,11 +485,14 @@ class OAuth1Client(AuthClient):
             token = self.oauth_session.fetch_access_token(self.token_url, **kwargs)
         except TokenRequestDenied as e:
             token = None
-            self.error = str(e)
-            logger.error(f"Error authenticating: {self.error}", exc_info=True)
+            self.error = f"Error authenticating: {str(e)}"
         else:
+            self.error = ""
             self.verified = True
             self.token = token
+
+        if self.error:
+            logger.error(self.error)
 
         return token
 
@@ -656,10 +661,13 @@ class ServiceAuthClient(OAuth2BaseClient):
             logger.warning(f"{self.prefix} token expired. Attempting to renew...")
             self.renew_token("TokenExpiredError")
         elif self.verified:
-            logger.info(f"{self.prefix} successfully authenticated!")
+            logger.debug(f"{self.prefix} successfully authenticated!")
         else:
             logger.warning(f"{self.prefix} not authorized. Attempting to renew...")
             self.renew_token("init")
+
+        if self.error:
+            logger.error(self.error)
 
     @property
     def info(self):
@@ -701,22 +709,21 @@ class ServiceAuthClient(OAuth2BaseClient):
         return self._token
 
     def renew_token(self, source):
-        logger.debug(f"renew {self} from {source}")
-        logger.info("Renewing token using credentials refresh…")
+        logger.debug("Renewing {self} token from {source} using credentials refresh…")
         self.credentials.refresh(Request())
 
         if self.verified:
+            self.error = ""
             self.token = self._token
         else:
-            logger.info("Failed to renew, re-authenticating…")
+            logger.debug("Failed to renew, re-authenticating…")
             self.fetch_token()
 
             if self.verified:
-                logger.info(f"Successfully renewed {self}!")
+                logger.debug(f"Successfully renewed {self}!")
                 self.token = self._token
             else:
                 self.error = f"Failed to renew {self}: Please re-authenticate!"
-                logger.error(self.error)
 
         return self
 
