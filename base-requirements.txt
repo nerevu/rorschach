@@ -1,5 +1,5 @@
 Faker==1.0.7
--e git://github.com/reubano/flask.git#egg=flask
+Flask>=1.1.2,<=2.0.0
 Flask-Caching==1.10.0,<=2.0.0
 Flask-Compress==1.0.2
 Flask-Cors==3.0.9
@@ -19,3 +19,4 @@ inflect==4.1.0
 gspread==3.6.0
 boto3==1.18.3
 python-dotenv>=0.14.0,<=1.0.0
+attrs>=21.4.0,<=22.0.0

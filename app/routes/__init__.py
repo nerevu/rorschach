@@ -15,6 +15,7 @@ from app import cache
 from app.helpers import flask_formatter as formatter
 from app.utils import (
     cache_header,
+    camel_to_snake_case,
     gen_config,
     get_links,
     get_request_base,
@@ -45,14 +46,14 @@ class PatchedMethodView(MethodView):
         return MethodView.dispatch_request(self, *args, **kwargs)
 
     def __attrs_post_init__(self):
-        lowered_class = type(self).__name__.lower()
+        dash_class = camel_to_snake_case("-", type(self).__name__)
 
         if self.prefix:
             self.lowered = self.prefix.lower()
-            self.path = f"{PREFIX}/{self.lowered}-{lowered_class}"
+            self.path = f"{PREFIX}/{self.lowered}-{dash_class}"
         else:
             self.lowered = None
-            self.path = f"{PREFIX}/{lowered_class}"
+            self.path = f"{PREFIX}/{dash_class}"
 
         self._kwargs = None
 
@@ -62,56 +63,6 @@ class PatchedMethodView(MethodView):
             try:
                 if self.path == request.path:
                     self._kwargs = parse_request(app)
-                else:
-                    self._kwargs = {}
-                    logger.debug(
-                        f"path:{self.path} doesn't match request:{request.path}"
-                    )
-            except RuntimeError:
-                self._kwargs = {}
-
-            self._kwargs.update(dict(gen_config(app)))
-
-        return self._kwargs
-
-
-class ProviderMixin:
-    def __init__(self, prefix, **kwargs):
-        self.prefix = prefix or ""
-        self.lowered = self.prefix.lower()
-
-        lowered_class = type(self).__name__.lower()
-
-        if self.prefix:
-            self.path = f"{PREFIX}/{self.lowered}-{lowered_class}"
-        else:
-            self.path = f"{PREFIX}/{lowered_class}"
-
-        self._values = None
-        self._kwargs = None
-
-    @property
-    def values(self):
-        if self._values is None:
-            try:
-                if self.path == request.path:
-                    self._values = parse_request()
-                else:
-                    self._values = {}
-                    logger.debug(
-                        f"path:{self.path} doesn't match request:{request.path}"
-                    )
-            except RuntimeError:
-                self._values = {}
-
-        return self._values
-
-    @property
-    def kwargs(self):
-        if self._kwargs is None:
-            try:
-                if self.path == request.path:
-                    self._kwargs = parse_kwargs(app)
                 else:
                     self._kwargs = {}
                     logger.debug(

@@ -5,11 +5,14 @@
 
     Provides additional api endpoints
 """
-from inspect import getmembers
+from collections import Counter
+from dataclasses import asdict
+from importlib import import_module
+from os import getenv
 
 import pygogo as gogo
 
-from faker import Faker
+from attr import make_class
 from flask import Blueprint, current_app as app
 
 from app.helpers import (
@@ -17,54 +20,56 @@ from app.helpers import (
     get_collection,
     get_member,
     toposort,
-    get_collection,
 )
-from app.routes import auth, Memoization, webhook
+from app.routes.auth import Resource as WebResource, _registry
 from app.utils import cache_header, get_links, jsonify, make_cache_key
 from config import Config
 
+try:
+    from app.api_configs import BlueprintRouteParams, MethodViewRouteParams
+except ImportError:
+    BlueprintRouteParams = MethodViewRouteParams = None
+
+try:
+    from app.providers import Authentication, Provider, Resource
+except ImportError:
+    Authentication = Provider = Resource = None
 
 logger = gogo.Gogo(
     __name__, low_formatter=formatter, high_formatter=formatter, monolog=True
 ).logger
 logger.propagate = False
 blueprint = Blueprint("API", __name__)
-fake = Faker()
+
 
 ROUTE_TIMEOUT = Config.ROUTE_TIMEOUT
 PREFIX = Config.API_URL_PREFIX
-AUTHENTICATION = Config.AUTHENTICATION
-RESOURCES = Config.RESOURCES
-WEBHOOKS = Config.WEBHOOKS
 
-METHOD_VIEWS = {
-    "memoization": {
-        "view": Memoization,
-        "params": ["string:path"],
-        "methods": ["GET", "DELETE"],
+AUTH_PARAMS = [
+    {
+        "name": "callback",
+        "module": "app.routes.auth",
+        "className": "Callback",
     },
-    "callback": {"view": auth.Callback, "providers": AUTHENTICATION},
-    "auth": {
-        "view": auth.Auth,
-        "providers": AUTHENTICATION,
+    {
+        "name": "auth",
+        "module": "app.routes.auth",
+        "className": "Auth",
         "methods": ["GET", "PATCH"],
     },
-}
-
-BASE = auth.Resource
-
-add_rule = blueprint.add_url_rule
+]
 
 
-def create_route(view, prefix, name, *args, **kwargs):
-    route_name = f"{prefix}-{name}".lower() if prefix else name
-    view_func = view.as_view(route_name, prefix, **kwargs)
-    url = f"{PREFIX}/{route_name}"
+def create_route(view, name, *args, methods=None, **kwargs):
+    methods = methods or ["GET"]
+    view_func = view.as_view(name, *args, **kwargs)
+    url = f"{PREFIX}/{name}"
 
     for param in kwargs.get("params", []):
         url += f"/<{param}>"
 
-    add_rule(url, view_func=view_func, methods=args)
+    print(f"new route {url}!")
+    blueprint.add_url_rule(url, view_func=view_func, methods=methods)
 
 
 def _format(value, **kwargs):
@@ -83,135 +88,186 @@ def getattrs(obj, *attrs):
     return attr
 
 
-def get_value(value, obj=None, **kwargs):
-    try:
-        _func = value.get("func")
-    except AttributeError:
-        _func = fargs = key = conditional = result = None
-    else:
-        fargs = value.get("args", [])
-        fkwargs = value.get("kwargs", [])
-        key = value.get("key")
-        conditional = value.get("conditional")
-        result = value.get("result")
+def create_class(
+    base: WebResource = WebResource, lookup: dict = None, **kwargs
+) -> WebResource:
+    resource_id = kwargs.get("resource_id")
+    name = snake_to_pascal_case(resource_id)
 
-    if _func:
-        func = getattrs(obj, *_func.split("."))
-        _args = (_format(a, **kwargs) for a in fargs)
-        _kwargs = {k: _format(v, **kwargs) for k, v in fkwargs}
-        _attr_value = func(*_args, **_kwargs)
-        attr_value = _attr_value[_format(key, **kwargs)] if key else _attr_value
-    elif conditional and _format(conditional, **kwargs):
-        attr_value = _format(result[0], **kwargs)
-    elif conditional:
-        attr_value = _format(result[1], **kwargs)
-    else:
-        attr_value = _format(value, **kwargs)
+    def gen_fields(*args):
+        for field in args:
+            default = kwargs.get(field.name)
 
-    return attr_value
+            try:
+                if "$" in default:
+                    breakpoint()
+            except TypeError:
+                pass
 
+            yield field.evolve(default=default) if default is not None else field
 
-def create_class(cls_name, *bases, lookup=None, **kwargs):
-    lookup = lookup or {}
-    attrs = {}
-    base = bases[0]
+    def reset_defaults(cls, fields):
+        if kwargs.get("prefix") and kwargs.get("resource_id"):
+            _registry[kwargs["prefix"]][kwargs["resource_id"]] = cls
 
-    try:
-        lookup.update(base._registry)
-    except AttributeError:
-        pass
+        return list(gen_fields(*fields))
 
-    for attr_name, value in kwargs.pop("attrs", {}).items():
-        attrs[attr_name] = get_value(value, **lookup)
-
-    lookup.update(attrs)
-
-    for prop_name, value in kwargs.pop("props", {}).items():
-        attrs[prop_name] = property(get_value(value, **lookup))
-
-    for method, response in kwargs.get("responses", {}).items():
-
-        def method_response(Resource, *args, **kwargs):
-            lookup.update(getmembers(Resource))
-            result = get_value(response, obj=Resource, **lookup)
-            return {"result": result}
-
-        attrs[f"{method}_response"] = method_response
-
-    return type(cls_name, bases, attrs, **kwargs)
+    return make_class(name, {}, bases=(base,), field_transformer=reset_defaults)
 
 
-###########################################################################
-# ROUTES
-###########################################################################
-@blueprint.route("/")
-@blueprint.route(PREFIX)
-@cache_header(ROUTE_TIMEOUT, key_prefix=make_cache_key)
-def home():
-    json = {
-        "description": "Returns API documentation",
-        "message": "Welcome to the Nerevu API!",
-        "links": get_links(app.url_map.iter_rules()),
-    }
+def get_authentication(*args: Authentication, auth_id: str = None) -> Authentication:
+    authentication = None
 
-    return jsonify(**json)
-
-
-@blueprint.route(f"{PREFIX}/ipsum")
-@cache_header(ROUTE_TIMEOUT, key_prefix=make_cache_key)
-def ipsum():
-    json = {
-        "description": "Displays a random sentence",
-        "links": get_links(app.url_map.iter_rules()),
-        "result": fake.sentence(),
-    }
-
-    return jsonify(**json)
-
-
-for prefix, classes in RESOURCES.items():
-    _auth = AUTHENTICATION[prefix]
-    classes.setdefault("Status", {})
-
-    for cls_name, kwargs in toposort("parent", **classes):
-        if collection := kwargs.pop("collection", None):
-            base = get_collection(prefix, collection=collection)
-            assert base, f"Parent {collection} not found in {prefix}"
-        elif _base := kwargs.pop("parent", None):
-            base = BASE._registry[prefix].get(_base)
-            assert base, f"Parent {collection} not found in {prefix}"
+    if auth_id:
+        for authentication in args:
+            if authentication.auth_id == auth_id:
+                break
         else:
-            base = kwargs.pop("parent", BASE)
+            raise AssertionError(f"authKey `{auth_id}` is missing from auth!")
+    else:
+        for _, authentication in toposort(*args, id_key="auth_id"):
+            if authentication.is_default:
+                break
+        else:
+            raise AssertionError(f"No auths found in provider!")
 
-        hidden = kwargs.pop("hidden", False)
-        auth_key = kwargs.get("auth_key", base.auth_key)
-        assert auth_key, f"{prefix}/{cls_name} is missing auth_key!"
+    return authentication
 
+
+def snake_to_pascal_case(text: str) -> str:
+    return "".join(word.title() for word in text.split("_"))
+
+
+def augment_auth(provider: Provider, authentication: Authentication):
+    authentication.attrs = authentication.attrs or {}
+
+    if authentication.parent:
+        parent = get_authentication(*provider.auths, auth_id=authentication.parent)
+
+        for k, v in asdict(parent).items():
+            if v and not getattr(authentication, k):
+                setattr(authentication, k, v)
+
+        parent_attrs = parent.attrs or {}
+        [authentication.attrs.setdefault(k, v) for k, v in parent_attrs.items()]
+
+    for k, v in asdict(authentication).items():
         try:
-            lookup = _auth[auth_key].get("attrs", {})
-        except KeyError:
-            logger.error(f"{prefix} doesn't have auth method {auth_key}!")
-            lookup = {}
+            is_env = v.startswith("$")
+        except AttributeError:
+            is_env = False
 
-        if auth_parent := _auth[auth_key].get("parent"):
-            attrs = _auth[auth_parent].get("attrs", {})
-            [lookup.setdefault(k, v) for k, v in attrs.items()]
-
-        kwargs.setdefault("resource", base.resource or cls_name.lower())
-        methods = kwargs.pop("methods", ["GET"])
-        view = create_class(cls_name, base, lookup=lookup, prefix=prefix, **kwargs)
-
-        if not hidden:
-            create_route(view, prefix, cls_name.lower(), *methods)
+        if is_env:
+            env = v.lstrip("$")
+            setattr(authentication, k, getenv(env))
 
 
-for name, options in METHOD_VIEWS.items():
-    for prefix in options.get("providers", [None]):
-        view = get_collection(prefix, **options) or options.get("view")
-        methods = options.get("methods", ["GET"])
-        create_route(view, prefix, name, *methods)
+def augment_resource(provider: Provider, resource: Resource):
+    resource.parent = WebResource
+    resource.auth_id = resource.auth_id or resource.parent.auth_id
+    assert (
+        resource.auth_id
+    ), f"{provider.prefix}/{resource.resource_id} is missing auth_id!"
+
+    resource.resource = resource.resource or resource.parent.resource
+    assert (
+        resource.resource
+    ), f"{provider.prefix}/{resource.resource_id} is missing resource!"
+
+    authentication = get_authentication(*provider.auths, auth_id=resource.auth_id)
+    augment_auth(provider, authentication)
+
+    resource.methods = resource.methods or ["GET"]
+    resource.attrs = resource.attrs or {}
 
 
-for prefix, options in WEBHOOKS.items():
-    if view := get_member(webhook, f"{prefix.title()}Hook"):
-        create_route(view, prefix, "hooks", "GET", "POST", **kwargs)
+def validate_providers(*args: Provider):
+    prefix_counts = Counter(provider.prefix for provider in args)
+    most_common = prefix_counts.most_common(1)
+
+    if most_common[0][1] > 1:
+        for prefix, count in most_common:
+            raise AssertionError(
+                f"The provider prefix `{prefix}` is specified {count} times!"
+            )
+
+    for provider in args:
+        id_counts = Counter(resource.resource_id for resource in provider.resources)
+        most_common = id_counts.most_common(1)
+
+        if most_common[0][1] > 1:
+            for resource_id, count in most_common:
+                _path = f"{provider.prefix}/resources[?]/{resource_id}"
+                raise AssertionError(
+                    f"The resourceId {_path} is specified {count} times!"
+                )
+
+        id_counts = Counter(auth.auth_id for auth in provider.auths)
+        most_common = id_counts.most_common(1)
+
+        if most_common[0][1] > 1:
+            for auth_id, count in most_common:
+                _path = f"{provider.prefix}/auths[?]/{auth_id}"
+                raise AssertionError(f"The authId {_path} is specified {count} times!")
+
+
+def create_resource_routes(provider: Provider):
+    for _, resource in toposort(*provider.resources, id_key="resource_id"):
+        augment_resource(provider, resource)
+        authentication = get_authentication(*provider.auths, auth_id=resource.auth_id)
+        args = (resource, provider.prefix, authentication)
+
+        if not resource.hidden:
+            create_resource_route(*args)
+
+        if resource.resource_id == provider.status_resource:
+            create_resource_route(*args, resource_id="status")
+
+
+def create_resource_route(
+    resource: Resource,
+    prefix: str,
+    authentication: Authentication,
+    resource_id: str = None,
+):
+    resource_id = resource_id or resource.resource_id
+    kwargs = {
+        **asdict(resource),
+        "auth": authentication,
+        "resource_id": resource_id,
+        # "lookup": authentication.attrs,
+        "prefix": prefix,
+    }
+    view = create_class(resource.parent, **kwargs)
+    name = f"{prefix}-{resource_id}".replace("_", "-")
+    create_route(view, name, prefix, methods=resource.methods)
+
+
+def create_method_view_route(params: MethodViewRouteParams, prefix=None, **kwargs):
+    module = import_module(params.module)
+    view = get_member(module, params.class_name)
+    name = f"{prefix}-{params.name}" if prefix else params.name
+    create_route(view, name, prefix, methods=params.methods, **kwargs)
+
+
+def create_blueprint_route(params: BlueprintRouteParams, **kwargs):
+    module = import_module(params.module)
+    view_func = get_member(module, params.func_name, classes_only=False)
+    blueprint.route(f"{PREFIX}/{params.name}")(view_func)
+    print(f"new route {PREFIX}/{params.name}!")
+
+
+def create_home_route(description: str, message: str):
+    def home():
+        json = {
+            "description": description,
+            "message": message,
+            "links": get_links(app.url_map.iter_rules()),
+        }
+
+        return jsonify(**json)
+
+    view_func = cache_header(ROUTE_TIMEOUT, key_prefix=make_cache_key)(home)
+    blueprint.route("/")(view_func)
+    blueprint.route(PREFIX)(view_func)
+    print(f"new home route!")

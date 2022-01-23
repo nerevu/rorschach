@@ -212,9 +212,14 @@ def parse_date(date_str):
     return parsed
 
 
-def toposort(parent_key="parent", **kwargs):
-    graph = {k: {v.get(parent_key)} for k, v in kwargs.items()}
+def toposort(*args, parent_key="parent", id_key="id", **kwargs):
+    if args:
+        graph = {getattr(arg, id_key): {getattr(arg, parent_key)} for arg in args}
+        lookup = {getattr(arg, id_key): arg for arg in args}
+    else:
+        graph = {k: {v.get(parent_key)} for k, v in kwargs.items()}
+        lookup = kwargs
 
     for name in tuple(TopologicalSorter(graph).static_order()):
         if name:
-            yield (name, kwargs[name])
+            yield (name, lookup[name])

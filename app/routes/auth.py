@@ -4,14 +4,19 @@
 Provides Auth routes.
 
 """
+from collections import defaultdict
+from collections.abc import Callable
+from dataclasses import asdict
 from datetime import date, datetime as dt, timedelta
 from itertools import islice
 from json import dump, dumps, loads
 from json.decoder import JSONDecodeError
 from pathlib import Path
 
+import attr
 import pygogo as gogo
 
+from attr import dataclass, field, validators
 from flask import (
     current_app as app,
     has_app_context,
@@ -20,14 +25,14 @@ from flask import (
     session,
     url_for,
 )
-from flask.views import MethodView
 from meza.fntools import listize, remove_keys
 from riko.dotdict import DotDict
 
-from app import cache
-from app.authclient import callback, get_auth_client, get_json_response
+from app import LOG_LEVELS, cache
+from app.authclient import AuthClientTypes, callback, get_auth_client, get_json_response
 from app.helpers import flask_formatter as formatter, get_collection, singularize
-from app.routes import ProviderMixin
+from app.providers import Authentication
+from app.routes import PatchedMethodView
 from app.utils import extract_field, extract_fields, get_links, jsonify
 from config import Config
 
@@ -38,7 +43,8 @@ logger.propagate = False
 
 APP_DIR = Path(__file__).parents[1]
 DATA_DIR = APP_DIR.joinpath("data")
-RESOURCES = Config.RESOURCES
+
+_registry = defaultdict(dict)
 
 
 def process_result(result, fields=None, black_list=None, **kwargs):
@@ -63,6 +69,7 @@ def store(prefix, collection_name, verbose=0, **kwargs):
         response = collection.get(update_cache=True)
         json = response.json
     else:
+        collection = None
         message = f"Collection `{collection_name}` doesn't exist in `{prefix}`."
         json = {"ok": False, "message": message}
 
@@ -72,18 +79,23 @@ def store(prefix, collection_name, verbose=0, **kwargs):
         logger.error(json["message"])
 
 
-class BaseView(ProviderMixin, MethodView):
-    def __init__(self, prefix=None, **kwargs):
-        super().__init__(prefix)
-        self._client = None
-        self.rkwargs = kwargs
+@dataclass
+class BaseView(PatchedMethodView):
+    auth: Authentication = field(default=None, kw_only=True, repr=False)
+    verbose: int = field(default=0, converter=int, kw_only=True, repr=False)
+    methods: list[str] = field(factory=list, kw_only=True, repr=False)
+    client: AuthClientTypes = field(init=False, repr=False)
 
-    @property
-    def client(self):
-        if has_app_context() and self._client is None:
-            self._client = get_auth_client(self.prefix, **app.config, **self.rkwargs)
+    def __attrs_post_init__(self):
+        super().__attrs_post_init__()
+        self.methods = self.methods or ["GET"]
+        self.verbose = self.verbose or 0
+        logger.setLevel(LOG_LEVELS[self.verbose])
 
-        return self._client
+        if has_app_context():
+            args = (self.prefix, self.auth)
+            kwargs = {"verbose": self.verbose, "api_url": self.kwargs["api_url"]}
+            self.client = get_auth_client(*args, **kwargs)
 
     @property
     def tenant_path(self):
@@ -93,7 +105,8 @@ class BaseView(ProviderMixin, MethodView):
 
 class Callback(BaseView):
     def get(self):
-        return callback(self.prefix)
+        kwargs = {"verbose": self.verbose, "api_url": self.kwargs["api_url"]}
+        return callback(self.prefix, self.auth, **kwargs)
 
 
 class Auth(BaseView):
@@ -104,8 +117,7 @@ class Auth(BaseView):
         using a URL with a few key OAuth parameters.
         """
         cache.set(f"{self.prefix}_callback_url", request.args.get("callback_url"))
-        Status = Resource._registry[self.prefix]["Status"]
-        status = Status(prefix=self.prefix, resource="status")
+        status = Resource.from_registry(self.prefix, "status")
         json = status.get_live_json()
         client = self.client
 
@@ -120,8 +132,8 @@ class Auth(BaseView):
         if client.oauth_version and client.verified and not client.expired:
             json.update({k: getattr(client, k) for k in ["token", "state", "realm_id"]})
 
-            if self.tenant_path:
-                client.tenant_id = extract_field(json, self.tenant_path)
+            if client.tenant_path:
+                client.tenant_id = extract_field(json, client.tenant_path)
 
                 if client.tenant_id:
                     client.save()
@@ -155,101 +167,142 @@ class Auth(BaseView):
         return jsonify(**json)
 
 
+@dataclass
 class Resource(BaseView):
-    _registry = {prefix: {} for prefix in RESOURCES}
-    rkwargs = {}
-    prefix = None
-    resource = None
-    auth_key = None
+    """An API Resource.
 
-    @classmethod
-    def __init_subclass__(cls, prefix=None, resource=None, auth_key=None, **kwargs):
-        if prefix is not None:
-            cls.rkwargs = kwargs
-            cls.prefix = prefix
-            cls.resource = resource
-            cls.auth_key = auth_key
-            cls._registry[prefix][cls.__name__] = cls
+    Args:
+        prefix (str): The API.
+        resource (str): The API resource.
 
-    def __init__(self, prefix=None, resource=None, **kwargs):
-        """ An API Resource.
+    Kwargs:
+        rid (str): The API resource_id.
+        subkey (str): The API result field to return.
 
-        Args:
-            prefix (str): The API.
-            resource (str): The API resource.
+    Examples:
+        >>> kwargs = {"subkey": "manufacturer"}
+        >>> opencart_manufacturer = Resource("OPENCART", "products", **kwargs)
+        >>>
+        >>> kwargs = {"subkey": "person"}
+        >>> cloze_person = Resource("CLOZE", "people", **kwargs)
+        >>>
+        >>> params = {
+        ...     "start_date: start,
+        ...     "end_date": end,
+        ...     "columns": "name,net_amount"
+        ... }
+        >>> kwargs = {"params": params}
+        >>> qb_transactions = Resource("qb", "TransactionList", **kwargs)
+    """
 
-        Kwargs:
-            rid (str): The API resource_id.
-            subkey (str): The API result field to return.
+    resource: str = field(converter=str, repr=False)
+    resource_id: str = field(default="", converter=str, kw_only=True, repr=False)
+    subresource: str = field(default="", converter=str, kw_only=True)
+    srid: str = field(default="", converter=str, kw_only=True)
+    subkey: str = field(default="", converter=str, kw_only=True)
+    auth_id: str = field(default="", converter=str, kw_only=True, repr=False)
+    documentation_url: str = field(default="", converter=str, kw_only=True, repr=False)
+    fields: list[str] = field(factory=list, kw_only=True, repr=False)
+    hidden: bool = field(default=False, converter=bool, kw_only=True, repr=False)
+    id_field: str = field(default="", converter=str, kw_only=True, repr=False)
+    name_field: str = field(default="", converter=str, kw_only=True, repr=False)
+    parent: PatchedMethodView = field(default=None, kw_only=True, repr=False)
+    datefmt: str = field(default="%Y-%m-%d", converter=str, kw_only=True, repr=False)
+    headers: dict = field(factory=dict, kw_only=True, repr=False)
+    black_list: set[str] = field(converter=set, factory=set, kw_only=True, repr=False)
+    dry_run: bool = field(default=False, converter=bool, kw_only=True, repr=False)
+    use_default: bool = field(default=False, converter=bool, kw_only=True, repr=False)
+    dictify: bool = field(default=False, converter=bool, kw_only=True, repr=False)
+    pos: int = field(default=0, converter=int, kw_only=True)
+    end: dt = field(default=date.today(), kw_only=True, repr=False)
 
-        Examples:
-            >>> kwargs = {"subkey": "manufacturer"}
-            >>> opencart_manufacturer = Resource("OPENCART", "products", **kwargs)
-            >>>
-            >>> kwargs = {"subkey": "person"}
-            >>> cloze_person = Resource("CLOZE", "people", **kwargs)
-            >>>
-            >>> params = {
-            ...     "start_date: start,
-            ...     "end_date": end,
-            ...     "columns": "name,net_amount"
-            ... }
-            >>> kwargs = {"params": params}
-            >>> qb_transactions = Resource("qb", "TransactionList", **kwargs)
-        """
-        self.prefix = prefix or self.prefix
-        self.rkwargs["resource"] = resource or self.resource
-        super().__init__(self.prefix, **self.rkwargs, **kwargs)
+    filterer_validator = validators.optional(validators.is_callable())
+    filterer: Callable = field(
+        default=None, validator=filterer_validator, kw_only=True, repr=False
+    )
 
-        self._data = None
-        self._results = None
-        self._result_key = self.rkwargs.get("result_key", "result")
-        self._dictify = self.rkwargs.get("dictify")
-        self._all_params = None
-        self._rid = self.rkwargs.get("rid")
-        self._dry_run = self.rkwargs.get("dry_run")
-        self._use_default = self.rkwargs.get("use_default")
-        self._singularize = self.rkwargs.get("singularize")
-        self._dump_data = self.rkwargs.get("dump_data")
-        self._json_data = self.rkwargs.get("json_data")
-        self._params = self.rkwargs.get("params", {})
-        self._start = self.rkwargs.get("start")
-        self._end = self.rkwargs.get("end", date.today())
-        self._pos = self.rkwargs.get("pos", 0)
-        self._subkey = self.rkwargs.get("subkey")
+    processor: Callable = field(
+        default=process_result,
+        validator=validators.is_callable(),
+        kw_only=True,
+        repr=False,
+    )
+    results_filename: str = field(default="", converter=str, kw_only=True, repr=False)
 
-        self.url = None
-        self.eof = False
-        self.error_msg = ""
-        self.resource = self.resource or resource or ""
+    # Set this without the leading underscore
+    # e.g. Resource("resource", rid=True)
+    _rid: str = field(default="", converter=str, kw_only=True)
+    _start: dt = field(default=None, kw_only=True, repr=False)
+
+    # These aren't intended to be redefined
+    _singularize: bool = field(default=False, converter=bool, kw_only=True, repr=False)
+    _result_key: str = field(default="result", converter=str, repr=False)
+    _params: dict = field(factory=dict, kw_only=True, repr=False)
+    _dump_data: bool = field(default=None, kw_only=True, repr=False)
+    _json_data: bool = field(default=None, kw_only=True, repr=False)
+    _data: dict = field(default=None, kw_only=True, repr=False)
+    _results: dict = field(default=None, kw_only=True, repr=False)
+    _all_params: dict = field(default=None, kw_only=True, repr=False)
+
+    results_p: Path = field(default=None, init=False, repr=False)
+    url: str = field(default="", init=False, repr=False)
+    error_msg: str = field(default="", init=False, repr=False)
+    name: str = field(default="", init=False, repr=False)
+    lowered_resource: str = field(default="", init=False)
+    lowered_subresource: str = field(default="", init=False)
+    eof: bool = field(default=False, init=False, repr=False)
+
+    def __attrs_post_init__(self):
+        super().__attrs_post_init__()
+        self.fields = self.fields or []
+        self.resource = self.resource or ""
+        self.subresource = self.subresource or ""
+        self.results_filename = self.results_filename or "sync_results.json"
+
         self.lowered_resource = self.resource.lower()
-        self.processor = self.rkwargs.get("processor", process_result)
-        self.black_list = set(self.rkwargs.get("black_list", []))
-        self.populate = self.rkwargs.get("populate")
-        self.filterer = self.rkwargs.get("filterer")
-        self.subresource = self.rkwargs.get("subresource", "")
-        self.subresource_id = self.rkwargs.get("subresource_id")
         self.lowered_subresource = self.subresource.lower()
         self.name = f"{self.lowered}-{self.lowered_resource}"
-        self.datefmt = self.rkwargs.get("datefmt", "%Y-%m-%d")
-        self.fields = self.rkwargs.get("fields", [])
-        self.headers = self.rkwargs.get("headers", {})
 
-        try:
-            def_id_field = next(f for f in self.fields if "id" in f.lower())
-        except StopIteration:
-            def_id_field = "id"
+        if not self.id_field:
+            try:
+                self.id_field = next(f for f in self.fields if "id" in f.lower())
+            except StopIteration:
+                self.id_field = "id"
 
-        try:
-            def_name_field = next(f for f in self.fields if "name" in f.lower())
-        except StopIteration:
-            def_name_field = "name"
+        if not self.name_field:
+            try:
+                self.name_field = next(f for f in self.fields if "name" in f.lower())
+            except StopIteration:
+                self.name_field = "name"
 
-        self.id_field = self.rkwargs.get("id_field", def_id_field)
-        self.name_field = self.rkwargs.get("name_field", def_name_field)
+        if "end" in self.kwargs:
+            self.end = self.kwargs["end"]
 
-        results_filename = self.rkwargs.get("results_filename", "sync_results.json")
-        self.results_p = DATA_DIR.joinpath(results_filename)
+        if self.end:
+            # TODO: make this a converter
+            try:
+                self.end = self.end.strftime(self.datefmt)
+            except AttributeError:
+                pass
+        else:
+            breakpoint()
+
+        if "dry_run" in self.kwargs:
+            self.dry_run = self.kwargs["dry_run"]
+
+        if "use_default" in self.kwargs:
+            self.use_default = self.kwargs["use_default"]
+
+        if "dictify" in self.kwargs:
+            self.dictify = self.kwargs["dictify"]
+
+        if "pos" in self.kwargs:
+            self.pos = int(self.kwargs["pos"])
+
+        if self.kwargs.get("rid"):
+            self._rid = self.kwargs["rid"]
+
+        self.results_p = DATA_DIR.joinpath(self.results_filename)
 
     def __iter__(self):
         yield from self.data.values() if self.dictify else self.data
@@ -257,41 +310,20 @@ class Resource(BaseView):
     def __getitem__(self, key):
         return self.data[key]
 
-    def __repr__(self):
-        name = f"{self.lowered}-{self.lowered_resource}"
-
-        if self.subresource:
-            if self.rid and "-" in str(self.rid):
-                trunc_rid = self.rid.split("-")[0]
-                prefix = f"[id:{trunc_rid}]"
-            elif self.rid:
-                prefix = f"[id:{self.rid}]"
-            else:
-                prefix = f"[pos:{self.pos}]" if self.use_default else "[all ids]"
-
-            name += f"{prefix}-{self.lowered_subresource}"
-
-        if self.id and "-" in str(self.id):
-            trunc_id = self.id.split("-")[0]
-            name += f"[id:{trunc_id}]"
-        elif self.id:
-            name += f"[id:{self.id}]"
-        else:
-            name += f"[pos:{self.pos}]" if self.use_default else "[all ids]"
-
-        return name
-
     @property
     def fkwargs(self):
-        fkwargs = {**self.client.__dict__, **self.client.attrs} if self.client else {}
-        fkwargs.update({**self.__dict__, **self.rkwargs})
+        fkwargs = attr.asdict(self)
+
+        if self.client:
+            fkwargs = {**asdict(self.client), **self.client.attrs}
+
         return fkwargs
 
     @property
     def default_rid(self):
         try:
-            item = list(islice(self, self.pos, self.pos + 1))[0]
-        except (IndexError, TypeError):
+            item = next(islice(self, self.pos, self.pos + 1))
+        except (StopIteration, TypeError):
             item = None
 
         return item.get(self.id_field) if item else None
@@ -321,13 +353,13 @@ class Resource(BaseView):
 
     @property
     def id(self):
-        def_id = self.subresource_id if self.subresource else self.rid
-        return self.values.get("id", def_id)
+        def_id = self.srid if self.subresource else self.rid
+        return self.kwargs.get("id", def_id)
 
     @id.setter
     def id(self, value):
         if self.subresource:
-            self.subresource_id = value
+            self.srid = value
         else:
             self.rid = value
 
@@ -382,43 +414,13 @@ class Resource(BaseView):
         return self._dump_data
 
     @property
-    def verb_map(self):
-        if self.client:
-            return self.client.verb_map
-
-    @property
     def method_map(self):
         if self.client:
             return self.client.method_map
 
     @property
-    def dry_run(self):
-        return self.values.get("dryRun", self._dry_run)
-
-    @property
-    def use_default(self):
-        return self.values.get("useDefault", self._use_default)
-
-    @property
-    def dictify(self):
-        return self.values.get("dictify", self._dictify)
-
-    @property
-    def pos(self):
-        return int(self.values.get("pos", self._pos))
-
-    @property
-    def end(self):
-        end = self.values.get("end", self._end)
-
-        try:
-            return end.strftime(self.datefmt)
-        except AttributeError:
-            return end
-
-    @property
     def start(self):
-        start = self.values.get("start", self._start)
+        start = self.kwargs.get("start", self._start)
 
         if start is None:
             days = app.config["REPORT_DAYS"] if self.client else Config.REPORT_DAYS
@@ -428,13 +430,6 @@ class Resource(BaseView):
             return start.strftime(self.datefmt)
         except AttributeError:
             return start
-
-    @property
-    def subkey(self):
-        if self.client and self._subkey is None:
-            self._subkey = self.client.attrs.get("subkey", self._subkey)
-
-        return self.values.get("subkey", self._subkey)
 
     @property
     def all_params(self):
@@ -511,7 +506,7 @@ class Resource(BaseView):
             rid = self._rid
 
             if self.use_default and not rid:
-                rid = self.fetch_cls()().default_rid
+                rid = self.default_rid
 
             if rid:
                 split_id = rid.split("-")[0] if "-" in str(rid) else rid
@@ -564,9 +559,10 @@ class Resource(BaseView):
                 data_f.write("\n")
                 self._data = None
 
-    def fetch_cls(self, cls_name=None):
-        cls_name = cls_name or self.resource.title()
-        return self._registry[self.prefix].get(cls_name)
+    @staticmethod
+    def from_registry(prefix, resource_id):
+        klass = _registry[prefix].get(resource_id)
+        return klass()
 
     def create_model(self, data):
         model = {}
@@ -708,8 +704,7 @@ class Resource(BaseView):
 
             if self.url:
                 headers = {**self.headers, **kwargs.get("headers", {})}
-                method = self.method_map.get("patch", "patch")
-                rkwargs = {"headers": headers, "method": method, **self.kwargs}
+                rkwargs = {"headers": headers, **self.kwargs}
                 rkwargs[self.data_key] = dumps(data) if self.dump_data else data
                 json = get_json_response(self.url, self.client, **rkwargs)
             else:
@@ -742,11 +737,12 @@ class Resource(BaseView):
             >>> qb_transactions = Resource("qb", "TransactionList", **kwargs)
             >>> qb_transactions.get()
         """
-        if self.verb_map:
-            self.client.verb = self.verb_map.get("get")
+        if self.method_map:
+            self.client.verb = self.method_map.get("get")
 
-        self.id = self.values.pop("id", _id) or self.id
-        self.rid = self.values.pop("rid", rid) or self.rid
+        # TODO: see if I still need this
+        self.id = self.kwargs.pop("id", _id) or self.id
+        self.rid = self.kwargs.pop("rid", rid) or self.rid
 
         if self.dry_run:
             json = self.get_dry_run_json(**kwargs)
@@ -761,7 +757,7 @@ class Resource(BaseView):
             if self.subkey:
                 result = DotDict(result).get(self.subkey, result)
 
-            pkwargs = {"black_list": self.black_list}
+            pkwargs = {"black_list": self.black_list, "prefix": self.prefix}
             _result = list(self.processor(listize(result), self.fields, **pkwargs))
             result = self.filter_result(*_result)
 
@@ -792,20 +788,20 @@ class Resource(BaseView):
             >>> kwargs = {"name": "name", "emails": ["value": "email"]}
             >>> cloze_person.post(**kwargs)
         """
-        if self.verb_map:
-            self.client.verb = self.verb_map.get("post")
+        if self.method_map:
+            self.client.verb = self.method_map.get("post")
 
         rkwargs = {"headers": self.headers, "method": "post", **self.kwargs}
         black_list = {
-            "dryRun",
+            "dry_run",
             "start",
             "end",
             "pos",
             "dictify",
-            "useDefault",
+            "use_default",
             "subkey",
         }
-        values = remove_keys(self.values, black_list)
+        values = remove_keys(self.kwargs, black_list)
         data = {**values, **kwargs}
 
         if self.singularize:
@@ -851,22 +847,22 @@ class Resource(BaseView):
             >>> url = 'http://localhost:5000/v1/timely-time'
             >>> requests.patch(url, data={"rid": 165829339, "dryRun": True})
         """
-        if self.verb_map:
-            self.client.verb = self.verb_map.get("patch")
+        if self.method_map:
+            self.client.verb = self.method_map.get("patch")
 
-        self.id = self.values.pop("id", _id) or self.id
-        self.rid = self.values.pop("rid", rid) or self.rid
+        # TODO: see if I still need this
+        self.id = self.kwargs.pop("id", _id) or self.id
+        self.rid = self.kwargs.pop("rid", rid) or self.rid
 
         black_list = {
-            "dryRun",
+            "dry_run",
             "start",
             "end",
             "pos",
             "dictify",
-            "useDefault",
-            "subkey",
+            "use_default",
         }
-        values = remove_keys(self.values, black_list)
+        values = remove_keys(self.kwargs, black_list)
         data = {**values, **kwargs}
         json = {}
 

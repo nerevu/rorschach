@@ -38,6 +38,8 @@ logger.propagate = False
 
 ENCODING = "utf-8"
 EPOCH = dt(*gmtime(0)[:6])
+PASCAL_PATTERN = re.compile(r"(?<!^)(?=[A-Z])")
+
 
 MIMETYPES = [
     "application/json",
@@ -437,16 +439,22 @@ def get_links(rules):
     return sorted(links, key=lambda link: link["href"])
 
 
-def parse_kwargs(app):
-    form = request.form or {}
+def parse_request(app=None):
     args = request.args.to_dict()
-    _kwargs = {**form, **args}
-    kwargs = {k: parse(v) for k, v in _kwargs.items()}
+    form = request.form or {}
+    json = request.get_json(force=True, silent=True) or {}
 
-    with app.app_context():
-        for k, v in app.config.items():
-            if k in APP_CONFIG_WHITELIST:
-                kwargs.setdefault(k.lower(), v)
+    if form and "json" not in get_mimetype():
+        form = loads(list(form)[0])
+
+    _kwargs = {**args, **form, **json}
+    kwargs = {camel_to_snake_case(k): parse(v) for k, v in _kwargs.items()}
+
+    if app:
+        with app.app_context():
+            for k, v in app.config.items():
+                if k in APP_CONFIG_WHITELIST:
+                    kwargs.setdefault(k.lower(), v)
 
     return kwargs
 
@@ -458,20 +466,13 @@ def gen_config(app):
                 yield (k.lower(), v)
 
 
-def parse_request():
-    args = request.args or {}
-    form = request.form or {}
-
-    if form and "json" not in get_mimetype():
-        form = loads(list(form)[0])
-
-    json = request.get_json(force=True, silent=True) or {}
-    kwargs = {**args, **form, **json}
-    return {k: parse(v) for k, v in kwargs.items()}
-
-
 def hash_text(**kwargs):
     return get_hash("{email}:{list}:{secret}".format(**kwargs))
+
+
+# https://stackoverflow.com/a/1176023/408556
+def camel_to_snake_case(name):
+    return PASCAL_PATTERN.sub("-", name).lower()
 
 
 def verify(hash="", **kwargs):

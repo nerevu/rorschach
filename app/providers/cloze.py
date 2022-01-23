@@ -559,7 +559,7 @@ def get_job_response(job):
 
 
 def transfer_orders(order_id=None, start=None, end=None, **kwargs):
-    """ NOTE: The REST Admin API is not inclusive of the end date that a person sends,
+    """NOTE: The REST Admin API is not inclusive of the end date that a person sends,
     so one day is added to the `end` parameter to make this endpoint inclusive.
     """
     # If a date range is provided as parameters to this endpoint (start and end),
@@ -712,7 +712,7 @@ class Order(MethodView):
 
 @blueprint.route(f"{PREFIX}/result/<string:job_id>")
 def result(job_id):
-    """ Displays a job result.
+    """Displays a job result.
 
     Args:
         job_id (str): The job id.

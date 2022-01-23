@@ -8,9 +8,10 @@ from os import path as p
 import pkutils
 
 try:
-    from setuptools import setup, find_packages
+    from setuptools import find_packages, setup
 except ImportError:
     from distutils.core import setup, find_packages
+
 from dotenv import load_dotenv
 
 PARENT_DIR = p.abspath(p.dirname(__file__))

@@ -16,10 +16,9 @@ from base64 import b64encode
 import pygogo as gogo
 
 from flask import current_app as app, request
-from flask.views import MethodView
 
 from app.helpers import flask_formatter as formatter
-from app.routes import ProviderMixin
+from app.routes import PatchedMethodView
 from app.utils import get_links, jsonify, parse_request
 
 # https://requests-oauthlib.readthedocs.io/en/latest/index.html
@@ -33,7 +32,7 @@ logger.propagate = False
 ###########################################################################
 # METHODVIEW ROUTES
 ###########################################################################
-class Webhook(ProviderMixin, MethodView):
+class Webhook(PatchedMethodView):
     def __init__(self, *args, actions=None, activities=None, digest="sha256", **kwargs):
         super().__init__(*args, **kwargs)
         self.actions = actions or {}

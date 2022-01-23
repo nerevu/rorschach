@@ -1,0 +1,8 @@
+{
+  "venvPath": "/Users/reubano/.virtualenvs/",
+  "venv": "authorizer",
+  "reportOptionalMemberAccess": false,
+  "reportOptionalCall": false,
+  "reportOptionalIterable": false,
+  "reportGeneralTypeIssues": false
+}
