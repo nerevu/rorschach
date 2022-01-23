@@ -33,7 +33,7 @@ from app.authclient import AuthClientTypes, callback, get_auth_client, get_json_
 from app.helpers import flask_formatter as formatter, get_collection, singularize
 from app.providers import Authentication
 from app.routes import PatchedMethodView
-from app.utils import extract_field, extract_fields, get_links, jsonify
+from app.utils import extract_field, extract_fields, get_links, jsonify, parse_item
 from config import Config
 
 logger = gogo.Gogo(
@@ -47,12 +47,14 @@ DATA_DIR = APP_DIR.joinpath("data")
 _registry = defaultdict(dict)
 
 
-def process_result(result, fields=None, black_list=None, **kwargs):
+def process_result(result, fields=None, black_list=None, prefix=None, **kwargs):
     if black_list:
         result = (remove_keys(item, *black_list) for item in result)
 
     if fields:
         result = (dict(extract_fields(item, *fields)) for item in result)
+
+    result = (dict(parse_item(item, prefix=prefix)) for item in result)
 
     if kwargs:
         result = ({**item, **kwargs} for item in result)

@@ -74,6 +74,14 @@
       "subkey": "OnlineInvoices"
     },
     {
+      "resourceId": "linked_transactions",
+      "resource": "LinkedTransactions",
+      "authId": "api",
+      "idField": "LinkedTransactionID",
+      "subkey": "LinkedTransactions",
+      "nameField": "LinkedTransactionID"
+    },
+    {
       "resourceId": "inventory",
       "resource": "Items",
       "authId": "api",

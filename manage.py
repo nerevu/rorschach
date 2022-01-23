@@ -77,14 +77,14 @@ sys.excepthook = partial(exception_hook, debug=True)
 def gen_api_configs() -> Iterator[APIConfig]:
     for document in Path(DATA_DIRS["api-config"]).glob("*.json"):
         with document.open() as f:
-            yield api_config_from_dict(json.load(f))
+            yield api_config_from_dict(pyjson5.load(f))
 
 
 def get_provider(name: str) -> Provider:
     provider_dir = DATA_DIRS["provider"]
 
     with Path(f"{provider_dir}/{name}.json").open() as f:
-        return provider_from_dict(json.load(f))
+        return provider_from_dict(pyjson5.load(f))
 
 
 def gen_providers(config: APIConfig) -> Iterator[Provider]:
@@ -126,7 +126,7 @@ def manager(script_info, ctx, verbose=0, **kwargs):
         script_info.port = ctx.params["port"]
 
         with Path("{api-config}/default.json".format(**DATA_DIRS)).open() as f:
-            data = json.load(f)
+            data = pyjson5.load(f)
 
         API = next(gen_api_configs())
         [create_method_view_route(params) for params in API.method_view_route_params]
@@ -403,7 +403,7 @@ def schema_to_code(schema):
 
     for schema_name in schema_names:
         source = f"{SCHEMA_DIR}/{schema_name}.schema.json"
-        _schema = json.load(open(source))
+        _schema = pyjson5.load(open(source))
         dest_dir = DATA_DIRS[schema_name]
         dest = f"{dest_dir}/__init__.py"
 
@@ -456,7 +456,7 @@ def validate_schema(schema):
 
     for schema_name in schema_names:
         source = f"{SCHEMA_DIR}/{schema_name}.schema.json"
-        _schema = json.load(open(source))
+        _schema = pyjson5.load(open(source))
 
         try:
             Draft7Validator.check_schema(_schema)
@@ -481,19 +481,19 @@ def validate_data(schema):
     """Validate instances against their json schema"""
     num_errors = 0
     schema_names = SCHEMAS if schema == "all" else [schema]
-    schemas = (json.load(open(source)) for source in Path(SCHEMA_DIR).iterdir())
+    schemas = (pyjson5.load(open(source)) for source in Path(SCHEMA_DIR).iterdir())
     schema_store = {schema["$id"]: schema for schema in schemas}
 
     for schema_name in schema_names:
         source = f"{SCHEMA_DIR}/{schema_name}.schema.json"
         dest_dir = DATA_DIRS[schema_name]
-        _schema = json.load(open(source))
+        _schema = pyjson5.load(open(source))
         resolver = RefResolver.from_schema(_schema, store=schema_store)
 
         for document in Path(dest_dir).glob("*.json"):
             with document.open() as f:
                 validator = Draft7Validator(_schema, resolver=resolver)
-                data = json.load(f)
+                data = pyjson5.load(f)
 
                 try:
                     errors = sorted(validator.iter_errors(data), key=lambda e: e.path)

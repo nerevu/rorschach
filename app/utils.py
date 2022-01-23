@@ -9,7 +9,7 @@ import hmac
 import re
 
 from ast import literal_eval
-from datetime import date, datetime as dt, timedelta
+from datetime import date, datetime as dt, timedelta, timezone
 from functools import partial, wraps
 from hashlib import md5
 from http.client import responses
@@ -562,3 +562,29 @@ def extract_fields(record, *fields, **kwargs):
     for field in fields:
         value = extract_field(record, field, **kwargs)
         yield (field, value)
+
+
+def parse_ts(date_str):
+    # "/Date(1518685950940+0000)/"
+    # https://developer.xero.com/documentation/api/accounting/requests-and-responses#json-responses-and-date-formats
+    # https://stackoverflow.com/a/37097784/408556
+    ms, sign, hours, minutes = re.search(
+        r"[\D+](\d+)([+\-])(\d{2})(\d{2})", date_str
+    ).groups(0)
+    ts = int(ms) / 1000
+    sign = -1 if sign == "-" else 1
+    tz = timezone(sign * timedelta(hours=int(hours), minutes=int(minutes)))
+    date_obj = dt.fromtimestamp(ts, tz=tz)
+    return date_obj.isoformat()
+
+
+def parse_tuple(key, value, prefix=None):
+    if value.startswith("/Date("):
+        value = parse_ts(value)
+
+    return (key, value)
+
+
+def parse_item(item, prefix=None):
+    for k, v in item.items():
+        yield parse_tuple(k, v, prefix=prefix)
