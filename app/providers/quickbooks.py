@@ -82,7 +82,7 @@ NUM_MONTHS = Config.REPORT_MONTHS
 
 
 def get_request_base():
-    """ Gets the resource name (e.g. if `https://alegna-api.nerevu.com/v1/status?param1=value' is the
+    """Gets the resource name (e.g. if `https://alegna-api.nerevu.com/v1/status?param1=value' is the
     request.base_url, `status` is returned
     """
     route_path = urlparse(request.base_url).path.split("/")
@@ -90,7 +90,7 @@ def get_request_base():
 
 
 def get_resource_name(rule):
-    """ Returns resourceName from endpoint
+    """Returns resourceName from endpoint
 
     Args:
         rule (str): the endpoint path (e.g. '/v1/data')
@@ -108,7 +108,7 @@ def get_resource_name(rule):
 
 
 def get_params(rule):
-    """ Returns params from the url
+    """Returns params from the url
 
     Args:
         rule (str): the endpoint path (e.g. '/v1/data/<int:id>')
@@ -131,7 +131,7 @@ def get_params(rule):
 
 
 def get_rel(href, method, rule):
-    """ Returns the `rel` of an endpoint (see `Returns` below).
+    """Returns the `rel` of an endpoint (see `Returns` below).
 
     If the rule is a common rule as specified in the utils.py file, then that rel is returned.
 
@@ -185,7 +185,7 @@ def get_rel(href, method, rule):
 
 
 def gen_links():
-    """ Makes a generator of all endpoints, their methods, and their rels (strings representing purpose of the endpoint)
+    """Makes a generator of all endpoints, their methods, and their rels (strings representing purpose of the endpoint)
 
     Yields:
         (dict): Example - {"rel": "data", "href": f"https://alegna-api.nerevu.com/v1/data", "method": "GET"}
@@ -203,14 +203,13 @@ def gen_links():
 
 
 def sort_links(links):
-    """ Sorts endpoint links alphabetically by their href
-    """
+    """Sorts endpoint links alphabetically by their href"""
     return sorted(links, key=lambda link: link["href"])
 
 
 @lru_cache(maxsize=LRU_CACHE_SIZE)
 def parse_date(date_str):
-    """ Creates a date object from a date string.
+    """Creates a date object from a date string.
 
     Args:
         date_str (str): e.g. '2018-12-31'
@@ -229,7 +228,7 @@ def parse_date(date_str):
 # TODO: Continue DocBlocks and DocTests Below Here
 #######################################################
 def gen_records(response):
-    """ Creates a simpler dictionary using the Headers and Data from the QuickBooks API.
+    """Creates a simpler dictionary using the Headers and Data from the QuickBooks API.
 
     Args:
         response (dict): response object from QuickBooks with transaction data. The "links" attribute was added by our code.
@@ -287,7 +286,7 @@ def gen_records(response):
 
 
 def gen_ranges(start=None, prev_end=None, num_months=NUM_MONTHS):
-    """ A recursive generator function that yields tuples containing the
+    """A recursive generator function that yields tuples containing the
     starting and ending dates of each month for the past `num_months` months.
 
     Args:
@@ -314,7 +313,7 @@ def gen_ranges(start=None, prev_end=None, num_months=NUM_MONTHS):
 
 
 def get_period(invoice_date, date_ranges):
-    """ Returns the period ('month-year') that the invoice_date falls into.
+    """Returns the period ('month-year') that the invoice_date falls into.
 
     Args:
         invoice_date (datetime.date): the date the invoice was retrieved
@@ -711,7 +710,7 @@ def create_weighted_sales_dict(*args, prefix=None):
 
 # TODO: This should probably be broken out into multiple functions
 def calculate_weighted_avg_sales(transactions):
-    """ Orders QB transactions by salesrep, then customer by earliest
+    """Orders QB transactions by salesrep, then customer by earliest
     date to latest and adds the Upsell: True/False field.
 
     Upsells are calculated per period per sales person.
@@ -857,7 +856,7 @@ def calculate_weighted_avg_sales(transactions):
 # TODO: this could likely be implemented more cleanly as a generator
 # (talk about at team meeting)
 def build_invoice_dict_by_keys(keys, obj, transaction):
-    """ Takes a transaction and adds a nested dictionary of the keys
+    """Takes a transaction and adds a nested dictionary of the keys
     provided in order (with the first key as the top level and the
     last key as the bottom level of the dictionary). If the keys exist
     in the `obj` parameter, then transaction is added under the appropriate
@@ -934,11 +933,11 @@ def build_invoice_dict_by_keys(keys, obj, transaction):
 
 
 def gen_commission_score(sales_reps):
-    """ Yields
-        {
-            "Sales Rep": "Hugh Jackman",
-            "Commission Score": ".56",
-        }
+    """Yields
+    {
+        "Sales Rep": "Hugh Jackman",
+        "Commission Score": ".56",
+    }
     """
     sales_reps_lower = {s.lower() for s in sales_reps}
     # query cloze for rating, number_interactions, and first_call_resolution

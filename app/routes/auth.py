@@ -258,7 +258,6 @@ class Resource(BaseView):
         self.resource = self.resource or ""
         self.subresource = self.subresource or ""
         self.results_filename = self.results_filename or "sync_results.json"
-
         self.lowered_resource = self.resource.lower()
         self.lowered_subresource = self.subresource.lower()
         self.name = f"{self.lowered}-{self.lowered_resource}"

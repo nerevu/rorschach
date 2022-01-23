@@ -1,41 +1,92 @@
-.DS_Store
+# Mac
+*.DS_Store
+
+# Python
+*.py[cod]
+*.ipynb
+*checkpoint.ipynb
+.cookiecutter
+.ipynb_checkpoints/
+.idea/
+docs/_build/
+app/cache
+app.db
+screenshots/
+example*.log
+examples/.ipynb_checkpoints/
+pip-log.txt
+
+# C extensions
+*.so
+
+# Private
 .env
 .flaskenv
-*.pyc
-*.pyo
 env/
 env*
 lenv/
 lenv*
-venv
-dist/
-build/
-*.egg
-*.egg-info/
-_mailinglist
-.tox/
-.cache/
-.pytest_cache/
-.idea/
-.cache/
-docs/_build/
-app.db
-screenshots/*
-
-# Coverage reports
-htmlcov/
-.coverage
-.coverage.*
-*,cover
-
-# VSCode
-.vscode/*
-
-# App Cache
-app/cache/*
-commissioner/cache/*
-
-# Misc
-screenshots/*
 secrets/*
 !secrets/.gitkeep
+
+# Packages
+*.egg*
+*.egg-info
+.eggs
+.installed.cfg
+.installed.cfg
+*-0.*/
+dist
+build
+eggs
+parts
+var
+sdist
+develop-eggs
+lib
+lib64
+venv
+
+# Unit test / coverage reports
+*.wpu
+*.rope
+*.noseids
+*.ropeproject
+*,cover
+.coverage
+.coverage.*
+.pytest_cache/
+.tox
+.noseids
+.cache/
+.scripttest
+coverage.xml
+cover/
+htmlcov/
+nosetests.xml
+
+# Translations
+*.mo
+
+# Mr Developer
+.mr.developer.cfg
+.project
+.pydevproject
+
+# Complexity
+output/*.html
+output/*/index.html
+
+# Sphinx
+docs/_build
+build/
+
+# Misc
+*/cache/
+*.pstats
+.vscode/
+callgraph.svg
+ttyrecord
+
+# Node
+node_modules
